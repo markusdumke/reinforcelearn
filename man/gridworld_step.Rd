@@ -4,12 +4,12 @@
 \alias{gridworld_step}
 \title{Take a step in a gridworld}
 \usage{
-gridworld_step(action, state, gridworld)
+gridworld_step(state, action, gridworld)
 }
 \arguments{
-\item{action}{character: the action, one of ("left", "right", "up", "down")}
-
 \item{state}{scalar integer: the current state}
+
+\item{action}{character: the action, one of ("left", "right", "up", "down")}
 
 \item{gridworld}{object returned by \code{\link{gridworld}}}
 }
@@ -38,7 +38,7 @@ i = 1
 
 while(episode.over == FALSE) {
   sampled.actions = append(sampled.actions, sample(actions, size = 1))
-  step = gridworld_step(sampled.actions[i], states[i], grid)
+  step = gridworld_step(states[i], sampled.actions[i], grid)
   rewards = append(rewards, step[["reward"]])
   states = rbind(states, step[["state"]])
   episode.over = step[["episode.over"]]
