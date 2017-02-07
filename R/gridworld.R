@@ -1,79 +1,82 @@
-#' @title Gridworld environment
+#' Gridworld environment
 #'
-#' @description Simple gridworld for reinforcement learning. Given a state and an action,
-#' the next state and reward are returned.
+#' @description Simple gridworld for reinforcement learning.
 #'
 #' @details Possible actions include going left, right, down or up. If an action would take you off
 #' the grid, you remain in the previous state. For each step you get a reward of -1, until you reach
 #' into a terminal state.
 #'
-#' @param state the current state, e.g. c(1, 3)
-#' @param action the action, one of ("left", "right", "up", "down")
-#' @param shape the shape of the grid, e.g. (4, 4)
-#' @param terminalStates list of terminal states, each list element is a length two vector
-#' @return list with next state, reward and a flag if episode is finished, i.e. the new state is
-#' a terminal state
-#'
-#' @examples
-#' actions = c("left", "right", "up", "down")
-#' states = matrix(c(3, 3), nrow = 1, ncol = 2)
-#' rewards = numeric(0)
-#' sampledActions = character(0)
-#' episodeOver = FALSE
-#' i = 1
-#'
-#' while(episodeOver == FALSE) {
-#'   sampledActions = append(sampledActions, sample(actions, size = 1))
-#'   i = i + 1
-#'   step = gridworld(states[i - 1, ], sampledActions[i - 1])
-#'   rewards = append(rewards, step[["reward"]])
-#'   states = rbind(states, step[["state"]])
-#'   episodeOver = step[["episodeOver"]]
+#' @param shape length-two integer vector: the shape of the grid, e.g. (4, 4)
+#' @param terminal.states integer vector of terminal states
+#' @return list with a 3-dimensional array containing the probability transition matrices
+#'  for each action and a reward matrix (states x actions)
+#' @export
+#' @details The states are enumerated as follows (example 4x4 grid):
+#' \tabular{rrrr}{
+#'  1 \tab 2 \tab 3 \tab 4 \cr
+#'  5 \tab 6 \tab 7 \tab 8 \cr
+#'  9 \tab 10 \tab 11 \tab 12 \cr
+#'  13 \tab 14 \tab 15 \tab 16 \cr
+#' }
+#' So a board position could look like this (T: terminal state, x: current state):
+#' \tabular{rrrr}{
+#'  T \tab o \tab o \tab o \cr
+#'  o \tab o \tab o \tab o \cr
+#'  o \tab x \tab o \tab o \cr
+#'  o \tab o \tab o \tab T \cr
 #' }
 #'
-#' print(sampledActions)
-#' print(rewards)
-#' print(states)
-#'
+#' @examples
+#' # Create 3x5 gridworld with one terminal state in the top right corner of the grid.
+#' gridworld(shape = c(3, 5), terminal.states = 5)
 #' @references Gridworld example from Sutton & Barto, chapter 4
-gridworld <- function(state, action, shape = c(4, 4), terminalStates = list(c(1, 1), c(4, 4))) {
+#' @seealso \code{\link{gridworld_step}}
+gridworld <- function(shape = c(4, 4), terminal.states = c(1, 16)) {
 
-  terminalStates = matrix(unlist(terminalStates), ncol = 2, byrow = TRUE)
-  # n_states = prod(shape)
-  # n_actions = 4
+  n.states = prod(shape)
 
-  # possible actions:
-  up = c(-1, 0)
-  down = c(1, 0)
-  right = c(0, 1)
-  left = c(0, -1)
+  actions = c("left", "right", "up", "down")
+  n.actions = length(actions)
 
-  # Flag if episode is over
-  episodeOver = FALSE
+  # make probability transition matrix for each action (3-dimensional array)
+  P = array(matrix(0, nrow = n.states, ncol = n.states),
+            dim = c(n.states, n.states, n.actions),
+            dimnames = list(NULL, NULL, actions))
 
-  # make action
-  if(action == "left"){
-    nextState = state + left
-  } else if(action == "right"){
-    nextState = state + right
-  } else if(action == "up"){
-    nextState = state + up
-  } else if(action == "down"){
-    nextState = state + down
+  # fill in probabilities: when action is taking you off the grid,
+  # the new state will be the same as the old state
+  for(state in seq_len(n.states)) {
+    for(action in actions) {
+
+      if(action == "left") {
+        border.states = seq(1, n.states, shape[2])
+        new.state = ifelse(state %in% border.states, state, state - 1)
+      }
+
+      if(action == "right") {
+        border.states = seq(shape[2], n.states, shape[2])
+        new.state = ifelse(state %in% border.states, state, state + 1)
+      }
+
+      if(action == "up") {
+        border.states = seq(1, shape[2])
+        new.state = ifelse(state %in% border.states, state, state - 4)
+      }
+
+      if(action == "down") {
+        border.states = seq(n.states - shape[2] + 1, n.states)
+        new.state = ifelse(state %in% border.states, state, state + 4)
+      }
+      P[state, new.state, action] = 1
+    }
   }
 
-  # check if new state is inside grid else set new state to old state
-  states_inside_grid = as.matrix(expand.grid(seq(1, shape[1]), seq(1, shape[2])))
-  if(!duplicated(rbind(states_inside_grid, matrix(nextState, ncol = 2)))[-seq_len(nrow(states_inside_grid))]) {
-    nextState = state
-  }
+  # reward matrix: 3-dimensional array depending on actions and states
+  # reward of - 1 for each step
+  rewards = matrix(- 1, nrow = n.states, ncol = n.actions, dimnames = list(NULL, actions))
 
-  # episode over if terminalState is reached
-  if(duplicated(rbind(terminalStates, matrix(nextState, ncol = 2)))[-seq_len(nrow(terminalStates))]) {
-    episodeOver = TRUE
-  }
+  # set rewards of terminal states to 0
+  rewards[terminal.states, ] = 0
 
-  reward = -1
-
-  return(list(state = nextState, reward = reward, episodeOver = episodeOver))
+  return(list(transition.matrix = P, reward.matrix = rewards, terminal.states = terminal.states))
 }

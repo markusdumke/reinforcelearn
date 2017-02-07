@@ -4,53 +4,47 @@
 \alias{gridworld}
 \title{Gridworld environment}
 \usage{
-gridworld(state, action, shape = c(4, 4), terminalStates = list(c(1, 1),
-  c(4, 4)))
+gridworld(shape = c(4, 4), terminal.states = c(1, 16))
 }
 \arguments{
-\item{state}{the current state, e.g. c(1, 3)}
+\item{shape}{length-two integer vector: the shape of the grid, e.g. (4, 4)}
 
-\item{action}{the action, one of ("left", "right", "up", "down")}
-
-\item{shape}{the shape of the grid, e.g. (4, 4)}
-
-\item{terminalStates}{list of terminal states, each list element is a length two vector}
+\item{terminal.states}{integer vector of terminal states}
 }
 \value{
-list with next state, reward and a flag if episode is finished, i.e. the new state is
-a terminal state
+list with a 3-dimensional array containing the probability transition matrices
+ for each action and a reward matrix (states x actions)
 }
 \description{
-Simple gridworld for reinforcement learning. Given a state and an action,
-the next state and reward are returned.
+Simple gridworld for reinforcement learning.
 }
 \details{
 Possible actions include going left, right, down or up. If an action would take you off
 the grid, you remain in the previous state. For each step you get a reward of -1, until you reach
 into a terminal state.
+
+The states are enumerated as follows (example 4x4 grid):
+\tabular{rrrr}{
+ 1 \tab 2 \tab 3 \tab 4 \cr
+ 5 \tab 6 \tab 7 \tab 8 \cr
+ 9 \tab 10 \tab 11 \tab 12 \cr
+ 13 \tab 14 \tab 15 \tab 16 \cr
+}
+So a board position could look like this (T: terminal state, x: current state):
+\tabular{rrrr}{
+ T \tab o \tab o \tab o \cr
+ o \tab o \tab o \tab o \cr
+ o \tab x \tab o \tab o \cr
+ o \tab o \tab o \tab T \cr
+}
 }
 \examples{
-actions = c("left", "right", "up", "down")
-states = matrix(c(3, 3), nrow = 1, ncol = 2)
-rewards = numeric(0)
-sampledActions = character(0)
-episodeOver = FALSE
-i = 1
-
-while(episodeOver == FALSE) {
-  sampledActions = append(sampledActions, sample(actions, size = 1))
-  i = i + 1
-  step = gridworld(states[i - 1, ], sampledActions[i - 1])
-  rewards = append(rewards, step[["reward"]])
-  states = rbind(states, step[["state"]])
-  episodeOver = step[["episodeOver"]]
-}
-
-print(sampledActions)
-print(rewards)
-print(states)
-
+# Create 3x5 gridworld with one terminal state in the top right corner of the grid.
+gridworld(shape = c(3, 5), terminal.states = 5)
 }
 \references{
 Gridworld example from Sutton & Barto, chapter 4
+}
+\seealso{
+\code{\link{gridworld_step}}
 }
