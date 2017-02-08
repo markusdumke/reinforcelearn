@@ -1,4 +1,4 @@
-Package: reinforceR
+Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
 Version: 0.1.2
