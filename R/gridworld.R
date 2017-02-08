@@ -42,6 +42,12 @@ gridworld <- function(shape = c(4, 4), terminal.states = c(1, 16)) {
   P = array(matrix(0, nrow = n.states, ncol = n.states),
             dim = c(n.states, n.states, n.actions),
             dimnames = list(NULL, NULL, actions))
+  
+  # calculate border.states
+  border.states.left = seq(1, n.states, shape[2])
+  border.states.right = seq(shape[2], n.states, shape[2])
+  border.states.up = seq(1, shape[2])
+  border.states.down = seq(n.states - shape[2] + 1, n.states)
 
   # fill in probabilities: when action is taking you off the grid,
   # the new state will be the same as the old state
@@ -49,29 +55,25 @@ gridworld <- function(shape = c(4, 4), terminal.states = c(1, 16)) {
     for(action in actions) {
 
       if(action == "left") {
-        border.states = seq(1, n.states, shape[2])
-        new.state = ifelse(state %in% border.states, state, state - 1)
+        new.state = ifelse(state %in% border.states.left, state, state - 1)
       }
 
       if(action == "right") {
-        border.states = seq(shape[2], n.states, shape[2])
-        new.state = ifelse(state %in% border.states, state, state + 1)
+        new.state = ifelse(state %in% border.states.right, state, state + 1)
       }
 
       if(action == "up") {
-        border.states = seq(1, shape[2])
-        new.state = ifelse(state %in% border.states, state, state - 4)
+        new.state = ifelse(state %in% border.states.up, state, state - shape[2])
       }
 
       if(action == "down") {
-        border.states = seq(n.states - shape[2] + 1, n.states)
-        new.state = ifelse(state %in% border.states, state, state + 4)
+        new.state = ifelse(state %in% border.states.down, state, state + shape[2])
       }
       P[state, new.state, action] = 1
     }
   }
 
-  # reward matrix: 3-dimensional array depending on actions and states
+  # reward matrix: matrix depending on actions and states
   # reward of - 1 for each step
   rewards = matrix(- 1, nrow = n.states, ncol = n.actions, dimnames = list(NULL, actions))
 

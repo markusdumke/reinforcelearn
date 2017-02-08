@@ -25,7 +25,7 @@
 #'
 #' while(episode.over == FALSE) {
 #'   sampled.actions = append(sampled.actions, sample(actions, size = 1))
-#'   step = gridworld_step(sampled.actions[i], states[i], grid)
+#'   step = gridworld_step(states[i], sampled.actions[i], grid)
 #'   rewards = append(rewards, step[["reward"]])
 #'   states = rbind(states, step[["state"]])
 #'   episode.over = step[["episode.over"]]
@@ -37,7 +37,7 @@
 #'
 #' @references Gridworld example from Sutton & Barto, chapter 4
 #' @seealso \code{\link{gridworld}}
-gridworld_step = function(action, state, gridworld) {
+gridworld_step = function(state, action, gridworld) {
   # Flag if episode is over
   episode.over = FALSE
 
