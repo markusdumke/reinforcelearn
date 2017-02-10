@@ -13,7 +13,7 @@ gridworld(shape = c(4, 4), terminal.states = c(1, 16))
 }
 \value{
 list with a 3-dimensional array containing the probability transition matrices
- for each action and a reward matrix (states x actions)
+ for each action,  a reward matrix (states x actions) and the possibel actions as a vector.
 }
 \description{
 Simple gridworld for reinforcement learning.
