@@ -1,11 +1,14 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
-Version: 0.1.2
+Version: 0.1.21
 Author: Markus Dumke
 Maintainer: Markus Dumke <markusdumke@gmail.com>
 Description: Implementation of reinforcement learning algorithms.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends: R (>= 3.3.1)
 RoxygenNote: 6.0.1
+Imports:
+    R6
