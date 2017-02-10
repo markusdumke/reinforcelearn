@@ -2,4 +2,6 @@
 
 export(evaluatePolicy)
 export(gridworld)
+export(gridworld_R6)
 export(gridworld_step)
+importFrom(R6,R6Class)

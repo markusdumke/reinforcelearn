@@ -81,5 +81,5 @@ gridworld <- function(shape = c(4, 4), terminal.states = c(1, 16)) {
   rewards[terminal.states, ] = 0
 
   return(list(transition.matrix = P, reward.matrix = rewards, terminal.states = terminal.states, 
-              possible.actions = possible.actions))
+              possible.actions = actions))
 }
