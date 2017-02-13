@@ -1,7 +1,7 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Author: Markus Dumke
 Maintainer: Markus Dumke <markusdumke@gmail.com>
 Description: Implementation of reinforcement learning algorithms.

@@ -26,7 +26,6 @@
 #' v.expected = c(0, -14, -20, -22, -14, -18, -20, -20,
 #'                -20, -20, -18, -14, -22, -20, -14, 0)
 #' all.equal(v, v.expected, tolerance = 0.1)
-
 evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) {
   n.states = nrow(policy)
 

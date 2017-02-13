@@ -2,7 +2,7 @@
 % Please edit documentation in R/evaluatePolicy.R
 \name{evaluatePolicy}
 \alias{evaluatePolicy}
-\title{Policy Evaluation}
+\title{#' Policy Evaluation}
 \usage{
 evaluatePolicy(policy, envir, discount.factor = 1, epsilon = 1e-04)
 }
@@ -27,7 +27,7 @@ is smaller than epsilon.
 }
 \examples{
 # Define uniform random policy, take each action with probability 0.25
-grid = gridworld()
+grid = gridworld_R6$new()
 n.states = nrow(grid$reward.matrix)
 n.actions = ncol(grid$reward.matrix)
 random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)

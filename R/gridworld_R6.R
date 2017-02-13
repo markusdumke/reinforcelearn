@@ -2,6 +2,18 @@
 #'
 #' Simple gridworld for reinforcement learning. With the step method given a state and an action in a gridworld,
 #' the next state and reward are returned.
+#' 
+#' @section Methods:
+#' \describe{
+#'  \item{\code{gridworld_R6$new(name)}}{Creates a new \code{gridworld} with a 
+#'   specific \code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}. 
+#'   \code{terminal.states} is an integer vector of the terminal states in the gridworld. 
+#'   Default is \code{c(1, 16)}}
+#'  \item{\code{gridworld_R6$step(state, action)}}{Takes a step in the gridworld 
+#'    given a state and an action, returns the next state and reward.}
+#' \item{\code{gridworld_R6$setEpisodeOverFalse()}}{Resets the \code{episode.over} flag of the gridworld class. 
+#' Useful when starting a new episode.}
+#' }
 #'
 #' @details The states are enumerated as follows (example 4x4 grid):
 #' \tabular{rrrr}{
@@ -20,11 +32,9 @@
 #' Possible actions include going left, right, down or up. If an action would take you off
 #' the grid, you remain in the previous state. For each step you get a reward of -1, until you reach
 #' into a terminal state.
-#'
+#' @docType class
 #' @references Gridworld example from Sutton & Barto, chapter 4
-#' @param shape length-two integer vector: the shape of the grid, e.g. (4, 4)
-#' @param terminal.states integer vector of terminal states
-#' @return A ref class with method `step()`
+#' @usage #grid = gridworld_R6$new()
 #' @export
 #' @importFrom R6 R6Class
 #' @examples
@@ -53,6 +63,7 @@ gridworld_R6 = R6::R6Class("gridworld_R6",
   public = list(
     shape = NULL,
     terminal.states = NULL,
+    # initial.state = NULL
     actions = NULL,
     n.states = NULL,
     n.actions = NULL,
@@ -64,6 +75,7 @@ gridworld_R6 = R6::R6Class("gridworld_R6",
     states = NULL,
     
     initialize = function(shape = c(4, 4), terminal.states = c(1, 16)) {
+      # to implement: test if terminal.states are inside grid!
       self$shape = shape
       self$terminal.states = terminal.states
       self$actions = c("left", "right", "up", "down")
@@ -77,7 +89,6 @@ gridworld_R6 = R6::R6Class("gridworld_R6",
     },
     
     step = function(state, action) {
-      self$episode.over = FALSE
       
       # take action -> sample next state and reward
       self$next.state = sample(self$states, size = 1, prob = self$transition.array[state, , action])
@@ -89,6 +100,10 @@ gridworld_R6 = R6::R6Class("gridworld_R6",
         self$episode.over = TRUE
       }
       invisible(self)
+    },
+    
+    setEpisodeOverFalse = function() {
+      self$episode.over = FALSE
     }
   ),
   private = list(
