@@ -1,4 +1,4 @@
-#' Policy Evaluation
+#' #' Policy Evaluation
 #'
 #' Evaluate a given policy in an environment.
 #'
@@ -14,14 +14,14 @@
 #' @export
 #' @examples
 #' # Define uniform random policy, take each action with probability 0.25
-#' grid = gridworld()
+#' grid = gridworld_R6$new()
 #' n.states = nrow(grid$reward.matrix)
 #' n.actions = ncol(grid$reward.matrix)
 #' random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
-#'
+#' 
 #' # Evaluate given policy for gridworld example
 #' v = evaluatePolicy(random.policy, grid)
-#'
+#' 
 #' # Compare results with expected result
 #' v.expected = c(0, -14, -20, -22, -14, -18, -20, -20,
 #'                -20, -20, -18, -14, -22, -20, -14, 0)
@@ -36,7 +36,7 @@ evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) 
   terminal.states = envir$terminal.states
   not.terminal.states = setdiff(seq(1, n.states), terminal.states)
 
-  P = envir$transition.matrix
+  P = envir$transition.array
   reward.t = t(envir$reward.matrix)
   improvement = TRUE
 

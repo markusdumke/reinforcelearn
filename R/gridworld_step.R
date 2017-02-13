@@ -40,18 +40,18 @@
 gridworld_step = function(state, action, gridworld) {
   # Flag if episode is over
   episode.over = FALSE
-
+  
   # take action -> sample next state and reward
   n.states = nrow(gridworld$reward.matrix)
   states = seq(1, n.states)
-  next.state = sample(states, size = 1, prob = gridworld$transition.matrix[state, , action])
-
+  next.state = sample(states, size = 1, prob = gridworld$transition.array[state, , action])
+  
   reward = gridworld$reward.matrix[state, action]
-
+  
   # episode over if terminalState is reached
   if(next.state %in% gridworld$terminal.state) {
     episode.over = TRUE
   }
-
+  
   return(list(state = next.state, reward = reward, episode.over = episode.over))
 }
