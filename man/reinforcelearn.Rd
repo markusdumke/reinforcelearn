@@ -11,6 +11,7 @@ Implementations of reinforcement learning algorithms.
 \section{Reinforcements Learning Algorithms}{
 
 \code{\link{evaluatePolicy}}
+
 \code{\link{predictMC}}
 }
 

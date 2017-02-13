@@ -1,4 +1,4 @@
-#' #' Policy Evaluation
+#' Policy Evaluation
 #'
 #' Evaluate a given policy in an environment.
 #'

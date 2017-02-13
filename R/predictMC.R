@@ -27,12 +27,13 @@
 predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1, 
   method = c("first-visit, every-visit")) {
   
+  # to implement: discount.factor currently not in use!
   n.states = nrow(policy)
   
   # initialize v to zeros
   v = rep(0, n.states)
   
-  # return following the first occurence of state s
+  # return G following the first occurence of state s
   G = rep(0, n.states) 
   n.visits = rep(0, n.states)
   
@@ -51,7 +52,7 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
       for (j in unique(episode$states)) {
         first.occurence = min(which(episode$states == j))
         sequence = seq(first.occurence, length(episode$rewards))
-        G[j] = G[j] + sum(episode$rewards[sequence])
+        G[j] = G[j] + sum(episode$rewards[sequence]) # insert discount.factor -> weighted average
         n.visits[j] = n.visits[j] + 1
       }
       v = G / n.visits

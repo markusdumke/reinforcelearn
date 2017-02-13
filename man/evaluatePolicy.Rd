@@ -2,7 +2,7 @@
 % Please edit documentation in R/evaluatePolicy.R
 \name{evaluatePolicy}
 \alias{evaluatePolicy}
-\title{#' Policy Evaluation}
+\title{Policy Evaluation}
 \usage{
 evaluatePolicy(policy, envir, discount.factor = 1, epsilon = 1e-04)
 }
