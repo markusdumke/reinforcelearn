@@ -4,7 +4,7 @@
 \name{reinforcelearn}
 \alias{reinforcelearn}
 \alias{reinforcelearn-package}
-\title{A package for reinforcement learning.}
+\title{Reinforcement learning in R.}
 \description{
 Implementations of reinforcement learning algorithms.
 }

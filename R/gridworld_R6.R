@@ -96,7 +96,7 @@ gridworld_R6 = R6::R6Class("gridworld_R6",
       self$reward = self$reward.matrix[state, action]
       
       # episode over if terminalState is reached
-      if(self$next.state %in% self$terminal.states) {
+      if (self$next.state %in% self$terminal.states) {
         self$episode.over = TRUE
       }
       invisible(self)
@@ -133,15 +133,15 @@ gridworld_R6 = R6::R6Class("gridworld_R6",
             new.state = ifelse(state %in% private$border.states.left, state, state - 1)
           }
           
-          if(action == "right") {
+          if (action == "right") {
             new.state = ifelse(state %in% private$border.states.right, state, state + 1)
           }
           
-          if(action == "up") {
+          if (action == "up") {
             new.state = ifelse(state %in% private$border.states.up, state, state - self$shape[2])
           }
           
-          if(action == "down") {
+          if (action == "down") {
             new.state = ifelse(state %in% private$border.states.down, state, state + self$shape[2])
           }
           self$transition.array[state, new.state, action] = 1

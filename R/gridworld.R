@@ -51,22 +51,22 @@ gridworld <- function(shape = c(4, 4), terminal.states = c(1, 16)) {
   
   # fill in probabilities: when action is taking you off the grid,
   # the new state will be the same as the old state
-  for(state in seq_len(n.states)) {
-    for(action in actions) {
+  for (state in seq_len(n.states)) {
+    for (action in actions) {
       
-      if(action == "left") {
+      if (action == "left") {
         new.state = ifelse(state %in% border.states.left, state, state - 1)
       }
       
-      if(action == "right") {
+      if (action == "right") {
         new.state = ifelse(state %in% border.states.right, state, state + 1)
       }
       
-      if(action == "up") {
+      if (action == "up") {
         new.state = ifelse(state %in% border.states.up, state, state - shape[2])
       }
       
-      if(action == "down") {
+      if (action == "down") {
         new.state = ifelse(state %in% border.states.down, state, state + shape[2])
       }
       P[state, new.state, action] = 1

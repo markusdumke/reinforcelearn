@@ -49,7 +49,7 @@ gridworld_step = function(state, action, gridworld) {
   reward = gridworld$reward.matrix[state, action]
   
   # episode over if terminalState is reached
-  if(next.state %in% gridworld$terminal.state) {
+  if (next.state %in% gridworld$terminal.state) {
     episode.over = TRUE
   }
   

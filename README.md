@@ -1,5 +1,5 @@
 # reinforcelearn
-R Package for Reinforcement Learning
+Reinforcement Learning in R. Still under construction!
 
 ### Installation
 

@@ -1,4 +1,4 @@
-#' A package for reinforcement learning.
+#' Reinforcement learning in R.
 #' 
 #' Implementations of reinforcement learning algorithms.
 #' @section Reinforcements Learning Algorithms:

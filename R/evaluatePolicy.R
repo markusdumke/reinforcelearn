@@ -40,8 +40,8 @@ evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) 
   improvement = TRUE
 
   # iterate while improvement in value function greater than epsilon for each element
-  while(improvement == TRUE) {
-    for(state in not.terminal.states) {
+  while (improvement == TRUE) {
+    for (state in not.terminal.states) {
       v.new[state] = policy[state, , drop = FALSE] %*%
         (reward.t[, state, drop = FALSE] + discount.factor * t(P[state, , ]) %*%
            as.matrix(v, nrow = 16))

@@ -5,22 +5,33 @@
 \title{Monte Carlo Prediction}
 \usage{
 predictMC(policy, envir, n.episodes = 10, discount.factor = 1,
-  method = c("first-visit, every-visit"))
+  method = c("first-visit, every-visit"), alpha = NULL)
 }
 \arguments{
 \item{policy}{a policy specified as a probability matrix [states x actions]}
 
 \item{envir}{the environment, a function returning the next state and reward given an action}
 
-\item{n.episodes}{integer: the number of episodes}
+\item{n.episodes}{scalar integer: the number of episodes}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{method}{chacracter: first-visit or every-visit method}
+\item{method}{character: first-visit or every-visit method}
+
+\item{alpha}{scalar numeric between 0 and 1: weighting factor in the 
+incremental mean update.Useful in non-stationary environments, giving high 
+value to the last observed returns. If NULL the exact mean with alpha = 1 /
+number of episodes will be used.}
 }
 \description{
-Predict state value function with Monte Carlo methods
-first.visit MC, evaluate given policy
+Predict state value function v with Monte Carlo methods. The state value 
+function is estimated from mean returns of episodes.
+}
+\details{
+Only works for episodic tasks (i.e. there must be at least one terminal 
+state)! An incremental mean update is implemented. Use a high alpha value to
+give recent episodes a higher weight if you have a non-stationary environment
+. First-visit and every-visit Mone Carlo policy evaluation are implemented.
 }
 \examples{
 set.seed(1477)
@@ -32,11 +43,6 @@ n.actions = ncol(grid$reward.matrix)
 random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 
 # Estimate state value function with Monte Carlo first visit prediction
-v = predictMC(random.policy, grid, n.episodes = 10000, method = "first-visit")
-
-# Compare results with expected result
-v.expected = c(0, -14, -20, -22, -14, -18, -20, -20,
-               -20, -20, -18, -14, -22, -20, -14, 0)
-all.equal(v, v.expected, tolerance = 0.5)
-
+v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
+v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
 }

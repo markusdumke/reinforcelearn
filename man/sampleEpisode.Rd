@@ -19,7 +19,7 @@ a list with sampled actions, states and returns of the episode.
 \description{
 Sample an episode in an environment given a policy. 
 Note that this only works for episodic environments 
-(e.g. there must be a terminal state).
+(e.g. there must be at least one terminal state).
 }
 \examples{
 set.seed(27)
