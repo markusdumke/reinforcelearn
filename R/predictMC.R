@@ -17,6 +17,7 @@
 #'   number of episodes will be used.
 #' @export
 #' @import checkmate
+#' @seealso [TD]
 #' @examples 
 #' set.seed(1477)
 #' grid = gridworld_R6$new()
@@ -62,8 +63,11 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
         first.occurence = min(which(episode$states == j))
         sequence = seq(first.occurence, length(episode$rewards))
         n.visits[j] = n.visits[j] + 1
-        G = sum(discount.factor ^ sequence * episode$rewards[sequence])
-        alpha = 1 / n.visits[j]
+        G = sum(discount.factor ^ seq(0, length(sequence) - 1) * 
+            episode$rewards[sequence])
+        if (is.null(alpha_input)) {
+          alpha = 1 / n.visits[j]
+        }
         v[j] = v[j] + alpha * (G - v[j])
       }
     }
@@ -74,7 +78,8 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
         for (k in occurences) {
           sequence = seq(k, length(episode$rewards))
           n.visits[j] = n.visits[j] + 1
-          G = sum(discount.factor ^ sequence * episode$rewards[sequence])
+          G = sum(discount.factor ^ seq(0, length(sequence) - 1) * 
+              episode$rewards[sequence])
           if (is.null(alpha_input)) {
             alpha = 1 / n.visits[j]
           }

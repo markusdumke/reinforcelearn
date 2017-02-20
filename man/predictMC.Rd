@@ -46,3 +46,6 @@ random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
 v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
 }
+\seealso{
+\link{TD}
+}

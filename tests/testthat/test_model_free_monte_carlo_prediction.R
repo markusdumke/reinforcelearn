@@ -1,5 +1,5 @@
 library(reinforcelearn)
-context("Model-free-Prediction")
+context("Model-free Monte Carlo Prediction")
 
 set.seed(1477)
 grid = gridworld_R6$new()
@@ -23,8 +23,16 @@ test_that("Test that Monte Carlo every-visit Prediction works", {
   expect_equal(v, v.expected, tolerance = 0.5)
 })
 
-# test_that("Test that alpha works", {
+test_that("Test that discount.factor works", {
+  # v = predictMC(random.policy, grid, n.episodes = 10000, 
+  #   method = "every-visit", discount.factor = 0.5)
+  # expect_equal(v, v.expected, tolerance = 0.5)
+})
+
+test_that("Test that alpha works", {
 #   v = predictMC(random.policy, grid, n.episodes = 10000, method = "every-visit", 
 #     alpha = 0.01)
 #   expect_equal(v, v.expected, tolerance = 0.5)
-# })
+})
+
+
