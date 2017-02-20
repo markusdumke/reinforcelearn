@@ -15,17 +15,17 @@ the next state and reward are returned.
 \details{
 The states are enumerated as follows (example 4x4 grid):
 \tabular{rrrr}{
- 1 \tab 2 \tab 3 \tab 4 \cr
- 5 \tab 6 \tab 7 \tab 8 \cr
- 9 \tab 10 \tab 11 \tab 12 \cr
- 13 \tab 14 \tab 15 \tab 16 \cr
+1 \tab 2 \tab 3 \tab 4 \cr
+5 \tab 6 \tab 7 \tab 8 \cr
+9 \tab 10 \tab 11 \tab 12 \cr
+13 \tab 14 \tab 15 \tab 16 \cr
 }
 So a board position could look like this (T: terminal state, x: current state):
 \tabular{rrrr}{
- T \tab o \tab o \tab o \cr
- o \tab o \tab o \tab o \cr
- o \tab x \tab o \tab o \cr
- o \tab o \tab o \tab T \cr
+T \tab o \tab o \tab o \cr
+o \tab o \tab o \tab o \cr
+o \tab x \tab o \tab o \cr
+o \tab o \tab o \tab T \cr
 }
 Possible actions include going left, right, down or up. If an action would take you off
 the grid, you remain in the previous state. For each step you get a reward of -1, until you reach
@@ -34,13 +34,13 @@ into a terminal state.
 \section{Methods}{
 
 \describe{
- \item{\code{gridworld_R6$new(name)}}{Creates a new \code{gridworld} with a 
-  specific \code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}. 
-  \code{terminal.states} is an integer vector of the terminal states in the gridworld. 
-  Default is \code{c(1, 16)}}
- \item{\code{gridworld_R6$step(state, action)}}{Takes a step in the gridworld 
-   given a state and an action, returns the next state and reward.}
-\item{\code{gridworld_R6$setEpisodeOverFalse()}}{Resets the \code{episode.over} flag of the gridworld class. 
+\item{\code{gridworld_R6$new(name)}}{Creates a new \code{gridworld} with a
+specific \code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}.
+\code{terminal.states} is an integer vector of the terminal states in the gridworld.
+Default is \code{c(1, 16)}}
+\item{\code{gridworld_R6$step(state, action)}}{Takes a step in the gridworld
+given a state and an action, returns the next state and reward.}
+\item{\code{gridworld_R6$setEpisodeOverFalse()}}{Resets the \code{episode.over} flag of the gridworld class.
 Useful when starting a new episode.}
 }
 }

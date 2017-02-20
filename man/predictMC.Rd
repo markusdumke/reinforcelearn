@@ -8,7 +8,7 @@ predictMC(policy, envir, n.episodes = 10, discount.factor = 1,
   method = c("first-visit, every-visit"), alpha = NULL)
 }
 \arguments{
-\item{policy}{a policy specified as a probability matrix [states x actions]}
+\item{policy}{a policy specified as a probability matrix \link{states x actions}}
 
 \item{envir}{the environment, a function returning the next state and reward given an action}
 
@@ -18,17 +18,17 @@ predictMC(policy, envir, n.episodes = 10, discount.factor = 1,
 
 \item{method}{character: first-visit or every-visit method}
 
-\item{alpha}{scalar numeric between 0 and 1: weighting factor in the 
-incremental mean update.Useful in non-stationary environments, giving high 
+\item{alpha}{scalar numeric between 0 and 1: weighting factor in the
+incremental mean update.Useful in non-stationary environments, giving high
 value to the last observed returns. If NULL the exact mean with alpha = 1 /
 number of episodes will be used.}
 }
 \description{
-Predict state value function v with Monte Carlo methods. The state value 
+Predict state value function v with Monte Carlo methods. The state value
 function is estimated from mean returns of episodes.
 }
 \details{
-Only works for episodic tasks (i.e. there must be at least one terminal 
+Only works for episodic tasks (i.e. there must be at least one terminal
 state)! An incremental mean update is implemented. Use a high alpha value to
 give recent episodes a higher weight if you have a non-stationary environment
 . First-visit and every-visit Mone Carlo policy evaluation are implemented.
@@ -42,7 +42,7 @@ n.states = nrow(grid$reward.matrix)
 n.actions = ncol(grid$reward.matrix)
 random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 
-# Estimate state value function with Monte Carlo first visit prediction
+# Estimate state value function with Monte Carlo prediction
 v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
 v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
 }

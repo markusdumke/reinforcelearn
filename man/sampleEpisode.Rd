@@ -7,7 +7,7 @@
 sampleEpisode(policy, envir, initial.state)
 }
 \arguments{
-\item{policy}{a policy specified as a probability matrix [states x actions]}
+\item{policy}{a policy specified as a probability matrix \link{states x actions}}
 
 \item{envir}{the environment, a function returning the next state and reward given an action}
 
@@ -17,8 +17,8 @@ sampleEpisode(policy, envir, initial.state)
 a list with sampled actions, states and returns of the episode.
 }
 \description{
-Sample an episode in an environment given a policy. 
-Note that this only works for episodic environments 
+Sample an episode in an environment given a policy.
+Note that this only works for episodic environments
 (e.g. there must be at least one terminal state).
 }
 \examples{

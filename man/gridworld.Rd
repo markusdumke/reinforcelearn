@@ -13,7 +13,7 @@ gridworld(shape = c(4, 4), terminal.states = c(1, 16))
 }
 \value{
 list with a 3-dimensional array containing the probability transition matrices
- for each action,  a reward matrix (states x actions) and the possibel actions as a vector.
+for each action,  a reward matrix (states x actions) and the possibel actions as a vector.
 }
 \description{
 Simple gridworld for reinforcement learning.
@@ -25,17 +25,17 @@ into a terminal state.
 
 The states are enumerated as follows (example 4x4 grid):
 \tabular{rrrr}{
- 1 \tab 2 \tab 3 \tab 4 \cr
- 5 \tab 6 \tab 7 \tab 8 \cr
- 9 \tab 10 \tab 11 \tab 12 \cr
- 13 \tab 14 \tab 15 \tab 16 \cr
+1 \tab 2 \tab 3 \tab 4 \cr
+5 \tab 6 \tab 7 \tab 8 \cr
+9 \tab 10 \tab 11 \tab 12 \cr
+13 \tab 14 \tab 15 \tab 16 \cr
 }
 So a board position could look like this (T: terminal state, x: current state):
 \tabular{rrrr}{
- T \tab o \tab o \tab o \cr
- o \tab o \tab o \tab o \cr
- o \tab x \tab o \tab o \cr
- o \tab o \tab o \tab T \cr
+T \tab o \tab o \tab o \cr
+o \tab o \tab o \tab o \cr
+o \tab x \tab o \tab o \cr
+o \tab o \tab o \tab T \cr
 }
 }
 \examples{

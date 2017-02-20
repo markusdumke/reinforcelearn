@@ -26,22 +26,23 @@
 #' n.actions = ncol(grid$reward.matrix)
 #' random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 #' 
-#' # Estimate state value function with Monte Carlo first visit prediction
+#' # Estimate state value function with Monte Carlo prediction
 #' v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
 #' v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
 predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1, 
   method = c("first-visit, every-visit"), alpha = NULL) {
   
-  # input checking
+  # save in alpha_input the user inputs to reuse this later
+  alpha_input = alpha
   check_choice(method, c("first-visit, every-visit"))
   if (!is.null(alpha)) {
-    check_int(alpha, lower = 0, upper = 1)
+    check_number(alpha, lower = 0, upper = 1)
   }
+  check_number(discount.factor, lower = 0, upper = 1)
   
   n.states = nrow(policy)
   v = rep(0, n.states)
   n.visits = rep(0, n.states)
-  
   possible.states = envir$states[envir$states != envir$terminal.states]
   
   # to do: parallelize episodes
@@ -74,7 +75,9 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
           sequence = seq(k, length(episode$rewards))
           n.visits[j] = n.visits[j] + 1
           G = sum(discount.factor ^ sequence * episode$rewards[sequence])
-          alpha = 1 / n.visits[j]
+          if (is.null(alpha_input)) {
+            alpha = 1 / n.visits[j]
+          }
           v[j] = v[j] + alpha * (G - v[j])
         }
         # sequences = sapply(occurences, function(x) seq(x, length(episode$rewards))) # use vapply!
@@ -122,7 +125,8 @@ sampleEpisode = function(policy, envir, initial.state) {
   i = 1
   
   while (envir$episode.over == FALSE) {
-    sampled.actions = append(sampled.actions, sample(envir$actions, size = 1))
+    sampled.actions = append(sampled.actions, 
+      sample(envir$actions, prob = policy[states[i], ], size = 1))
     envir$step(states[i], sampled.actions[i])
     states = append(states, envir$next.state)
     rewards = append(rewards, envir$reward)

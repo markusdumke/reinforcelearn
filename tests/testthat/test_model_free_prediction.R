@@ -22,3 +22,9 @@ test_that("Test that Monte Carlo every-visit Prediction works", {
   v = predictMC(random.policy, grid, n.episodes = 10000, method = "every-visit")
   expect_equal(v, v.expected, tolerance = 0.5)
 })
+
+# test_that("Test that alpha works", {
+#   v = predictMC(random.policy, grid, n.episodes = 10000, method = "every-visit", 
+#     alpha = 0.01)
+#   expect_equal(v, v.expected, tolerance = 0.5)
+# })
