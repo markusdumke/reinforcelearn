@@ -24,10 +24,11 @@
 #' random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 #' 
 #' # Estimate state value function with temporal-difference learning
-#' # v = TD(random.policy, grid, n.steps = 100, alpha = 0.1)
+#' v = TD(random.policy, grid, n = 2, alpha = 0.1)
 TD = function(policy, envir, n.episodes = 1, n = 10, 
   discount.factor = 1, alpha = 0.1) {
   
+  # input checking
   # alpha_input = alpha
   # check_number(discount.factor, lower = 0, upper = 1)
   # if (!is.null(alpha)) {
@@ -42,6 +43,8 @@ TD = function(policy, envir, n.episodes = 1, n = 10,
   
   states = rep(0, n + 1)
   rewards = rep(0, n + 1)
+  
+  # parallelize episodes
   for (i in seq_len(n.episodes)) {
     
     # initialize s
@@ -75,10 +78,10 @@ TD = function(policy, envir, n.episodes = 1, n = 10,
       if (tau >= 1) {
         sequ = seq(tau, min(tau + n - 1, time.steps))
         G = sum(discount.factor ^ sequ * rewards[sequ + 1])
-        if ((tau + n) < time.steps) {
-          G = G + discount.factor^n * v[states[tau + n]]
+        if ( (tau + n) < time.steps) {
+          G = G + discount.factor ^ n * v[states[tau + n]]
         }
-        v[states[tau]] = v[tau] + alpha * (G - v[states[tau]])
+        v[states[tau]] = v[states[tau]] + alpha * (G - v[states[tau]])
       }
       
       if (tau == time.steps - 1) break

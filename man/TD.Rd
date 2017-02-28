@@ -44,7 +44,7 @@ n.actions = ncol(grid$reward.matrix)
 random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 
 # Estimate state value function with temporal-difference learning
-# v = TD(random.policy, grid, n.steps = 100, alpha = 0.1)
+v = TD(random.policy, grid, n = 2, alpha = 0.1)
 }
 \seealso{
 \link{predictMC}
