@@ -20,7 +20,7 @@
 #' @seealso [TD]
 #' @examples 
 #' set.seed(1477)
-#' grid = gridworld_R6$new()
+#' grid = gridworld$new()
 #' 
 #' # Define random policy
 #' n.states = nrow(grid$reward.matrix)
@@ -107,7 +107,7 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
 #'
 #' @examples
 #' set.seed(27)
-#' grid = gridworld_R6$new(shape = c(4, 4), terminal.states = c(1, 16))
+#' grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16))
 #'
 #' initial.state = 3
 #' 

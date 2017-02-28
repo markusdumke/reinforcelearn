@@ -5,9 +5,10 @@
 #' \code{\link{evaluatePolicy}}
 #' 
 #' \code{\link{predictMC}}
+#' \code{\link{TD}}
 #' 
 #' @section Environments:
-#' \code{\link{gridworld_R6}}
+#' \code{\link{gridworld}}
 #' 
 #' @name reinforcelearn
 #' @docType package

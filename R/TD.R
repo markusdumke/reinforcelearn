@@ -16,7 +16,7 @@
 #' @seealso [predictMC]
 #' @examples 
 #' set.seed(1477)
-#' grid = gridworld_R6$new()
+#' grid = gridworld$new()
 #' 
 #' # Define random policy
 #' n.states = nrow(grid$reward.matrix)
@@ -24,7 +24,7 @@
 #' random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 #' 
 #' # Estimate state value function with temporal-difference learning
-#' v = TD(random.policy, grid, n.steps = 100, alpha = 0.1)
+#' # v = TD(random.policy, grid, n.steps = 100, alpha = 0.1)
 TD = function(policy, envir, n.episodes = 1, n = 10, 
   discount.factor = 1, alpha = 0.1) {
   

@@ -35,7 +35,7 @@ give recent episodes a higher weight if you have a non-stationary environment
 }
 \examples{
 set.seed(1477)
-grid = gridworld_R6$new()
+grid = gridworld$new()
 
 # Define random policy
 n.states = nrow(grid$reward.matrix)

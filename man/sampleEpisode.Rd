@@ -23,7 +23,7 @@ Note that this only works for episodic environments
 }
 \examples{
 set.seed(27)
-grid = gridworld_R6$new(shape = c(4, 4), terminal.states = c(1, 16))
+grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16))
 
 initial.state = 3
 

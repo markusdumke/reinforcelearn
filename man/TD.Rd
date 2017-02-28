@@ -36,7 +36,7 @@ Currently implemented: n-step TD (forward-view)
 }
 \examples{
 set.seed(1477)
-grid = gridworld_R6$new()
+grid = gridworld$new()
 
 # Define random policy
 n.states = nrow(grid$reward.matrix)
@@ -44,7 +44,7 @@ n.actions = ncol(grid$reward.matrix)
 random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 
 # Estimate state value function with temporal-difference learning
-v = TD(random.policy, grid, n.steps = 100, alpha = 0.1)
+# v = TD(random.policy, grid, n.steps = 100, alpha = 0.1)
 }
 \seealso{
 \link{predictMC}

@@ -3,8 +3,6 @@
 export(TD)
 export(evaluatePolicy)
 export(gridworld)
-export(gridworld_R6)
-export(gridworld_step)
 export(predictMC)
 export(sampleEpisode)
 import(checkmate)
