@@ -4,14 +4,18 @@
 \alias{TD}
 \title{Temporal difference learning}
 \usage{
-TD(policy, envir, n.steps = 100, discount.factor = 1, alpha = NULL)
+TD(policy, envir, n.episodes = 1, n = 10, discount.factor = 1,
+  alpha = 0.1)
 }
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
 
 \item{envir}{the environment, a function returning the next state and reward given an action}
 
-\item{n.steps}{scalar integer: number of steps}
+\item{n.episodes}{scalar integer: the number of episodes}
+
+\item{n}{scalar integer: number of steps TD target looks into the
+future}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
@@ -28,7 +32,7 @@ Temporal difference (TD) learning works by sampling one step from the
 environment and plugging this into the update equation (Bootstrapping). This
 works also for non-episodic environments.
 
-Currently implemented: TD(0)
+Currently implemented: n-step TD (forward-view)
 }
 \examples{
 set.seed(1477)
