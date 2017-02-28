@@ -4,16 +4,36 @@
 \name{reinforcelearn}
 \alias{reinforcelearn}
 \alias{reinforcelearn-package}
-\title{Reinforcement learning in R.}
+\title{Reinforcement Learning in R.}
 \description{
 Implementations of reinforcement learning algorithms.
 }
-\section{Reinforcements Learning Algorithms}{
+\section{Algorithms}{
+
+
+Dynamic Programming:
 
 \code{\link{evaluatePolicy}}
 
+\code{\link{iteratePolicy}}
+
+\code{\link{iterateValue}}
+
+Monte Carlo Methods:
+
 \code{\link{predictMC}}
+
+\code{\link{MonteCarloES}}
+
+\code{\link{controlMonteCarlo}}
+
+Temporal-Difference Learning:
+
 \code{\link{TD}}
+
+\code{\link{sarsa}}
+
+\code{\link{qlearning}}
 }
 
 \section{Environments}{

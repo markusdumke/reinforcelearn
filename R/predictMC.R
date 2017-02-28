@@ -23,10 +23,9 @@
 #' grid = gridworld$new()
 #' 
 #' # Define random policy
-#' n.states = nrow(grid$reward.matrix)
-#' n.actions = ncol(grid$reward.matrix)
-#' random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
-#' 
+#' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
+#'   ncol = grid$n.actions)
+#'   
 #' # Estimate state value function with Monte Carlo prediction
 #' v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
 #' v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
@@ -41,7 +40,7 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
   }
   check_number(discount.factor, lower = 0, upper = 1)
   
-  n.states = nrow(policy)
+  n.states = envir$n.states
   v = rep(0, n.states)
   n.visits = rep(0, n.states)
   possible.states = envir$states[envir$states != envir$terminal.states]
@@ -61,10 +60,10 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
       # incremental mean update
       for (j in unique(episode$states)) {
         first.occurence = min(which(episode$states == j))
-        sequence = seq(first.occurence, length(episode$rewards))
+        sequ = seq(first.occurence, length(episode$rewards))
         n.visits[j] = n.visits[j] + 1
-        G = sum(discount.factor ^ seq(0, length(sequence) - 1) * 
-            episode$rewards[sequence])
+        rewards = episode$rewards[sequ]
+        G = estimateReturn(rewards, discount.factor)
         if (is.null(alpha_input)) {
           alpha = 1 / n.visits[j]
         }
@@ -76,10 +75,10 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
       for (j in unique(episode$states)) {
         occurences = which(episode$states == j)
         for (k in occurences) {
-          sequence = seq(k, length(episode$rewards))
+          sequ = seq(k, length(episode$rewards))
           n.visits[j] = n.visits[j] + 1
-          G = sum(discount.factor ^ seq(0, length(sequence) - 1) * 
-              episode$rewards[sequence])
+          rewards = episode$rewards[sequ]
+          G = estimateReturn(rewards, discount.factor)
           if (is.null(alpha_input)) {
             alpha = 1 / n.visits[j]
           }
@@ -101,32 +100,43 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
 #'
 #' @inheritParams evaluatePolicy
 #' @param initial.state integer: the initial state
+#' @param initial.action character: the initial action. Default is NULL, 
+#' then first action will be sampled from policy.
 #'
 #' @return a list with sampled actions, states and returns of the episode.
 #' @export
-#'
 #' @examples
-#' set.seed(27)
+#' set.seed(26)
 #' grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16))
-#'
-#' initial.state = 3
 #' 
-#' # make random policy
-#' n.states = nrow(grid$reward.matrix)
-#' n.actions = ncol(grid$reward.matrix)
-#' random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
+#' # Define random policy
+#' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
+#'   ncol = grid$n.actions)
 #' 
-#' # sample an episode for the random.policy
-#' episode = sampleEpisode(random.policy, grid, initial.state)
+#' # Sample an episode for the random.policy
+#' episode = sampleEpisode(random.policy, grid, initial.state = 3)
 #' print(episode$actions)
 #' print(episode$rewards)
 #' print(episode$states)
 #' 
-sampleEpisode = function(policy, envir, initial.state) {
+#' # Specify an initial action
+#' grid$setEpisodeOverFalse()
+#' episode = sampleEpisode(random.policy, grid, initial.state = 7, 
+#'   initial.action = "right")
+#' print(episode$actions)
+#' print(episode$rewards)
+#' print(episode$states)
+#' 
+sampleEpisode = function(policy, envir, initial.state, initial.action = NULL) {
   
   states = initial.state
   rewards = numeric(0)
-  sampled.actions = character(0)
+  if (!is.null(initial.action)) {
+    sampled.actions = initial.action
+  } else {
+    sampled.actions = character(0)
+  }
+  
   i = 1
   
   while (envir$episode.over == FALSE) {
@@ -139,4 +149,10 @@ sampleEpisode = function(policy, envir, initial.state) {
   }
   
   return(list(states = states, actions = sampled.actions, rewards = rewards))
+}
+
+# Estimate return
+estimateReturn <- function(rewards, discount.factor) {
+  
+  sum(discount.factor ^ seq(0, length(rewards) - 1) * rewards)
 }

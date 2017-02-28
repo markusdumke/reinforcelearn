@@ -4,7 +4,7 @@
 \alias{sampleEpisode}
 \title{Sample episode}
 \usage{
-sampleEpisode(policy, envir, initial.state)
+sampleEpisode(policy, envir, initial.state, initial.action = NULL)
 }
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
@@ -12,6 +12,9 @@ sampleEpisode(policy, envir, initial.state)
 \item{envir}{the environment, a function returning the next state and reward given an action}
 
 \item{initial.state}{integer: the initial state}
+
+\item{initial.action}{character: the initial action. Default is NULL,
+then first action will be sampled from policy.}
 }
 \value{
 a list with sampled actions, states and returns of the episode.
@@ -22,18 +25,23 @@ Note that this only works for episodic environments
 (e.g. there must be at least one terminal state).
 }
 \examples{
-set.seed(27)
+set.seed(26)
 grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16))
 
-initial.state = 3
+# Define random policy
+random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
+  ncol = grid$n.actions)
 
-# make random policy
-n.states = nrow(grid$reward.matrix)
-n.actions = ncol(grid$reward.matrix)
-random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
+# Sample an episode for the random.policy
+episode = sampleEpisode(random.policy, grid, initial.state = 3)
+print(episode$actions)
+print(episode$rewards)
+print(episode$states)
 
-# sample an episode for the random.policy
-episode = sampleEpisode(random.policy, grid, initial.state)
+# Specify an initial action
+grid$setEpisodeOverFalse()
+episode = sampleEpisode(random.policy, grid, initial.state = 7, 
+  initial.action = "right")
 print(episode$actions)
 print(episode$rewards)
 print(episode$states)

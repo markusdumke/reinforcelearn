@@ -2,7 +2,7 @@
 % Please edit documentation in R/sarsa.R
 \name{sarsa}
 \alias{sarsa}
-\title{SARSA(\lambda)}
+\title{SARSA(lambda)}
 \usage{
 sarsa(policy, envir, lambda, discount.factor)
 }
@@ -19,5 +19,5 @@ sarsa(policy, envir, lambda, discount.factor)
 optimal policy and optimal action value function
 }
 \description{
-SARSA(\lambda)
+SARSA(lambda)
 }

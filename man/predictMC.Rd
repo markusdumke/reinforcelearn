@@ -38,10 +38,9 @@ set.seed(1477)
 grid = gridworld$new()
 
 # Define random policy
-n.states = nrow(grid$reward.matrix)
-n.actions = ncol(grid$reward.matrix)
-random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
-
+random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
+  ncol = grid$n.actions)
+  
 # Estimate state value function with Monte Carlo prediction
 v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
 v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")

@@ -15,9 +15,8 @@
 #' @examples
 #' # Define uniform random policy, take each action with probability 0.25
 #' grid = gridworld$new()
-#' n.states = nrow(grid$reward.matrix)
-#' n.actions = ncol(grid$reward.matrix)
-#' random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
+#' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
+#'   ncol = grid$n.actions)
 #' 
 #' # Evaluate given policy for gridworld example
 #' v = evaluatePolicy(random.policy, grid)
@@ -27,7 +26,7 @@
 #'                -20, -20, -18, -14, -22, -20, -14, 0)
 #' all.equal(v, v.expected, tolerance = 0.1)
 evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) {
-  n.states = nrow(policy)
+  n.states = envir$n.states
 
   # initialize v to zeros
   v = rep(0, n.states)

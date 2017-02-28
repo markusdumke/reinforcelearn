@@ -1,4 +1,4 @@
-#' SARSA(\lambda)
+#' SARSA(lambda)
 #'
 #' @inheritParams evaluatePolicy
 #' @param lambda scalar integer between 0 and 1
