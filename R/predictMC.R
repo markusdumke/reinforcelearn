@@ -58,7 +58,7 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
       # for each state visited in this episode apply mean update
       # find first occurence if state, weighted sum of following rewards
       # incremental mean update
-      for (j in unique(episode$states)) {
+      for (j in unique(episode$states)) { # what if j character?
         first.occurence = min(which(episode$states == j))
         sequ = seq(first.occurence, length(episode$rewards))
         n.visits[j] = n.visits[j] + 1

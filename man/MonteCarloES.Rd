@@ -4,11 +4,9 @@
 \alias{MonteCarloES}
 \title{Monte Carlo Control with Exploring Starts}
 \usage{
-MonteCarloES(policy, envir, discount.factor)
+MonteCarloES(envir, discount.factor = 1)
 }
 \arguments{
-\item{policy}{a policy specified as a probability matrix (states x actions)}
-
 \item{envir}{the environment, a function returning the next state and reward given an action}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
@@ -18,4 +16,11 @@ the optimal policy and optimal action value function q
 }
 \description{
 Monte Carlo Control with Exploring Starts
+}
+\examples{
+set.seed(123)
+grid = gridworld$new()
+  
+# Estimate optimal action value function with Monte Carlo Exploring Starts
+Q = MonteCarloES(grid)
 }
