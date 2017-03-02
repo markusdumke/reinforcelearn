@@ -1,20 +1,19 @@
 #' Gridworld environment as R6 class
-#'
-#' Simple gridworld for reinforcement learning. With the step method given a state and an action in a gridworld,
-#' the next state and reward are returned.
 #' 
-#' @section Methods:
-#' \describe{
-#'  \item{\code{gridworld$new(name)}}{Creates a new \code{gridworld} with a 
-#'   specific \code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}. 
-#'   \code{terminal.states} is an integer vector of the terminal states in the gridworld. 
-#'   Default is \code{c(1, 16)}}
-#'  \item{\code{gridworld$step(state, action)}}{Takes a step in the gridworld 
-#'    given a state and an action, returns the next state and reward.}
-#' \item{\code{gridworld$setEpisodeOverFalse()}}{Resets the \code{episode.over} flag of the gridworld class. 
-#' Useful when starting a new episode.}
-#' }
-#'
+#' Simple gridworld for reinforcement learning. With the step method given a
+#' state and an action in a gridworld, the next state and reward are returned.
+#' 
+#' @section Methods: \describe{ \item{\code{gridworld$new(shape,
+#'   terminal.states)}}{Creates a new \code{gridworld} with a specific
+#'   \code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}. 
+#'   \code{terminal.states} is an integer vector of the terminal states in the
+#'   gridworld. Default is \code{c(1, 16)}} \item{\code{gridworld$step(state,
+#'   action)}}{Takes a step in the gridworld given a state and an action,
+#'   returns the next state and reward.} 
+#'   \item{\code{gridworld$setEpisodeOverFalse()}}{Resets the
+#'   \code{episode.over} flag of the gridworld class. Useful when starting a new
+#'   episode.} }
+#'   
 #' @details The states are enumerated as follows (example 4x4 grid):
 #' \tabular{rrrr}{
 #'  1 \tab 2 \tab 3 \tab 4 \cr
@@ -29,9 +28,9 @@
 #'  o \tab x \tab o \tab o \cr
 #'  o \tab o \tab o \tab T \cr
 #' }
-#' Possible actions include going left, right, down or up. If an action would take you off
-#' the grid, you remain in the previous state. For each step you get a reward of -1, until you reach
-#' into a terminal state.
+#' Possible actions include going left, right, down or up. If an action would
+#' take you off the grid, you remain in the previous state. For each step you
+#' get a reward of -1, until you reach into a terminal state.
 #' @docType class
 #' @references Gridworld example from Sutton & Barto, chapter 4
 #' @usage #grid = gridworld$new()
@@ -62,26 +61,35 @@
 gridworld = R6::R6Class("gridworld",
   public = list(
     shape = NULL,
-    terminal.states = NULL,
-    # initial.state = NULL
-    actions = NULL,
     n.states = NULL,
+    states = NULL,
+    terminal.states = NULL,
+    non.terminal.states = NULL,
+    initial.state = NULL, # has no functionality yet
     n.actions = NULL,
-    transition.array = NULL,
-    reward.matrix = NULL,
-    episode.over = NULL,
+    actions = NULL,
+    transition.array = NULL, # better private?
+    reward.matrix = NULL, # better private?
     next.state = NULL,
     reward = NULL,
-    states = NULL,
+    episode.over = NULL,
+    n.steps = 0,
     
-    initialize = function(shape = c(4, 4), terminal.states = c(1, 16)) {
-      # to implement: test if terminal.states are inside grid!
+    initialize = function(shape = c(4, 4), terminal.states = c(1, 16), 
+      initial.state = NULL) {
+      if (any(terminal.states > prod(shape))) {
+        stop("Terminal states must be inside the grid!")
+      }
+      if (!is.null(initial.state)) {
+        self$initial.state = initial.state
+      }
       self$shape = shape
       self$terminal.states = terminal.states
       self$actions = c("left", "right", "up", "down")
       self$n.states = prod(shape)
       self$n.actions = length(self$actions)
       self$states = seq_len(self$n.states)
+      self$non.terminal.states = self$states[self$states != self$terminal.states]
       self$episode.over = FALSE
       private$computeBorderStates()
       private$makeTransitionArray()
@@ -89,10 +97,12 @@ gridworld = R6::R6Class("gridworld",
     },
     
     step = function(state, action) {
+      # increment counter
+      self$n.steps = self$n.steps + 1
       
       # take action -> sample next state and reward
-      self$next.state = sample(self$states, size = 1, prob = self$transition.array[state, , action])
-      
+      self$next.state = sample(self$states, size = 1, 
+        prob = self$transition.array[state, , action])
       self$reward = self$reward.matrix[state, action]
       
       # episode over if terminalState is reached
@@ -121,26 +131,23 @@ gridworld = R6::R6Class("gridworld",
     
     makeTransitionArray = function() {
       # make probability transition array for each action (3-dimensional array)
-      self$transition.array = array(matrix(0, nrow = self$n.states, ncol = self$n.states),
+      self$transition.array = array(matrix(0, nrow = self$n.states, 
+        ncol = self$n.states),
         dim = c(self$n.states, self$n.states, self$n.actions),
         dimnames = list(NULL, NULL, self$actions))
       # fill in probabilities: when action is taking you off the grid,
       # the new state will be the same as the old state
       for(state in seq_len(self$n.states)) {
         for(action in self$actions) {
-          
           if(action == "left") {
             new.state = ifelse(state %in% private$border.states.left, state, state - 1)
           }
-          
           if (action == "right") {
             new.state = ifelse(state %in% private$border.states.right, state, state + 1)
           }
-          
           if (action == "up") {
             new.state = ifelse(state %in% private$border.states.up, state, state - self$shape[2])
           }
-          
           if (action == "down") {
             new.state = ifelse(state %in% private$border.states.down, state, state + self$shape[2])
           }
@@ -153,7 +160,8 @@ gridworld = R6::R6Class("gridworld",
     makeRewardMatrix = function() {
       # reward matrix: matrix depending on actions and states
       # reward of - 1 for each step
-      self$reward.matrix = matrix(- 1, nrow = self$n.states, ncol = self$n.actions, dimnames = list(NULL, self$actions))
+      self$reward.matrix = matrix(- 1, nrow = self$n.states, 
+        ncol = self$n.actions, dimnames = list(NULL, self$actions))
       
       # set rewards of terminal states to 0
       self$reward.matrix[self$terminal.states, ] = 0
