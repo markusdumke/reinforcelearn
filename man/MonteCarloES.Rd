@@ -4,10 +4,12 @@
 \alias{MonteCarloES}
 \title{Monte Carlo Control with Exploring Starts}
 \usage{
-MonteCarloES(envir, discount.factor = 1)
+MonteCarloES(envir, n.episodes = 100, discount.factor = 1)
 }
 \arguments{
 \item{envir}{the environment, a function returning the next state and reward given an action}
+
+\item{n.episodes}{scalar integer: the number of episodes}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 }
@@ -22,5 +24,5 @@ set.seed(123)
 grid = gridworld$new()
   
 # Estimate optimal action value function with Monte Carlo Exploring Starts
-Q = MonteCarloES(grid)
+# Q = MonteCarloES(grid)
 }

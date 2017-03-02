@@ -22,7 +22,16 @@ a list with sampled actions, states and returns of the episode.
 \description{
 Sample an episode in an environment given a policy.
 Note that this only works for episodic environments
-(e.g. there must be at least one terminal state).
+(e.g. there must be at least one terminal state). There is no action in the
+last time step and no reward for the first time step:
+\tabular{rrrrr}{
+S_1 \tab S_2 \tab ... \tab S_T-1 \tab S_T \cr
+A_1 \tab A_2 \tab ... \tab A_T-1 \tab NA \cr
+NA \tab R_2 \tab ... \tab R_T-1 \tab R_T \cr
+}
+S1, S2, ..., ST-1, ST
+A1, A2, ..., AT-1, NA
+NA, R2, ..., RT-1, RT
 }
 \examples{
 set.seed(26)

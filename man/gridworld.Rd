@@ -9,8 +9,8 @@
 #grid = gridworld$new()
 }
 \description{
-Simple gridworld for reinforcement learning. With the step method given a state and an action in a gridworld,
-the next state and reward are returned.
+Simple gridworld for reinforcement learning. With the step method given a
+state and an action in a gridworld, the next state and reward are returned.
 }
 \details{
 The states are enumerated as follows (example 4x4 grid):
@@ -27,22 +27,21 @@ o \tab o \tab o \tab o \cr
 o \tab x \tab o \tab o \cr
 o \tab o \tab o \tab T \cr
 }
-Possible actions include going left, right, down or up. If an action would take you off
-the grid, you remain in the previous state. For each step you get a reward of -1, until you reach
-into a terminal state.
+Possible actions include going left, right, down or up. If an action would
+take you off the grid, you remain in the previous state. For each step you
+get a reward of -1, until you reach into a terminal state.
 }
 \section{Methods}{
-
-\describe{
-\item{\code{gridworld$new(name)}}{Creates a new \code{gridworld} with a
-specific \code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}.
-\code{terminal.states} is an integer vector of the terminal states in the gridworld.
-Default is \code{c(1, 16)}}
-\item{\code{gridworld$step(state, action)}}{Takes a step in the gridworld
-given a state and an action, returns the next state and reward.}
-\item{\code{gridworld$setEpisodeOverFalse()}}{Resets the \code{episode.over} flag of the gridworld class.
-Useful when starting a new episode.}
-}
+ \describe{ \item{\code{gridworld$new(shape,
+  terminal.states)}}{Creates a new \code{gridworld} with a specific
+\code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}.
+\code{terminal.states} is an integer vector of the terminal states in the
+gridworld. Default is \code{c(1, 16)}} \item{\code{gridworld$step(state,
+  action)}}{Takes a step in the gridworld given a state and an action,
+returns the next state and reward.}
+\item{\code{gridworld$setEpisodeOverFalse()}}{Resets the
+\code{episode.over} flag of the gridworld class. Useful when starting a new
+episode.} }
 }
 
 \examples{

@@ -72,7 +72,7 @@ gridworld = R6::R6Class("gridworld",
     reward.matrix = NULL, # better private?
     next.state = NULL,
     reward = NULL,
-    episode.over = NULL,
+    episode.over = FALSE,
     n.steps = 0,
     
     initialize = function(shape = c(4, 4), terminal.states = c(1, 16), 
@@ -80,6 +80,7 @@ gridworld = R6::R6Class("gridworld",
       if (any(terminal.states > prod(shape))) {
         stop("Terminal states must be inside the grid!")
       }
+      check_count(terminal.states, positive = TRUE)
       if (!is.null(initial.state)) {
         self$initial.state = initial.state
       }
@@ -90,7 +91,7 @@ gridworld = R6::R6Class("gridworld",
       self$n.actions = length(self$actions)
       self$states = seq_len(self$n.states)
       self$non.terminal.states = self$states[self$states != self$terminal.states]
-      self$episode.over = FALSE
+      # self$episode.over = FALSE
       private$computeBorderStates()
       private$makeTransitionArray()
       private$makeRewardMatrix()
