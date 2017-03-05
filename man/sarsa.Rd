@@ -4,20 +4,37 @@
 \alias{sarsa}
 \title{SARSA(lambda)}
 \usage{
-sarsa(policy, envir, lambda, discount.factor)
+sarsa(envir, lambda = NULL, n.episodes = 10, alpha = 0.1,
+  discount.factor = 1, seed = NULL)
 }
 \arguments{
-\item{policy}{a policy specified as a probability matrix (states x actions)}
-
 \item{envir}{the environment, a function returning the next state and reward given an action}
 
 \item{lambda}{scalar integer between 0 and 1}
 
+\item{n.episodes}{scalar integer: the number of episodes}
+
+\item{alpha}{scalar numeric between 0 and 1: weighting factor in the
+incremental mean update.Useful in non-stationary environments, giving high
+value to the last observed returns. If NULL the exact mean with alpha = 1 /
+number of episodes will be used.}
+
 \item{discount.factor}{scalar numeric, discounting future rewards}
+
+\item{seed}{scalar integer: random seed}
 }
 \value{
-optimal policy and optimal action value function
+ptimal action value function Q
 }
 \description{
-SARSA(lambda)
+Currently implemented: Sarsa(0). Sarsa is an on-policy TD control algorithm.
+Action value function Q will be updated
+towards the action value function of the next state and next action using an
+epsilon-greedy policy derived from Q.
+
+See Sutton & Bartu(2017) p.138.
+}
+\examples{
+grid = gridworld$new()
+Q = sarsa(grid, n.episodes = 1000)
 }

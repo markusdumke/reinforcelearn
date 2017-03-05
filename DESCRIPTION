@@ -1,10 +1,11 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
-Version: 0.0.0.9012
+Version: 0.0.0.9013
 Author: Markus Dumke
 Maintainer: Markus Dumke <markusdumke@gmail.com>
-Description: Implementations of reinforcement learning algorithms.
+Description: Implementations of Reinforcement Learning Algorithms, e.g. Monte 
+    Carlo Methods, Temporal-difference Learning.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
