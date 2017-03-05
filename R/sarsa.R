@@ -13,7 +13,7 @@
 #' @param seed scalar integer: random seed
 #'
 #' @importFrom stats runif
-#' @return ptimal action value function Q
+#' @return optimal action value function Q
 #' @export
 #' @examples 
 #' grid = gridworld$new()
@@ -72,8 +72,8 @@ sample_epsilon_greedy_action <- function(Q, epsilon, seed = NULL) {
   action
 }
 
-# # Argmax (ties broken randomly)
-# # x numerical matrix
-# argmax <- function(x) {
-#   max.col(x)
-# }
+# Argmax (ties broken randomly)
+# x numerical matrix
+argmax <- function(x) {
+  max.col(x)
+}

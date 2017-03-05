@@ -4,16 +4,41 @@
 \alias{qlearning}
 \title{Q-Learning}
 \usage{
-qlearning(behaviour.policy, envir)
+qlearning(envir, n.episodes = 10, alpha = 0.1, discount.factor = 1,
+  seed = NULL)
 }
 \arguments{
-\item{behaviour.policy}{matrix: the behaviour policy}
-
 \item{envir}{the environment, a function returning the next state and reward given an action}
+
+\item{n.episodes}{scalar integer: the number of episodes}
+
+\item{alpha}{scalar numeric between 0 and 1: weighting factor in the
+incremental mean update.Useful in non-stationary environments, giving high
+value to the last observed returns. If NULL the exact mean with alpha = 1 /
+number of episodes will be used.}
+
+\item{discount.factor}{scalar numeric, discounting future rewards}
+
+\item{seed}{scalar integer: random seed}
 }
 \value{
-the optimal policy and optimal action value function
+optimal action value function
 }
 \description{
-Off-policy control.
+Off-policy TD control algorithm. Q-Learning finds the optimal action value
+function Q independent of the policy followed. Using an epsilon-greedy
+behaviour policy states and actions are sampled. Given a state-action pair
+the optimal next action is considered by taking the argmax over all possible
+successor actions.
+
+Under the assumption that all state-action pairs are visited (which is
+achieved using a stochastic epsilon-greedy policy) Q-Learning converges to
+the optimal action value function Q*.
+}
+\examples{
+grid = gridworld$new()
+Q = qlearning(grid, n.episodes = 1000)
+}
+\references{
+Sutton and Barto (2017) page 140
 }

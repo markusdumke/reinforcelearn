@@ -24,7 +24,7 @@ number of episodes will be used.}
 \item{seed}{scalar integer: random seed}
 }
 \value{
-ptimal action value function Q
+optimal action value function Q
 }
 \description{
 Currently implemented: Sarsa(0). Sarsa is an on-policy TD control algorithm.

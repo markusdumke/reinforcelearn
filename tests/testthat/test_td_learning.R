@@ -34,8 +34,16 @@ optimal.policy = matrix(c(left, left, left, left,
 # test only states for which optimal policy is distinct
 test_states = c(2, 3, 5, 8, 9, 12, 14, 15)
 
-test_that("SARSA(0) gives correct policy for gridworld", {
+test_that("SARSA(0) converges to correct policy for gridworld", {
   Q = sarsa(grid, n.episodes = 1000)
+  policy = make_greedy_policy(Q)
+  # expect_equal(Q, Q.expected)
+  expect_equal(policy[test_states, ], optimal.policy[test_states, ])
+})
+
+grid$setEpisodeOverFalse()
+test_that("Q-Learning converges to correct policy for gridworld", {
+  Q = qlearning(grid, n.episodes = 1000)
   policy = make_greedy_policy(Q)
   # expect_equal(Q, Q.expected)
   expect_equal(policy[test_states, ], optimal.policy[test_states, ])
