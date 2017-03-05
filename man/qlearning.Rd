@@ -28,8 +28,8 @@ optimal action value function
 Off-policy TD control algorithm. Q-Learning finds the optimal action value
 function Q independent of the policy followed. Using an epsilon-greedy
 behaviour policy states and actions are sampled. Given a state-action pair
-the optimal next action is considered by taking the argmax over all possible
-successor actions.
+the optimal next action is considered by taking the max over all possible
+successor action values.
 
 Under the assumption that all state-action pairs are visited (which is
 achieved using a stochastic epsilon-greedy policy) Q-Learning converges to

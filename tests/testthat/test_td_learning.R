@@ -48,3 +48,25 @@ test_that("Q-Learning converges to correct policy for gridworld", {
   # expect_equal(Q, Q.expected)
   expect_equal(policy[test_states, ], optimal.policy[test_states, ])
 })
+
+# grid$setEpisodeOverFalse()
+# test_that("Expected Sarsa converges to correct policy for gridworld", {
+#   Q = expectedSarsa(grid, n.episodes = 1000)
+#   policy = make_greedy_policy(Q)
+#   # expect_equal(Q, Q.expected)
+#   expect_equal(policy[test_states, ], optimal.policy[test_states, ])
+# })
+
+test_that("Sample epsilon-greedy action converges to correct probabilities", {
+  set.seed(154)
+  x = c()
+  for (i in 1:10000){
+    x = c(x, sample_epsilon_greedy_action(c(1, 2, 3), epsilon = 0.3))
+  }
+  expect_equal(as.data.frame(table(x))[, 2] / 10000, c(0.1, 0.1, 0.8), tol = 0.1)
+})
+
+test_that("epsilon-greedy policy works", {
+  pi = make_epsilon_greedy_policy(matrix(c(2, 8, 4, 6), ncol = 2), epsilon = 0.2)
+  expect_equal(pi, matrix(c(0.1, 0.9, 0.9, 0.1), ncol = 2))
+})

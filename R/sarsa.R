@@ -15,6 +15,7 @@
 #' @importFrom stats runif
 #' @return optimal action value function Q
 #' @export
+#' @references Sutton and Barto (2017) page 138
 #' @examples 
 #' grid = gridworld$new()
 #' Q = sarsa(grid, n.episodes = 1000)
@@ -59,15 +60,14 @@ sarsa <- function(envir, lambda = NULL, n.episodes = 10, alpha = 0.1,
 
 # Q a numeric vector: the action value function for a given state
 # epsilon numeric scalar in [0, 1]: probability of selecting a random action
-# seed integer scalar: seed
 # sample_epsilon_greedy_action(c(1, 2, 3), epsilon = 0.2)
-sample_epsilon_greedy_action <- function(Q, epsilon, seed = NULL) {
+sample_epsilon_greedy_action <- function(Q, epsilon) {
   
   greedy_action = which.max(Q)
   random_actions = seq(1, length(Q))
   # non_greedy_actions = actions[actions != greedy_action]
   action = sample(c(greedy_action, random_actions), size = 1,  
-    prob = c(1 - epsilon, rep(epsilon, length(random_actions))))
+    prob = c(1 - epsilon, rep(epsilon / length(random_actions), length(random_actions))))
   
   action
 }

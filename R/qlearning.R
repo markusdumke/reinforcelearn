@@ -3,8 +3,8 @@
 #' Off-policy TD control algorithm. Q-Learning finds the optimal action value
 #' function Q independent of the policy followed. Using an epsilon-greedy
 #'  behaviour policy states and actions are sampled. Given a state-action pair 
-#'  the optimal next action is considered by taking the argmax over all possible 
-#'  successor actions.
+#'  the optimal next action is considered by taking the max over all possible 
+#'  successor action values.
 #'  
 #'  Under the assumption that all state-action pairs are visited (which is 
 #'  achieved using a stochastic epsilon-greedy policy) Q-Learning converges to 
@@ -39,8 +39,7 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1,
     
     while (state %in% envir$non.terminal.states) { # replace by episode.over?
       # epsilon-greedy policy, sample action
-      epsilon = 0.1
-      action = sample_epsilon_greedy_action(Q[state, ], epsilon = epsilon)
+      action = sample_epsilon_greedy_action(Q[state, ], epsilon = 0.1)
       
       envir$step(state, action)
       next.state = envir$next.state
