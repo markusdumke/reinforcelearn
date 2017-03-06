@@ -3,7 +3,7 @@ library(reinforcelearn)
 context("test environments")
 
 
-test_that("", {
+test_that("envir function works for gridworld", {
   grid = gridworld$new()
   env = envir(grid$transition.array, grid$reward.matrix, grid$terminal.states)
   expect_equal(grid$states, env$states)
