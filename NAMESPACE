@@ -3,6 +3,7 @@
 export(MonteCarloES)
 export(TD)
 export(controlMonteCarlo)
+export(dqlearning)
 export(evaluatePolicy)
 export(expectedSarsa)
 export(gridworld)

@@ -6,9 +6,7 @@
 #' @inheritParams evaluatePolicy
 #' @inheritParams predictMC
 #' @inheritParams sarsa
-#' @param epsilon scalar numeric between 0 and 1: proportion of random samples 
-#' in epsilon-greedy behaviour policy. The higher epsilon the more exploration.
-#'
+#' 
 #' @return optimal action value function Q
 #' @export
 #' @seealso sarsa

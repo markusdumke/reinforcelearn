@@ -9,6 +9,8 @@
 #'  
 #' @inheritParams evaluatePolicy
 #' @inheritParams predictMC
+#' @param epsilon scalar numeric between 0 and 1: proportion of random samples 
+#' in epsilon-greedy behaviour policy. The higher epsilon the more exploration.
 #' @param lambda scalar integer between 0 and 1
 #' @param seed scalar integer: random seed
 #'
@@ -19,7 +21,7 @@
 #' @examples 
 #' grid = gridworld$new()
 #' Q = sarsa(grid, n.episodes = 1000)
-sarsa <- function(envir, lambda = NULL, n.episodes = 10, alpha = 0.1, 
+sarsa <- function(envir, lambda = NULL, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL) {
   
   # input checking
@@ -37,7 +39,6 @@ sarsa <- function(envir, lambda = NULL, n.episodes = 10, alpha = 0.1,
     state = sample(envir$non.terminal.states, size = 1)
     
     # epsilon-greedy policy, sample action
-    epsilon = 0.1
     action = sample_epsilon_greedy_action(Q[state, ], epsilon = epsilon)
     
     while (state %in% envir$non.terminal.states) {

@@ -17,8 +17,7 @@ incremental mean update.Useful in non-stationary environments, giving high
 value to the last observed returns. If NULL the exact mean with alpha = 1 /
 number of episodes will be used.}
 
-\item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
-in epsilon-greedy behaviour policy. The higher epsilon the more exploration.}
+\item{epsilon}{scalar numeric, algorithm stops when improvement is smaller than epsilon}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
