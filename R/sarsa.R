@@ -5,7 +5,7 @@
 #' towards the action value function of the next state and next action using an 
 #' epsilon-greedy policy derived from Q.
 #'   
-#' See Sutton & Bartu(2017) p.138. 
+#' See Sutton & Barto(2017) p.138. 
 #'  
 #' @inheritParams evaluatePolicy
 #' @inheritParams predictMC
@@ -17,7 +17,10 @@
 #' @importFrom stats runif
 #' @return optimal action value function Q
 #' @export
-#' @references Sutton and Barto (2017) page 138
+#' @references [Sutton and Barto (2017) page 138](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=156)
+
+#' @seealso [expectedSarsa()]
+#' @seealso [qlearning()]
 #' @examples 
 #' grid = gridworld$new()
 #' Q = sarsa(grid, n.episodes = 1000)

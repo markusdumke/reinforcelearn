@@ -12,32 +12,31 @@ Implementations of reinforcement learning algorithms.
 
 
 Dynamic Programming:
-
-\code{\link{evaluatePolicy}}
-
-\code{\link{iteratePolicy}}
-
-\code{\link{iterateValue}}
+\itemize{
+\item \code{\link[=evaluatePolicy]{evaluatePolicy()}}
+\item \code{\link[=iteratePolicy]{iteratePolicy()}}
+\item \code{\link[=iterateValue]{iterateValue()}}
+}
 
 Monte Carlo Methods:
-
-\code{\link{predictMC}}
-
-\code{\link{MonteCarloES}}
-
-\code{\link{controlMonteCarlo}}
+\itemize{
+\item \code{\link[=predictMC]{predictMC()}}
+\item \code{\link[=MonteCarloES]{MonteCarloES()}}
+\item \code{\link[=controlMonteCarlo]{controlMonteCarlo()}}
+}
 
 Temporal-Difference Learning:
-
-\code{\link{TD}}
-
-\code{\link{sarsa}}
-
-\code{\link{qlearning}}
+\itemize{
+\item \code{\link[=TD]{TD()}}
+\item \code{\link[=sarsa]{sarsa()}}
+\item \code{\link[=expectedSarsa]{expectedSarsa()}}
+\item \code{\link[=qlearning]{qlearning()}}
+\item \code{\link[=dqlearning]{dqlearning()}}
+}
 }
 
 \section{Environments}{
 
-\code{\link{gridworld}}
+\link{gridworld}
 }
 

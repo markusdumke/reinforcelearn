@@ -35,10 +35,10 @@ grid = gridworld$new()
 # Q = expectedSarsa(grid, n.episodes = 1000) not working
 }
 \references{
-Sutton and Barto (2017) page 142
+\href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=160}{Sutton and Barto (2017) page 142}
 }
 \seealso{
-sarsa
+\code{\link[=sarsa]{sarsa()}}
 
-qlearning
+\code{\link[=qlearning]{qlearning()}}
 }

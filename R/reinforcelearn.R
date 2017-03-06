@@ -5,30 +5,25 @@
 #' 
 #' Dynamic Programming: 
 #' 
-#' \code{\link{evaluatePolicy}}
-#' 
-#' \code{\link{iteratePolicy}}
-#' 
-#' \code{\link{iterateValue}}
+#' * [evaluatePolicy()]
+#' * [iteratePolicy()]
+#' * [iterateValue()]
 #' 
 #' Monte Carlo Methods:
 #' 
-#' \code{\link{predictMC}}
-#' 
-#' \code{\link{MonteCarloES}}
-#' 
-#' \code{\link{controlMonteCarlo}}
+#' * [predictMC()]
+#' * [MonteCarloES()]
+#' * [controlMonteCarlo()]
 #' 
 #' Temporal-Difference Learning:
-#' 
-#' \code{\link{TD}}
-#' 
-#' \code{\link{sarsa}}
-#' 
-#' \code{\link{qlearning}}
+#' * [TD()]
+#' * [sarsa()]
+#' * [expectedSarsa()]
+#' * [qlearning()]
+#' * [dqlearning()]
 #' 
 #' @section Environments:
-#' \code{\link{gridworld}}
+#' [gridworld]
 #' 
 #' @name reinforcelearn
 #' @docType package

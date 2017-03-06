@@ -33,12 +33,16 @@ successor action values.
 
 Under the assumption that all state-action pairs are visited (which is
 achieved using a stochastic epsilon-greedy policy) Q-Learning converges to
-the optimal action value function Q*.
+the optimal action value function Q*. The update formula is:
+\deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma max_a Q(S', a) - Q(S, A)]}
 }
 \examples{
 grid = gridworld$new()
 Q = qlearning(grid, n.episodes = 1000)
 }
 \references{
-Sutton and Barto (2017) page 140
+\href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158}{Sutton and Barto (2017) page 140}
+}
+\seealso{
+\code{\link[=dqlearning]{dqlearning()}}
 }

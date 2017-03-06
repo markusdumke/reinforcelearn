@@ -41,5 +41,5 @@ grid = gridworld$new()
 Sutton & Barto (page 145)
 }
 \seealso{
-qlearning
+\code{\link[=qlearning]{qlearning()}}
 }

@@ -2,20 +2,22 @@
 #' 
 #' Off-policy TD control algorithm. Q-Learning finds the optimal action value
 #' function Q independent of the policy followed. Using an epsilon-greedy
-#'  behaviour policy states and actions are sampled. Given a state-action pair 
-#'  the optimal next action is considered by taking the max over all possible 
-#'  successor action values.
+#' behaviour policy states and actions are sampled. Given a state-action pair 
+#' the optimal next action is considered by taking the max over all possible 
+#' successor action values.
 #'  
-#'  Under the assumption that all state-action pairs are visited (which is 
-#'  achieved using a stochastic epsilon-greedy policy) Q-Learning converges to 
-#'  the optimal action value function Q*.
+#' Under the assumption that all state-action pairs are visited (which is 
+#' achieved using a stochastic epsilon-greedy policy) Q-Learning converges to 
+#' the optimal action value function Q*. The update formula is: 
+#' \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma max_a Q(S', a) - Q(S, A)]}
 #'
 #' @inheritParams evaluatePolicy
 #' @inheritParams predictMC
 #' @inheritParams sarsa
 #'
 #' @return optimal action value function
-#' @references Sutton and Barto (2017) page 140
+#' @seealso [dqlearning()]
+#' @references [Sutton and Barto (2017) page 140](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158)
 #' @export
 #' @examples
 #' grid = gridworld$new()

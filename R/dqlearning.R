@@ -12,7 +12,7 @@
 #' @return optimal value function Q
 #' @export
 #' @references Sutton & Barto (page 145)
-#' @seealso qlearning
+#' @seealso [qlearning()]
 #'
 #' @examples
 #' grid = gridworld$new()
