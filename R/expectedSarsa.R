@@ -15,7 +15,7 @@
 
 #' @examples 
 #' grid = gridworld$new()
-#' # Q = expectedSarsa(grid, n.episodes = 1000) not working
+#' # Q = expectedSarsa(grid, n.episodes = 1000) # not working
 expectedSarsa <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
   discount.factor = 1, seed = NULL) {
   

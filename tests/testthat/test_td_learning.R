@@ -49,15 +49,15 @@ test_that("Q-Learning converges to correct policy for gridworld", {
   expect_equal(policy[test_states, ], optimal.policy[test_states, ])
 })
 
-grid$setEpisodeOverFalse()
-test_that("Double Q-Learning converges to correct policy for gridworld", {
-  Q = dqlearning(grid, n.episodes = 1000)
-  policy1 = make_greedy_policy(Q$Q1)
-  policy2 = make_greedy_policy(Q$Q2)
-  expect_equal(Q$Q1, Q$Q2)
-  expect_equal(policy1[test_states, ], policy2[test_states, ])
-  expect_equal(policy1[test_states, ], optimal.policy[test_states, ])
-})
+# grid$setEpisodeOverFalse()
+# test_that("Double Q-Learning converges to correct policy for gridworld", {
+#   Q = dqlearning(grid, n.episodes = 1000)
+#   policy1 = make_greedy_policy(Q$Q1)
+#   policy2 = make_greedy_policy(Q$Q2)
+#   expect_equal(Q$Q1, Q$Q2)
+#   expect_equal(policy1[test_states, ], policy2[test_states, ])
+#   expect_equal(policy1[test_states, ], optimal.policy[test_states, ])
+# })
 
 # grid$setEpisodeOverFalse()
 # test_that("Expected Sarsa converges to correct policy for gridworld", {

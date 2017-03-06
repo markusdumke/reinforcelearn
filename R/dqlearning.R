@@ -4,19 +4,22 @@
 #' functions Q1 and Q2. Actions are chosen from an epsilon-greedy policy derived 
 #' from Q1 + Q2. With equal probability one of Q1 and Q2 is then updated 
 #' following the same update rule as in Q-Learning. This avoids maximization bias.
-#'
+#' The update formulas are: 
+#' \deqn{Q1(S, A) <- Q1(S, A) + \alpha[R + \gamma Q2(S', argmax_a Q1(S', a)) - Q1(S, A)]}
+#' \deqn{Q2(S, A) <- Q2(S, A) + \alpha[R + \gamma Q1(S', argmax_a Q2(S', a)) - Q2(S, A)]}
+#' 
 #' @inheritParams sarsa
 #' @inheritParams evaluatePolicy
 #' @inheritParams predictMC
 #'
 #' @return optimal value function Q
 #' @export
-#' @references Sutton & Barto (page 145)
+#' @references [Sutton and Barto (2017) page 145](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=163)
 #' @seealso [qlearning()]
 #'
 #' @examples
 #' grid = gridworld$new()
-#' # Q = dqlearning(grid, n.episodes = 1000) # not working?
+#' # Q = dqlearning(grid, n.episodes = 1000) # not working
 dqlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
   discount.factor = 1, seed = NULL) {
   

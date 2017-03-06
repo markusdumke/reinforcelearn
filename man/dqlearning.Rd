@@ -32,13 +32,16 @@ The idea behind Double Q-Learning is to have two separate action value
 functions Q1 and Q2. Actions are chosen from an epsilon-greedy policy derived
 from Q1 + Q2. With equal probability one of Q1 and Q2 is then updated
 following the same update rule as in Q-Learning. This avoids maximization bias.
+The update formulas are:
+\deqn{Q1(S, A) <- Q1(S, A) + \alpha[R + \gamma Q2(S', argmax_a Q1(S', a)) - Q1(S, A)]}
+\deqn{Q2(S, A) <- Q2(S, A) + \alpha[R + \gamma Q1(S', argmax_a Q2(S', a)) - Q2(S, A)]}
 }
 \examples{
 grid = gridworld$new()
-# Q = dqlearning(grid, n.episodes = 1000) # not working?
+# Q = dqlearning(grid, n.episodes = 1000) # not working
 }
 \references{
-Sutton & Barto (page 145)
+\href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=163}{Sutton and Barto (2017) page 145}
 }
 \seealso{
 \code{\link[=qlearning]{qlearning()}}
