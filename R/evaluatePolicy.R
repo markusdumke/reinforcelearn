@@ -5,7 +5,7 @@
 #' @details The algorithm runs until the improvement in the value function in two subsequent steps
 #' is smaller than epsilon.
 #' @param policy a policy specified as a probability matrix (states x actions)
-#' @param envir the environment, a function returning the next state and reward given an action
+#' @param envir the environment, an R6 class. See also [envir()].
 #' @param discount.factor scalar numeric, discounting future rewards
 #' @param epsilon scalar numeric, algorithm stops when improvement is smaller than epsilon
 #'

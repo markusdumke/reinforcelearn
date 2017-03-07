@@ -8,7 +8,7 @@ expectedSarsa(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
-\item{envir}{the environment, a function returning the next state and reward given an action}
+\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 

@@ -7,7 +7,7 @@
 MonteCarloES(envir, n.episodes = 100, discount.factor = 1)
 }
 \arguments{
-\item{envir}{the environment, a function returning the next state and reward given an action}
+\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
