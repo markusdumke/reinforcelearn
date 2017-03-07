@@ -34,8 +34,4 @@ random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states,
 # Evaluate given policy for gridworld example
 v = evaluatePolicy(random.policy, grid)
 
-# Compare results with expected result
-v.expected = c(0, -14, -20, -22, -14, -18, -20, -20,
-               -20, -20, -18, -14, -22, -20, -14, 0)
-all.equal(v, v.expected, tolerance = 0.1)
 }
