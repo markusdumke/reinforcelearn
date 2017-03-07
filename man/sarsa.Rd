@@ -34,8 +34,6 @@ Currently implemented: Sarsa(0). Sarsa is an on-policy TD control algorithm.
 Action value function Q will be updated
 towards the action value function of the next state and next action using an
 epsilon-greedy policy derived from Q.
-
-See Sutton & Barto(2017) p.138.
 }
 \examples{
 grid = gridworld$new()
