@@ -24,7 +24,7 @@
 #'   ncol = grid$n.actions)
 #' 
 #' # Estimate state value function with temporal-difference learning
-#' v = TD(random.policy, grid, n = 2, alpha = 0.1)
+#' v = TD(random.policy, grid, n = 2, n.episodes = 10000, alpha = 0.1)
 TD = function(policy, envir, n.episodes = 1, n = 10, 
   discount.factor = 1, alpha = 0.1) {
   
@@ -38,17 +38,16 @@ TD = function(policy, envir, n.episodes = 1, n = 10,
   n.states = nrow(policy)
   # n.visits = rep(0, n.states)
   v = rep(0, n.states)
-  possible.states = envir$states[envir$states != envir$terminal.states]
-  state = sample(possible.states, 1)
+  state = sample(envir$non.terminal.states, 1)
   
   states = rep(0, n + 1)
   rewards = rep(0, n + 1)
   
-  # parallelize episodes
+  # parallelize episodes?
   for (i in seq_len(n.episodes)) {
-    
+    # if(i %% 100 == 0) alpha = alpha / i
     # initialize s
-    states[1] = sample(possible.states, 1)
+    states[1] = sample(envir$non.terminal.states, 1)
     
     time.steps = Inf
     t = 0
