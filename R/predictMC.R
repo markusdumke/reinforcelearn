@@ -6,7 +6,9 @@
 #' Only works for episodic tasks (i.e. there must be at least one terminal 
 #' state)! An incremental mean update is implemented. Use a high alpha value to
 #' give recent episodes a higher weight if you have a non-stationary environment
-#' . First-visit and every-visit Mone Carlo policy evaluation are implemented.
+#' . First-visit Monte Carlo estimates the return following the first visit to 
+#' a state, every-visit Monte Carlo following all visits in the episode. Returns 
+#' are averaged over multiple episodes.
 #' 
 #' @inheritParams evaluatePolicy
 #' @param n.episodes scalar integer: the number of episodes
@@ -60,7 +62,7 @@ predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1,
       # incremental mean update
       for (j in unique(episode$states)) { # what if j character?
         first.occurence = min(which(episode$states == j))
-        sequ = seq(first.occurence, length(episode$rewards))
+        sequ = seq(first.occurence + 1, length(episode$rewards))
         n.visits[j] = n.visits[j] + 1
         rewards = episode$rewards[sequ]
         G = estimateReturn(rewards, discount.factor)

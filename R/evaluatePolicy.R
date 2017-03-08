@@ -5,7 +5,7 @@
 #' @details The algorithm runs until the improvement in the value function in two subsequent steps
 #' is smaller than epsilon.
 #' @param policy a policy specified as a probability matrix (states x actions)
-#' @param envir the environment, a function returning the next state and reward given an action
+#' @param envir the environment, an R6 class. See also [envir()].
 #' @param discount.factor scalar numeric, discounting future rewards
 #' @param epsilon scalar numeric, algorithm stops when improvement is smaller than epsilon
 #'
@@ -21,10 +21,6 @@
 #' # Evaluate given policy for gridworld example
 #' v = evaluatePolicy(random.policy, grid)
 #' 
-#' # Compare results with expected result
-#' v.expected = c(0, -14, -20, -22, -14, -18, -20, -20,
-#'                -20, -20, -18, -14, -22, -20, -14, 0)
-#' all.equal(v, v.expected, tolerance = 0.1)
 evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) {
   n.states = envir$n.states
 

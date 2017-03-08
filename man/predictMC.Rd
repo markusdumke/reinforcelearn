@@ -10,7 +10,7 @@ predictMC(policy, envir, n.episodes = 10, discount.factor = 1,
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
 
-\item{envir}{the environment, a function returning the next state and reward given an action}
+\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
@@ -31,7 +31,9 @@ function is estimated from mean returns of episodes.
 Only works for episodic tasks (i.e. there must be at least one terminal
 state)! An incremental mean update is implemented. Use a high alpha value to
 give recent episodes a higher weight if you have a non-stationary environment
-. First-visit and every-visit Mone Carlo policy evaluation are implemented.
+. First-visit Monte Carlo estimates the return following the first visit to
+a state, every-visit Monte Carlo following all visits in the episode. Returns
+are averaged over multiple episodes.
 }
 \examples{
 set.seed(1477)

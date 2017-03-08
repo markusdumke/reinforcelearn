@@ -2,15 +2,15 @@
 % Please edit documentation in R/TD.R
 \name{TD}
 \alias{TD}
-\title{Temporal difference learning}
+\title{N-step Temporal difference learning}
 \usage{
 TD(policy, envir, n.episodes = 1, n = 10, discount.factor = 1,
-  alpha = 0.1)
+  alpha = NULL)
 }
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
 
-\item{envir}{the environment, a function returning the next state and reward given an action}
+\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
@@ -32,7 +32,7 @@ Temporal difference (TD) learning works by sampling one step from the
 environment and plugging this into the update equation (Bootstrapping). This
 works also for non-episodic environments.
 
-Currently implemented: n-step TD (forward-view)
+Currently implemented: n-step TD -> next: Implement TD(lambda)
 }
 \examples{
 set.seed(1477)
@@ -44,7 +44,7 @@ random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states,
   ncol = grid$n.actions)
 
 # Estimate state value function with temporal-difference learning
-v = TD(random.policy, grid, n = 2, alpha = 0.1)
+v = TD(random.policy, grid, n = 1, n.episodes = 100, alpha = 0.1) # not working?
 }
 \seealso{
 \link{predictMC}

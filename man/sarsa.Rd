@@ -8,7 +8,7 @@ sarsa(envir, lambda = NULL, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
-\item{envir}{the environment, a function returning the next state and reward given an action}
+\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
 
 \item{lambda}{scalar integer between 0 and 1}
 
@@ -34,8 +34,6 @@ Currently implemented: Sarsa(0). Sarsa is an on-policy TD control algorithm.
 Action value function Q will be updated
 towards the action value function of the next state and next action using an
 epsilon-greedy policy derived from Q.
-
-See Sutton & Barto(2017) p.138.
 }
 \examples{
 grid = gridworld$new()
