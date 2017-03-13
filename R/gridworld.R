@@ -1,4 +1,4 @@
-#' Gridworld environment as R6 class
+#' Gridworld environment
 #' 
 #' Simple gridworld for reinforcement learning. With the step method given a
 #' state and an action in a gridworld, the next state and reward are returned.

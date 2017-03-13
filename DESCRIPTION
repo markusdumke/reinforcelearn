@@ -1,7 +1,7 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
-Version: 0.0.0.9015
+Version: 0.0.0.9016
 Author: Markus Dumke
 Maintainer: Markus Dumke <markusdumke@gmail.com>
 Description: Implementations of Reinforcement Learning Algorithms, e.g. Monte 
@@ -15,5 +15,8 @@ Imports:
     R6 (>= 2.2.0),
     checkmate (>= 1.8.2),
     dplyr (>= 0.5.0)
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown
 Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr

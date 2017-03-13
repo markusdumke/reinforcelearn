@@ -3,7 +3,7 @@
 \docType{class}
 \name{gridworld}
 \alias{gridworld}
-\title{Gridworld environment as R6 class}
+\title{Gridworld environment}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 #grid = gridworld$new()
