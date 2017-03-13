@@ -13,12 +13,9 @@ random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)
 v.expected = c(0, -14, -20, -22, -14, -18, -20, -20,
   -20, -20, -18, -14, -22, -20, -14, 0)
 
-# works
 test_that("TD Prediction works for gridworld", {
-  v = TD(random.policy, grid, n = 1, n.episodes = 10000, alpha = 0.01)
+  v = td(random.policy, grid, n.steps = 100000, alpha = 0.01)
   expect_equal(v, v.expected, tolerance = 0.1)
-  # v = TD(random.policy, grid, n = 10, n.episodes = 10000, alpha = 0.01)
-  # expect_equal(v, v.expected, tolerance = 0.1)
 })
 
 grid$setEpisodeOverFalse()
@@ -26,6 +23,7 @@ left = c(1, 0, 0, 0)
 right = c(0, 1, 0, 0)
 up = c(0, 0, 1, 0)
 down = c(0, 0, 0, 1)
+
 # there are more than one optimal policy because of symmetry
 optimal.policy = matrix(c(left, left, left, left, 
   up, up, right, down, 

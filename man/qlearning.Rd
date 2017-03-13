@@ -13,9 +13,8 @@ qlearning(envir, n.episodes = 10, alpha = 0.1, discount.factor = 1,
 \item{n.episodes}{scalar integer: the number of episodes}
 
 \item{alpha}{scalar numeric between 0 and 1: weighting factor in the
-incremental mean update.Useful in non-stationary environments, giving high
-value to the last observed returns. If NULL the exact mean with alpha = 1 /
-number of episodes will be used.}
+incremental mean update. Useful in non-stationary environments, giving high
+value to the last observed returns.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

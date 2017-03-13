@@ -4,8 +4,8 @@
 \alias{predictMC}
 \title{Monte Carlo Prediction}
 \usage{
-predictMC(policy, envir, n.episodes = 10, discount.factor = 1,
-  method = c("first-visit, every-visit"), alpha = NULL)
+predictMC(policy, envir, n.episodes = 100, discount.factor = 1,
+  method = c("first-visit, every-visit"), alpha = 0.1)
 }
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
@@ -19,9 +19,8 @@ predictMC(policy, envir, n.episodes = 10, discount.factor = 1,
 \item{method}{character: first-visit or every-visit method}
 
 \item{alpha}{scalar numeric between 0 and 1: weighting factor in the
-incremental mean update.Useful in non-stationary environments, giving high
-value to the last observed returns. If NULL the exact mean with alpha = 1 /
-number of episodes will be used.}
+incremental mean update. Useful in non-stationary environments, giving high
+value to the last observed returns.}
 }
 \description{
 Predict state value function v with Monte Carlo methods. The state value
@@ -48,5 +47,5 @@ v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
 v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
 }
 \seealso{
-\link{TD}
+\link{td}
 }

@@ -27,7 +27,7 @@ Monte Carlo Methods:
 
 Temporal-Difference Learning:
 \itemize{
-\item \code{\link[=TD]{TD()}}
+\item \code{\link[=td]{td()}}
 \item \code{\link[=sarsa]{sarsa()}}
 \item \code{\link[=expectedSarsa]{expectedSarsa()}}
 \item \code{\link[=qlearning]{qlearning()}}

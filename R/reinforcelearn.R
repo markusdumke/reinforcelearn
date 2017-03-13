@@ -16,7 +16,7 @@
 #' * [controlMonteCarlo()]
 #' 
 #' Temporal-Difference Learning:
-#' * [TD()]
+#' * [td()]
 #' * [sarsa()]
 #' * [expectedSarsa()]
 #' * [qlearning()]

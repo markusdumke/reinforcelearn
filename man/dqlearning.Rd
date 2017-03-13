@@ -13,9 +13,8 @@ dqlearning(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
 \item{n.episodes}{scalar integer: the number of episodes}
 
 \item{alpha}{scalar numeric between 0 and 1: weighting factor in the
-incremental mean update.Useful in non-stationary environments, giving high
-value to the last observed returns. If NULL the exact mean with alpha = 1 /
-number of episodes will be used.}
+incremental mean update. Useful in non-stationary environments, giving high
+value to the last observed returns.}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
 in epsilon-greedy behaviour policy. The higher epsilon the more exploration.}

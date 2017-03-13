@@ -14,12 +14,11 @@
 #' @param n.episodes scalar integer: the number of episodes
 #' @param method character: first-visit or every-visit method
 #' @param alpha scalar numeric between 0 and 1: weighting factor in the 
-#'   incremental mean update.Useful in non-stationary environments, giving high 
-#'   value to the last observed returns. If NULL the exact mean with alpha = 1 /
-#'   number of episodes will be used.
+#'   incremental mean update. Useful in non-stationary environments, giving high 
+#'   value to the last observed returns.
 #' @export
 #' @import checkmate
-#' @seealso [TD]
+#' @seealso [td]
 #' @examples 
 #' set.seed(1477)
 #' grid = gridworld$new()
@@ -31,8 +30,8 @@
 #' # Estimate state value function with Monte Carlo prediction
 #' v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
 #' v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
-predictMC = function(policy, envir, n.episodes = 10, discount.factor = 1, 
-  method = c("first-visit, every-visit"), alpha = NULL) {
+predictMC = function(policy, envir, n.episodes = 100, discount.factor = 1, 
+  method = c("first-visit, every-visit"), alpha = 0.1) {
   
   # save in alpha_input the user inputs to reuse this later
   alpha_input = alpha
