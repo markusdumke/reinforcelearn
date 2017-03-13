@@ -16,7 +16,7 @@
 #' @inheritParams sarsa
 #'
 #' @return optimal action value function
-#' @seealso [dqlearning()]
+#' @seealso [dqlearning]
 #' @references [Sutton and Barto (2017) page 140](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158)
 #' @export
 #' @examples

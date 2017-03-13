@@ -2,24 +2,26 @@
 % Please edit documentation in R/sarsa.R
 \name{sarsa}
 \alias{sarsa}
-\title{SARSA(lambda)}
+\title{SARSA}
 \usage{
-sarsa(envir, lambda = NULL, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
+sarsa(envir, lambda = 0, n.steps = 100, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
 \item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
 
-\item{lambda}{scalar integer between 0 and 1}
+\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only current state
+is updated (this is equivalent to TD(0)), for lambda = 1 all states visited
+are updated, this is roughly equivalent to every-visit Monte Carlo.}
 
-\item{n.episodes}{scalar integer: the number of episodes}
+\item{n.steps}{integer scalar: number of evaluations (steps in the environment)}
 
 \item{alpha}{scalar numeric between 0 and 1: weighting factor in the
 incremental mean update. Useful in non-stationary environments, giving high
 value to the last observed returns.}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
-in epsilon-greedy behaviour policy. The higher epsilon the more exploration.}
+in epsilon-greedy behaviour policy. Higher values of epsilon lead to more exploration.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
@@ -29,20 +31,22 @@ in epsilon-greedy behaviour policy. The higher epsilon the more exploration.}
 optimal action value function Q
 }
 \description{
-Currently implemented: Sarsa(0). Sarsa is an on-policy TD control algorithm.
-Action value function Q will be updated
-towards the action value function of the next state and next action using an
-epsilon-greedy policy derived from Q.
+Sarsa is an on-policy TD control algorithm to find the optimal policy.
+The action value function Q will be updated
+towards the action value function of the next state S' and next action A'
+using an epsilon-greedy policy derived from Q.
+The update formula is:
+\deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma Q(S', A') - Q(S, A)]}
 }
 \examples{
 grid = gridworld$new()
-Q = sarsa(grid, n.episodes = 1000)
+Q = sarsa(grid, n.steps = 1000)
 }
 \references{
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=156}{Sutton and Barto (2017) page 138}
 }
 \seealso{
-\code{\link[=expectedSarsa]{expectedSarsa()}}
+\link{expectedSarsa}
 
-\code{\link[=qlearning]{qlearning()}}
+\link{qlearning}
 }

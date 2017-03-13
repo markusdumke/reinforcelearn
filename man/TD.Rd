@@ -54,6 +54,9 @@ random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states,
 # Estimate state value function with temporal-difference learning (TD(0))
 v = td(random.policy, grid, lambda = 0)
 }
+\references{
+\href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=274}{Sutton and Barto (2017) page 256}
+}
 \seealso{
 \link{sarsa}
 }

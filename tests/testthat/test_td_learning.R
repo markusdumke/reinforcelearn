@@ -14,8 +14,8 @@ v.expected = c(0, -14, -20, -22, -14, -18, -20, -20,
   -20, -20, -18, -14, -22, -20, -14, 0)
 
 test_that("TD Prediction works for gridworld", {
-  v = td(random.policy, grid, n.steps = 100000, alpha = 0.01)
-  expect_equal(v, v.expected, tolerance = 0.1)
+  v = td(random.policy, grid, n.steps = 10000, alpha = 0.1)
+  expect_equal(v, v.expected, tolerance = 1)
 })
 
 grid$setEpisodeOverFalse()
@@ -32,15 +32,14 @@ optimal.policy = matrix(c(left, left, left, left,
 # test only states for which optimal policy is distinct
 test_states = c(2, 3, 5, 8, 9, 12, 14, 15)
 
-# fails, why?
 test_that("SARSA(0) converges to correct policy for gridworld", {
-  Q = sarsa(grid, n.episodes = 1000)
+  Q = sarsa(grid, n.steps = 10000)
   policy = make_greedy_policy(Q)
-  # expect_equal(Q, Q.expected)
   expect_equal(policy[test_states, ], optimal.policy[test_states, ])
 })
 
 grid$setEpisodeOverFalse()
+
 test_that("Q-Learning converges to correct policy for gridworld", {
   Q = qlearning(grid, n.episodes = 1000)
   policy = make_greedy_policy(Q)

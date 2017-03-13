@@ -22,6 +22,7 @@
 #'
 #' @return state value function v
 #' @export
+#' @references [Sutton and Barto (2017) page 256](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=274)
 #' @seealso [sarsa]
 #' @examples 
 #' set.seed(1477)
@@ -56,7 +57,8 @@ td = function(policy, envir, lambda = 0, n.steps = 100,
     indicator[state] = 1
     
     eligibility = discount.factor * lambda * eligibility + indicator
-    TD.error = envir$reward + discount.factor * v[envir$next.state] - v[state]
+    TD.target = envir$reward + discount.factor * v[envir$next.state]
+    TD.error = TD.target - v[state]
     v = v + alpha * TD.error * eligibility
     state = envir$next.state
     

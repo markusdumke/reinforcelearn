@@ -43,5 +43,5 @@ Q = qlearning(grid, n.episodes = 1000)
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158}{Sutton and Barto (2017) page 140}
 }
 \seealso{
-\code{\link[=dqlearning]{dqlearning()}}
+\link{dqlearning}
 }
