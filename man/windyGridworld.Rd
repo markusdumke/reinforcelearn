@@ -7,7 +7,7 @@
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
 #grid = windyGridworld$new()
-A step method returns the next.state and reward given a state and action.
+# A step method returns the next.state and reward given a state and action.
 }
 \description{
 Simple windy gridworld for reinforcement learning. Actions include going

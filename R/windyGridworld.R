@@ -21,7 +21,7 @@
 #' @docType class
 #' @references Windy gridworld example from Sutton & Barto, chapter 6
 #' @usage #grid = windyGridworld$new()
-#' A step method returns the next.state and reward given a state and action.
+#' # A step method returns the next.state and reward given a state and action.
 #' @export
 #' @importFrom R6 R6Class
 #' @examples
