@@ -39,8 +39,8 @@ The update formula is:
 \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma Q(S', A') - Q(S, A)]}
 }
 \examples{
-grid = gridworld$new()
-Q = sarsa(grid, n.steps = 1000)
+grid = windyGridworld$new()
+Q = sarsa(grid, n.steps = 1000)$Q
 }
 \references{
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=156}{Sutton and Barto (2017) page 138}

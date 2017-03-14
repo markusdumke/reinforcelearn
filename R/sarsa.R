@@ -22,13 +22,15 @@
 #' @seealso [expectedSarsa]
 #' @seealso [qlearning]
 #' @examples 
-#' grid = gridworld$new()
-#' Q = sarsa(grid, n.steps = 1000)
+#' grid = windyGridworld$new()
+#' Q = sarsa(grid, n.steps = 1000)$Q
 sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1, 
   epsilon = 0.1, discount.factor = 1, seed = NULL) {
   
   # input checking
   if (!is.null(seed)) set.seed(seed)
+  
+  time.steps.episode = c()
   
   n.states = envir$n.states
   n.actions = envir$n.actions
@@ -61,6 +63,7 @@ sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1,
     action = next.action
     
     if (envir$episode.over == TRUE) {
+      time.steps.episode = append(time.steps.episode, i)
       envir$setEpisodeOverFalse()
       state = sample(envir$non.terminal.states, size = 1)
       action = sample_epsilon_greedy_action(Q[state, ], epsilon = epsilon)
@@ -68,7 +71,7 @@ sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1,
     }
   }
   
-  Q
+  list(Q = Q, time.steps.episode = time.steps.episode)
 }
 
 # Q a numeric vector: the action value function for a given state
@@ -90,3 +93,7 @@ sample_epsilon_greedy_action <- function(Q, epsilon) {
 argmax <- function(x) {
   max.col(x)
 }
+
+# plot(y = seq_along(Q$episodes.over), x = Q$episodes.over, type = "l")
+# plot(x = seq_along(Q$episodes.over), y = diff(c(0, Q$episodes.over)), type = "l", 
+#   xlim = c(0, 200), ylab = "Episode length", xlab = "Episode")

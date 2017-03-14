@@ -37,13 +37,26 @@ grid = windyGridworld$new()
 Then we can apply SARSA to find the optimal action value function $Q$. Here we will use SARSA(0), which only updates the current state action pair. Try different $\lambda$ values for a trade-off between temporal-difference and monte carlo learning.
 
 ```{r, results = "hide"}
-Q = sarsa(grid, lambda = 0, n.steps = 1000)
+set.seed(123)
+res = sarsa(grid, lambda = 0, n.steps = 10000)
+Q = res$Q
 ```
 
 Then we can find the optimal policy by taking the argmax over the $Q$ values.
 
 ```{r}
 optimal.policy = max.col(Q)
+```
+
+We can plot the number of time steps an episode needs. As expected the first episode takes quite a large number of time steps as we start wandering around randomly. With time we improve the action value function $Q$ and therefore the policy and need less time steps to finish an episode. The optimal policy takes 15 steps from the start state to the goal state. Because of the $\epsilon$-greedy policy we have chosen, we will still explore and fluctuate around these optimal 15 steps.
+
+```{r}
+plot(x = res$time.steps.episode, y = seq_along(res$time.steps.episode), 
+  type = "l", xlim = c(0, 10000), ylab = "Episode", xlab = "Time steps", 
+  main = "Episodes completed per time step")
+plot(x = seq_along(res$time.steps.episode), y = diff(c(0, res$time.steps.episode)), 
+  type = "l", xlim = c(0, 100), ylab = "Episode length", xlab = "Episode", 
+  main = "Episode length over time")
 ```
 
 Graphically the optimal policy looks like:
