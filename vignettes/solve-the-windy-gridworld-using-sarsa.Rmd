@@ -48,7 +48,7 @@ Then we can find the optimal policy by taking the argmax over the $Q$ values.
 optimal.policy = max.col(Q)
 ```
 
-We can plot the number of time steps an episode needs. As expected the first episode takes quite a large number of time steps as we start wandering around randomly. With time we improve the action value function $Q$ and therefore the policy and need less time steps to finish an episode. The optimal policy takes 15 steps from the start state to the goal state. Because of the $\epsilon$-greedy policy we have chosen, we will still explore and fluctuate around these optimal 15 steps.
+We can plot the number of time steps an episode takes. As expected the first episode takes quite a large number of time steps as we start wandering around randomly. With time we improve the action value function $Q$ and therefore the policy and need less time steps to finish an episode. The optimal policy takes 15 steps from the start state to the goal state. Because of the $\epsilon$-greedy policy we have chosen, we will still explore and fluctuate around these optimal 15 steps.
 
 ```{r}
 plot(x = res$time.steps.episode, y = seq_along(res$time.steps.episode), 
