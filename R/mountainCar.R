@@ -146,6 +146,8 @@ mountainCar = R6::R6Class("mountainCar",
 # Q = rep(0, 3)
 # epsilon = 0.1
 # 
+# sarsa_approx(m)
+# 
 # for (i in 1:episode_count) {
 #   m$setEpisodeOverFalse()
 #   state = m$initial.state
@@ -171,6 +173,4 @@ mountainCar = R6::R6Class("mountainCar",
 #     if (m$episode.over) break
 #   }
 # }
-# 
-# estimate_Q()
-# plot(Q)
+
