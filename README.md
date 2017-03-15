@@ -7,6 +7,8 @@ Reinforcement Learning in R. Still under construction!
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
+ ### Overview
+
 | Algorithm                                 |  R function name  | Model | Prediction/Control | Policy/Value-based      | on-policy/off-policy | Return | Comments                       |
 |-------------------------------------------|:-----------------:|-------|--------------------|-------------------------|----------------------|--------|--------------------------------|
 | Policy Evaluation                         | evaluatePolicy    | yes   | Prediction         | value-based             |                      | V      |                                |
