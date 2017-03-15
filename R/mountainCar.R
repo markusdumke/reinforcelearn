@@ -30,6 +30,8 @@ mountainCar = R6::R6Class("mountainCar",
     # states = NULL,
     client = NULL,
     instance_id = NULL,
+    position = NULL,
+    velocity = NULL,
     velocity.bounds = NULL,
     position.bounds = NULL,
     state.space = NULL,
@@ -38,9 +40,11 @@ mountainCar = R6::R6Class("mountainCar",
     actions = NULL,
     action.space = NULL,
     next.state = NULL,
+    initial.state = NULL,
     reward = NULL,
     episode.over = FALSE,
     n.steps = 0,
+    state.space.bounds = NULL,
     
     initialize = function() {
       remote_base = "http://127.0.0.1:5000"
@@ -61,6 +65,8 @@ mountainCar = R6::R6Class("mountainCar",
       observation_space_info = env_observation_space_info(client, instance_id)
       self$state.space = observation_space_info$name
       self$state.nvar = observation_space_info$shape
+      self$state.space.bounds = list(position.bounds = c(observation_space_info$low[[1]], observation_space_info$high[[1]]), 
+        velocity.bounds = c(observation_space_info$low[[2]], observation_space_info$high[[2]]))
       self$position.bounds = c(observation_space_info$low[[1]], observation_space_info$high[[1]])
       self$velocity.bounds = c(observation_space_info$low[[2]], observation_space_info$high[[2]])
       
@@ -71,6 +77,8 @@ mountainCar = R6::R6Class("mountainCar",
       
       # take action -> sample next state and reward
       res = env_step(self$client, self$instance_id, action, render)
+      self$velocity = res$observation[[2]]
+      self$position = res$observation[[1]]
       self$next.state = res$observation
       self$reward = res$reward
       self$episode.over = res$done
@@ -81,6 +89,7 @@ mountainCar = R6::R6Class("mountainCar",
     setEpisodeOverFalse = function() {
       self$initial.state = env_reset(self$client, self$instance_id)
       self$episode.over = FALSE
+      invisible(self)
     }
   )
 )
@@ -91,9 +100,9 @@ mountainCar = R6::R6Class("mountainCar",
 #   position = observation[[1]]
 #   velocity = observation[[2]]
 # 
-#   seq_position = seq(observation_space_info$low[[1]], observation_space_info$high[[1]],
+#   seq_position = seq(observation_space_info[[1]][1], observation_space_info[[1]][2],
 #     length.out = n.grid + 1)
-#   seq_velocity = seq(observation_space_info$low[[2]], observation_space_info$high[[2]],
+#   seq_velocity = seq(observation_space_info[[2]][1], observation_space_info[[2]][2],
 #     length.out = n.grid + 1)
 #   grid = matrix(0, nrow = n.grid, ncol = n.grid)
 # 
@@ -114,13 +123,13 @@ mountainCar = R6::R6Class("mountainCar",
 # }
 # 
 # sample_epsilon_greedy_action <- function(Q, epsilon) {
-#   
+# 
 #   greedy_action = which.max(Q)
 #   random_actions = seq(1, length(Q))
 #   # non_greedy_actions = actions[actions != greedy_action]
-#   action = sample(c(greedy_action, random_actions), size = 1,  
+#   action = sample(c(greedy_action, random_actions), size = 1,
 #     prob = c(1 - epsilon, rep(epsilon / length(random_actions), length(random_actions))))
-#   
+# 
 #   action
 # }
 # 
@@ -128,10 +137,10 @@ mountainCar = R6::R6Class("mountainCar",
 # n.grid = 10
 # alpha = 0.1
 # episode_count = 20
-# max_steps = 100000
+# max_steps = 200
 # reward = 0
 # done = FALSE
-# weights = matrix(runif(n.grid^2 * action_space_info$n), nrow = n.grid^2, ncol = action_space_info$n)
+# weights = matrix(runif(n.grid^2 * m$n.actions), nrow = n.grid^2, ncol = m$n.actions)
 # # action = sample(seq_len(action_space_info$n) - 1, size = 1) # initial action, # python numeration starts with 0!
 # discount.factor = 1
 # Q = rep(0, 3)
@@ -142,14 +151,12 @@ mountainCar = R6::R6Class("mountainCar",
 #   state = m$initial.state
 #   action = sample_epsilon_greedy_action(Q, epsilon) - 1
 #   for (j in 1:max_steps) {
-#     results = m$step(action, render = TRUE)
+#     m$step(action, render = TRUE)
 # 
-#     print(results$done)
-# 
-#     next.state = results$observation
-#     reward = results$reward
-#     features.state = make_feature_vector(state, observation_space_info, n.grid)
-#     features.next.state = make_feature_vector(next.state, observation_space_info, n.grid)
+#     next.state = m$next.state
+#     reward = m$reward
+#     features.state = make_feature_vector(state, m$state.space.bounds, n.grid)
+#     features.next.state = make_feature_vector(next.state, list(m$position.bounds, m$velocity.bounds), n.grid)
 #     Q = estimate_Q(features.next.state, weights = weights)
 #     next.action = sample_epsilon_greedy_action(Q, epsilon = epsilon) - 1
 # 
@@ -161,9 +168,9 @@ mountainCar = R6::R6Class("mountainCar",
 # 
 #     action = next.action
 #     state = next.state
-#     if (results[["done"]]) break
+#     if (m$episode.over) break
 #   }
 # }
 # 
-# # Dump result info to disk
-# env_monitor_close(client, instance_id)
+# estimate_Q()
+# plot(Q)
