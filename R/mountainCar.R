@@ -45,13 +45,14 @@ mountainCar = R6::R6Class("mountainCar",
     episode.over = FALSE,
     n.steps = 0,
     state.space.bounds = NULL,
+    max.steps.episode = NULL,
     
     initialize = function() {
       remote_base = "http://127.0.0.1:5000"
       client = create_GymClient(remote_base)
       self$client = client
       
-      env_id = "MountainCar-v0"
+      env_id = "MountainCarEasy-v0"
       instance_id = env_create(client, env_id)
       self$instance_id = instance_id
       
@@ -69,7 +70,7 @@ mountainCar = R6::R6Class("mountainCar",
         velocity.bounds = c(observation_space_info$low[[2]], observation_space_info$high[[2]]))
       self$position.bounds = c(observation_space_info$low[[1]], observation_space_info$high[[1]])
       self$velocity.bounds = c(observation_space_info$low[[2]], observation_space_info$high[[2]])
-      
+      self$max.steps.episode = 10000
     },
     
     step = function(action, render = TRUE) {
