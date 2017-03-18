@@ -1,5 +1,5 @@
 # reinforcelearn
-Reinforcement Learning in R. Still under construction!
+Reinforcement Learning in R. Work in progress!
 
 ### Installation
 
