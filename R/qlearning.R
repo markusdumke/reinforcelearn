@@ -41,14 +41,14 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   n.actions = envir$n.actions
   Q = matrix(0, nrow = n.states, ncol = n.actions)
   episode.finished.after = rep(0, n.episodes)
-  rewards_per_episode = rep(0, n.episodes)
+  rewards.per.episode = rep(0, n.episodes)
   
   for (i in seq_len(n.episodes)) {
     
     envir$reset()
     state = envir$state
     j = 0
-    reward_sum = 0
+    reward.sum = 0
     
     while (envir$episode.over == FALSE) {
       
@@ -56,7 +56,7 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
       envir$step(action, render = render)
       next.state = envir$state
       reward = envir$reward
-      reward_sum = reward_sum + reward
+      reward.sum = reward.sum + reward
       
       # update Q for visited state-action pair maximizing over Q values of next state
       TD.target = reward + discount.factor * max(Q[next.state + 1, ]) 
@@ -67,12 +67,12 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
       j = j + 1
       if (envir$episode.over) {
         episode.finished.after[i] = j
-        rewards_per_episode[i] = reward_sum
+        rewards.per.episode[i] = reward.sum
         print(paste("Episode", i, "finished after", j, "time steps."))
         # print(paste("Average Reward:", sum(rewards_per_episode) / i))
         if (i %% 100 == 0) {
           epsilon = epsilon / 2
-          print(paste("Average Reward of last 100 episodes:", sum(rewards_per_episode[seq(i - 99, i)]) / 100))
+          print(paste("Average Reward of last 100 episodes:", sum(rewards.per.episode[seq(i - 99, i)]) / 100))
         }
         break
       } 
@@ -80,5 +80,5 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   }
   
   list(Q = Q, episode.finished.after = episode.finished.after, 
-    rewards_per_episode = rewards_per_episode)
+    rewards.per.episode = rewards.per.episode)
 }
