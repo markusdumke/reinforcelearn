@@ -12,6 +12,9 @@
 #' all other states
 #' @param reward.matrix numerical matrix the rewards for transitions from one 
 #' state to another
+#' @param terminal.states terminal.states of MDP
+#' @param max.steps.episode maximal number of steps allowed in environment
+#' @param ... not used
 #'
 #' @seealso [OpenAI Gym](https://gym.openai.com/docs)
 #' @return Reinforcement Learning Environment, an R6 class.

@@ -34,8 +34,3 @@ test_that("Transition array is correct", {
   grid = gridworld$new(shape = c(2, 1), terminal.states = 1)
   expect_equal(dim(grid$transition.array), c(2, 2, 4))
 })
-
-
-# test_that("", {
-#   
-# })

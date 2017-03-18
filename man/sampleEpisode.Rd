@@ -9,7 +9,7 @@ sampleEpisode(policy, envir, initial.state, initial.action = NULL)
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
 
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{initial.state}{integer: the initial state}
 

@@ -21,19 +21,20 @@
 #' @references [Sutton and Barto (2017) page 140](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158)
 #' @export
 #' @examples
-#' grid = gridworld$new()
-#' Q = qlearning(grid, n.episodes = 1000)
+#' # grid = gridworld$new()
+#' # Q = qlearning(grid, n.episodes = 1000)
 #' 
 #' \dontrun{
 #' # Make sure you have gym-http-api and python installed.
 #' # Then start a server from command line by running: python gym_http_server.py
-#' lake = FrozenLake$new()
-#' Q = qlearning(lake, n.episodes = 10)
+#' FrozenLake = makeEnvironment("FrozenLake-v0")
+#' Q = qlearning(FrozenLake, n.episodes = 10)
 #' }
 qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
   discount.factor = 1, seed = NULL, render = TRUE) {
   
   # input checking
+  stopifnot(envir$state.space == "Discrete")
   if (!is.null(seed)) set.seed(seed)
 
   n.states = envir$n.states
@@ -44,16 +45,16 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   
   for (i in seq_len(n.episodes)) {
     
-    envir$setEpisodeOverFalse()
-    state = envir$initial.state
+    envir$reset()
+    state = envir$state
     j = 0
     reward_sum = 0
     
     while (envir$episode.over == FALSE) {
       
       action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon) - 1
-      envir$step(state, action, render = render)
-      next.state = envir$next.state
+      envir$step(action, render = render)
+      next.state = envir$state
       reward = envir$reward
       reward_sum = reward_sum + reward
       
@@ -68,7 +69,7 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
         episode.finished.after[i] = j
         rewards_per_episode[i] = reward_sum
         print(paste("Episode", i, "finished after", j, "time steps."))
-        print(paste("Average Reward:", sum(rewards_per_episode) / i))
+        # print(paste("Average Reward:", sum(rewards_per_episode) / i))
         if (i %% 100 == 0) {
           epsilon = epsilon / 2
           print(paste("Average Reward of last 100 episodes:", sum(rewards_per_episode[seq(i - 99, i)]) / 100))

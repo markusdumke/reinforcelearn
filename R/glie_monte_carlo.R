@@ -6,7 +6,6 @@
 #' @inheritParams evaluatePolicy
 #'
 #' @return optimal policy and optimal action value function
-#' @export
 controlMonteCarlo <- function(policy, envir, discount.factor) {
   
   print("Currently not implemented.")

@@ -27,7 +27,7 @@
 #' @section Environments:
 #' [gridworld]
 #' [windyGridworld]
-#' [mountainCar]
+#' [makeEnvironment]
 #' 
 #' Link Vignetten!
 #' 

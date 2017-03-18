@@ -8,7 +8,7 @@ qlearning(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL, render = TRUE)
 }
 \arguments{
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
@@ -40,14 +40,14 @@ the optimal action value function Q*. The update formula is:
 \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma max_a Q(S', a) - Q(S, A)]}
 }
 \examples{
-grid = gridworld$new()
-Q = qlearning(grid, n.episodes = 1000)
+# grid = gridworld$new()
+# Q = qlearning(grid, n.episodes = 1000)
 
 \dontrun{
 # Make sure you have gym-http-api and python installed.
 # Then start a server from command line by running: python gym_http_server.py
-lake = FrozenLake$new()
-Q = qlearning(lake, n.episodes = 10)
+FrozenLake = makeEnvironment("FrozenLake-v0")
+Q = qlearning(FrozenLake, n.episodes = 10)
 }
 }
 \references{

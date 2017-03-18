@@ -9,7 +9,7 @@ sarsa_approx(envir, make_feature_vector, n.features, lambda = 0,
   render = TRUE, seed = NULL, ...)
 }
 \arguments{
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{make_feature_vector}{function which produces a feature vector for a given state observation.}
 

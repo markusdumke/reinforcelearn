@@ -10,7 +10,7 @@ predictMC(policy, envir, n.episodes = 100, discount.factor = 1,
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
 
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 

@@ -33,63 +33,64 @@
 predictMC = function(policy, envir, n.episodes = 100, discount.factor = 1, 
   method = c("first-visit, every-visit"), alpha = 0.1) {
   
-  # save in alpha_input the user inputs to reuse this later
-  alpha_input = alpha
-  check_choice(method, c("first-visit, every-visit"))
-  if (!is.null(alpha)) {
-    check_number(alpha, lower = 0, upper = 1)
-  }
-  check_number(discount.factor, lower = 0, upper = 1)
-  
-  n.states = envir$n.states
-  v = rep(0, n.states)
-  n.visits = rep(0, n.states)
-  possible.states = envir$states[envir$states != envir$terminal.states]
-  
-  # to do: parallelize episodes
-  for (i in seq_len(n.episodes)) {
-    if (i %% 50 == 0) {
-      print(paste("Episode:", i))
-    }
-    envir$setEpisodeOverFalse()
-    initial.state = sample(possible.states, 1)
-    episode = sampleEpisode(policy, envir, initial.state)
-    
-    if (method == "first-visit") {
-      # for each state visited in this episode apply mean update
-      # find first occurence if state, weighted sum of following rewards
-      # incremental mean update
-      for (j in unique(episode$states)) { # what if j character?
-        first.occurence = min(which(episode$states == j))
-        sequ = seq(first.occurence + 1, length(episode$rewards))
-        n.visits[j] = n.visits[j] + 1
-        rewards = episode$rewards[sequ]
-        G = estimateReturn(rewards, discount.factor)
-        if (is.null(alpha_input)) {
-          alpha = 1 / n.visits[j]
-        }
-        v[j] = v[j] + alpha * (G - v[j])
-      }
-    }
-    
-    if (method == "every-visit") {
-      for (j in unique(episode$states)) {
-        occurences = which(episode$states == j)
-        for (k in occurences) {
-          sequ = seq(k, length(episode$rewards))
-          n.visits[j] = n.visits[j] + 1
-          rewards = episode$rewards[sequ]
-          G = estimateReturn(rewards, discount.factor)
-          if (is.null(alpha_input)) {
-            alpha = 1 / n.visits[j]
-          }
-          v[j] = v[j] + alpha * (G - v[j])
-        }
-        # sequences = sapply(occurences, function(x) seq(x, length(episode$rewards))) # use vapply!
-      }
-    }
-  }
-  return(v)
+  print("Currently not implemented.")
+  # # save in alpha_input the user inputs to reuse this later
+  # alpha_input = alpha
+  # check_choice(method, c("first-visit, every-visit"))
+  # if (!is.null(alpha)) {
+  #   check_number(alpha, lower = 0, upper = 1)
+  # }
+  # check_number(discount.factor, lower = 0, upper = 1)
+  # 
+  # n.states = envir$n.states
+  # v = rep(0, n.states)
+  # n.visits = rep(0, n.states)
+  # possible.states = envir$states[envir$states != envir$terminal.states]
+  # 
+  # # to do: parallelize episodes
+  # for (i in seq_len(n.episodes)) {
+  #   if (i %% 50 == 0) {
+  #     print(paste("Episode:", i))
+  #   }
+  #   envir$setEpisodeOverFalse()
+  #   initial.state = sample(possible.states, 1)
+  #   episode = sampleEpisode(policy, envir, initial.state)
+  #   
+  #   if (method == "first-visit") {
+  #     # for each state visited in this episode apply mean update
+  #     # find first occurence if state, weighted sum of following rewards
+  #     # incremental mean update
+  #     for (j in unique(episode$states)) { # what if j character?
+  #       first.occurence = min(which(episode$states == j))
+  #       sequ = seq(first.occurence + 1, length(episode$rewards))
+  #       n.visits[j] = n.visits[j] + 1
+  #       rewards = episode$rewards[sequ]
+  #       G = estimateReturn(rewards, discount.factor)
+  #       if (is.null(alpha_input)) {
+  #         alpha = 1 / n.visits[j]
+  #       }
+  #       v[j] = v[j] + alpha * (G - v[j])
+  #     }
+  #   }
+  #   
+  #   if (method == "every-visit") {
+  #     for (j in unique(episode$states)) {
+  #       occurences = which(episode$states == j)
+  #       for (k in occurences) {
+  #         sequ = seq(k, length(episode$rewards))
+  #         n.visits[j] = n.visits[j] + 1
+  #         rewards = episode$rewards[sequ]
+  #         G = estimateReturn(rewards, discount.factor)
+  #         if (is.null(alpha_input)) {
+  #           alpha = 1 / n.visits[j]
+  #         }
+  #         v[j] = v[j] + alpha * (G - v[j])
+  #       }
+  #       # sequences = sapply(occurences, function(x) seq(x, length(episode$rewards))) # use vapply!
+  #     }
+  #   }
+  # }
+  # return(v)
 }
 
 

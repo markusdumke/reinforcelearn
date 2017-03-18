@@ -8,7 +8,7 @@ dqlearning(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
@@ -43,5 +43,5 @@ grid = gridworld$new()
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=163}{Sutton and Barto (2017) page 145}
 }
 \seealso{
-\code{\link[=qlearning]{qlearning()}}
+\link{qlearning}
 }

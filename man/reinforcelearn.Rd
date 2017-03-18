@@ -39,7 +39,7 @@ Temporal-Difference Learning:
 
 \link{gridworld}
 \link{windyGridworld}
-\link{mountainCar}
+\link{makeEnvironment}
 
 Link Vignetten!
 }

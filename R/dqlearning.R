@@ -15,7 +15,7 @@
 #' @return optimal value function Q
 #' @export
 #' @references [Sutton and Barto (2017) page 145](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=163)
-#' @seealso [qlearning()]
+#' @seealso [qlearning]
 #'
 #' @examples
 #' grid = gridworld$new()
@@ -23,44 +23,46 @@
 dqlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
   discount.factor = 1, seed = NULL) {
   
-  # input checking
-  if (!is.null(seed)) set.seed(seed)
+  print("Currently not implemented.")
   
-  # initialize Q1 and Q2 randomly
-  n.states = envir$n.states
-  n.actions = envir$n.actions
-  Q1 = matrix(runif(n.states * n.actions), nrow = n.states, ncol = n.actions)
-  Q1[envir$terminal.states, ] = 0
-  
-  Q2 = matrix(runif(n.states * n.actions), nrow = n.states, ncol = n.actions)
-  Q2[envir$terminal.states, ] = 0
-  
-  for (i in seq_len(n.episodes)) {
-    
-    # initialize starting state s
-    state = sample(envir$non.terminal.states, size = 1)
-    
-    while (state %in% envir$non.terminal.states) { # replace by episode.over?
-      # epsilon-greedy policy, sample action
-      action = sample_epsilon_greedy_action(Q1[state, ] + Q2[state, ], epsilon = epsilon)
-      
-      envir$step(state, action)
-      next.state = envir$next.state
-      reward = envir$reward
-      
-      # update Q for visited state-action pair maximizing over next state
-      which_q <- sample(c("Q1", "Q2"), size = 1)
-      if (which_q == "Q1") {
-        update_q(Q1, Q2, state, action, next.state, reward, discount.factor, alpha)
-      } else {
-        update_q(Q2, Q1, state, action, next.state, reward, discount.factor, alpha)
-      }
-      
-      state = next.state
-    }
-  }
-  
-  list(Q1 = Q1, Q2 = Q2)
+  # # input checking
+  # if (!is.null(seed)) set.seed(seed)
+  # 
+  # # initialize Q1 and Q2 randomly
+  # n.states = envir$n.states
+  # n.actions = envir$n.actions
+  # Q1 = matrix(runif(n.states * n.actions), nrow = n.states, ncol = n.actions)
+  # Q1[envir$terminal.states, ] = 0
+  # 
+  # Q2 = matrix(runif(n.states * n.actions), nrow = n.states, ncol = n.actions)
+  # Q2[envir$terminal.states, ] = 0
+  # 
+  # for (i in seq_len(n.episodes)) {
+  #   
+  #   # initialize starting state s
+  #   state = sample(envir$non.terminal.states, size = 1)
+  #   
+  #   while (state %in% envir$non.terminal.states) { # replace by episode.over?
+  #     # epsilon-greedy policy, sample action
+  #     action = sample_epsilon_greedy_action(Q1[state, ] + Q2[state, ], epsilon = epsilon)
+  #     
+  #     envir$step(state, action)
+  #     next.state = envir$next.state
+  #     reward = envir$reward
+  #     
+  #     # update Q for visited state-action pair maximizing over next state
+  #     which_q <- sample(c("Q1", "Q2"), size = 1)
+  #     if (which_q == "Q1") {
+  #       update_q(Q1, Q2, state, action, next.state, reward, discount.factor, alpha)
+  #     } else {
+  #       update_q(Q2, Q1, state, action, next.state, reward, discount.factor, alpha)
+  #     }
+  #     
+  #     state = next.state
+  #   }
+  # }
+  # 
+  # list(Q1 = Q1, Q2 = Q2)
 }
 
 update_q <- function(Q1, Q2, state, action, next.state, reward, 

@@ -9,7 +9,7 @@ evaluatePolicy(policy, envir, discount.factor = 1, epsilon = 1e-04)
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
 
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

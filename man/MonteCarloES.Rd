@@ -7,14 +7,14 @@
 MonteCarloES(envir, n.episodes = 100, discount.factor = 1)
 }
 \arguments{
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 }
 \value{
-the optimal policy and optimal action value function q
+the optimal policy and optimal action value function Q
 }
 \description{
 Monte Carlo Control with Exploring Starts

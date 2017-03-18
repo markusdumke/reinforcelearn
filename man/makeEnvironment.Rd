@@ -12,12 +12,18 @@ makeEnvironment(gym.envir.name = NULL, max.steps.episode = 200,
 \item{gym.envir.name}{scalar character, e.g. "FrozenLake-v0",
 see \href{https://gym.openai.com/envs}{OpenAI Gym} for possible environments.}
 
+\item{max.steps.episode}{maximal number of steps allowed in environment}
+
 \item{transition.array}{numerical matrix (n.states x n.states x n.actions)
 for each action giving the probabilities for transitions from one state to
 all other states}
 
 \item{reward.matrix}{numerical matrix the rewards for transitions from one
 state to another}
+
+\item{terminal.states}{terminal.states of MDP}
+
+\item{...}{not used}
 }
 \value{
 Reinforcement Learning Environment, an R6 class.

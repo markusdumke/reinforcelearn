@@ -8,7 +8,7 @@ sarsa(envir, lambda = 0, n.steps = 100, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only current state
 is updated (this is equivalent to TD(0)), for lambda = 1 all states visited

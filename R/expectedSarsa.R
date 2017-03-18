@@ -19,38 +19,39 @@
 expectedSarsa <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
   discount.factor = 1, seed = NULL) {
   
-   # input checking
-  if (!is.null(seed)) set.seed(seed)
-  
-  # initialize Q randomly
-  n.states = envir$n.states
-  n.actions = envir$n.actions
-  Q = matrix(runif(n.states * n.actions), nrow = n.states, ncol = n.actions)
-  Q[envir$terminal.states, ] = 0
-  
-  for (i in seq_len(n.episodes)) {
-    
-    # initialize starting state s
-    state = sample(envir$non.terminal.states, size = 1)
-    
-    while (state %in% envir$non.terminal.states) { # replace by episode.over?
-      # epsilon-greedy policy, sample action
-      action = sample_epsilon_greedy_action(Q[state, ], epsilon = epsilon)
-      policy = make_epsilon_greedy_policy(Q, epsilon = epsilon)
-      
-      envir$step(state, action)
-      next.state = envir$next.state
-      reward = envir$reward
-      
-      # update Q for visited state-action pair averaging over next actions
-      TD.target = reward + discount.factor * sum(policy[next.state, ] * Q[next.state, ])
-      TD.error = TD.target - Q[state, action] 
-      Q[state, action] = Q[state, action] + alpha * TD.error
-      state = next.state
-    }
-  }
-  
-  Q
+   print("Currently not implemented.")
+  #  # input checking
+  # if (!is.null(seed)) set.seed(seed)
+  # 
+  # # initialize Q randomly
+  # n.states = envir$n.states
+  # n.actions = envir$n.actions
+  # Q = matrix(runif(n.states * n.actions), nrow = n.states, ncol = n.actions)
+  # Q[envir$terminal.states, ] = 0
+  # 
+  # for (i in seq_len(n.episodes)) {
+  #   
+  #   # initialize starting state s
+  #   state = sample(envir$non.terminal.states, size = 1)
+  #   
+  #   while (state %in% envir$non.terminal.states) { # replace by episode.over?
+  #     # epsilon-greedy policy, sample action
+  #     action = sample_epsilon_greedy_action(Q[state, ], epsilon = epsilon)
+  #     policy = make_epsilon_greedy_policy(Q, epsilon = epsilon)
+  #     
+  #     envir$step(state, action)
+  #     next.state = envir$next.state
+  #     reward = envir$reward
+  #     
+  #     # update Q for visited state-action pair averaging over next actions
+  #     TD.target = reward + discount.factor * sum(policy[next.state, ] * Q[next.state, ])
+  #     TD.error = TD.target - Q[state, action] 
+  #     Q[state, action] = Q[state, action] + alpha * TD.error
+  #     state = next.state
+  #   }
+  # }
+  # 
+  # Q
 }
 
 # return epsilon-greedy policy

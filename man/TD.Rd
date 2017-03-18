@@ -10,7 +10,7 @@ td(policy, envir, lambda = 0, n.steps = 100, discount.factor = 1,
 \arguments{
 \item{policy}{a policy specified as a probability matrix (states x actions)}
 
-\item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
+\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
 
 \item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only current state
 is updated (this is equivalent to TD(0)), for lambda = 1 all states visited
