@@ -6,7 +6,7 @@
 \usage{
 makeEnvironment(gym.envir.name = NULL, max.steps.episode = 200,
   transition.array = NULL, reward.matrix = NULL, terminal.states = NULL,
-  ...)
+  initial.state = NULL, ...)
 }
 \arguments{
 \item{gym.envir.name}{scalar character, e.g. "FrozenLake-v0",
@@ -22,6 +22,8 @@ all other states}
 state to another}
 
 \item{terminal.states}{terminal.states of MDP}
+
+\item{initial.state}{the starting state}
 
 \item{...}{not used}
 }
@@ -67,7 +69,8 @@ FrozenLake$initialize()
 # Create an environment from a transition array and reward matrix.
 grid = gridworld$new()
 gridworld = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states, 
+  initial.state = 1)
 }
 \seealso{
 \href{https://gym.openai.com/docs}{OpenAI Gym}

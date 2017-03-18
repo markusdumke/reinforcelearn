@@ -14,6 +14,7 @@
 #' state to another
 #' @param terminal.states terminal.states of MDP
 #' @param max.steps.episode maximal number of steps allowed in environment
+#' @param initial.state the starting state
 #' @param ... not used
 #'
 #' @seealso [OpenAI Gym](https://gym.openai.com/docs)
@@ -50,9 +51,11 @@
 #' # Create an environment from a transition array and reward matrix.
 #' grid = gridworld$new()
 #' gridworld = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states, 
+#'   initial.state = 1)
 makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200, 
-  transition.array = NULL, reward.matrix = NULL, terminal.states = NULL, ...) {
+  transition.array = NULL, reward.matrix = NULL, terminal.states = NULL, 
+  initial.state = NULL, ...) {
   envir = R6::R6Class("envir",
     public = list(
       gym = NULL,
@@ -77,9 +80,11 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
       transition.array = NULL, 
       reward.matrix = NULL,
       terminal.states = NULL,
+      initial.state = NULL,
       
       initialize = function(gym.envir.name = NULL, max.steps.episode = 200, 
-        transition.array = NULL, reward.matrix = NULL, terminal.states = NULL, ...) {
+        transition.array = NULL, reward.matrix = NULL, terminal.states = NULL, 
+        initial.state = NULL, ...) {
         if (is.null(gym.envir.name)) {
           gym.envir.name = self$name
         }
@@ -146,6 +151,7 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
           self$transition.array = transition.array
           self$reward.matrix = reward.matrix
           self$terminal.states = terminal.states
+          self$initial.state = initial.state
         }
       },
       
@@ -170,11 +176,11 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
         invisible(self)
       },
       
-      reset = function(initial.state = NULL) {
+      reset = function() {
         if (self$gym == TRUE) {
           self$state = env_reset(self$client, self$instance_id)
         } else {
-          self$state = initial.state
+          self$state = self$initial.state
         }
         self$episode.over = FALSE
         invisible(self)
@@ -183,5 +189,5 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
   )
   
   envir$new(gym.envir.name, max.steps.episode = max.steps.episode, 
-    transition.array, reward.matrix, terminal.states, ...)
+    transition.array, reward.matrix, terminal.states, initial.state, ...)
 }
