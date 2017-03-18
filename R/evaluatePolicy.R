@@ -1,15 +1,18 @@
-#' Policy Evaluation
+#' Policy Evaluation (Dynamic Programming)
 #'
-#' Evaluate a given policy in an environment.
-#'
+#' Evaluate a given policy in an environment using dynamic programming. 
+#' 
+#' With the Bellmann equation the update
+#' \deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
+#' 
 #' @details The algorithm runs until the improvement in the value function in two subsequent steps
 #' is smaller than epsilon.
-#' @param policy a policy specified as a probability matrix (states x actions)
-#' @param envir the environment, an R6 class. See also [makeEnvironment].
+#' @param policy numeric matrix: a policy specified as a probability matrix (states x actions)
+#' @param envir an R6 class: the reinforcement learning environment created by [makeEnvironment].
 #' @param discount.factor scalar numeric, discounting future rewards
 #' @param epsilon scalar numeric, algorithm stops when improvement is smaller than epsilon
 #'
-#' @return the state value function v
+#' @return the state value function v, a numeric vector
 #'
 #' @export
 #' @examples
@@ -22,9 +25,8 @@
 #' v = evaluatePolicy(random.policy, grid)
 #' 
 evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) {
+  
   n.states = envir$n.states
-
-  # initialize v to zeros
   v = rep(0, n.states)
   v.new = v
   terminal.states = envir$terminal.states
@@ -44,5 +46,5 @@ evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) 
     }
     v = v.new
   }
-  return(v)
+  v
 }

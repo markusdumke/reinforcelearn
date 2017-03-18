@@ -8,7 +8,7 @@ qlearning(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL, render = TRUE)
 }
 \arguments{
-\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 

@@ -8,9 +8,9 @@ predictMC(policy, envir, n.episodes = 100, discount.factor = 1,
   method = c("first-visit, every-visit"), alpha = 0.1)
 }
 \arguments{
-\item{policy}{a policy specified as a probability matrix (states x actions)}
+\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
 
-\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 

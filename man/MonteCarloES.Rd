@@ -7,7 +7,7 @@
 MonteCarloES(envir, n.episodes = 100, discount.factor = 1)
 }
 \arguments{
-\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 

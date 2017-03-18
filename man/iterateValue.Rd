@@ -7,9 +7,9 @@
 iterateValue(policy, envir, discount.factor)
 }
 \arguments{
-\item{policy}{a policy specified as a probability matrix (states x actions)}
+\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
 
-\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 }

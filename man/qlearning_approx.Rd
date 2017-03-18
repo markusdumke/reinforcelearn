@@ -9,7 +9,7 @@ qlearning_approx(envir, make_feature_vector, n.features, n.episodes = 10,
   seed = NULL, ...)
 }
 \arguments{
-\item{envir}{the environment, an R6 class. See also \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
 \item{make_feature_vector}{function which produces a feature vector for a given state observation.}
 
