@@ -10,12 +10,12 @@
 #' To start a session run python gym_http_server.py in your command line.
 #' 
 #' @section Methods: \describe{
-#' \item{\code{mountainCar$new()}}{Creates a new \code{mountainCar} environment.} 
-#' \item{\code{mountainCar$step(state, action, render = TRUE)}}{
+#' \item{\code{MountainCar$new()}}{Creates a new \code{MountainCar} environment.} 
+#' \item{\code{MountainCar$step(state, action, render = TRUE)}}{
 #' Takes a step in the environment given a state and an action,
 #'   returns the next state and reward. If render = TRUE the environment will be rendered.} 
-#' \item{\code{mountainCar$setEpisodeOverFalse()}}{Resets the
-#'   \code{episode.over} flag of the mountainCar environment. 
+#' \item{\code{MountainCar$setEpisodeOverFalse()}}{Resets the
+#'   \code{episode.over} flag of the MountainCar environment. 
 #'   Useful when starting a new episode.}
 #' }
 #'   
@@ -25,7 +25,7 @@
 #' @import gym
 #' @export
 #' 
-mountainCar = R6::R6Class("mountainCar",
+MountainCar = R6::R6Class("MountainCar",
   public = list(
     # states = NULL,
     client = NULL,
@@ -134,7 +134,7 @@ mountainCar = R6::R6Class("mountainCar",
 #   action
 # }
 # 
-# m = mountainCar$new()
+# m = MountainCar$new()
 # n.grid = 10
 # alpha = 0.1
 # episode_count = 20

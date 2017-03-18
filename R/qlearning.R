@@ -1,4 +1,4 @@
-#' Q-Learning
+#' Q-Learning (Table-lookup)
 #' 
 #' Off-policy TD control algorithm. Q-Learning finds the optimal action value
 #' function Q independent of the policy followed. Using an epsilon-greedy
@@ -14,6 +14,7 @@
 #' @inheritParams evaluatePolicy
 #' @inheritParams predictMC
 #' @inheritParams sarsa
+#' @param render logical scalar: should the environment be rendered
 #'
 #' @return optimal action value function
 #' @seealso [dqlearning]
@@ -22,38 +23,61 @@
 #' @examples
 #' grid = gridworld$new()
 #' Q = qlearning(grid, n.episodes = 1000)
-qlearning <- function(envir, n.episodes = 10, alpha = 0.1, 
-  discount.factor = 1, seed = NULL) {
+#' 
+#' \dontrun{
+#' # Make sure you have gym-http-api and python installed.
+#' # Then start a server from command line by running: python gym_http_server.py
+#' lake = FrozenLake$new()
+#' Q = qlearning(lake, n.episodes = 10)
+#' }
+qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
+  discount.factor = 1, seed = NULL, render = TRUE) {
   
   # input checking
   if (!is.null(seed)) set.seed(seed)
-  
-  # initialize Q randomly
+
   n.states = envir$n.states
   n.actions = envir$n.actions
-  Q = matrix(runif(n.states * n.actions), nrow = n.states, ncol = n.actions)
-  Q[envir$terminal.states, ] = 0
+  Q = matrix(0, nrow = n.states, ncol = n.actions)
+  episode.finished.after = rep(0, n.episodes)
+  rewards_per_episode = rep(0, n.episodes)
   
   for (i in seq_len(n.episodes)) {
     
-    # initialize starting state s
-    state = sample(envir$non.terminal.states, size = 1)
+    envir$setEpisodeOverFalse()
+    state = envir$initial.state
+    j = 0
+    reward_sum = 0
     
-    while (state %in% envir$non.terminal.states) { # replace by episode.over?
-      # epsilon-greedy policy, sample action
-      action = sample_epsilon_greedy_action(Q[state, ], epsilon = 0.1)
+    while (envir$episode.over == FALSE) {
       
-      envir$step(state, action)
+      action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon) - 1
+      envir$step(state, action, render = render)
       next.state = envir$next.state
       reward = envir$reward
+      reward_sum = reward_sum + reward
       
-      # update Q for visited state-action pair maximizing over next state
-      TD.target = reward + discount.factor * max(Q[next.state, ]) 
-      TD.error = TD.target - Q[state, action] 
-      Q[state, action] = Q[state, action] + alpha * TD.error
+      # update Q for visited state-action pair maximizing over Q values of next state
+      TD.target = reward + discount.factor * max(Q[next.state + 1, ]) 
+      TD.error = TD.target - Q[state + 1, action + 1] 
+      Q[state + 1, action + 1] = Q[state + 1, action + 1] + alpha * TD.error
       state = next.state
+      
+      j = j + 1
+      if (envir$episode.over) {
+        episode.finished.after[i] = j
+        rewards_per_episode[i] = reward_sum
+        print(paste("Episode", i, "finished after", j, "time steps."))
+        print(paste("Average Reward:", sum(rewards_per_episode) / i))
+        if (i %% 100 == 0) {
+          epsilon = epsilon / 2
+          print(paste("Average Reward of last 100 episodes:", sum(rewards_per_episode[seq(i - 99, i)]) / 100))
+        }
+        break
+      } 
     }
   }
   
-  Q
+  list(Q = Q, episode.finished.after = episode.finished.after, 
+    rewards_per_episode = rewards_per_episode)
 }

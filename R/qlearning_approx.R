@@ -5,7 +5,6 @@
 #' @inheritParams qlearning
 #' @inheritParams predictMC
 #' @param n.features integer scalar: number of features
-#' @param render logical scalar: should the environment be rendered
 #' @param make_feature_vector function which produces a feature vector for a given state observation.
 #' @param ... arguments passed to make_feature_vector
 #'
@@ -17,7 +16,7 @@
 #' \dontrun{
 #' # Make sure you have gym-http-api and python installed.
 #' # Then start a server from command line by running: python gym_http_server.py
-#' mcar = mountainCar$new()
+#' mcar = MountainCar$new()
 #' 
 #' weights = qlearning_approx(mcar, make_feature_vector, n.features = 10, 
 #'   state.space.bounds = mcar$state.space.bounds, n.grid = 10, n.episodes = 10, 
@@ -53,7 +52,6 @@ qlearning_approx <- function(envir, make_feature_vector, n.features,
       features.next.state = make_feature_vector(next.state, ...)
       Q = estimate_Q(features.next.state, weights = weights)
       
-      # update weights using SARSA(0)
       td.target =  reward + discount.factor * max(Q)
       td.error = td.target - estimate_Q(features.state, action + 1, weights)
       grad = td.error * features.state

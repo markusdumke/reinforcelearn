@@ -21,6 +21,8 @@ qlearning_approx(envir, make_feature_vector, n.features, n.episodes = 10,
 incremental mean update. Useful in non-stationary environments, giving high
 value to the last observed returns.}
 
+\item{epsilon}{scalar numeric, algorithm stops when improvement is smaller than epsilon}
+
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
 \item{render}{logical scalar: should the environment be rendered}
@@ -39,7 +41,7 @@ Q-Learning with linear function approximation
 \dontrun{
 # Make sure you have gym-http-api and python installed.
 # Then start a server from command line by running: python gym_http_server.py
-mcar = mountainCar$new()
+mcar = MountainCar$new()
 
 weights = qlearning_approx(mcar, make_feature_vector, n.features = 10, 
   state.space.bounds = mcar$state.space.bounds, n.grid = 10, n.episodes = 10, 

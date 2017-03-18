@@ -2,10 +2,10 @@
 % Please edit documentation in R/qlearning.R
 \name{qlearning}
 \alias{qlearning}
-\title{Q-Learning}
+\title{Q-Learning (Table-lookup)}
 \usage{
-qlearning(envir, n.episodes = 10, alpha = 0.1, discount.factor = 1,
-  seed = NULL)
+qlearning(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
+  discount.factor = 1, seed = NULL, render = TRUE)
 }
 \arguments{
 \item{envir}{the environment, an R6 class. See also \code{\link[=envir]{envir()}}.}
@@ -16,9 +16,13 @@ qlearning(envir, n.episodes = 10, alpha = 0.1, discount.factor = 1,
 incremental mean update. Useful in non-stationary environments, giving high
 value to the last observed returns.}
 
+\item{epsilon}{scalar numeric, algorithm stops when improvement is smaller than epsilon}
+
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
 \item{seed}{scalar integer: random seed}
+
+\item{render}{logical scalar: should the environment be rendered}
 }
 \value{
 optimal action value function
@@ -38,6 +42,13 @@ the optimal action value function Q*. The update formula is:
 \examples{
 grid = gridworld$new()
 Q = qlearning(grid, n.episodes = 1000)
+
+\dontrun{
+# Make sure you have gym-http-api and python installed.
+# Then start a server from command line by running: python gym_http_server.py
+lake = FrozenLake$new()
+Q = qlearning(lake, n.episodes = 10)
+}
 }
 \references{
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158}{Sutton and Barto (2017) page 140}

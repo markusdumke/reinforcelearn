@@ -21,7 +21,7 @@ The windy gridworld is a simple example from Sutton & Barto (2017). The goal is 
 
 ## SARSA
 
-SARSA is an off-policy control algorithm using temporal-difference learning. Given a state and action pair the next state $S'$ and Reward $R$ are sampled from the environment. Then following an $\epsilon$-greedy policy the next action $A'$ is sampled. The action value of $S$ and $A$ is then updated towards the observed reward plus a discounted (discount factor $\gamma$) of the subsequent state action pair $(S', A')$.
+SARSA is an on-policy control algorithm using temporal-difference learning. Given a state and action pair the next state $S'$ and Reward $R$ are sampled from the environment. Then following an $\epsilon$-greedy policy the next action $A'$ is sampled. The action value of $S$ and $A$ is then updated towards the observed reward plus a discounted (discount factor $\gamma$) of the subsequent state action pair $(S', A')$.
 
 The update equation is: 
 

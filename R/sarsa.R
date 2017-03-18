@@ -15,6 +15,7 @@
 #' @param seed scalar integer: random seed
 #'
 #' @importFrom stats runif
+#' @importFrom nnet which.is.max
 #' @return optimal action value function Q
 #' @export
 #' @references [Sutton and Barto (2017) page 138](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=156)
@@ -79,7 +80,7 @@ sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1,
 # sample_epsilon_greedy_action(c(1, 2, 3), epsilon = 0.2)
 sample_epsilon_greedy_action <- function(Q, epsilon) {
   
-  greedy_action = which.max(Q)
+  greedy_action = argmax(Q)
   random_actions = seq(1, length(Q))
   # non_greedy_actions = actions[actions != greedy_action]
   action = sample(c(greedy_action, random_actions), size = 1,  
@@ -89,9 +90,9 @@ sample_epsilon_greedy_action <- function(Q, epsilon) {
 }
 
 # Argmax (ties broken randomly)
-# x numerical matrix
+# x numeric matrix or numeric vector
 argmax <- function(x) {
-  max.col(x)
+  nnet::which.is.max(x)
 }
 
 # plot(y = seq_along(Q$episodes.over), x = Q$episodes.over, type = "l")
