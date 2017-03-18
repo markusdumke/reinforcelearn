@@ -4,16 +4,28 @@
 \alias{makeEnvironment}
 \title{Make Reinforcement Learning Environment}
 \usage{
-makeEnvironment(gym.envir.name, max.steps.episode = 200, ...)
+makeEnvironment(gym.envir.name = NULL, max.steps.episode = 200,
+  transition.array = NULL, reward.matrix = NULL, terminal.states = NULL,
+  ...)
 }
 \arguments{
 \item{gym.envir.name}{scalar character, e.g. "FrozenLake-v0",
 see \href{https://gym.openai.com/envs}{OpenAI Gym} for possible environments.}
+
+\item{transition.array}{numerical matrix (n.states x n.states x n.actions)
+for each action giving the probabilities for transitions from one state to
+all other states}
+
+\item{reward.matrix}{numerical matrix the rewards for transitions from one
+state to another}
 }
 \value{
 Reinforcement Learning Environment, an R6 class.
 }
 \description{
+This function creates an environment for reinforcement learning.
+You could either use an existing environment from OpenAI Gym or specify the
+transition array and reward matrix for a Markov Decision Process.
 State and action space can be either "Discrete" or "Box".
 }
 \section{Methods}{
@@ -22,6 +34,8 @@ State and action space can be either "Discrete" or "Box".
 \item{\code{envir$step(action, render = TRUE)}}{
 Takes a step in the environment given an action,
 returns the next state, reward and if episode is finished.
+If a transition array and reward matrix are given, the next step will be
+sampled from the MDP, else the step \link[gym:env_step]{gym::env_step} function will be called.
 If render = TRUE the environment will be rendered.}
 \item{\code{envir$reset()}}{Resets the
 \code{episode.over} flag of the environment and returns an initial state.
@@ -31,16 +45,23 @@ Useful when starting a new episode.}
 
 \examples{
 \dontrun{
+# Create an environment from an OpenAI Gym environment.
 # Make sure you have gym-http-api and python installed.
-# Then start a server from command line by running: python gym_http_server.py
-
+# Then run in command line: python gym_http_server.py to start a server.
 FrozenLake = makeEnvironment("FrozenLake-v0")
 FrozenLake$reset()
 FrozenLake$step(action = 0)
 
 # Now we can start a new FrozenLake environment by running:
 FrozenLake$initialize()
+
+# MountainCar = makeEnvironment("MountainCarEasy-v0")
 }
+
+# Create an environment from a transition array and reward matrix.
+grid = gridworld$new()
+gridworld = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
 }
 \seealso{
 \href{https://gym.openai.com/docs}{OpenAI Gym}
