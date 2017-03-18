@@ -1,5 +1,5 @@
 ---
-title: "Solve the windy gridworld using SARSA"
+title: "Solve windy gridworld problem using SARSA"
 author: "Markus Dumke"
 date: "`r Sys.Date()`"
 output:rmarkdown::html_vignette:
@@ -10,7 +10,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
   
-## Windy Gridworld
+## Windy Gridworld Environment
   
 The windy gridworld is a simple example from Sutton & Barto (2017). The goal is to move from a starting state (S) to a goal state (G) as fast as possible, because each step you receive a negative reward of -1 along the way. You can move along the grid using the standard moves (left, right, up and down). In each column of the grid a deterministic wind pushes you up a certain number of steps. E.g. if you are in the cell to the left of the goal state and go right, you will end up two cells above the goal.
  
@@ -32,13 +32,16 @@ In the following we will solve the windy gridworld problem, i.e. find the shorte
 ```{r}
 library(reinforcelearn)
 grid = windyGridworld$new()
+windyGridworld = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states, 
+  initial.state = 31)
 ```
 
 Then we can apply SARSA to find the optimal action value function $Q$. Here we will use SARSA(0), which only updates the current state action pair. Try different $\lambda$ values for a trade-off between temporal-difference and monte carlo learning.
 
 ```{r, results = "hide"}
-set.seed(123)
-res = sarsa(grid, lambda = 0, n.steps = 10000)
+res = sarsa(windyGridworld, lambda = 0, n.steps = 10000)
+# res = qlearning(windyGridworld, n.episodes = 100)
 Q = res$Q
 ```
 
@@ -58,6 +61,8 @@ plot(x = seq_along(res$time.steps.episode), y = diff(c(0, res$time.steps.episode
   type = "l", xlim = c(0, 100), ylab = "Episode length", xlab = "Episode", 
   main = "Episode length over time")
 ```
+
+Plot $Q_*$.
 
 Graphically the optimal policy looks like:
 

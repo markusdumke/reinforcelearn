@@ -10,7 +10,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
   
-## Frozen Lake
+## Frozen Lake Environment
   
 The Frozen Lake environment is a simple reinforcement learning problem
 from [OpenAI Gym](https://gym.openai.com/envs/FrozenLake-v0). 
@@ -46,28 +46,30 @@ Then we can start the environment from within R
 
 ```{r, eval = FALSE}
 library(reinforcelearn)
-lake = FrozenLake$new()
+FrozenLake = makeEnvironment("FrozenLake-v0")
 ```
 
 Then we can apply Q-Learning to find the optimal action value function $Q$.
 
 ```{r, results = "hide", eval = FALSE}
-res = qlearning(lake, n.episodes = 1000)
+n.episodes = 1000
+res = qlearning(FrozenLake, n.episodes = n.episodes)
 Q = res$Q
 ```
 
-Then we can find the optimal policy by acting greedy with respect to $Q$.
+Then we can find the optimal policy by acting greedily with respect to $Q$.
 
 ```{r, eval = FALSE}
 optimal.policy = max.col(Q)
 ```
+Plot $Q_\pi$.
 
 We can plot the average reward of 100 subsequent episodes. The Frozen Lake 
 environment is considered o be solved when the average reward of 100 subsequent episodes 
 is greater than 0.78. The optimal value is 0.8196.
 
 ```{r, eval = FALSE}
-plot(x = 1:1000, y = res$rewards.per.episode / 1:1000, 
+plot(x = seq_len(n.episodes), y = res$rewards.per.episode / 1:n.episodes, 
   type = "l", xlim = c(0, 10000), ylab = "Average Reward", xlab = "Episode", 
   main = "Average Reward of all episodes up to now")
 ```
@@ -79,3 +81,4 @@ Learn more about reinforcement learning in R: [reinforcelearn](https://github.co
 ## Bibliography
 
 [Sutton and Barto (2017)](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf)
+[OpenAI Gym](https://gym.openai.com/envs/FrozenLake-v0)
