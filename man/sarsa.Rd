@@ -21,7 +21,8 @@ incremental mean update. Useful in non-stationary environments, giving high
 value to the last observed returns.}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
-in epsilon-greedy behaviour policy. Higher values of epsilon lead to more exploration.}
+in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
+exploration.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
@@ -40,12 +41,24 @@ The update formula is:
 }
 \examples{
 grid = WindyGridworld$new()
-Q = sarsa(grid, n.steps = 1000)$Q
+WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, 
+  terminal.states = grid$terminal.states, 
+  initial.state = grid$initial.state)
+res = sarsa(WindyGridworld1, n.steps = 1000)
+
+# Optimal action value function
+matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE)
+
+# Optimal policy
+matrix(max.col(res$Q) - 1, ncol = 10, byrow = TRUE)
 }
 \references{
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=156}{Sutton and Barto (2017) page 138}
 }
 \seealso{
+\link{td}
+
 \link{expectedSarsa}
 
 \link{qlearning}

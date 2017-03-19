@@ -17,7 +17,8 @@ incremental mean update. Useful in non-stationary environments, giving high
 value to the last observed returns.}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
-in epsilon-greedy behaviour policy. Higher values of epsilon lead to more exploration.}
+in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
+exploration.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
@@ -38,7 +39,7 @@ grid = gridworld$new()
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=160}{Sutton and Barto (2017) page 142}
 }
 \seealso{
-\code{\link[=sarsa]{sarsa()}}
+\link{sarsa}
 
-\code{\link[=qlearning]{qlearning()}}
+\link{qlearning}
 }

@@ -4,19 +4,19 @@
 \alias{predictMC}
 \title{Monte Carlo Prediction}
 \usage{
-predictMC(policy, envir, n.episodes = 100, discount.factor = 1,
+predictMC(envir, policy, n.episodes = 100, discount.factor = 1,
   method = c("first-visit, every-visit"), alpha = 0.1)
 }
 \arguments{
-\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
-
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+
+\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{method}{character: first-visit or every-visit method}
+\item{method}{scalar character: first-visit or every-visit method}
 
 \item{alpha}{scalar numeric between 0 and 1: weighting factor in the
 incremental mean update. Useful in non-stationary environments, giving high
@@ -43,8 +43,8 @@ random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states,
   ncol = grid$n.actions)
   
 # Estimate state value function with Monte Carlo prediction
-v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
-v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
+v = predictMC(grid, random.policy, n.episodes = 100, method = "first-visit")
+v = predictMC(grid, random.policy, n.episodes = 100, method = "every-visit")
 }
 \seealso{
 \link{td}

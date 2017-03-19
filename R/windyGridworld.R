@@ -2,7 +2,7 @@
 #' 
 #' Simple WindyGridworld problem for reinforcement learning. Actions include
 #' going left, right, up and down. In each column the wind pushes you up a
-#' specific number of steps.
+#' specific number of steps (for thenext action).
 #' 
 #' Possible actions include going left, right, down or up. If an action would
 #' take you off the grid, you remain in the previous state. For each step you
@@ -98,7 +98,7 @@ WindyGridworld = R6::R6Class("WindyGridworld",
           }
           
           # push next.state upwards because of wind
-          column = new.state
+          column = state
           while (column > (self$shape[2] - 1)) {
             column = column - self$shape[2]
           }

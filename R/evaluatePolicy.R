@@ -25,9 +25,9 @@
 #'   ncol = grid$n.actions)
 #' 
 #' # Evaluate given policy for gridworld example
-#' v = evaluatePolicy(random.policy, grid)
-#' 
-evaluatePolicy = function(policy, envir, discount.factor = 1, psi = 0.0001) {
+#' v = evaluatePolicy(Gridworld1, random.policy)
+#' print(round(matrix(v, ncol = 4, byrow = TRUE)))
+evaluatePolicy = function(envir, policy, discount.factor = 1, psi = 0.0001) {
   
   n.states = envir$n.states
   v = rep(0, n.states)

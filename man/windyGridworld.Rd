@@ -11,7 +11,7 @@
 \description{
 Simple WindyGridworld problem for reinforcement learning. Actions include
 going left, right, up and down. In each column the wind pushes you up a
-specific number of steps.
+specific number of steps (for thenext action).
 }
 \details{
 Possible actions include going left, right, down or up. If an action would

@@ -4,13 +4,13 @@
 \alias{td}
 \title{Temporal difference learning}
 \usage{
-td(policy, envir, lambda = 0, n.steps = 100, discount.factor = 1,
+td(envir, policy, lambda = 0, n.steps = 100, discount.factor = 1,
   alpha = 0.1)
 }
 \arguments{
-\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
-
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+
+\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
 
 \item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only current state
 is updated (this is equivalent to TD(0)), for lambda = 1 all states visited
@@ -29,30 +29,32 @@ state value function v
 }
 \description{
 Temporal difference (TD) learning is a method to estimate the state value
-function for a given policy.
-It works by sampling one step from the
-environment and plugging this into the update equation (Bootstrapping). This also
-works for non-episodic environments.
+function for a given policy. It works by sampling one step from the
+environment and plugging this into the update equation (Bootstrapping). This
+also works for non-episodic environments.
 }
 \details{
 The implementation works with eligibility traces. Eligibility traces combine
-a frequency and recency heuristic. Whenever a state is visited,
-the eligibility of this state is increased. Over time the eligibility decreases
+a frequency and recency heuristic. Whenever a state is visited, the
+eligibility of this state is increased. Over time the eligibility decreases
 exponentially. This way, states that occured often and recently get most
 credit for a reward and therefore are updated more strongly than states
 observed infrequently and longer time ago.
 }
 \examples{
-set.seed(1477)
 # Define environment, here simple gridworld
 grid = gridworld$new()
-
+Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
+  initial.state = grid$initial.state)
+  
 # Define random policy
 random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
   ncol = grid$n.actions)
 
 # Estimate state value function with temporal-difference learning (TD(0))
-v = td(random.policy, grid, lambda = 0)
+v = td(Gridworld1, random.policy, lambda = 0, n.steps = 10000)
+print(round(matrix(v, ncol = 4, byrow = TRUE)))
 }
 \references{
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=274}{Sutton and Barto (2017) page 256}

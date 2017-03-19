@@ -13,7 +13,7 @@
 #' @inheritParams predictMC
 #'
 #' @return optimal value function Q
-#' @export
+#' 
 #' @references [Sutton and Barto (2017) page 145](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=163)
 #' @seealso [qlearning]
 #'

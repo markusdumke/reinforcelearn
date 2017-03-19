@@ -7,7 +7,7 @@
 #' @inheritParams evaluatePolicy
 #'
 #' @return the optimal policy and optimal state value function
-#' @export
+#' 
 iteratePolicy <- function(policy, envir, discount.factor) {
   
   print("Currently not implemented.")

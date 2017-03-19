@@ -12,7 +12,7 @@
 #' 
 #' @inheritParams evaluatePolicy
 #' @param n.episodes scalar integer: the number of episodes
-#' @param method character: first-visit or every-visit method
+#' @param method scalar character: first-visit or every-visit method
 #' @param alpha scalar numeric between 0 and 1: weighting factor in the 
 #'   incremental mean update. Useful in non-stationary environments, giving high 
 #'   value to the last observed returns.
@@ -28,9 +28,9 @@
 #'   ncol = grid$n.actions)
 #'   
 #' # Estimate state value function with Monte Carlo prediction
-#' v = predictMC(random.policy, grid, n.episodes = 100, method = "first-visit")
-#' v = predictMC(random.policy, grid, n.episodes = 100, method = "every-visit")
-predictMC = function(policy, envir, n.episodes = 100, discount.factor = 1, 
+#' v = predictMC(grid, random.policy, n.episodes = 100, method = "first-visit")
+#' v = predictMC(grid, random.policy, n.episodes = 100, method = "every-visit")
+predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1, 
   method = c("first-visit, every-visit"), alpha = 0.1) {
   
   print("Currently not implemented.")

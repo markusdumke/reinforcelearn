@@ -179,9 +179,9 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
           self$episode.over = res$done
         } else {
           
-          self$reward = self$reward.matrix[self$state, action]
+          self$reward = self$reward.matrix[self$state + 1, action + 1]
           self$state = sample(self$states, size = 1, 
-            prob = self$transition.array[self$state, , action])
+            prob = self$transition.array[self$state + 1, , action + 1])
           
           if (self$state %in% self$terminal.states) {
             self$episode.over = TRUE

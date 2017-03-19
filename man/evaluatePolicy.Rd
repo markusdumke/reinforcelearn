@@ -4,12 +4,12 @@
 \alias{evaluatePolicy}
 \title{Policy Evaluation (Dynamic Programming)}
 \usage{
-evaluatePolicy(policy, envir, discount.factor = 1, psi = 1e-04)
+evaluatePolicy(envir, policy, discount.factor = 1, psi = 1e-04)
 }
 \arguments{
-\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
-
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+
+\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
@@ -38,6 +38,6 @@ random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states,
   ncol = grid$n.actions)
 
 # Evaluate given policy for gridworld example
-v = evaluatePolicy(random.policy, grid)
-
+v = evaluatePolicy(Gridworld1, random.policy)
+print(round(matrix(v, ncol = 4, byrow = TRUE)))
 }
