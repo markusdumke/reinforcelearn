@@ -79,12 +79,13 @@ MountainCar = makeEnvironment("MountainCarContinuous-v0")
 grid = gridworld$new()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
-  initial.state = 1:14)
+  initial.state = grid$initial.state)
   
 # Create the WindyGridworld environment.
 windygrid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array, 
-  reward.matrix = windygrid$reward.matrix, terminal.states = windygrid$terminal.states, 
+  reward.matrix = windygrid$reward.matrix, 
+  terminal.states = windygrid$terminal.states, 
   initial.state = windygrid$initial.state)
 }
 \seealso{

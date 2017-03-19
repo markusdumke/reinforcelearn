@@ -6,25 +6,26 @@
 \title{Windy Gridworld environment}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
-WindyGridworld$new()
+# WindyGridworld$new()
 }
 \description{
 Simple WindyGridworld problem for reinforcement learning. Actions include
 going left, right, up and down. In each column the wind pushes you up a
 specific number of steps.
 }
+\details{
+Possible actions include going left, right, down or up. If an action would
+take you off the grid, you remain in the previous state. For each step you
+get a reward of -1, until you reach into a terminal state.
+}
 \section{Methods}{
- \describe{ \item{\code{WindyGridworld$new(shape,
-  initial.state, terminal.states, wind)}} {Creates a new
+ \describe{\item{\code{WindyGridworld$new(shape, 
+initial.state, terminal.states, wind)}}{Creates a new
 \code{WindyGridworld} with a specific \code{shape}, which is a length-two
 integer, e.g. \code{c(7, 10)}. \code{terminal.states} is an integer vector
 of the terminal states in the gridworld. Default is \code{37}.
 Initial.state is an integer vector, e.g. 30. \code{wind} is an integer
 vector specifying the strength of the upward wind.}}
-
-Possible actions include going left, right, down or up. If an action would
-take you off the grid, you remain in the previous state. For each step you
-get a reward of -1, until you reach into a terminal state.
 }
 
 \examples{
