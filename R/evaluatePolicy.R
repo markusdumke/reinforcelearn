@@ -10,7 +10,7 @@
 #' @param policy numeric matrix: a policy specified as a probability matrix (states x actions)
 #' @param envir an R6 class: the reinforcement learning environment created by [makeEnvironment].
 #' @param discount.factor scalar numeric, discounting future rewards
-#' @param epsilon scalar numeric, algorithm stops when improvement is smaller than epsilon
+#' @param psi scalar numeric, algorithm stops when improvement is smaller than psi
 #'
 #' @return the state value function v, a numeric vector
 #'
@@ -24,7 +24,7 @@
 #' # Evaluate given policy for gridworld example
 #' v = evaluatePolicy(random.policy, grid)
 #' 
-evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) {
+evaluatePolicy = function(policy, envir, discount.factor = 1, psi = 0.0001) {
   
   n.states = envir$n.states
   v = rep(0, n.states)
@@ -42,7 +42,7 @@ evaluatePolicy = function(policy, envir, discount.factor = 1, epsilon = 0.0001) 
       v.new[state] = policy[state, , drop = FALSE] %*%
         (reward.t[, state, drop = FALSE] + discount.factor * t(P[state, , ]) %*%
            as.matrix(v, nrow = 16))
-      improvement = any(abs(v - v.new) > epsilon)
+      improvement = any(abs(v - v.new) > psi)
     }
     v = v.new
   }

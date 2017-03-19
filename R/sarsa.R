@@ -23,7 +23,7 @@
 #' @seealso [expectedSarsa]
 #' @seealso [qlearning]
 #' @examples 
-#' grid = windyGridworld$new()
+#' grid = WindyGridworld$new()
 #' Q = sarsa(grid, n.steps = 1000)$Q
 sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1, 
   epsilon = 0.1, discount.factor = 1, seed = NULL) {

@@ -4,7 +4,7 @@
 \alias{evaluatePolicy}
 \title{Policy Evaluation (Dynamic Programming)}
 \usage{
-evaluatePolicy(policy, envir, discount.factor = 1, epsilon = 1e-04)
+evaluatePolicy(policy, envir, discount.factor = 1, psi = 1e-04)
 }
 \arguments{
 \item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
@@ -13,7 +13,7 @@ evaluatePolicy(policy, envir, discount.factor = 1, epsilon = 1e-04)
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{epsilon}{scalar numeric, algorithm stops when improvement is smaller than epsilon}
+\item{psi}{scalar numeric, algorithm stops when improvement is smaller than psi}
 }
 \value{
 the state value function v, a numeric vector

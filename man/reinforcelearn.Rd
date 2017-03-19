@@ -38,7 +38,7 @@ Temporal-Difference Learning:
 \section{Environments}{
 
 \link{gridworld}
-\link{windyGridworld}
+\link{WindyGridworld}
 \link{makeEnvironment}
 
 Link Vignetten!

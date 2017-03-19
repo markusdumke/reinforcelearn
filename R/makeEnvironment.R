@@ -3,18 +3,25 @@
 #' This function creates an environment for reinforcement learning. 
 #' You could either use an existing environment from OpenAI Gym or specify the 
 #' transition array and reward matrix for a Markov Decision Process.
-#' State and action space can be either "Discrete" or "Box".
+#' 
+#' State and action space can be either "Discrete" or "Box". For the discrete 
+#' case states and actions are numerated starting from 0.
 #'
 #' @param gym.envir.name scalar character, e.g. "FrozenLake-v0", 
 #' see [OpenAI Gym](https://gym.openai.com/envs) for possible environments.
 #' @param transition.array numerical matrix (n.states x n.states x n.actions) 
-#' for each action giving the probabilities for transitions from one state to 
-#' all other states
+#'   for each action giving the probabilities for transitions from one state to 
+#'   all other states
 #' @param reward.matrix numerical matrix the rewards for transitions from one 
-#' state to another
-#' @param terminal.states terminal.states of MDP
-#' @param max.steps.episode maximal number of steps allowed in environment
-#' @param initial.state the starting state
+#'   state to another
+#' @param terminal.states integer vector: terminal.states of MDP. Note that
+#'   states are numerated starting with 0.
+#' @param max.steps.episode scalar integer: maximal number of steps allowed in 
+#'   environment
+#' @param initial.state scalar integer or integer vector: the starting state. If
+#'   a vector is given a starting state will be randomly sampled from this 
+#'   vector when reset is called. Note that states are numerated starting with 
+#'   0.
 #' @param ... not used
 #'
 #' @seealso [OpenAI Gym](https://gym.openai.com/docs)
@@ -45,14 +52,21 @@
 #' # Now we can start a new FrozenLake environment by running:
 #' FrozenLake$initialize()
 #' 
-#' # MountainCar = makeEnvironment("MountainCarEasy-v0")
+#' # Create the MountainCar environment with continuous action space.
+#' MountainCar = makeEnvironment("MountainCarContinuous-v0")
 #' }
 #' 
 #' # Create an environment from a transition array and reward matrix.
 #' grid = gridworld$new()
-#' gridworld = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states, 
-#'   initial.state = 1)
+#' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
+#'   initial.state = 1:14)
+#'   
+#' # Create the WindyGridworld environment.
+#' windygrid = WindyGridworld$new()
+#' WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array, 
+#'   reward.matrix = windygrid$reward.matrix, terminal.states = windygrid$terminal.states, 
+#'   initial.state = windygrid$initial.state)
 makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200, 
   transition.array = NULL, reward.matrix = NULL, terminal.states = NULL, 
   initial.state = NULL, ...) {
@@ -144,13 +158,13 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
           self$gym = FALSE
           self$state.space = "Discrete"
           self$action.space = "Discrete"
-          self$actions = seq_len(ncol(reward.matrix))
+          self$actions = seq_len(ncol(reward.matrix)) - 1
           self$n.states = nrow(reward.matrix)
           self$n.actions = ncol(reward.matrix)
-          self$states = seq_len(self$n.states)
+          self$states = seq_len(self$n.states) - 1
           self$transition.array = transition.array
           self$reward.matrix = reward.matrix
-          self$terminal.states = terminal.states
+          self$terminal.states = terminal.states # state numeration starts with 0
           self$initial.state = initial.state
         }
       },
@@ -180,7 +194,8 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
         if (self$gym == TRUE) {
           self$state = env_reset(self$client, self$instance_id)
         } else {
-          self$state = self$initial.state
+          self$state = ifelse(length(self$initial.state) > 1, 
+            sample(self$initial.state, size = 1), self$initial.state)
         }
         self$episode.over = FALSE
         invisible(self)

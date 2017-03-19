@@ -26,7 +26,7 @@
 #' 
 #' @section Environments:
 #' [gridworld]
-#' [windyGridworld]
+#' [WindyGridworld]
 #' [makeEnvironment]
 #' 
 #' Link Vignetten!

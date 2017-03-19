@@ -32,42 +32,22 @@ take you off the grid, you remain in the previous state. For each step you
 get a reward of -1, until you reach into a terminal state.
 }
 \section{Methods}{
- \describe{ \item{\code{gridworld$new(shape,
-  terminal.states)}}{Creates a new \code{gridworld} with a specific
-\code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}.
+ \describe{ \item{\code{gridworld$new(shape, 
+  terminal.states, initial.state)}}{Creates a new \code{gridworld} with a
+specific \code{shape}, which is a length-two integer, e.g. \code{c(4, 4)}.
 \code{terminal.states} is an integer vector of the terminal states in the
-gridworld. Default is \code{c(1, 16)}} \item{\code{gridworld$step(state,
-  action)}}{Takes a step in the gridworld given a state and an action,
-returns the next state and reward.}
-\item{\code{gridworld$setEpisodeOverFalse()}}{Resets the
-\code{episode.over} flag of the gridworld class. Useful when starting a new
-episode.} }
+gridworld. Default is \code{c(1, 16)}. initial.state sppecifies the
+initial.states, an integer vector.} }
 }
 
 \examples{
-set.seed(27)
-grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16))
-
-# initial state = 3
-states = 3
-rewards = numeric(0)
-sampled.actions = character(0)
-episode.over = FALSE
-i = 1
-
-while(grid$episode.over == FALSE) {
-  sampled.actions = append(sampled.actions, sample(grid$actions, size = 1))
-  grid$step(states[i], sampled.actions[i])
-  states = append(states, grid$next.state)
-  rewards = append(rewards, grid$reward)
-  episode.over = grid$episode.over
-  i = i + 1
-}
-
-print(rewards)
-print(states)
+grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16), 
+  initial.state = 1:14)
 }
 \references{
 Gridworld example from Sutton & Barto, chapter 4
+}
+\seealso{
+\link{makeEnvironment}
 }
 \keyword{datasets}

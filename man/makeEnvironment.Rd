@@ -12,7 +12,8 @@ makeEnvironment(gym.envir.name = NULL, max.steps.episode = 200,
 \item{gym.envir.name}{scalar character, e.g. "FrozenLake-v0",
 see \href{https://gym.openai.com/envs}{OpenAI Gym} for possible environments.}
 
-\item{max.steps.episode}{maximal number of steps allowed in environment}
+\item{max.steps.episode}{scalar integer: maximal number of steps allowed in
+environment}
 
 \item{transition.array}{numerical matrix (n.states x n.states x n.actions)
 for each action giving the probabilities for transitions from one state to
@@ -21,9 +22,13 @@ all other states}
 \item{reward.matrix}{numerical matrix the rewards for transitions from one
 state to another}
 
-\item{terminal.states}{terminal.states of MDP}
+\item{terminal.states}{integer vector: terminal.states of MDP. Note that
+states are numerated starting with 0.}
 
-\item{initial.state}{the starting state}
+\item{initial.state}{scalar integer or integer vector: the starting state. If
+a vector is given a starting state will be randomly sampled from this
+vector when reset is called. Note that states are numerated starting with
+0.}
 
 \item{...}{not used}
 }
@@ -34,7 +39,10 @@ Reinforcement Learning Environment, an R6 class.
 This function creates an environment for reinforcement learning.
 You could either use an existing environment from OpenAI Gym or specify the
 transition array and reward matrix for a Markov Decision Process.
-State and action space can be either "Discrete" or "Box".
+}
+\details{
+State and action space can be either "Discrete" or "Box". For the discrete
+case states and actions are numerated starting from 0.
 }
 \section{Methods}{
  \describe{
@@ -63,14 +71,21 @@ FrozenLake$step(action = 0)
 # Now we can start a new FrozenLake environment by running:
 FrozenLake$initialize()
 
-# MountainCar = makeEnvironment("MountainCarEasy-v0")
+# Create the MountainCar environment with continuous action space.
+MountainCar = makeEnvironment("MountainCarContinuous-v0")
 }
 
 # Create an environment from a transition array and reward matrix.
 grid = gridworld$new()
-gridworld = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states, 
-  initial.state = 1)
+Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
+  initial.state = 1:14)
+  
+# Create the WindyGridworld environment.
+windygrid = WindyGridworld$new()
+WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array, 
+  reward.matrix = windygrid$reward.matrix, terminal.states = windygrid$terminal.states, 
+  initial.state = windygrid$initial.state)
 }
 \seealso{
 \href{https://gym.openai.com/docs}{OpenAI Gym}

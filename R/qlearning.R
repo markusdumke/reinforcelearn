@@ -68,8 +68,8 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
       if (envir$episode.over) {
         episode.finished.after[i] = j
         rewards.per.episode[i] = reward.sum
-        print(paste("Episode", i, "finished after", j, "time steps."))
-        # print(paste("Average Reward:", sum(rewards_per_episode) / i))
+        # print(paste("Episode", i, "finished after", j, "time steps."))
+        # print(paste("Average Reward:", sum(rewards.per.episode) / i))
         if (i %% 100 == 0) {
           epsilon = epsilon / 2
           print(paste("Average Reward of last 100 episodes:", sum(rewards.per.episode[seq(i - 99, i)]) / 100))
