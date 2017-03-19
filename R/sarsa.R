@@ -42,6 +42,7 @@ sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1,
   # input checking
   if (!is.null(seed)) set.seed(seed)
   
+  time.steps.episode = c()
   episode.finished.after = rep(0, 1000)
   rewards.per.episode = rep(0, 1000)
   n.states = envir$n.states
@@ -92,7 +93,7 @@ sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1,
       #   epsilon = epsilon / 2
       #   print(paste("Average Reward of last 100 episodes:", sum(rewards.per.episode[seq(i - 99, i)]) / 100))
       # }
-      # time.steps.episode = append(time.steps.episode, i)
+      time.steps.episode = append(time.steps.episode, i)
       envir$reset()
       state = envir$state
       action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon = epsilon)
@@ -103,7 +104,7 @@ sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1,
   }
   
   list(Q = Q, episode.finished.after = episode.finished.after, 
-    rewards.per.episode = rewards.per.episode)
+    rewards.per.episode = rewards.per.episode, time.steps.episode = time.steps.episode)
 }
 
 # Q a numeric vector: the action value function for a given state
@@ -130,24 +131,24 @@ argmax <- function(x) {
 # plot(x = seq_along(Q$episodes.over), y = diff(c(0, Q$episodes.over)), type = "l", 
 #   xlim = c(0, 200), ylab = "Episode length", xlab = "Episode")
 
-grid = WindyGridworld$new()
-WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
-  reward.matrix = grid$reward.matrix,
-  terminal.states = grid$terminal.states,
-  initial.state = grid$initial.state)
-res = sarsa(WindyGridworld1, n.steps = 100000, alpha = 0.5, epsilon = 0.1)
-
-# Optimal action value function
-matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE)
-
-# Optimal policy
-matrix(max.col(res$Q) - 1, ncol = 10, byrow = TRUE)
-plot(x = res$time.steps.episode, y = seq_along(res$time.steps.episode),
- type = "l", xlim = c(0, 100000), ylab = "Episode", xlab = "Time steps",
- main = "Episodes completed per time step")
-plot(x = seq_along(res$time.steps.episode), y = diff(c(0, res$time.steps.episode)),
- type = "l", xlim = c(0, length(res$time.steps.episode)), ylab = "Episode length", xlab = "Episode",
- main = "Episode length over time")
+# grid = WindyGridworld$new()
+# WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
+#   reward.matrix = grid$reward.matrix,
+#   terminal.states = grid$terminal.states,
+#   initial.state = grid$initial.state)
+# res = sarsa(WindyGridworld1, n.steps = 100000, alpha = 0.5, epsilon = 0.1)
+# 
+# # Optimal action value function
+# matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE)
+# 
+# # Optimal policy
+# matrix(max.col(res$Q) - 1, ncol = 10, byrow = TRUE)
+# plot(x = res$time.steps.episode, y = seq_along(res$time.steps.episode),
+#  type = "l", xlim = c(0, 100000), ylab = "Episode", xlab = "Time steps",
+#  main = "Episodes completed per time step")
+# plot(x = seq_along(res$time.steps.episode), y = diff(c(0, res$time.steps.episode)),
+#  type = "l", xlim = c(0, length(res$time.steps.episode)), ylab = "Episode length", xlab = "Episode",
+#  main = "Episode length over time")
 
 # FrozenLake = makeEnvironment("FrozenLake-v0")
 # res = sarsa(FrozenLake, n.steps = 10000, alpha = 0.5, epsilon = 0.1)
