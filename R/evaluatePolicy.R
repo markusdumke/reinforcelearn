@@ -32,8 +32,7 @@ evaluatePolicy = function(policy, envir, discount.factor = 1, psi = 0.0001) {
   n.states = envir$n.states
   v = rep(0, n.states)
   v.new = v
-  terminal.states = envir$terminal.states
-  not.terminal.states = setdiff(seq(1, n.states), terminal.states)
+  non.terminal.states = setdiff(seq(0, n.states - 1), envir$terminal.states)
 
   P = envir$transition.array
   reward.t = t(envir$reward.matrix)
@@ -41,9 +40,9 @@ evaluatePolicy = function(policy, envir, discount.factor = 1, psi = 0.0001) {
 
   # iterate while improvement in value function greater than epsilon for each element
   while (improvement == TRUE) {
-    for (state in not.terminal.states) {
-      v.new[state] = policy[state, , drop = FALSE] %*%
-        (reward.t[, state, drop = FALSE] + discount.factor * t(P[state, , ]) %*%
+    for (state in non.terminal.states) {
+      v.new[state + 1] = policy[state + 1, , drop = FALSE] %*%
+        (reward.t[, state + 1, drop = FALSE] + discount.factor * t(P[state + 1, , ]) %*%
            as.matrix(v, nrow = 16))
       improvement = any(abs(v - v.new) > psi)
     }
