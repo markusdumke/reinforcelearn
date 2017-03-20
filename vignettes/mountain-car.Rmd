@@ -37,13 +37,13 @@ In the following we will solve the windy gridworld problem, i.e. find the shorte
 
 ```{r, eval = FALSE}
 library(reinforcelearn)
-mcar = MountainCar$new()
+MountainCar = makeEnvironment("MountainCarEasy-v0")
 ```
 
 Then we can apply SARSA to find the optimal action value function $Q$. Here we will use SARSA(0), which only updates the current state action pair. Try different $\lambda$ values for a trade-off between temporal-difference and monte carlo learning.
 
 ```{r, results = "hide", eval = FALSE}
-res = sarsa(mcar, lambda = 0, n.steps = 10000)
+res = sarsa(MountainCar, lambda = 0, n.steps = 10000)
 ```
 
 plot cost-to-go function
