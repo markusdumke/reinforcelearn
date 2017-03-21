@@ -8,7 +8,38 @@ if (!require(devtools)) install.packages("devtools")
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
- ### Overview
+### Create an environment
+
+With `makeEnvironment` you can create a reinforcement learning environment, either from [OpenAI Gym](https://gym.openai.com/) or from the state transition matrix and reward matrix of a Markov Decision Process. To use a gym environment you need to have python and [gym-http-api](https://github.com/openai/gym-http-api) installed.
+
+```r
+library(reinforcelearn)
+
+# Create an environment from an OpenAI Gym environment.
+# First run in command line: python gym_http_server.py to start a server.
+FrozenLake = makeEnvironment("FrozenLake-v0")
+FrozenLake$reset()
+FrozenLake$step(action = 0)
+
+# You can also create an environment from an MDP
+grid = gridworld$new()
+Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
+  initial.state = grid$initial.state)
+```
+
+Environments always have an initialization function to create a new instance of the environment, a reset function, which returns an initial state observation and a step function, which takes a step in the environment given an action returning the next state observation, reward and if the episode is finished.
+
+### Run a reinforcement learning algorithm
+
+After you created an environment you can use various reinforcement learning algorithms. For example, for a tabular environment like  gridworld you can use tabular Q-Learning to solve it and find the optimal action value function `Q*`. You can set various parameters like the step size $alpha$, the number of episodes, the discount factor or epsilon, the ratio of random actions sampled by an $epsilon$-greedy behaviour policy.
+
+```r
+res = qlearning(Gridworld1, n.episodes = 10)
+print(matrix(res$Q, ncol = 4, byrow = TRUE)
+```
+
+### Overview about algorithms
 
 | Algorithm                                 |  R function name  | Model | Prediction/Control | Policy/Value-based      | on-policy/off-policy | Return | Comments                       |
 |-------------------------------------------|:-----------------:|-------|--------------------|-------------------------|----------------------|--------|--------------------------------|
