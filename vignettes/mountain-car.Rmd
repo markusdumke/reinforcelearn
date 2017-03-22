@@ -11,39 +11,37 @@ vignette: >
 ---
   
 ## MountainCar
-  
-We will use the Gym MountainCar environment. Therefore we need to install python, gym and gym-http-api first.
 
-After that we open a command line tool, go to the folder gym-http-api and run 
-
-```{python, eval = FALSE}
-python gym_http_server.py
-```
+MountainCar is a classical reinforcement learning problem. The goal is to drive a car up a hill. The car cannot drive the hill up in a single pass, so it first needs to go backwards, build up momentum and then go forwards into the goal. The state space is characterized by velocity and position, each continuous within certain bounds. Actions include throttle backward, forward or not at all (- 1, 0, + 1), so the action space is discrete.
 
 <div class="figure">
 <img src="mountain_car.JPG"/>
 <p class="caption">Mountain Car environment</p>
 </div>
 
-## SARSA
+In the following we will try to solve a simplified version of the problem, which allows 10000 steps per episode.
 
-SARSA is an off-policy control algorithm using temporal-difference learning. Given a state and action pair the next state $S'$ and Reward $R$ are sampled from the environment. Then following an $\epsilon$-greedy policy the next action $A'$ is sampled. The action value of $S$ and $A$ is then updated towards the observed reward plus a discounted (discount factor $\gamma$) of the subsequent state action pair $(S', A')$.
+## Q-Learning
+
+Q-Learning is an off-policy control algorithm using temporal-difference learning. Given a state and action pair the next state $S'$ and Reward $R$ are sampled from the environment. Then we take the max of the Q values of all possible successor actions. The action value of $S$ and $A$ is then updated towards the observed reward plus a discounted (discount factor $\gamma$) Q value of the next state $S'$ and best action $a$.
 
 The update equation is: 
 
-$Q(S, A) \leftarrow  Q(S, A) + \alpha[R + \gamma Q(S', A') - Q(S, A)]$
+$Q(S, A) \leftarrow  Q(S, A) + \alpha[R + \gamma \max_a(Q(S', a)) - Q(S, A)]$
 
-In the following we will solve the windy gridworld problem, i.e. find the shortest path from the start state to the goal state. First we load the `reinforcelearn` package and create the environment. 
+We will use the Gym implementation of the MountainCar environment. Therefore we need to install python and gym-http-api first. Then we can load the `reinforcelearn` package and create the environment. First we need to set the path to the gym-http-api folder.
 
 ```{r, eval = FALSE}
 library(reinforcelearn)
-MountainCar = makeEnvironment("MountainCarEasy-v0")
+options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
+MountainCar = makeEnvironment("MountainCarEasy-v0", max.steps.episode = 10000)
 ```
 
-Then we can apply SARSA to find the optimal action value function $Q$. Here we will use SARSA(0), which only updates the current state action pair. Try different $\lambda$ values for a trade-off between temporal-difference and monte carlo learning.
+Then we can apply Q-Learning to find the optimal policy. Because the state space is continuous, we will use linear function approximation to represent the states. Here we use a very simple grid across the two-dimensional state space and return a one-hot vector representing in which grid cell the agent is. Then we can easily apply Q-Learning to the task. We need to pass on the function which creates the feature vector from the state observation.
 
 ```{r, results = "hide", eval = FALSE}
-res = sarsa(MountainCar, lambda = 0, n.steps = 10000)
+weights = qlearning_approx(MountainCar, make_feature_vector, n.features = 10, 
+   state.space.bounds = MountainCar$state.space.bounds, n.grid = 10, n.episodes = 10)
 ```
 
 plot cost-to-go function

@@ -23,6 +23,8 @@
 #'   vector when reset is called. Note that states are numerated starting with 
 #'   0.
 #' @param ... not used
+#' @param gym.api.path character path to your gym-http-api folder, best practise 
+#' is to set this using options(gym.api.path = "your_path")
 #'
 #' @seealso [OpenAI Gym](https://gym.openai.com/docs)
 #' @return Reinforcement Learning Environment, an R6 class.
@@ -30,7 +32,7 @@
 #' \item{\code{envir$initialize()}}{Creates a new environment.} 
 #' \item{\code{envir$step(action, render = TRUE)}}{
 #' Takes a step in the environment given an action,
-#'   returns the next state, reward and if episode is finished. 
+#'   returns the next state, reward and if the episode is finished (logical). 
 #'   If a transition array and reward matrix are given, the next step will be 
 #'   sampled from the MDP, else the step [gym::env_step] function will be called.
 #'   If render = TRUE the environment will be rendered.} 
@@ -44,7 +46,8 @@
 #' \dontrun{
 #' # Create an environment from an OpenAI Gym environment.
 #' # Make sure you have gym-http-api and python installed.
-#' # Then run in command line: python gym_http_server.py to start a server.
+#' # Then set path to the gym-http-api folder, e.g.:
+#' options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
 #' FrozenLake = makeEnvironment("FrozenLake-v0")
 #' FrozenLake$reset()
 #' FrozenLake$step(action = 0)
@@ -52,11 +55,11 @@
 #' # Now we can start a new FrozenLake environment by running:
 #' FrozenLake$initialize()
 #' 
-#' # Create the MountainCar environment with continuous action space.
-#' MountainCar = makeEnvironment("MountainCarContinuous-v0")
+#' # Create the MountainCar environment which has a continuous state space.
+#' MountainCar = makeEnvironment("MountainCar-v0")
 #' }
 #' 
-#' # Create an environment from a transition array and reward matrix.
+#' # Create an environment from a transition array and reward matrix (here a simple gridworld).
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
 #'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
@@ -68,12 +71,13 @@
 #'   reward.matrix = windygrid$reward.matrix, 
 #'   terminal.states = windygrid$terminal.states, 
 #'   initial.state = windygrid$initial.state)
-makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200, 
-  transition.array = NULL, reward.matrix = NULL, terminal.states = NULL, 
-  initial.state = NULL, ...) {
+makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym.api.path"), 
+  max.steps.episode = 200, transition.array = NULL, reward.matrix = NULL, 
+  terminal.states = NULL, initial.state = NULL, ...) {
   envir = R6::R6Class("envir",
     public = list(
       gym = NULL,
+      gym.api.path = NULL,
       name = NULL,
       client = NULL,
       instance_id = NULL,
@@ -97,15 +101,22 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
       terminal.states = NULL,
       initial.state = NULL,
       
-      initialize = function(gym.envir.name = NULL, max.steps.episode = 200, 
-        transition.array = NULL, reward.matrix = NULL, terminal.states = NULL, 
-        initial.state = NULL, ...) {
+      initialize = function(gym.envir.name = NULL, gym.api.path = NULL, 
+        max.steps.episode = 200, transition.array = NULL, reward.matrix = NULL, 
+        terminal.states = NULL, initial.state = NULL, ...) {
         if (is.null(gym.envir.name)) {
           gym.envir.name = self$name
         }
         
         if (is.null(transition.array)) {
-          
+          if (is.null(getOption("gym.api.path"))) {
+            stop("Please set a path to your gym-http-api folder using options(gym.api.path = 'your_path')")
+          }
+          self$gym.api.path = gym.api.path
+          # start python gym_http_server.py from within r using the path specified by gym.api.path
+          command = "python"
+          path2pythonfile = paste0(gym.api.path, "/gym_http_server.py")
+          output = system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
           self$gym = TRUE
           self$name = gym.envir.name
           remote_base = "http://127.0.0.1:5000"
@@ -204,6 +215,6 @@ makeEnvironment <- function(gym.envir.name = NULL, max.steps.episode = 200,
     )
   )
   
-  envir$new(gym.envir.name, max.steps.episode = max.steps.episode, 
+  envir$new(gym.envir.name, gym.api.path, max.steps.episode = max.steps.episode, 
     transition.array, reward.matrix, terminal.states, initial.state, ...)
 }

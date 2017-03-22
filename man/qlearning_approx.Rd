@@ -11,7 +11,7 @@ qlearning_approx(envir, make_feature_vector, n.features, n.episodes = 10,
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
-\item{make_feature_vector}{function which produces a feature vector for a given state observation.}
+\item{make_feature_vector}{function which returns a feature vector for a given state observation.}
 
 \item{n.features}{integer scalar: number of features}
 
@@ -43,10 +43,10 @@ Q-Learning with linear function approximation
 \dontrun{
 # Make sure you have gym-http-api and python installed.
 # Then start a server from command line by running: python gym_http_server.py
-mcar = MountainCar$new()
+MountainCar = makeEnvironment("MountainCar-v0")
 
-weights = qlearning_approx(mcar, make_feature_vector, n.features = 10, 
-  state.space.bounds = mcar$state.space.bounds, n.grid = 10, n.episodes = 10, 
+weights = qlearning_approx(MountainCar, make_feature_vector, n.features = 10, 
+  state.space.bounds = MountainCar$state.space.bounds, n.grid = 10, n.episodes = 10, 
   render = TRUE)
 }
 

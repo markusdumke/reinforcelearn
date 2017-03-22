@@ -4,13 +4,17 @@
 \alias{makeEnvironment}
 \title{Make Reinforcement Learning Environment}
 \usage{
-makeEnvironment(gym.envir.name = NULL, max.steps.episode = 200,
+makeEnvironment(gym.envir.name = NULL,
+  gym.api.path = getOption("gym.api.path"), max.steps.episode = 200,
   transition.array = NULL, reward.matrix = NULL, terminal.states = NULL,
   initial.state = NULL, ...)
 }
 \arguments{
 \item{gym.envir.name}{scalar character, e.g. "FrozenLake-v0",
 see \href{https://gym.openai.com/envs}{OpenAI Gym} for possible environments.}
+
+\item{gym.api.path}{character path to your gym-http-api folder, best practise
+is to set this using options(gym.api.path = "your_path")}
 
 \item{max.steps.episode}{scalar integer: maximal number of steps allowed in
 environment}
@@ -49,7 +53,7 @@ case states and actions are numerated starting from 0.
 \item{\code{envir$initialize()}}{Creates a new environment.}
 \item{\code{envir$step(action, render = TRUE)}}{
 Takes a step in the environment given an action,
-returns the next state, reward and if episode is finished.
+returns the next state, reward and if the episode is finished (logical).
 If a transition array and reward matrix are given, the next step will be
 sampled from the MDP, else the step \link[gym:env_step]{gym::env_step} function will be called.
 If render = TRUE the environment will be rendered.}
@@ -71,8 +75,8 @@ FrozenLake$step(action = 0)
 # Now we can start a new FrozenLake environment by running:
 FrozenLake$initialize()
 
-# Create the MountainCar environment with continuous action space.
-MountainCar = makeEnvironment("MountainCarContinuous-v0")
+# Create the MountainCar environment which has a continuous state space.
+MountainCar = makeEnvironment("MountainCar-v0")
 }
 
 # Create an environment from a transition array and reward matrix.
