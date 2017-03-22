@@ -33,7 +33,7 @@
 #' @export
 #' @importFrom R6 R6Class
 #' @examples
-#' grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16), 
+#' grid = gridworld$new(shape = c(4, 4), terminal.states = c(0, 15), 
 #'   initial.state = 1:14)
 #' @seealso [makeEnvironment]
 gridworld = R6::R6Class("gridworld",

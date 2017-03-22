@@ -67,7 +67,8 @@ Useful when starting a new episode.}
 \dontrun{
 # Create an environment from an OpenAI Gym environment.
 # Make sure you have gym-http-api and python installed.
-# Then run in command line: python gym_http_server.py to start a server.
+# Then set path to the gym-http-api folder, e.g.:
+options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
 FrozenLake = makeEnvironment("FrozenLake-v0")
 FrozenLake$reset()
 FrozenLake$step(action = 0)
@@ -79,7 +80,7 @@ FrozenLake$initialize()
 MountainCar = makeEnvironment("MountainCar-v0")
 }
 
-# Create an environment from a transition array and reward matrix.
+# Create an environment from a transition array and reward matrix (here a simple gridworld).
 grid = gridworld$new()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,

@@ -41,7 +41,7 @@ initial.states, an integer vector.} }
 }
 
 \examples{
-grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16), 
+grid = gridworld$new(shape = c(4, 4), terminal.states = c(0, 15), 
   initial.state = 1:14)
 }
 \references{
