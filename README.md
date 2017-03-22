@@ -4,7 +4,7 @@ Reinforcement Learning in R. Work in progress!
 ### Installation
 
 ```r
-if (!require(devtools)) install.packages("devtools")
+# install.packages("devtools")
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
@@ -16,7 +16,8 @@ With `makeEnvironment` you can create a reinforcement learning environment, eith
 library(reinforcelearn)
 
 # Create an environment from an OpenAI Gym environment.
-# First run in command line: python gym_http_server.py to start a server.
+# First set the path to your gym-http-api folder.
+options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
 FrozenLake = makeEnvironment("FrozenLake-v0")
 FrozenLake$reset()
 FrozenLake$step(action = 0)
@@ -46,6 +47,9 @@ optimal.policy = max.col(Q)
 print(matrix(optimal.policy, ncol = 4, byrow = TRUE))
 ```
 
+Also have a look at the vignettes for further examples.
+
+
 ### Overview about algorithms
 
 | Algorithm                                 |  R function name  | Model | Prediction/Control | Policy/Value-based      | on-policy/off-policy | Return | Comments                       |
@@ -63,3 +67,5 @@ print(matrix(optimal.policy, ncol = 4, byrow = TRUE))
 | Double Q-Learning                         |         | no    | Control            | value-based             | off                  | Q      |                                |
 | Expected Sarsa                            |      | no    | Control            | value-based             | ?                    | Q      |                                |
 | Asynchronous Advantage Actor-Critic (A3C) |                   | no    | Control            | policy- and value-based | ?                    | ?      |                                |
+
+### More about reinforcement learning:
