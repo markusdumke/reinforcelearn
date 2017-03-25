@@ -1,4 +1,4 @@
-#' Monte Carlo Prediction
+#' Monte Carlo Prediction (Table-lookup)
 #' 
 #' Predict state value function v with Monte Carlo methods. The state value 
 #' function is estimated from mean returns of episodes.

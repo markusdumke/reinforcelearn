@@ -1,4 +1,4 @@
-#' SARSA
+#' SARSA (Table-lookup)
 #' 
 #' Sarsa is an on-policy TD control algorithm to find the optimal policy.
 #' The action value function Q will be updated 

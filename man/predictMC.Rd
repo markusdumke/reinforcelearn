@@ -2,7 +2,7 @@
 % Please edit documentation in R/predictMC.R
 \name{predictMC}
 \alias{predictMC}
-\title{Monte Carlo Prediction}
+\title{Monte Carlo Prediction (Table-lookup)}
 \usage{
 predictMC(envir, policy, n.episodes = 100, discount.factor = 1,
   method = c("first-visit, every-visit"), alpha = 0.1)

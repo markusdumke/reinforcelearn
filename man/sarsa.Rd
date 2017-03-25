@@ -2,7 +2,7 @@
 % Please edit documentation in R/sarsa.R
 \name{sarsa}
 \alias{sarsa}
-\title{SARSA}
+\title{SARSA (Table-lookup)}
 \usage{
 sarsa(envir, lambda = 0, n.steps = 100, alpha = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
