@@ -4,7 +4,7 @@
 \alias{sampleEpisode}
 \title{Sample episode}
 \usage{
-sampleEpisode(policy, envir, initial.state, initial.action = NULL)
+sampleEpisode(policy, envir, initial.state = NULL, initial.action = NULL)
 }
 \arguments{
 \item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}

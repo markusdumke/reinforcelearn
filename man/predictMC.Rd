@@ -35,16 +35,19 @@ a state, every-visit Monte Carlo following all visits in the episode. Returns
 are averaged over multiple episodes.
 }
 \examples{
-set.seed(1477)
+set.seed(26)
 grid = gridworld$new()
-
+Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
+  initial.state = grid$initial.state)
+  
 # Define random policy
-random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
-  ncol = grid$n.actions)
+random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 
+  ncol = Gridworld1$n.actions)
   
 # Estimate state value function with Monte Carlo prediction
-v = predictMC(grid, random.policy, n.episodes = 100, method = "first-visit")
-v = predictMC(grid, random.policy, n.episodes = 100, method = "every-visit")
+v = predictMC(Gridworld1, random.policy, n.episodes = 100, method = "first-visit", alpha = NULL)
+v = predictMC(Gridworld1, random.policy, n.episodes = 100, method = "every-visit", alpha = NULL)
 }
 \seealso{
 \link{td}

@@ -20,77 +20,77 @@
 #' @import checkmate
 #' @seealso [td]
 #' @examples 
-#' set.seed(1477)
+#' set.seed(26)
 #' grid = gridworld$new()
-#' 
+#' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
+#'   initial.state = grid$initial.state)
+#'   
 #' # Define random policy
-#' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
-#'   ncol = grid$n.actions)
+#' random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 
+#'   ncol = Gridworld1$n.actions)
 #'   
 #' # Estimate state value function with Monte Carlo prediction
-#' v = predictMC(grid, random.policy, n.episodes = 100, method = "first-visit")
-#' v = predictMC(grid, random.policy, n.episodes = 100, method = "every-visit")
+#' v = predictMC(Gridworld1, random.policy, n.episodes = 100, method = "first-visit", alpha = NULL)
+#' v = predictMC(Gridworld1, random.policy, n.episodes = 100, method = "every-visit", alpha = NULL)
 predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1, 
   method = c("first-visit, every-visit"), alpha = 0.1) {
   
-  print("Currently not implemented.")
-  # # save in alpha_input the user inputs to reuse this later
-  # alpha_input = alpha
-  # check_choice(method, c("first-visit, every-visit"))
-  # if (!is.null(alpha)) {
-  #   check_number(alpha, lower = 0, upper = 1)
-  # }
-  # check_number(discount.factor, lower = 0, upper = 1)
-  # 
-  # n.states = envir$n.states
-  # v = rep(0, n.states)
-  # n.visits = rep(0, n.states)
-  # possible.states = envir$states[envir$states != envir$terminal.states]
-  # 
-  # # to do: parallelize episodes
-  # for (i in seq_len(n.episodes)) {
-  #   if (i %% 50 == 0) {
-  #     print(paste("Episode:", i))
-  #   }
-  #   envir$setEpisodeOverFalse()
-  #   initial.state = sample(possible.states, 1)
-  #   episode = sampleEpisode(policy, envir, initial.state)
-  #   
-  #   if (method == "first-visit") {
-  #     # for each state visited in this episode apply mean update
-  #     # find first occurence if state, weighted sum of following rewards
-  #     # incremental mean update
-  #     for (j in unique(episode$states)) { # what if j character?
-  #       first.occurence = min(which(episode$states == j))
-  #       sequ = seq(first.occurence + 1, length(episode$rewards))
-  #       n.visits[j] = n.visits[j] + 1
-  #       rewards = episode$rewards[sequ]
-  #       G = estimateReturn(rewards, discount.factor)
-  #       if (is.null(alpha_input)) {
-  #         alpha = 1 / n.visits[j]
-  #       }
-  #       v[j] = v[j] + alpha * (G - v[j])
-  #     }
-  #   }
-  #   
-  #   if (method == "every-visit") {
-  #     for (j in unique(episode$states)) {
-  #       occurences = which(episode$states == j)
-  #       for (k in occurences) {
-  #         sequ = seq(k, length(episode$rewards))
-  #         n.visits[j] = n.visits[j] + 1
-  #         rewards = episode$rewards[sequ]
-  #         G = estimateReturn(rewards, discount.factor)
-  #         if (is.null(alpha_input)) {
-  #           alpha = 1 / n.visits[j]
-  #         }
-  #         v[j] = v[j] + alpha * (G - v[j])
-  #       }
-  #       # sequences = sapply(occurences, function(x) seq(x, length(episode$rewards))) # use vapply!
-  #     }
-  #   }
-  # }
-  # return(v)
+  # print("Currently not implemented.")
+  # save in alpha_input the user inputs to reuse this later
+  alpha_input = alpha
+  check_choice(method, c("first-visit, every-visit"))
+  if (!is.null(alpha)) {
+    check_number(alpha, lower = 0, upper = 1)
+  }
+  check_number(discount.factor, lower = 0, upper = 1)
+
+  n.states = envir$n.states
+  v = rep(0, n.states)
+  n.visits = rep(0, n.states)
+
+  for (i in seq_len(n.episodes)) {
+    if (i %% 50 == 0) {
+      print(paste("Episode:", i))
+    }
+    envir$reset()
+    episode = sampleEpisode(policy, envir)
+
+    if (method == "first-visit") {
+      # for each state visited in this episode apply mean update
+      # find first occurence if state, weighted sum of following rewards
+      # incremental mean update
+      for (j in unique(episode$states)) {
+        first.occurence = min(which(episode$states == j))
+        sequ = seq(first.occurence + 1, length(episode$rewards))
+        n.visits[j + 1] = n.visits[j + 1] + 1
+        rewards = episode$rewards[sequ]
+        G = estimateReturn(rewards, discount.factor)
+        if (is.null(alpha_input)) {
+          alpha = 1 / n.visits[j + 1]
+        }
+        v[j + 1] = v[j + 1] + alpha * (G - v[j + 1])
+      }
+    }
+
+    if (method == "every-visit") {
+      for (j in unique(episode$states)) {
+        occurences = which(episode$states == j)
+        for (k in occurences) {
+          sequ = seq(k + 1, length(episode$rewards))
+          n.visits[j + 1] = n.visits[j + 1] + 1
+          rewards = episode$rewards[sequ]
+          G = estimateReturn(rewards, discount.factor)
+          if (is.null(alpha_input)) {
+            alpha = 1 / n.visits[j + 1]
+          }
+          v[j + 1] = v[j + 1] + alpha * (G - v[j + 1])
+        }
+        # sequences = sapply(occurences, function(x) seq(x, length(episode$rewards))) # use vapply!
+      }
+    }
+  }
+  return(v)
 }
 
 
@@ -135,7 +135,7 @@ predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1,
 #' print(episode$states)
 #' 
 #' 
-sampleEpisode = function(policy, envir, initial.state, initial.action = NULL) {
+sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = NULL) {
   
   rewards = numeric(0)
   if (!is.null(initial.action)) {
