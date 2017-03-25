@@ -110,56 +110,58 @@ predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1,
 #' NA, R2, ..., RT-1, RT
 #'
 #' @inheritParams evaluatePolicy
-#' @param initial.state integer: the initial state
-#' @param initial.action character: the initial action. Default is NULL, 
-#' then first action will be sampled from policy.
+#' @param initial.state integer: the initial state. Default is NULL, then the 
+#' initial state will be sampled from the initial.states of the environment
+#' @param initial.action integer: the initial action. Default is NULL, 
+#' then first action will also be sampled from policy.
 #'
 #' @return a list with sampled actions, states and returns of the episode.
 #' @export
 #' @examples
 #' set.seed(26)
-#' grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16))
-#' 
+#' grid = gridworld$new()
+#' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
+#'   initial.state = grid$initial.state)
+#'   
 #' # Define random policy
-#' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
-#'   ncol = grid$n.actions)
+#' random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 
+#'   ncol = Gridworld1$n.actions)
 #' 
-#' # Sample an episode for the random.policy
-#' episode = sampleEpisode(random.policy, grid, initial.state = 3)
+#' # Sample an episode using the random.policy
+#' episode = sampleEpisode(random.policy, Gridworld1, initial.state = 3)
 #' print(episode$actions)
 #' print(episode$rewards)
 #' print(episode$states)
 #' 
-#' # Specify an initial action
-#' grid$setEpisodeOverFalse()
-#' episode = sampleEpisode(random.policy, grid, initial.state = 7, 
-#'   initial.action = "right")
-#' print(episode$actions)
-#' print(episode$rewards)
-#' print(episode$states)
 #' 
 sampleEpisode = function(policy, envir, initial.state, initial.action = NULL) {
   
-  states = initial.state
   rewards = numeric(0)
   if (!is.null(initial.action)) {
-    sampled.actions = initial.action
+    actions = initial.action
   } else {
-    sampled.actions = character(0)
+    actions = integer(0)
+  }
+  if (!is.null(initial.state)) {
+    states = initial.state
+    envir$state = initial.state
+  } else {
+    envir$reset()
+    states = envir$state
   }
   
   i = 1
   
   while (envir$episode.over == FALSE) {
-    sampled.actions = append(sampled.actions, 
-      sample(envir$actions, prob = policy[states[i], ], size = 1))
-    envir$step(states[i], sampled.actions[i])
-    states = append(states, envir$next.state)
+    actions = append(actions, sample(envir$actions, prob = policy[states[i], ], size = 1))
+    envir$step(actions[i])
+    states = append(states, envir$state)
     rewards = append(rewards, envir$reward)
     i = i + 1
   }
-  
-  return(list(states = states, actions = c(sampled.actions, NA), rewards = c(NA, rewards)))
+  states = append(states, envir$state)
+  list(states = states, actions = c(actions, NA), rewards = c(NA, rewards))
 }
 
 # Estimate return

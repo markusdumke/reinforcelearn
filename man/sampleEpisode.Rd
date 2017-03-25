@@ -11,10 +11,11 @@ sampleEpisode(policy, envir, initial.state, initial.action = NULL)
 
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
-\item{initial.state}{integer: the initial state}
+\item{initial.state}{integer: the initial state. Default is NULL, then the
+initial state will be sampled from the initial.states of the environment}
 
-\item{initial.action}{character: the initial action. Default is NULL,
-then first action will be sampled from policy.}
+\item{initial.action}{integer: the initial action. Default is NULL,
+then first action will also be sampled from policy.}
 }
 \value{
 a list with sampled actions, states and returns of the episode.
@@ -35,24 +36,20 @@ NA, R2, ..., RT-1, RT
 }
 \examples{
 set.seed(26)
-grid = gridworld$new(shape = c(4, 4), terminal.states = c(1, 16))
-
+grid = gridworld$new()
+Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
+  initial.state = grid$initial.state)
+  
 # Define random policy
-random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
-  ncol = grid$n.actions)
+random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 
+  ncol = Gridworld1$n.actions)
 
-# Sample an episode for the random.policy
-episode = sampleEpisode(random.policy, grid, initial.state = 3)
+# Sample an episode using the random.policy
+episode = sampleEpisode(random.policy, Gridworld1, initial.state = 3)
 print(episode$actions)
 print(episode$rewards)
 print(episode$states)
 
-# Specify an initial action
-grid$setEpisodeOverFalse()
-episode = sampleEpisode(random.policy, grid, initial.state = 7, 
-  initial.action = "right")
-print(episode$actions)
-print(episode$rewards)
-print(episode$states)
 
 }
