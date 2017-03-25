@@ -8,7 +8,8 @@
 #' give recent episodes a higher weight if you have a non-stationary environment
 #' . First-visit Monte Carlo estimates the return following the first visit to 
 #' a state, every-visit Monte Carlo following all visits in the episode. Returns 
-#' are averaged over multiple episodes.
+#' are averaged over multiple episodes. The update rule is
+#' \deqn{V(S) <- V(S) + \alpha[G - V(S')]}
 #' 
 #' @inheritParams evaluatePolicy
 #' @param n.episodes scalar integer: the number of episodes
