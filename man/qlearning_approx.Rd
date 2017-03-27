@@ -42,7 +42,7 @@ Q-Learning with linear function approximation
 \examples{
 \dontrun{
 # Make sure you have gym-http-api and python installed.
-# Then start a server from command line by running: python gym_http_server.py
+# Set path to your gym-http-api folder
 options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
 MountainCar = makeEnvironment("MountainCar-v0")
 

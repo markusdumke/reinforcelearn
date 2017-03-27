@@ -19,8 +19,8 @@
 #' options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
 #' MountainCar = makeEnvironment("MountainCar-v0")
 #' 
-#' weights = sarsa_approx(mcar, make_feature_vector, n.features = 10, 
-#'   state.space.bounds = mcar$state.space.bounds, n.grid = 10, n.episodes = 10, 
+#' weights = sarsa_approx(MountainCar, make_feature_vector, n.features = 10, 
+#'   state.space.bounds = MountainCar$state.space.bounds, n.grid = 10, n.episodes = 10, 
 #'   render = TRUE)
 #' }
 #' 
