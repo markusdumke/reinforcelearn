@@ -15,8 +15,9 @@
 #' @examples
 #' \dontrun{
 #' # Make sure you have gym-http-api and python installed.
-#' # Then start a server from command line by running: python gym_http_server.py
-#' mcar = MountainCar$new()
+#' # Set path to your gym-http-api folder
+#' options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
+#' MountainCar = makeEnvironment("MountainCar-v0")
 #' 
 #' weights = sarsa_approx(mcar, make_feature_vector, n.features = 10, 
 #'   state.space.bounds = mcar$state.space.bounds, n.grid = 10, n.episodes = 10, 
