@@ -30,7 +30,7 @@
 #' FrozenLake = makeEnvironment("FrozenLake-v0")
 #' Q = qlearning(FrozenLake, n.episodes = 10)
 #' }
-qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
+qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1, 
   discount.factor = 1, seed = NULL, render = TRUE) {
   
   # input checking
@@ -61,7 +61,7 @@ qlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
       # update Q for visited state-action pair maximizing over Q values of next state
       TD.target = reward + discount.factor * max(Q[next.state + 1, ]) 
       TD.error = TD.target - Q[state + 1, action + 1] 
-      Q[state + 1, action + 1] = Q[state + 1, action + 1] + alpha * TD.error
+      Q[state + 1, action + 1] = Q[state + 1, action + 1] + learning.rate * TD.error
       state = next.state
       
       j = j + 1

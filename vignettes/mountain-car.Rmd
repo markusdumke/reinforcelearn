@@ -40,8 +40,8 @@ MountainCar = makeEnvironment("MountainCarEasy-v0", max.steps.episode = 10000)
 Then we can apply Q-Learning to find the optimal policy. Because the state space is continuous, we will use linear function approximation to represent the states. Here we use a very simple grid across the two-dimensional state space and return a one-hot vector representing in which grid cell the agent is. Then we can easily apply Q-Learning to the task. We need to pass on the function which creates the feature vector from the state observation.
 
 ```{r, results = "hide", eval = FALSE}
-weights = qlearning_approx(MountainCar, make_feature_vector, n.features = 10, 
-   state.space.bounds = MountainCar$state.space.bounds, n.grid = 10, n.episodes = 10)
+# weights = qlearning_approx(MountainCar, make_feature_vector, n.features = 10, 
+#    state.space.bounds = MountainCar$state.space.bounds, n.grid = 10, n.episodes = 10)
 ```
 
 plot cost-to-go function
