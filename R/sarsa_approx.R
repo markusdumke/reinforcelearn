@@ -10,7 +10,6 @@
 #' @param ... arguments passed to make_feature_vector
 #'
 #' @return Numeric matrix of weights. Number of weights is number of features x number of actions
-#' @export
 #'
 #' @examples
 #' \dontrun{
