@@ -33,14 +33,13 @@ number of time steps each episode needed
 Simple neural network tensorflow implementation
 }
 \examples{
-options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
 windygrid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
   reward.matrix = windygrid$reward.matrix,
   terminal.states = windygrid$terminal.states,
   initial.state = windygrid$initial.state)
   
-res = qnetwork(WindyGridworld1, make_one_hot_vector, n.episodes = 500, len = 72)
+res = qnetwork(WindyGridworld1, make_one_hot_vector, n.episodes = 500, len = 70)
 plot(1:500, res$episode.finished.after[1:500], ylim = c(0, 200), 
   type = "l", xlab = "Episode", ylab = "Steps per Episode")
 abline(h = 15, col = "red") # optimal solution
