@@ -18,9 +18,7 @@ predictMC(envir, policy, n.episodes = 100, discount.factor = 1,
 
 \item{method}{scalar character: first-visit or every-visit method}
 
-\item{alpha}{scalar numeric between 0 and 1: weighting factor in the
-incremental mean update. Useful in non-stationary environments, giving high
-value to the last observed returns.}
+\item{alpha}{scalar numeric between 0 and 1: learning rate}
 }
 \description{
 Predict state value function v with Monte Carlo methods. The state value

@@ -21,9 +21,7 @@ are updated, this is roughly equivalent to every-visit Monte Carlo.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
-\item{alpha}{scalar numeric between 0 and 1: weighting factor in the
-incremental mean update. Useful in non-stationary environments, giving high
-value to the last observed returns.}
+\item{alpha}{scalar numeric between 0 and 1: learning rate}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
 in epsilon-greedy behaviour policy. Higher values of epsilon lead to more

@@ -14,9 +14,7 @@
 #' @inheritParams evaluatePolicy
 #' @param n.episodes scalar integer: the number of episodes
 #' @param method scalar character: first-visit or every-visit method
-#' @param alpha scalar numeric between 0 and 1: weighting factor in the 
-#'   incremental mean update. Useful in non-stationary environments, giving high 
-#'   value to the last observed returns.
+#' @param alpha scalar numeric between 0 and 1: learning rate
 #' @export
 #' @import checkmate
 #' @seealso [td]

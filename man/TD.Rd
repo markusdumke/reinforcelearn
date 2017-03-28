@@ -20,9 +20,7 @@ are updated, this is roughly equivalent to every-visit Monte Carlo.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{alpha}{scalar numeric between 0 and 1: weighting factor in the
-incremental mean update. Useful in non-stationary environments, giving high
-value to the last observed returns.}
+\item{alpha}{scalar numeric between 0 and 1: learning rate}
 }
 \value{
 state value function v
