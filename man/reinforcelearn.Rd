@@ -14,24 +14,19 @@ Implementations of reinforcement learning algorithms.
 Dynamic Programming:
 \itemize{
 \item \link{evaluatePolicy}
-\item \link{iteratePolicy}
-\item \link{iterateValue}
 }
 
 Monte Carlo Methods:
 \itemize{
 \item \link{predictMC}
-\item \link{MonteCarloES}
-\item \link{controlMonteCarlo}
 }
 
 Temporal-Difference Learning:
 \itemize{
 \item \link{td}
 \item \link{sarsa}
-\item \link{expectedSarsa}
 \item \link{qlearning}
-\item \link{dqlearning}
+\item \link{qnetwork}
 }
 }
 
@@ -40,7 +35,5 @@ Temporal-Difference Learning:
 \link{gridworld}
 \link{WindyGridworld}
 \link{makeEnvironment}
-
-Link Vignetten!
 }
 

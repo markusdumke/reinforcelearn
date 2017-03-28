@@ -7,29 +7,21 @@
 #' Dynamic Programming: 
 #' 
 #' * [evaluatePolicy]
-#' * [iteratePolicy]
-#' * [iterateValue]
 #' 
 #' Monte Carlo Methods:
 #' 
 #' * [predictMC]
-#' * [MonteCarloES]
-#' * [controlMonteCarlo]
 #' 
 #' Temporal-Difference Learning:
 #' * [td]
 #' * [sarsa]
-#' * [expectedSarsa]
 #' * [qlearning]
-#' * [dqlearning]
-#' 
+#' * [qnetwork] 
 #' 
 #' @section Environments:
 #' [gridworld]
 #' [WindyGridworld]
 #' [makeEnvironment]
-#' 
-#' Link Vignetten!
 #' 
 #' @name reinforcelearn
 #' @docType package
