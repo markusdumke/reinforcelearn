@@ -5,9 +5,8 @@
 \title{Make Reinforcement Learning Environment}
 \usage{
 makeEnvironment(gym.envir.name = NULL,
-  gym.api.path = getOption("gym.api.path"), max.steps.episode = 200,
-  transition.array = NULL, reward.matrix = NULL, terminal.states = NULL,
-  initial.state = NULL, ...)
+  gym.api.path = getOption("gym.api.path"), transition.array = NULL,
+  reward.matrix = NULL, terminal.states = NULL, initial.state = NULL)
 }
 \arguments{
 \item{gym.envir.name}{scalar character, e.g. "FrozenLake-v0",
@@ -15,9 +14,6 @@ see \href{https://gym.openai.com/envs}{OpenAI Gym} for possible environments.}
 
 \item{gym.api.path}{character path to your gym-http-api folder, best practise
 is to set this using options(gym.api.path = "your_path")}
-
-\item{max.steps.episode}{scalar integer: maximal number of steps allowed in
-environment}
 
 \item{transition.array}{numerical matrix (n.states x n.states x n.actions)
 for each action giving the probabilities for transitions from one state to
@@ -33,8 +29,6 @@ states are numerated starting with 0.}
 a vector is given a starting state will be randomly sampled from this
 vector when reset is called. Note that states are numerated starting with
 0.}
-
-\item{...}{not used}
 }
 \value{
 Reinforcement Learning Environment, an R6 class.

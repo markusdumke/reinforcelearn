@@ -16,16 +16,14 @@
 #'   state to another
 #' @param terminal.states integer vector: terminal.states of MDP. Note that
 #'   states are numerated starting with 0.
-#' @param max.steps.episode scalar integer: maximal number of steps allowed in 
-#'   environment
 #' @param initial.state scalar integer or integer vector: the starting state. If
 #'   a vector is given a starting state will be randomly sampled from this 
 #'   vector when reset is called. Note that states are numerated starting with 
 #'   0.
-#' @param ... not used
 #' @param gym.api.path character path to your gym-http-api folder, best practise 
 #' is to set this using options(gym.api.path = "your_path")
-#'
+#' @importFrom R6 R6Class
+#' @importFrom MDPtoolbox mdp_check 
 #' @seealso [OpenAI Gym](https://gym.openai.com/docs)
 #' @return Reinforcement Learning Environment, an R6 class.
 #' @section Methods: \describe{
@@ -72,8 +70,8 @@
 #'   terminal.states = windygrid$terminal.states, 
 #'   initial.state = windygrid$initial.state)
 makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym.api.path"), 
-  max.steps.episode = 200, transition.array = NULL, reward.matrix = NULL, 
-  terminal.states = NULL, initial.state = NULL, ...) {
+  transition.array = NULL, reward.matrix = NULL, 
+  terminal.states = NULL, initial.state = NULL) {
   envir = R6::R6Class("envir",
     public = list(
       gym = NULL,
@@ -95,15 +93,14 @@ makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym
       reward = NULL,
       episode.over = FALSE,
       n.steps = 0,
-      max.steps.episode = NULL,
       transition.array = NULL, 
       reward.matrix = NULL,
       terminal.states = NULL,
       initial.state = NULL,
       
       initialize = function(gym.envir.name = NULL, gym.api.path = NULL, 
-        max.steps.episode = 200, transition.array = NULL, reward.matrix = NULL, 
-        terminal.states = NULL, initial.state = NULL, ...) {
+        transition.array = NULL, reward.matrix = NULL, 
+        terminal.states = NULL, initial.state = NULL) {
         if (is.null(gym.envir.name)) {
           gym.envir.name = self$name
         }
@@ -164,9 +161,8 @@ makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym
             }
           }
           
-          self$max.steps.episode = max.steps.episode
-          
         } else {
+          mdp_check(transition.array, reward.matrix)
           self$gym = FALSE
           self$state.space = "Discrete"
           self$action.space = "Discrete"
@@ -215,6 +211,6 @@ makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym
     )
   )
   
-  envir$new(gym.envir.name, gym.api.path, max.steps.episode = max.steps.episode, 
-    transition.array, reward.matrix, terminal.states, initial.state, ...)
+  envir$new(gym.envir.name, gym.api.path, transition.array, 
+    reward.matrix, terminal.states, initial.state)
 }

@@ -5,8 +5,8 @@
 \title{Q-Learning with linear function approximation}
 \usage{
 qlearning_approx(envir, make_feature_vector, n.features, n.episodes = 10,
-  alpha = 0.1, epsilon = 0.1, initial.weights = NULL,
-  discount.factor = 1, render = TRUE, seed = NULL, ...)
+  alpha = 0.1, epsilon = 0.1, discount.factor = 1, render = TRUE,
+  seed = NULL, ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}

@@ -18,7 +18,6 @@
 #' 
 #' @docType class
 #' @references Windy gridworld example from Sutton & Barto, chapter 6
-#' @usage # WindyGridworld$new()
 #' @export
 #' @importFrom R6 R6Class
 #' @seealso [makeEnvironment]

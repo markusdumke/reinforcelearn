@@ -6,7 +6,7 @@
 \title{Windy Gridworld environment}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
-# WindyGridworld$new()
+WindyGridworld
 }
 \description{
 Simple WindyGridworld problem for reinforcement learning. Actions include

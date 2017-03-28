@@ -6,7 +6,7 @@
 \title{Gridworld environment}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
 \usage{
-#grid = gridworld$new()
+gridworld
 }
 \description{
 Simple gridworld for reinforcement learning. With the step method given a

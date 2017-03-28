@@ -29,7 +29,6 @@
 #' get a reward of -1, until you reach into a terminal state.
 #' @docType class
 #' @references Gridworld example from Sutton & Barto, chapter 4
-#' @usage #grid = gridworld$new()
 #' @export
 #' @importFrom R6 R6Class
 #' @examples
