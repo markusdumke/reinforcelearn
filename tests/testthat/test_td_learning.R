@@ -14,7 +14,7 @@
 #   -20, -20, -18, -14, -22, -20, -14, 0)
 # 
 # test_that("TD Prediction works for gridworld", {
-#   v = td(random.policy, grid, n.steps = 10000, alpha = 0.1)
+#   v = td(random.policy, grid, n.steps = 10000, learning.rate = 0.1)
 #   expect_equal(v, v.expected, tolerance = 1)
 # })
 # 

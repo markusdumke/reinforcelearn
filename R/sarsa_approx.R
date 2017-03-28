@@ -24,7 +24,7 @@
 #' }
 #' 
 sarsa_approx <- function(envir, make_feature_vector, n.features, lambda = 0, 
-  n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
+  n.episodes = 10, learning.rate = 0.1, epsilon = 0.1, 
   discount.factor = 1, render = TRUE, seed = NULL, ...) { # initial.weights argument?
   
   # input checking
@@ -54,7 +54,7 @@ sarsa_approx <- function(envir, make_feature_vector, n.features, lambda = 0,
       td.target =  reward + discount.factor * estimate_Q(features.next.state, next.action + 1, weights)
       td.error = td.target - estimate_Q(features.state, action + 1, weights)
       grad = td.error * features.state
-      weights[, action + 1] = weights[, action + 1] + alpha * grad
+      weights[, action + 1] = weights[, action + 1] + learning.rate * grad
       
       action = next.action
       state = next.state

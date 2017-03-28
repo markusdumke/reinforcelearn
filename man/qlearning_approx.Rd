@@ -5,8 +5,8 @@
 \title{Q-Learning with linear function approximation}
 \usage{
 qlearning_approx(envir, make_feature_vector, n.features, n.episodes = 10,
-  alpha = 0.1, epsilon = 0.1, discount.factor = 1, render = TRUE,
-  seed = NULL, ...)
+  learning.rate = 0.1, epsilon = 0.1, initial.weights = NULL,
+  discount.factor = 1, render = TRUE, seed = NULL, ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -17,11 +17,13 @@ qlearning_approx(envir, make_feature_vector, n.features, n.episodes = 10,
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
-\item{alpha}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
 in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
 exploration.}
+
+\item{initial.weights}{initial weight matrix}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

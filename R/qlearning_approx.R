@@ -2,6 +2,7 @@
 #'
 #' @inheritParams qlearning
 #' @inheritParams predictMC
+#' @param initial.weights initial weight matrix
 #' @param n.features integer scalar: number of features
 #' @param make_feature_vector function which returns a feature vector for a given state observation.
 #' @param ... arguments passed to make_feature_vector
@@ -22,8 +23,8 @@
 #' }
 #' 
 qlearning_approx <- function(envir, make_feature_vector, n.features, 
-  n.episodes = 10, alpha = 0.1, epsilon = 0.1, # initial.weights = NULL,
-  discount.factor = 1, render = TRUE, seed = NULL, ...) { # initial.weights argument?
+  n.episodes = 10, learning.rate = 0.1, epsilon = 0.1, initial.weights = NULL,
+  discount.factor = 1, render = TRUE, seed = NULL, ...) {
   
   # input checking
   if (!is.null(seed)) set.seed(seed)
@@ -59,7 +60,7 @@ qlearning_approx <- function(envir, make_feature_vector, n.features,
       td.target =  reward + discount.factor * max(Q.next.state)
       td.error = td.target - Q.state[action + 1]
       grad = td.error * features.state
-      weights[, action + 1] = weights[, action + 1] + alpha * grad
+      weights[, action + 1] = weights[, action + 1] + learning.rate * grad
       
       state = next.state
       

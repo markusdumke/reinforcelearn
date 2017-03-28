@@ -38,11 +38,11 @@
 #' v = td(Gridworld1, random.policy, lambda = 0, n.steps = 10000)
 #' print(round(matrix(v, ncol = 4, byrow = TRUE)))
 td = function(envir, policy, lambda = 0, n.steps = 100, 
-  discount.factor = 1, alpha = 0.1) {
+  discount.factor = 1, learning.rate = 0.1) {
   
   # input checking
   
-  # exact alpha version?
+  # exact learning.rate version?
   
   n.states = envir$n.states
   v = rep(0, n.states)
@@ -52,7 +52,7 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
   
   for (i in seq_len(n.steps)) {
     if (i %% 1000 == 0) {
-      # alpha = alpha / 2
+      # learning.rate = learning.rate / 2
       print(paste("Step:", i))
     }
     
@@ -65,7 +65,7 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
     eligibility = discount.factor * lambda * eligibility + indicator
     TD.target = envir$reward + discount.factor * v[envir$state + 1]
     TD.error = TD.target - v[state + 1]
-    v = v + alpha * TD.error * eligibility
+    v = v + learning.rate * TD.error * eligibility
     state = envir$state
     
     if (envir$episode.over == TRUE) {

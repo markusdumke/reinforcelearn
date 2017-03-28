@@ -15,7 +15,7 @@
 #' #' @export
 #' #'
 #' gradientMCPolicyEvaluation <- function(envir, policy, data, n.episodes = 10,
-#'   function.approximation = "linear", discount.factor = 1, alpha = 0.1) {
+#'   function.approximation = "linear", discount.factor = 1, learning.rate = 0.1) {
 #' 
 #'   # input checking
 #' 
@@ -36,7 +36,7 @@
 #'         G = estimateReturn(rewards, discount.factor)
 #'         error = G - value.function(episode$states[j], w)
 #'         grad_v =
-#'         w = w + alpha * error * grad_v
+#'         w = w + learning.rate * error * grad_v
 #'     }
 #' 
 #' 

@@ -54,9 +54,9 @@
 # #   # expect_equal(v, v.expected, tolerance = 0.5)
 # # })
 # # 
-# # test_that("Test that alpha works", {
+# # test_that("Test that learning.rate works", {
 # # #   v = predictMC(random.policy, grid, n.episodes = 10000, method = "every-visit",
-# # #     alpha = 0.01)
+# # #     learning.rate = 0.01)
 # # #   expect_equal(v, v.expected, tolerance = 0.5)
 # # })
 # # 

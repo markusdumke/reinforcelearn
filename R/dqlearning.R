@@ -5,8 +5,8 @@
 #' from Q1 + Q2. With equal probability one of Q1 and Q2 is then updated 
 #' following the same update rule as in Q-Learning. This avoids maximization bias.
 #' The update formulas are: 
-#' \deqn{Q1(S, A) <- Q1(S, A) + \alpha[R + \gamma Q2(S', argmax_a Q1(S', a)) - Q1(S, A)]}
-#' \deqn{Q2(S, A) <- Q2(S, A) + \alpha[R + \gamma Q1(S', argmax_a Q2(S', a)) - Q2(S, A)]}
+#' \deqn{Q1(S, A) <- Q1(S, A) + \learning.rate[R + \gamma Q2(S', argmax_a Q1(S', a)) - Q1(S, A)]}
+#' \deqn{Q2(S, A) <- Q2(S, A) + \learning.rate[R + \gamma Q1(S', argmax_a Q2(S', a)) - Q2(S, A)]}
 #' 
 #' @inheritParams sarsa
 #' @inheritParams evaluatePolicy
@@ -20,7 +20,7 @@
 #' @examples
 #' grid = gridworld$new()
 #' # Q = dqlearning(grid, n.episodes = 1000) # not working
-dqlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
+dqlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1, 
   discount.factor = 1, seed = NULL) {
   
   print("Currently not implemented.")
@@ -53,9 +53,9 @@ dqlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   #     # update Q for visited state-action pair maximizing over next state
   #     which_q <- sample(c("Q1", "Q2"), size = 1)
   #     if (which_q == "Q1") {
-  #       update_q(Q1, Q2, state, action, next.state, reward, discount.factor, alpha)
+  #       update_q(Q1, Q2, state, action, next.state, reward, discount.factor, learning.rate)
   #     } else {
-  #       update_q(Q2, Q1, state, action, next.state, reward, discount.factor, alpha)
+  #       update_q(Q2, Q1, state, action, next.state, reward, discount.factor, learning.rate)
   #     }
   #     
   #     state = next.state
@@ -66,10 +66,10 @@ dqlearning <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
 }
 
 update_q <- function(Q1, Q2, state, action, next.state, reward, 
-  discount.factor, alpha) {
+  discount.factor, learning.rate) {
   
   TD.target = reward + discount.factor * Q2[next.state, argmax(Q1[next.state])]
   TD.error = TD.target - Q1[state, action] 
-  Q1[state, action] = Q1[state, action] + alpha * TD.error
+  Q1[state, action] = Q1[state, action] + learning.rate * TD.error
   Q1
 }

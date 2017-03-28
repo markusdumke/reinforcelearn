@@ -7,7 +7,7 @@ WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
   initial.state = grid$initial.state)
 
 ## ---- results = "hide"---------------------------------------------------
-res = sarsa(WindyGridworld1, lambda = 0, alpha = 0.5, epsilon = 0.1, n.steps = 8000)
+res = sarsa(WindyGridworld1, lambda = 0, learning.rate = 0.5, epsilon = 0.1, n.steps = 8000)
 # res = qlearning(WindyGridworld1, n.episodes = 100000)
 Q = res$Q
 

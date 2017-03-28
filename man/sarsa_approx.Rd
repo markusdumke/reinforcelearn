@@ -5,8 +5,8 @@
 \title{SARSA with linear function approximation}
 \usage{
 sarsa_approx(envir, make_feature_vector, n.features, lambda = 0,
-  n.episodes = 10, alpha = 0.1, epsilon = 0.1, discount.factor = 1,
-  render = TRUE, seed = NULL, ...)
+  n.episodes = 10, learning.rate = 0.1, epsilon = 0.1,
+  discount.factor = 1, render = TRUE, seed = NULL, ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -21,7 +21,7 @@ are updated, this is roughly equivalent to every-visit Monte Carlo.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
-\item{alpha}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
 in epsilon-greedy behaviour policy. Higher values of epsilon lead to more

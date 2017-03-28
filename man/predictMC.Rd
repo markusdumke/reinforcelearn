@@ -5,7 +5,7 @@
 \title{Monte Carlo Prediction (Table-lookup)}
 \usage{
 predictMC(envir, policy, n.episodes = 100, discount.factor = 1,
-  method = c("first-visit, every-visit"), alpha = 0.1)
+  method = c("first-visit, every-visit"), learning.rate = 0.1)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -18,7 +18,7 @@ predictMC(envir, policy, n.episodes = 100, discount.factor = 1,
 
 \item{method}{scalar character: first-visit or every-visit method}
 
-\item{alpha}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 }
 \description{
 Predict state value function v with Monte Carlo methods. The state value
@@ -26,7 +26,7 @@ function is estimated from mean returns of episodes.
 }
 \details{
 Only works for episodic tasks (i.e. there must be at least one terminal
-state)! An incremental mean update is implemented. Use a high alpha value to
+state)! An incremental mean update is implemented. Use a high learning.rate value to
 give recent episodes a higher weight if you have a non-stationary environment
 . First-visit Monte Carlo estimates the return following the first visit to
 a state, every-visit Monte Carlo following all visits in the episode. Returns
@@ -45,8 +45,10 @@ random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states,
   ncol = Gridworld1$n.actions)
   
 # Estimate state value function with Monte Carlo prediction
-v = predictMC(Gridworld1, random.policy, n.episodes = 100, method = "first-visit", alpha = NULL)
-v = predictMC(Gridworld1, random.policy, n.episodes = 100, method = "every-visit", alpha = NULL)
+v = predictMC(Gridworld1, random.policy, n.episodes = 100, 
+  method = "first-visit", learning.rate = NULL)
+v = predictMC(Gridworld1, random.policy, n.episodes = 100, 
+  method = "every-visit", learning.rate = NULL)
 }
 \seealso{
 \link{td}

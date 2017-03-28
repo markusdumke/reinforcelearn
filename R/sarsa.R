@@ -36,7 +36,7 @@
 #' 
 #' # Optimal policy
 #' matrix(max.col(res$Q) - 1, ncol = 10, byrow = TRUE)
-sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1, 
+sarsa <- function(envir, lambda = 0, n.steps = 100, learning.rate = 0.1, 
   epsilon = 0.1, discount.factor = 1, seed = NULL) {
   
   # input checking
@@ -76,7 +76,7 @@ sarsa <- function(envir, lambda = 0, n.steps = 100, alpha = 0.1,
     eligibility = discount.factor * lambda * eligibility + indicator
     TD.target = envir$reward + discount.factor * Q[next.state + 1, next.action + 1]
     TD.error = TD.target - Q[state + 1, action + 1]
-    Q = Q + alpha * TD.error * eligibility
+    Q = Q + learning.rate * TD.error * eligibility
     
     state = next.state
     action = next.action
@@ -126,29 +126,3 @@ sample_epsilon_greedy_action <- function(Q, epsilon) {
 argmax <- function(x) {
   nnet::which.is.max(x)
 }
-
-# plot(y = seq_along(Q$episodes.over), x = Q$episodes.over, type = "l")
-# plot(x = seq_along(Q$episodes.over), y = diff(c(0, Q$episodes.over)), type = "l", 
-#   xlim = c(0, 200), ylab = "Episode length", xlab = "Episode")
-
-# grid = WindyGridworld$new()
-# WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
-#   reward.matrix = grid$reward.matrix,
-#   terminal.states = grid$terminal.states,
-#   initial.state = grid$initial.state)
-# res = sarsa(WindyGridworld1, n.steps = 100000, alpha = 0.5, epsilon = 0.1)
-# 
-# # Optimal action value function
-# matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE)
-# 
-# # Optimal policy
-# matrix(max.col(res$Q) - 1, ncol = 10, byrow = TRUE)
-# plot(x = res$time.steps.episode, y = seq_along(res$time.steps.episode),
-#  type = "l", xlim = c(0, 100000), ylab = "Episode", xlab = "Time steps",
-#  main = "Episodes completed per time step")
-# plot(x = seq_along(res$time.steps.episode), y = diff(c(0, res$time.steps.episode)),
-#  type = "l", xlim = c(0, length(res$time.steps.episode)), ylab = "Episode length", xlab = "Episode",
-#  main = "Episode length over time")
-
-# FrozenLake = makeEnvironment("FrozenLake-v0")
-# res = sarsa(FrozenLake, n.steps = 10000, alpha = 0.5, epsilon = 0.1)

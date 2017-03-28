@@ -4,7 +4,7 @@
 \alias{dqlearning}
 \title{Double Q-Learning}
 \usage{
-dqlearning(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
+dqlearning(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
@@ -12,7 +12,7 @@ dqlearning(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
-\item{alpha}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
 in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
@@ -31,8 +31,8 @@ functions Q1 and Q2. Actions are chosen from an epsilon-greedy policy derived
 from Q1 + Q2. With equal probability one of Q1 and Q2 is then updated
 following the same update rule as in Q-Learning. This avoids maximization bias.
 The update formulas are:
-\deqn{Q1(S, A) <- Q1(S, A) + \alpha[R + \gamma Q2(S', argmax_a Q1(S', a)) - Q1(S, A)]}
-\deqn{Q2(S, A) <- Q2(S, A) + \alpha[R + \gamma Q1(S', argmax_a Q2(S', a)) - Q2(S, A)]}
+\deqn{Q1(S, A) <- Q1(S, A) + \learning.rate[R + \gamma Q2(S', argmax_a Q1(S', a)) - Q1(S, A)]}
+\deqn{Q2(S, A) <- Q2(S, A) + \learning.rate[R + \gamma Q1(S', argmax_a Q2(S', a)) - Q2(S, A)]}
 }
 \examples{
 grid = gridworld$new()

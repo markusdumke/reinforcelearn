@@ -5,7 +5,7 @@
 \title{Temporal difference learning}
 \usage{
 td(envir, policy, lambda = 0, n.steps = 100, discount.factor = 1,
-  alpha = 0.1)
+  learning.rate = 0.1)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -20,7 +20,7 @@ are updated, this is roughly equivalent to every-visit Monte Carlo.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{alpha}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 }
 \value{
 state value function v

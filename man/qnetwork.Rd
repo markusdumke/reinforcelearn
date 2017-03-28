@@ -5,7 +5,7 @@
 \title{Q-Network Tensorflow}
 \usage{
 qnetwork(envir, make_feature_vector, n.episodes = 10, epsilon = 0.1,
-  alpha = 0.1, discount.factor = 1, ...)
+  learning.rate = 0.1, discount.factor = 1, ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -15,7 +15,11 @@ feature vector for a given state observation.}
 
 \item{n.episodes}{scalar integer: the number of episodes}
 
-\item{alpha}{scalar numeric between 0 and 1: learning rate}
+\item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
+in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
+exploration.}
+
+\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

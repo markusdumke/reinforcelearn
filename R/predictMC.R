@@ -4,7 +4,7 @@
 #' function is estimated from mean returns of episodes.
 #' 
 #' Only works for episodic tasks (i.e. there must be at least one terminal 
-#' state)! An incremental mean update is implemented. Use a high alpha value to
+#' state)! An incremental mean update is implemented. Use a high learning.rate value to
 #' give recent episodes a higher weight if you have a non-stationary environment
 #' . First-visit Monte Carlo estimates the return following the first visit to 
 #' a state, every-visit Monte Carlo following all visits in the episode. Returns 
@@ -14,7 +14,7 @@
 #' @inheritParams evaluatePolicy
 #' @param n.episodes scalar integer: the number of episodes
 #' @param method scalar character: first-visit or every-visit method
-#' @param alpha scalar numeric between 0 and 1: learning rate
+#' @param learning.rate scalar numeric between 0 and 1: learning rate
 #' @export
 #' @import checkmate
 #' @seealso [td]
@@ -30,17 +30,19 @@
 #'   ncol = Gridworld1$n.actions)
 #'   
 #' # Estimate state value function with Monte Carlo prediction
-#' v = predictMC(Gridworld1, random.policy, n.episodes = 100, method = "first-visit", alpha = NULL)
-#' v = predictMC(Gridworld1, random.policy, n.episodes = 100, method = "every-visit", alpha = NULL)
+#' v = predictMC(Gridworld1, random.policy, n.episodes = 100, 
+#'   method = "first-visit", learning.rate = NULL)
+#' v = predictMC(Gridworld1, random.policy, n.episodes = 100, 
+#'   method = "every-visit", learning.rate = NULL)
 predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1, 
-  method = c("first-visit, every-visit"), alpha = 0.1) {
+  method = c("first-visit, every-visit"), learning.rate = 0.1) {
   
   # print("Currently not implemented.")
-  # save in alpha_input the user inputs to reuse this later
-  alpha_input = alpha
+  # save in learning.rate_input the user inputs to reuse this later
+  learning.rate_input = learning.rate
   check_choice(method, c("first-visit, every-visit"))
-  if (!is.null(alpha)) {
-    check_number(alpha, lower = 0, upper = 1)
+  if (!is.null(learning.rate)) {
+    check_number(learning.rate, lower = 0, upper = 1)
   }
   check_number(discount.factor, lower = 0, upper = 1)
 
@@ -65,10 +67,10 @@ predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1,
         n.visits[j + 1] = n.visits[j + 1] + 1
         rewards = episode$rewards[sequ]
         G = estimateReturn(rewards, discount.factor)
-        if (is.null(alpha_input)) {
-          alpha = 1 / n.visits[j + 1]
+        if (is.null(learning.rate_input)) {
+          learning.rate = 1 / n.visits[j + 1]
         }
-        v[j + 1] = v[j + 1] + alpha * (G - v[j + 1])
+        v[j + 1] = v[j + 1] + learning.rate * (G - v[j + 1])
       }
     }
 
@@ -80,10 +82,10 @@ predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1,
           n.visits[j + 1] = n.visits[j + 1] + 1
           rewards = episode$rewards[sequ]
           G = estimateReturn(rewards, discount.factor)
-          if (is.null(alpha_input)) {
-            alpha = 1 / n.visits[j + 1]
+          if (is.null(learning.rate_input)) {
+            learning.rate = 1 / n.visits[j + 1]
           }
-          v[j + 1] = v[j + 1] + alpha * (G - v[j + 1])
+          v[j + 1] = v[j + 1] + learning.rate * (G - v[j + 1])
         }
         # sequences = sapply(occurences, function(x) seq(x, length(episode$rewards))) # use vapply!
       }

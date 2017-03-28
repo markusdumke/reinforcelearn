@@ -18,6 +18,7 @@ make_one_hot_vector <- function(hot, len, matrix = TRUE) {
 #' Simple neural network tensorflow implementation
 #'
 #' @inheritParams predictMC
+#' @inheritParams sarsa
 #' @param make_feature_vector function which returns a 
 #' feature vector for a given state observation.
 #' @param ... arguments passed to make_feature_vector
@@ -41,7 +42,7 @@ make_one_hot_vector <- function(hot, len, matrix = TRUE) {
 #' abline(h = 15, col = "red") # optimal solution
 #' 
 qnetwork <- function(envir, make_feature_vector, n.episodes = 10,
-  epsilon = 0.1, alpha = 0.1, discount.factor = 1, ...) {
+  epsilon = 0.1, learning.rate = 0.1, discount.factor = 1, ...) {
   
   tf$reset_default_graph()
   
@@ -55,7 +56,7 @@ qnetwork <- function(envir, make_feature_vector, n.episodes = 10,
   #   between the target and prediction Q values.
   nextQ = tf$placeholder(tf$float32, shape(1L, envir$n.actions)) # next Q value (target)
   loss = tf$reduce_sum(tf$square(nextQ - Qout)) # MSE between old (predictions) and new Q values (targets)
-  trainer = tf$train$GradientDescentOptimizer(learning_rate = alpha) # Gradient Descent Optimization
+  trainer = tf$train$GradientDescentOptimizer(learning_rate = learning.rate) # Gradient Descent Optimization
   updateModel = trainer$minimize(loss) # minimize loss
   
   sess = tf$Session() # start session

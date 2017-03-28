@@ -16,7 +16,7 @@
 #' @examples 
 #' grid = gridworld$new()
 #' # Q = expectedSarsa(grid, n.episodes = 1000) # not working
-expectedSarsa <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1, 
+expectedSarsa <- function(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1, 
   discount.factor = 1, seed = NULL) {
   
    print("Currently not implemented.")
@@ -46,7 +46,7 @@ expectedSarsa <- function(envir, n.episodes = 10, alpha = 0.1, epsilon = 0.1,
   #     # update Q for visited state-action pair averaging over next actions
   #     TD.target = reward + discount.factor * sum(policy[next.state, ] * Q[next.state, ])
   #     TD.error = TD.target - Q[state, action] 
-  #     Q[state, action] = Q[state, action] + alpha * TD.error
+  #     Q[state, action] = Q[state, action] + learning.rate * TD.error
   #     state = next.state
   #   }
   # }
