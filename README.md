@@ -25,9 +25,9 @@ FrozenLake$step(action = 0)
 # You can also create an environment from an MDP
 windygrid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
-  reward.matrix = windygrid$reward.matrix,
-  terminal.states = windygrid$terminal.states,
-  initial.state = 30)
+                                  reward.matrix = windygrid$reward.matrix,
+                                  terminal.states = windygrid$terminal.states,
+                                  initial.state = 30)
 ```
 
 Environments always have an initialization function to create a new instance of the environment, a reset function, which returns an initial state observation and a step function, which takes a step in the environment given an action returning the next state observation, reward and if the episode is finished.
