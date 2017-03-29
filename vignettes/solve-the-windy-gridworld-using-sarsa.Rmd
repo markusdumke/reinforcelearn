@@ -1,5 +1,5 @@
 ---
-title: "Solve windy gridworld using SARSA and Q-Learning"
+title: "Solve windy gridworld using SARSA"
 author: "Markus Dumke"
 date: "`r Sys.Date()`"
 output:rmarkdown::html_vignette:
