@@ -14,24 +14,24 @@
 #' @inheritParams evaluatePolicy
 #' @inheritParams predictMC
 #' @inheritParams sarsa
-#' @param render logical scalar: should the environment be rendered
+#' @param epsilon.decay scalar numeric between 0 and 1: decay epsilon 
+#' every 100 episodes by multiplying with this factor
 #'
 #' @return optimal action value function
 #' @seealso [dqlearning]
 #' @references [Sutton and Barto (2017) page 140](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158)
 #' @export
 #' @examples
-#' # grid = gridworld$new()
-#' # Q = qlearning(grid, n.episodes = 1000)
-#' 
-#' \dontrun{
-#' # Make sure you have gym-http-api and python installed.
-#' # Then start a server from command line by running: python gym_http_server.py
-#' FrozenLake = makeEnvironment("FrozenLake-v0")
-#' Q = qlearning(FrozenLake, n.episodes = 10)
-#' }
-qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1, 
-  discount.factor = 1, seed = NULL, render = TRUE) {
+#' # Solve the WindyGridworld environment using Q-Learning
+#' windygrid = WindyGridworld$new()
+#' WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
+#'   reward.matrix = windygrid$reward.matrix,
+#'   terminal.states = windygrid$terminal.states,
+#'   initial.state = 30)
+#' qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
+qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, 
+  epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1, 
+  seed = NULL) {
   
   # input checking
   stopifnot(envir$state.space == "Discrete")
@@ -40,7 +40,7 @@ qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1
   n.states = envir$n.states
   n.actions = envir$n.actions
   Q = matrix(0, nrow = n.states, ncol = n.actions)
-  episode.finished.after = rep(0, n.episodes)
+  steps.per.episode = rep(0, n.episodes)
   rewards.per.episode = rep(0, n.episodes)
   
   for (i in seq_len(n.episodes)) {
@@ -52,7 +52,7 @@ qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1
     
     while (envir$episode.over == FALSE) {
       
-      action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon) - 1
+      action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon)
       envir$step(action, render = render)
       next.state = envir$state
       reward = envir$reward
@@ -63,15 +63,14 @@ qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1
       TD.error = TD.target - Q[state + 1, action + 1] 
       Q[state + 1, action + 1] = Q[state + 1, action + 1] + learning.rate * TD.error
       state = next.state
-      
       j = j + 1
+      
       if (envir$episode.over) {
-        episode.finished.after[i] = j
+        steps.per.episode[i] = j
         rewards.per.episode[i] = reward.sum
-        # print(paste("Episode", i, "finished after", j, "time steps."))
-        # print(paste("Average Reward:", sum(rewards.per.episode) / i))
+        print(paste("Episode", i, "finished after", j, "time steps."))
         if (i %% 100 == 0) {
-          epsilon = epsilon / 2
+          epsilon = epsilon.decay * epsilon
           print(paste("Average Reward of last 100 episodes:", sum(rewards.per.episode[seq(i - 99, i)]) / 100))
         }
         break
@@ -79,6 +78,6 @@ qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1
     }
   }
   
-  list(Q = Q, episode.finished.after = episode.finished.after, 
+  list(Q = Q, steps.per.episode = steps.per.episode, 
     rewards.per.episode = rewards.per.episode)
 }

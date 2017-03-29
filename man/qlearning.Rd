@@ -5,7 +5,7 @@
 \title{Q-Learning (Table-lookup)}
 \usage{
 qlearning(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1,
-  discount.factor = 1, seed = NULL, render = TRUE)
+  epsilon.decay = 0.5, discount.factor = 1, seed = NULL)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -18,11 +18,12 @@ qlearning(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1,
 in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
 exploration.}
 
+\item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
+every 100 episodes by multiplying with this factor}
+
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
 \item{seed}{scalar integer: random seed}
-
-\item{render}{logical scalar: should the environment be rendered}
 }
 \value{
 optimal action value function
@@ -40,15 +41,13 @@ the optimal action value function Q*. The update formula is:
 \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma max_a Q(S', a) - Q(S, A)]}
 }
 \examples{
-# grid = gridworld$new()
-# Q = qlearning(grid, n.episodes = 1000)
-
-\dontrun{
-# Make sure you have gym-http-api and python installed.
-# Then start a server from command line by running: python gym_http_server.py
-FrozenLake = makeEnvironment("FrozenLake-v0")
-Q = qlearning(FrozenLake, n.episodes = 10)
-}
+# Solve the WindyGridworld environment using Q-Learning
+windygrid = WindyGridworld$new()
+WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
+  reward.matrix = windygrid$reward.matrix,
+  terminal.states = windygrid$terminal.states,
+  initial.state = 30)
+qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
 }
 \references{
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158}{Sutton and Barto (2017) page 140}
