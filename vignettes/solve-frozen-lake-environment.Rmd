@@ -35,17 +35,11 @@ $Q(S, A) \leftarrow  Q(S, A) + \alpha[R + \gamma \max_a(Q(S', a)) - Q(S, A)]$
 
 In the following we will solve the Frozen Lake problem, i.e. find the shortest path from the start state to the goal state. 
 
-Therefore we need to install python, gym and gym-http-api first.
-After that we open a command line tool, go to the folder gym-http-api and run 
-
-```{python, eval = FALSE}
-python gym_http_server.py
-```
-
-Then we can start the environment from within R
+We will use the Gym implementation of the FrozenLake environment. Therefore we need to install python and gym-http-api first. Then we can load the `reinforcelearn` package and create the environment. First we need to set the path to the gym-http-api folder.
 
 ```{r, eval = FALSE}
 library(reinforcelearn)
+options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
 FrozenLake = makeEnvironment("FrozenLake-v0")
 ```
 
