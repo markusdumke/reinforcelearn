@@ -47,11 +47,12 @@ WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
   reward.matrix = windygrid$reward.matrix,
   terminal.states = windygrid$terminal.states,
   initial.state = 30)
-qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
+res = qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
+
 }
 \references{
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158}{Sutton and Barto (2017) page 140}
 }
 \seealso{
-\link{dqlearning}
+\link{sarsa}
 }

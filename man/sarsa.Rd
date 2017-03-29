@@ -4,8 +4,8 @@
 \alias{sarsa}
 \title{SARSA (Table-lookup)}
 \usage{
-sarsa(envir, lambda = 0, n.steps = 100, learning.rate = 0.1,
-  epsilon = 0.1, discount.factor = 1, seed = NULL)
+sarsa(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1,
+  epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1, seed = NULL)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -14,13 +14,16 @@ sarsa(envir, lambda = 0, n.steps = 100, learning.rate = 0.1,
 is updated (this is equivalent to TD(0)), for lambda = 1 all states visited
 are updated, this is roughly equivalent to every-visit Monte Carlo.}
 
-\item{n.steps}{integer scalar: number of evaluations (steps in the environment)}
+\item{n.episodes}{scalar integer: the number of episodes}
 
 \item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
 \item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
 in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
 exploration.}
+
+\item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
+every 100 episodes by multiplying with this factor}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
@@ -42,22 +45,15 @@ grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, 
   terminal.states = grid$terminal.states, 
-  initial.state = grid$initial.state)
-res = sarsa(WindyGridworld1, n.steps = 1000)
+  initial.state = 30)
+res = sarsa(WindyGridworld1, n.episodes = 100, seed = 123)
 
-# Optimal action value function
-matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE)
-
-# Optimal policy
-matrix(max.col(res$Q) - 1, ncol = 10, byrow = TRUE)
 }
 \references{
 \href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=156}{Sutton and Barto (2017) page 138}
 }
 \seealso{
 \link{td}
-
-\link{expectedSarsa}
 
 \link{qlearning}
 }

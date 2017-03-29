@@ -9,6 +9,7 @@
 #'  
 #' @inheritParams evaluatePolicy
 #' @inheritParams predictMC
+#' @inheritParams qlearning
 #' @param epsilon scalar numeric between 0 and 1: proportion of random samples 
 #' in epsilon-greedy behaviour policy. Higher values of epsilon lead to more 
 #' exploration.
@@ -21,90 +22,73 @@
 #' @export
 #' @references [Sutton and Barto (2017) page 138](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=156)
 #' @seealso [td]
-#' @seealso [expectedSarsa]
 #' @seealso [qlearning]
 #' @examples 
 #' grid = WindyGridworld$new()
 #' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
 #'   reward.matrix = grid$reward.matrix, 
 #'   terminal.states = grid$terminal.states, 
-#'   initial.state = grid$initial.state)
-#' res = sarsa(WindyGridworld1, n.steps = 1000)
+#'   initial.state = 30)
+#' res = sarsa(WindyGridworld1, n.episodes = 100, seed = 123)
 #' 
-#' # Optimal action value function
-#' matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE)
-#' 
-#' # Optimal policy
-#' matrix(max.col(res$Q) - 1, ncol = 10, byrow = TRUE)
-sarsa <- function(envir, lambda = 0, n.steps = 100, learning.rate = 0.1, 
-  epsilon = 0.1, discount.factor = 1, seed = NULL) {
+sarsa <- function(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1, 
+  epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1, seed = NULL) {
   
   # input checking
+  stopifnot(envir$state.space == "Discrete")
   if (!is.null(seed)) set.seed(seed)
   
-  time.steps.episode = c()
-  episode.finished.after = rep(0, 1000)
-  rewards.per.episode = rep(0, 1000)
   n.states = envir$n.states
   n.actions = envir$n.actions
   Q = matrix(0, nrow = n.states, ncol = n.actions)
-  eligibility = matrix(0, nrow = n.states, ncol = n.actions)
+  steps.per.episode = rep(0, n.episodes)
+  rewards.per.episode = rep(0, n.episodes)
   
-  envir$reset()
-  state = envir$state
-  action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon = epsilon)
-  
-  k = 0
-  j = 0
-  reward.sum = 0
-  
-  for (i in seq_len(n.steps)) {
-    # if (i %% 100 == 0) {
-    #   print(paste("Step:", i))
-    # }
+  for (i in seq_len(n.episodes)) {
     
-    envir$step(action)
-    next.action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon = epsilon)
-    next.state = envir$state
+    eligibility = matrix(0, nrow = n.states, ncol = n.actions)
+    envir$reset()
+    state = envir$state
+    j = 0
+    reward.sum = 0
+    action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon)
     
-    reward = envir$reward
-    reward.sum = reward.sum + reward
-    
-    indicator = matrix(0, nrow = n.states, ncol = n.actions)
-    indicator[state + 1, action + 1] = 1
-    
-    eligibility = discount.factor * lambda * eligibility + indicator
-    TD.target = envir$reward + discount.factor * Q[next.state + 1, next.action + 1]
-    TD.error = TD.target - Q[state + 1, action + 1]
-    Q = Q + learning.rate * TD.error * eligibility
-    
-    state = next.state
-    action = next.action
-    
-    j = j + 1
-    
-    if (envir$episode.over == TRUE) {
-      k = k + 1
-      episode.finished.after[k] = j
-      rewards.per.episode[k] = reward.sum
-      print(paste("Episode", k, "finished after", j, "time steps."))
-      # print(paste("Average Reward:", sum(rewards.per.episode) / i))
-      # if (i %% 100 == 0) {
-      #   epsilon = epsilon / 2
-      #   print(paste("Average Reward of last 100 episodes:", sum(rewards.per.episode[seq(i - 99, i)]) / 100))
-      # }
-      time.steps.episode = append(time.steps.episode, i)
-      envir$reset()
-      state = envir$state
-      action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon = epsilon)
-      eligibility = matrix(0, nrow = n.states, ncol = n.actions)
-      j = 0
-      reward.sum = 0
+    while (envir$episode.over == FALSE) {
+      
+      envir$step(action)
+      next.state = envir$state
+      reward = envir$reward
+      reward.sum = reward.sum + reward
+      next.action = sample_epsilon_greedy_action(Q[next.state + 1, ], epsilon)
+      
+      indicator = matrix(0, nrow = n.states, ncol = n.actions)
+      indicator[state + 1, action + 1] = 1
+      eligibility = discount.factor * lambda * eligibility + indicator
+      
+      # update Q for visited state-action pair maximizing over Q values of next state
+      TD.target = reward + discount.factor * Q[next.state + 1, next.action + 1]
+      TD.error = TD.target - Q[state + 1, action + 1] 
+      Q = Q + learning.rate * TD.error * eligibility
+      
+      j = j + 1
+      state = next.state
+      action = next.action
+      
+      if (envir$episode.over) {
+        steps.per.episode[i] = j
+        rewards.per.episode[i] = reward.sum
+        print(paste("Episode", i, "finished after", j, "time steps."))
+        if (i %% 100 == 0) {
+          epsilon = epsilon.decay * epsilon
+          print(paste("Average Reward of last 100 episodes:", sum(rewards.per.episode[seq(i - 99, i)]) / 100))
+        }
+        break
+      } 
     }
   }
   
-  list(Q = Q, episode.finished.after = episode.finished.after, 
-    rewards.per.episode = rewards.per.episode, time.steps.episode = time.steps.episode)
+  list(Q = Q, steps.per.episode = steps.per.episode, 
+    rewards.per.episode = rewards.per.episode)
 }
 
 # Q a numeric vector: the action value function for a given state

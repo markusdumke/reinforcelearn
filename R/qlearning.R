@@ -18,7 +18,7 @@
 #' every 100 episodes by multiplying with this factor
 #'
 #' @return optimal action value function
-#' @seealso [dqlearning]
+#' @seealso [sarsa]
 #' @references [Sutton and Barto (2017) page 140](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158)
 #' @export
 #' @examples
@@ -28,7 +28,8 @@
 #'   reward.matrix = windygrid$reward.matrix,
 #'   terminal.states = windygrid$terminal.states,
 #'   initial.state = 30)
-#' qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
+#' res = qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
+#' 
 qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, 
   epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1, 
   seed = NULL) {
@@ -53,7 +54,7 @@ qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1,
     while (envir$episode.over == FALSE) {
       
       action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon)
-      envir$step(action, render = render)
+      envir$step(action)
       next.state = envir$state
       reward = envir$reward
       reward.sum = reward.sum + reward
