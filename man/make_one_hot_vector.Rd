@@ -7,7 +7,7 @@
 make_one_hot_vector(hot, len, matrix = TRUE)
 }
 \arguments{
-\item{hot}{scalar integer: which entry is 1}
+\item{hot}{scalar integer: which entry is 1 (numeration starting from 0)}
 
 \item{len}{scalar integer: the length of the one-hot vector}
 
@@ -18,4 +18,7 @@ one_hot vector or matrix
 }
 \description{
 Make one-hot vector
+}
+\examples{
+make_one_hot_vector(0, 10)
 }

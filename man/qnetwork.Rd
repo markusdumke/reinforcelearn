@@ -5,7 +5,8 @@
 \title{Q-Network Tensorflow}
 \usage{
 qnetwork(envir, make_feature_vector, n.episodes = 10, epsilon = 0.1,
-  learning.rate = 0.1, discount.factor = 1, ...)
+  epsilon.decay = 0.5, learning.rate = 0.1, discount.factor = 1,
+  loss.function = "mean_squared_error", ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -19,11 +20,17 @@ feature vector for a given state observation.}
 in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
 exploration.}
 
+\item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
+every 100 episodes by multiplying with this factor}
+
 \item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
 \item{...}{arguments passed to make_feature_vector}
+
+\item{loss}{scalar character: a valid name of a loss function from
+tensorflow, e.g. "mean_squared_error" or "softmax_cross_entropy"}
 }
 \value{
 list with entries weights and episode.finished.after the
@@ -33,13 +40,14 @@ number of time steps each episode needed
 Simple neural network tensorflow implementation
 }
 \examples{
-windygrid = WindyGridworld$new()
-WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
-  reward.matrix = windygrid$reward.matrix,
-  terminal.states = windygrid$terminal.states,
-  initial.state = windygrid$initial.state)
+grid = WindyGridworld$new()
+WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
+  reward.matrix = grid$reward.matrix,
+  terminal.states = grid$terminal.states,
+  initial.state = grid$initial.state)
   
-res = qnetwork(WindyGridworld1, make_one_hot_vector, n.episodes = 500, len = 70)
+res = qnetwork(WindyGridworld1, make_one_hot_vector, 
+  n.episodes = 300, len = 70)
 plot(1:500, res$episode.finished.after[1:500], ylim = c(0, 200), 
   type = "l", xlab = "Episode", ylab = "Steps per Episode")
 abline(h = 15, col = "red") # optimal solution
