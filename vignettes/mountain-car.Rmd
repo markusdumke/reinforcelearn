@@ -57,4 +57,4 @@ Learn more about reinforcement learning in R: [reinforcelearn](https://github.co
 
 ## Bibliography
 
-[Sutton and Barto (2017)](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=249)
+Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction

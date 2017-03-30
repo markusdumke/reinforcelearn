@@ -33,7 +33,7 @@ WindyGridworld1 = WindyGridworld$new()
 
 }
 \references{
-Windy gridworld example from Sutton & Barto, chapter 6
+Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
 \link{makeEnvironment}

@@ -13,7 +13,7 @@
 #' @param psi scalar numeric, algorithm stops when improvement is smaller than psi
 #'
 #' @return the state value function v, a numeric vector
-#'
+#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
 #' # Define uniform random policy, take each action with probability 0.25

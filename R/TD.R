@@ -21,7 +21,7 @@
 #'
 #' @return state value function v
 #' @export
-#' @references [Sutton and Barto (2017) page 256](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=274)
+#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @seealso [sarsa]
 #' @examples 
 #' # Define environment, here simple gridworld

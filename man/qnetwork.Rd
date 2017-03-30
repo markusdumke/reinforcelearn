@@ -27,10 +27,10 @@ every 100 episodes by multiplying with this factor}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{...}{arguments passed to make_feature_vector}
-
-\item{loss}{scalar character: a valid name of a loss function from
+\item{loss.function}{scalar character: a valid name of a loss function from
 tensorflow, e.g. "mean_squared_error" or "softmax_cross_entropy"}
+
+\item{...}{arguments passed to make_feature_vector}
 }
 \value{
 list with entries weights and episode.finished.after the

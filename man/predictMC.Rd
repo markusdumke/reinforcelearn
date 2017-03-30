@@ -50,6 +50,9 @@ v = predictMC(Gridworld1, random.policy, n.episodes = 100,
 v = predictMC(Gridworld1, random.policy, n.episodes = 100, 
   method = "every-visit", learning.rate = NULL)
 }
+\references{
+Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+}
 \seealso{
 \link{td}
 }

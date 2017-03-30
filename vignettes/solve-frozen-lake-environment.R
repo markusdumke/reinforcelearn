@@ -1,5 +1,6 @@
 ## ---- eval = FALSE-------------------------------------------------------
 #  library(reinforcelearn)
+#  options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
 #  FrozenLake = makeEnvironment("FrozenLake-v0")
 
 ## ---- results = "hide", eval = FALSE-------------------------------------

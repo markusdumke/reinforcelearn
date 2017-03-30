@@ -45,7 +45,7 @@ grid = gridworld$new(shape = c(4, 4), terminal.states = c(0, 15),
   initial.state = 1:14)
 }
 \references{
-Gridworld example from Sutton & Barto, chapter 4
+Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
 \link{makeEnvironment}

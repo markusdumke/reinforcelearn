@@ -41,3 +41,6 @@ random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states,
 v = evaluatePolicy(Gridworld1, random.policy)
 print(round(matrix(v, ncol = 4, byrow = TRUE)))
 }
+\references{
+Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+}

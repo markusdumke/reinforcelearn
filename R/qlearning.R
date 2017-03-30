@@ -19,7 +19,7 @@
 #'
 #' @return optimal action value function
 #' @seealso [sarsa]
-#' @references [Sutton and Barto (2017) page 140](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=158)
+#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
 #' # Solve the WindyGridworld environment using Q-Learning

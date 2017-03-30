@@ -74,5 +74,5 @@ Learn more about reinforcement learning in R: [reinforcelearn](https://github.co
 
 ## Bibliography
 
-[Sutton and Barto (2017)](https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf)
+Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 [OpenAI Gym](https://gym.openai.com/envs/FrozenLake-v0)

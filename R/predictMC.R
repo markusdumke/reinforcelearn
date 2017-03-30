@@ -16,6 +16,7 @@
 #' @param method scalar character: first-visit or every-visit method
 #' @param learning.rate scalar numeric between 0 and 1: learning rate
 #' @export
+#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @import checkmate
 #' @seealso [td]
 #' @examples 

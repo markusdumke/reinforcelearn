@@ -23,7 +23,7 @@ make_one_hot_vector <- function(hot, len, matrix = TRUE) {
 #' @param make_feature_vector function which returns a 
 #' feature vector for a given state observation.
 #' @param ... arguments passed to make_feature_vector
-#' @param loss scalar character: a valid name of a loss function from 
+#' @param loss.function scalar character: a valid name of a loss function from 
 #' tensorflow, e.g. "mean_squared_error" or "softmax_cross_entropy"
 #'
 #' @return list with entries weights and episode.finished.after the 

@@ -28,7 +28,7 @@
 #' take you off the grid, you remain in the previous state. For each step you
 #' get a reward of -1, until you reach into a terminal state.
 #' @docType class
-#' @references Gridworld example from Sutton & Barto, chapter 4
+#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @importFrom R6 R6Class
 #' @examples

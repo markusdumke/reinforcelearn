@@ -50,7 +50,7 @@ res = sarsa(WindyGridworld1, n.episodes = 100, seed = 123)
 
 }
 \references{
-\href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=156}{Sutton and Barto (2017) page 138}
+Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
 \link{td}

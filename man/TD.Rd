@@ -55,7 +55,7 @@ v = td(Gridworld1, random.policy, lambda = 0, n.steps = 10000)
 print(round(matrix(v, ncol = 4, byrow = TRUE)))
 }
 \references{
-\href{https://webdocs.cs.ualberta.ca/~sutton/book/bookdraft2016sep.pdf#page=274}{Sutton and Barto (2017) page 256}
+Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
 \link{sarsa}

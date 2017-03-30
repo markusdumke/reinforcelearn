@@ -17,7 +17,7 @@
 #' vector specifying the strength of the upward wind.}}
 #' 
 #' @docType class
-#' @references Windy gridworld example from Sutton & Barto, chapter 6
+#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @importFrom R6 R6Class
 #' @seealso [makeEnvironment]
