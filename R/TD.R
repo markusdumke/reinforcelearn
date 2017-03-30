@@ -27,8 +27,7 @@
 #' # Define environment, here simple gridworld
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
-#'   initial.state = grid$initial.state)
+#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
 #'   
 #' # Define random policy
 #' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 

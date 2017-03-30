@@ -19,7 +19,7 @@
 #' @param initial.state scalar integer or integer vector: the starting state. If
 #'   a vector is given a starting state will be randomly sampled from this 
 #'   vector when reset is called. Note that states are numerated starting with 
-#'   0.
+#'   0. If NULL all states are possible initial states.
 #' @param gym.api.path character path to your gym-http-api folder, best practise 
 #' is to set this using options(gym.api.path = "your_path")
 #' @importFrom R6 R6Class
@@ -60,15 +60,14 @@
 #' # Create an environment from a transition array and reward matrix (here a simple gridworld).
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
-#'   initial.state = grid$initial.state)
+#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
 #'   
 #' # Create the WindyGridworld environment.
-#' windygrid = WindyGridworld$new()
-#' WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array, 
-#'   reward.matrix = windygrid$reward.matrix, 
-#'   terminal.states = windygrid$terminal.states, 
-#'   initial.state = windygrid$initial.state)
+#' grid = WindyGridworld$new()
+#' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+#'   reward.matrix = grid$reward.matrix, 
+#'   terminal.states = grid$terminal.states, 
+#'   initial.state = 30)
 makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym.api.path"), 
   transition.array = NULL, reward.matrix = NULL, 
   terminal.states = NULL, initial.state = NULL) {
@@ -173,7 +172,11 @@ makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym
           self$transition.array = transition.array
           self$reward.matrix = reward.matrix
           self$terminal.states = terminal.states # state numeration starts with 0
-          self$initial.state = initial.state
+          if (is.null(initial.state)) {
+            self$initial.state = self$states[self$states != self$terminal.states]
+          } else {
+            self$initial.state = initial.state
+          }
         }
       },
       

@@ -28,7 +28,7 @@ states are numerated starting with 0.}
 \item{initial.state}{scalar integer or integer vector: the starting state. If
 a vector is given a starting state will be randomly sampled from this
 vector when reset is called. Note that states are numerated starting with
-0.}
+0. If NULL all states are possible initial states.}
 }
 \value{
 Reinforcement Learning Environment, an R6 class.
@@ -77,15 +77,14 @@ MountainCar = makeEnvironment("MountainCar-v0")
 # Create an environment from a transition array and reward matrix (here a simple gridworld).
 grid = gridworld$new()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
-  initial.state = grid$initial.state)
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
   
 # Create the WindyGridworld environment.
-windygrid = WindyGridworld$new()
-WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array, 
-  reward.matrix = windygrid$reward.matrix, 
-  terminal.states = windygrid$terminal.states, 
-  initial.state = windygrid$initial.state)
+grid = WindyGridworld$new()
+WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = grid$reward.matrix, 
+  terminal.states = grid$terminal.states, 
+  initial.state = 30)
 }
 \seealso{
 \href{https://gym.openai.com/docs}{OpenAI Gym}

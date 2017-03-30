@@ -37,8 +37,7 @@ are averaged over multiple episodes. The update rule is
 set.seed(26)
 grid = gridworld$new()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
-  initial.state = grid$initial.state)
+  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
   
 # Define random policy
 random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 
