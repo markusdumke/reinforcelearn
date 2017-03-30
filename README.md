@@ -52,7 +52,7 @@ print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 Also have a look at the vignettes for further examples.
 
 
-### Overview about algorithms
+### Overview Algorithms
 
 | Algorithm                                 |  R function name  | Model | Prediction/Control | Policy/Value-based      | on-policy/off-policy | Return | Comments                       |
 |-------------------------------------------|:-----------------:|-------|--------------------|-------------------------|----------------------|--------|--------------------------------|
