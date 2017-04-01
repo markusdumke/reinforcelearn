@@ -5,8 +5,7 @@
 \title{Q-Network Tensorflow}
 \usage{
 qnetwork(envir, make_feature_vector, n.episodes = 10, epsilon = 0.1,
-  epsilon.decay = 0.5, learning.rate = 0.1, discount.factor = 1,
-  loss.function = "mean_squared_error", ...)
+  epsilon.decay = 0.5, learning.rate = 0.1, discount.factor = 1, ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -27,10 +26,8 @@ every 100 episodes by multiplying with this factor}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{loss.function}{scalar character: a valid name of a loss function from
-tensorflow, e.g. "mean_squared_error" or "softmax_cross_entropy"}
-
-\item{...}{arguments passed to make_feature_vector}
+\item{...}{arguments passed to make_feature_vector
+#'}
 }
 \value{
 list with entries weights and episode.finished.after the
@@ -46,9 +43,10 @@ WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
   terminal.states = grid$terminal.states,
   initial.state = grid$initial.state)
   
+set.seed(123)   
 res = qnetwork(WindyGridworld1, make_one_hot_vector, 
-  n.episodes = 300, len = 70)
-plot(1:500, res$episode.finished.after[1:500], ylim = c(0, 200), 
+  n.episodes = 500, len = 70)
+plot(1:500, res$steps.per.episode[1:500], ylim = c(0, 200), 
   type = "l", xlab = "Episode", ylab = "Steps per Episode")
 abline(h = 15, col = "red") # optimal solution
 
