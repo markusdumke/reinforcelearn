@@ -56,6 +56,7 @@ Then we can find the optimal policy by acting greedily with respect to $Q$.
 ```{r, eval = FALSE}
 optimal.policy = max.col(Q)
 ```
+
 Plot $Q_\pi$.
 
 We can plot the average reward of 100 subsequent episodes. The Frozen Lake 

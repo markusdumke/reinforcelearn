@@ -1,7 +1,7 @@
-## ---- eval = TRUE--------------------------------------------------------
-library(reinforcelearn)
-options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
-MountainCar = makeEnvironment("MountainCarEasy-v0")
+## ---- eval = FALSE-------------------------------------------------------
+#  library(reinforcelearn)
+#  options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.5.2.3Qt5/scripts/gym-http-api")
+#  MountainCar = makeEnvironment("MountainCar-v0")
 
 ## ---- results = "hide", eval = FALSE-------------------------------------
 #  res = qnetwork(MountainCar, makeGridTiling, n.grid = 10, n.episodes = 100,

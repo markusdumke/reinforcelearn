@@ -1,5 +1,5 @@
 ---
-title: "Solve MountainCar using Q-Learning with linear function approximation"
+title: "Solve MountainCar using Q-Learning with function approximation"
 author: "Markus Dumke"
 date: "`r Sys.Date()`"
 output:rmarkdown::html_vignette:
@@ -33,7 +33,7 @@ We will use the Gym implementation of the MountainCar environment. Therefore we 
 
 ```{r, eval = FALSE}
 library(reinforcelearn)
-options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
+options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.5.2.3Qt5/scripts/gym-http-api")
 MountainCar = makeEnvironment("MountainCar-v0")
 ```
 
