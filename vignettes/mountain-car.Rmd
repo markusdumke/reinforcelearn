@@ -34,18 +34,25 @@ We will use the Gym implementation of the MountainCar environment. Therefore we 
 ```{r, eval = FALSE}
 library(reinforcelearn)
 options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
-MountainCar = makeEnvironment("MountainCarEasy-v0", max.steps.episode = 10000)
+MountainCar = makeEnvironment("MountainCar-v0")
 ```
 
-Then we can apply Q-Learning to find the optimal policy. Because the state space is continuous, we will use linear function approximation to represent the states. Here we use a very simple grid across the two-dimensional state space and return a one-hot vector representing in which grid cell the agent is. Then we can easily apply Q-Learning to the task. We need to pass on the function which creates the feature vector from the state observation.
+Then we can apply Q-Learning to find the optimal policy. Because the state space is continuous, we will use a function approximator to represent Q values of states and actions. Here we use a very simple grid across the two-dimensional state space and return a one-hot vector representing in which grid cell the agent is. Then we can easily apply Q-Learning to the task. We need to pass on the function which returns the feature vector for a state observation.
 
 ```{r, results = "hide", eval = FALSE}
-# weights = qlearning_approx(MountainCar, make_feature_vector, n.features = 10, 
-#    state.space.bounds = MountainCar$state.space.bounds, n.grid = 10, n.episodes = 10)
+res = qnetwork(MountainCar, makeGridTiling, n.grid = 10, n.episodes = 100,
+  state.space.bounds = MountainCar$state.space.bounds, n.weights = 100L)
 ```
 
+
+
+```{r, eval = FALSE}
+plot(1:100, res$steps.per.episode[1:100], ylim = c(0, 1000), 
+   type = "l", xlab = "Episode", ylab = "Steps per Episode")
+```
+
+
 plot cost-to-go function
-plot episode length
 plot episode reward over time
 
 gif einfügen
