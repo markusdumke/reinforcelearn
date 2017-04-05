@@ -26,7 +26,11 @@ Temporal-Difference Learning:
 \item \link{td}
 \item \link{sarsa}
 \item \link{qlearning}
-\item \link{qnetwork}
+}
+
+Function Approximation
+\itemize{
+\item \link{qlearning_fa}
 }
 }
 

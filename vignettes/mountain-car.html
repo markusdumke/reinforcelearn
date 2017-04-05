@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-04-04" />
+<meta name="date" content="2017-04-05" />
 
 <title>Solve MountainCar using Q-Learning with function approximation</title>
 
@@ -119,7 +119,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Solve MountainCar using Q-Learning with function approximation</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-04-04</em></h4>
+<h4 class="date"><em>2017-04-05</em></h4>
 
 </div>
 
@@ -144,13 +144,10 @@ Mountain Car environment
 <pre class="r"><code>library(reinforcelearn)
 options(gym.api.path = &quot;C:/Users/M/Downloads/WinPython-64bit-3.5.2.3Qt5/scripts/gym-http-api&quot;)
 MountainCar = makeEnvironment(&quot;MountainCar-v0&quot;)</code></pre>
-<p>Then we can apply Q-Learning to find the optimal policy. Because the state space is continuous, we will use a function approximator to represent Q values of states and actions. Here we use a very simple grid across the two-dimensional state space and return a one-hot vector representing in which grid cell the agent is. Then we can easily apply Q-Learning to the task. We need to pass on the function which returns the feature vector for a state observation.</p>
-<pre class="r"><code>res = qnetwork(MountainCar, makeGridTiling, n.grid = 10, n.episodes = 100,
-  state.space.bounds = MountainCar$state.space.bounds, n.weights = 100L)</code></pre>
+<p>Then we can apply Q-Learning to find the optimal policy. Because the state space is continuous, we will use a function approximator to represent Q values of states and actions. Here we use a very simple grid across the two-dimensional state space and return a one-hot vector representing in which grid cell the agent is. Then we can easily apply Q-Learning to the task. We need to pass on the function which returns the feature vector for a state observation and a predict and train function from the function approximator.</p>
 <pre class="r"><code>plot(1:100, res$steps.per.episode[1:100], ylim = c(0, 1000), 
    type = &quot;l&quot;, xlab = &quot;Episode&quot;, ylab = &quot;Steps per Episode&quot;)</code></pre>
 <p>plot cost-to-go function plot episode reward over time</p>
-<p>gif einfügen</p>
 </div>
 <div id="more-reinforcement-learning-in-r" class="section level2">
 <h2>More Reinforcement Learning in R:</h2>

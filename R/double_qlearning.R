@@ -27,7 +27,7 @@
 #'   reward.matrix = windygrid$reward.matrix,
 #'   terminal.states = windygrid$terminal.states,
 #'   initial.state = 30)
-#' res = doubleqlearning(WindyGridworld1, n.episodes = 100, seed = 123)
+#' # res = doubleqlearning(WindyGridworld1, n.episodes = 100, seed = 123)
 #' 
 doubleqlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, 
   epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1, 

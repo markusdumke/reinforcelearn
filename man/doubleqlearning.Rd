@@ -51,7 +51,7 @@ WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
   reward.matrix = windygrid$reward.matrix,
   terminal.states = windygrid$terminal.states,
   initial.state = 30)
-res = doubleqlearning(WindyGridworld1, n.episodes = 100, seed = 123)
+# res = doubleqlearning(WindyGridworld1, n.episodes = 100, seed = 123)
 
 }
 \references{

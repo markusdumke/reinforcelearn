@@ -4,8 +4,8 @@
 #  MountainCar = makeEnvironment("MountainCar-v0")
 
 ## ---- results = "hide", eval = FALSE-------------------------------------
-#  res = qnetwork(MountainCar, makeGridTiling, n.grid = 10, n.episodes = 100,
-#    state.space.bounds = MountainCar$state.space.bounds, n.weights = 100L)
+#  
+#  
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  plot(1:100, res$steps.per.episode[1:100], ylim = c(0, 1000),

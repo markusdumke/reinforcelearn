@@ -5,18 +5,18 @@
 #' @section Algorithms:
 #' 
 #' Dynamic Programming: 
-#' 
 #' * [evaluatePolicy]
 #' 
 #' Monte Carlo Methods:
-#' 
 #' * [predictMC]
 #' 
 #' Temporal-Difference Learning:
 #' * [td]
 #' * [sarsa]
 #' * [qlearning]
-#' * [qnetwork] 
+#' 
+#' Function Approximation
+#' * [qlearning_fa]
 #' 
 #' @section Environments:
 #' [gridworld]
