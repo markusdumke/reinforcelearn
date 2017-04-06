@@ -75,7 +75,7 @@
 #' 
 qlearning_fa <- function(envir, makeFeatureVector, predict, train,
   n.episodes = 10, epsilon = 0.1, epsilon.decay = 0.5,
-  learning.rate = 0.1, discount.factor = 1, seed = NULL, ...) {
+  discount.factor = 1, seed = NULL, ...) {
   
   if (!is.null(seed)) { set.seed(seed) }
   

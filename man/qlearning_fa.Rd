@@ -5,8 +5,8 @@
 \title{Q-Learning with Function Approximation}
 \usage{
 qlearning_fa(envir, makeFeatureVector, predict, train, n.episodes = 10,
-  epsilon = 0.1, epsilon.decay = 0.5, learning.rate = 0.1,
-  discount.factor = 1, seed = NULL, ...)
+  epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1, seed = NULL,
+  ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -27,8 +27,6 @@ exploration.}
 
 \item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
 every 100 episodes by multiplying with this factor}
-
-\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

@@ -6,8 +6,7 @@
 \usage{
 qlearning_fa_experience_replay(envir, makeFeatureVector, predict, train,
   replay.memory, batch.size = 32, n.episodes = 10, epsilon = 0.1,
-  epsilon.decay = 0.5, learning.rate = 0.1, discount.factor = 1,
-  seed = NULL, ...)
+  epsilon.decay = 0.5, discount.factor = 1, seed = NULL, ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -36,8 +35,6 @@ exploration.}
 
 \item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
 every 100 episodes by multiplying with this factor}
-
-\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
@@ -112,7 +109,7 @@ for (i in 1:replay.memory.size) {
   }
 }
 
-res = qlearning_fa_experience_replay(WindyGridworld1, makeFeatureVector, 
+res = qlearning_fa_experience_replay(WindyGridworld1, makeFeatureVector,
   predict, train, replay.memory, n.episodes = 100, seed = 123)
 
 }
