@@ -7,7 +7,7 @@
 #' State and action space can be either "Discrete" or "Box". For the discrete 
 #' case states and actions are numerated starting from 0.
 #'
-#' @param gym.envir.name scalar character, e.g. "FrozenLake-v0", 
+#' @param gym.envir.name scalar character, e.g. "CartPole-v0", 
 #' see [OpenAI Gym](https://gym.openai.com/envs) for possible environments.
 #' @param transition.array numerical matrix (n.states x n.states x n.actions) 
 #'   for each action giving the probabilities for transitions from one state to 
@@ -42,12 +42,9 @@
 #' \dontrun{
 #' # Create an OpenAI Gym environment.
 #' # Make sure you have Python and Gym installed.
-#' FrozenLake = makeEnvironment("FrozenLake-v0")
-#' FrozenLake$reset()
-#' FrozenLake$step(action = 0)
-#' 
-#' # Now we can start a new FrozenLake environment by running:
-#' FrozenLake$initialize()
+#' CartPole = makeEnvironment("CartPole-v0")
+#' CartPole$reset()
+#' CartPole$step(action = 0)
 #' 
 #' # Create the MountainCar environment which has a continuous state space.
 #' MountainCar = makeEnvironment("MountainCar-v0")

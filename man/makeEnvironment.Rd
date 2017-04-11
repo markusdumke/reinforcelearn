@@ -8,7 +8,7 @@ makeEnvironment(gym.envir.name = NULL, transition.array = NULL,
   reward.matrix = NULL, terminal.states = NULL, initial.state = NULL)
 }
 \arguments{
-\item{gym.envir.name}{scalar character, e.g. "FrozenLake-v0",
+\item{gym.envir.name}{scalar character, e.g. "CartPole-v0",
 see \href{https://gym.openai.com/envs}{OpenAI Gym} for possible environments.}
 
 \item{transition.array}{numerical matrix (n.states x n.states x n.actions)
@@ -57,12 +57,9 @@ Useful when starting a new episode.}
 \dontrun{
 # Create an OpenAI Gym environment.
 # Make sure you have Python and Gym installed.
-FrozenLake = makeEnvironment("FrozenLake-v0")
-FrozenLake$reset()
-FrozenLake$step(action = 0)
-
-# Now we can start a new FrozenLake environment by running:
-FrozenLake$initialize()
+CartPole = makeEnvironment("CartPole-v0")
+CartPole$reset()
+CartPole$step(action = 0)
 
 # Create the MountainCar environment which has a continuous state space.
 MountainCar = makeEnvironment("MountainCar-v0")
