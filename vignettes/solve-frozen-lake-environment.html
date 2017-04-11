@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-04-04" />
+<meta name="date" content="2017-04-11" />
 
 <title>Solve Frozen Lake Environment using Q-Learning</title>
 
@@ -119,7 +119,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Solve Frozen Lake Environment using Q-Learning</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-04-04</em></h4>
+<h4 class="date"><em>2017-04-11</em></h4>
 
 </div>
 
@@ -140,9 +140,8 @@ FrozenLake environment
 <p>The update equation is:</p>
 <p><span class="math inline">\(Q(S, A) \leftarrow Q(S, A) + \alpha[R + \gamma \max_a(Q(S', a)) - Q(S, A)]\)</span></p>
 <p>In the following we will solve the Frozen Lake problem, i.e. find the shortest path from the start state to the goal state.</p>
-<p>We will use the Gym implementation of the FrozenLake environment. Therefore we need to install python and gym-http-api first. Then we can load the <code>reinforcelearn</code> package and create the environment. First we need to set the path to the gym-http-api folder.</p>
+<p>We will use the Gym implementation of the FrozenLake environment. Therefore we need to install python and gym-http-api first. Then we can load the <code>reinforcelearn</code> package and create the environment.</p>
 <pre class="r"><code>library(reinforcelearn)
-options(gym.api.path = &quot;C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api&quot;)
 FrozenLake = makeEnvironment(&quot;FrozenLake-v0&quot;)</code></pre>
 <p>Then we can apply Q-Learning to find the optimal action value function <span class="math inline">\(Q\)</span>.</p>
 <pre class="r"><code>n.episodes = 1000

@@ -1,6 +1,5 @@
 ## ---- eval = FALSE-------------------------------------------------------
 #  library(reinforcelearn)
-#  options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.5.2.3Qt5/scripts/gym-http-api")
 #  MountainCar = makeEnvironment("MountainCar-v0")
 
 ## ---- results = "hide", eval = FALSE-------------------------------------
