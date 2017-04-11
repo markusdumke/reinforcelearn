@@ -10,7 +10,7 @@ devtools::install_github("markdumke/reinforcelearn")
 
 ### Create an environment
 
-With `makeEnvironment` you can create a reinforcement learning environment, either from [OpenAI Gym](https://gym.openai.com/) or from the state transition matrix and reward matrix of a Markov Decision Process. To use a gym environment you need to have python and [gym-http-api](https://github.com/openai/gym-http-api) installed.
+With `makeEnvironment` you can create a reinforcement learning environment, either from [OpenAI Gym](https://gym.openai.com/) or from the state transition matrix and reward matrix of a Markov Decision Process. To use a Gym environment you need to have Python and Gym installed.
 
 ```r
 library(reinforcelearn)
@@ -52,7 +52,7 @@ print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 Table-lookup reinforcement learning is great to understand and play around with algorithms. But when applying RL to large-scale real world problems building one huge table is not feasible anymore. Instead of representing every state-action pair in a big table one would use a function approximator to represent the value function.
 
 With `reinforcelearn` you can specify your own function approximator very flexible suited to a specific task.
-Just create a predict, train and makeFeatureVector function, which can then be passed to the algorithm, e.g. `qlearning_fa()`. Here is an example:
+Just create a `predict`, `train` and `makeFeatureVector` function, which can then be passed to the algorithm, e.g. `qlearning_fa()`. Here is an example:
 
 ```r
 # Solve the Windy Gridworld task using a neural network as function approximator
