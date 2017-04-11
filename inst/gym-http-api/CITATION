@@ -1,0 +1,9 @@
+citHeader("To cite reinforcelearn in publications, please use:")
+
+citEntry(entry = "manual",
+  author = "Markus Dumke",
+  title = "reinforcelearn: Reinforcement Learning in R",
+  year = "2017",
+  url = "https://github.com/markdumke/reinforcelearn",
+  textVersion = "Markus Dumke (2017). reinforcelearn: Reinforcement Learning in R. https://github.com/markdumke/reinforcelearn"
+)
