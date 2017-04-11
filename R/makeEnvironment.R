@@ -20,8 +20,6 @@
 #'   a vector is given a starting state will be randomly sampled from this 
 #'   vector when reset is called. Note that states are numerated starting with 
 #'   0. If NULL all states are possible initial states.
-#' @param gym.api.path character path to your gym-http-api folder, best practise 
-#' is to set this using options(gym.api.path = "your_path")
 #' @importFrom R6 R6Class
 #' @importFrom MDPtoolbox mdp_check 
 #' @seealso [OpenAI Gym](https://gym.openai.com/docs)
@@ -42,10 +40,8 @@
 #' @import gym
 #' @examples
 #' \dontrun{
-#' # Create an environment from an OpenAI Gym environment.
-#' # Make sure you have gym-http-api and python installed.
-#' # Then set path to the gym-http-api folder, e.g.:
-#' options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
+#' # Create an OpenAI Gym environment.
+#' # Make sure you have Python and Gym installed.
 #' FrozenLake = makeEnvironment("FrozenLake-v0")
 #' FrozenLake$reset()
 #' FrozenLake$step(action = 0)
@@ -68,13 +64,12 @@
 #'   reward.matrix = grid$reward.matrix, 
 #'   terminal.states = grid$terminal.states, 
 #'   initial.state = 30)
-makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym.api.path"), 
+makeEnvironment <- function(gym.envir.name = NULL,  
   transition.array = NULL, reward.matrix = NULL, 
   terminal.states = NULL, initial.state = NULL) {
   envir = R6::R6Class("envir",
     public = list(
       gym = NULL,
-      gym.api.path = NULL,
       name = NULL,
       client = NULL,
       instance_id = NULL,
@@ -97,7 +92,7 @@ makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym
       terminal.states = NULL,
       initial.state = NULL,
       
-      initialize = function(gym.envir.name = NULL, gym.api.path = NULL, 
+      initialize = function(gym.envir.name = NULL,
         transition.array = NULL, reward.matrix = NULL, 
         terminal.states = NULL, initial.state = NULL) {
         if (is.null(gym.envir.name)) {
@@ -105,14 +100,10 @@ makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym
         }
         
         if (is.null(transition.array)) {
-          if (is.null(getOption("gym.api.path"))) {
-            stop("Please set a path to your gym-http-api folder using options(gym.api.path = 'your_path')")
-          }
-          self$gym.api.path = gym.api.path
-          # start python gym_http_server.py from within r using the path specified by gym.api.path
-          command = "python"
-          path2pythonfile = paste0(gym.api.path, "/gym_http_server.py")
-          output = system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
+          package.path = system.file(package = "reinforcelearn")
+          path2pythonfile = paste0(package.path, "/gym_http_server.py")
+          command <- "python"
+          system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
           self$gym = TRUE
           self$name = gym.envir.name
           remote_base = "http://127.0.0.1:5000"
@@ -214,6 +205,6 @@ makeEnvironment <- function(gym.envir.name = NULL, gym.api.path = getOption("gym
     )
   )
   
-  envir$new(gym.envir.name, gym.api.path, transition.array, 
+  envir$new(gym.envir.name, transition.array, 
     reward.matrix, terminal.states, initial.state)
 }

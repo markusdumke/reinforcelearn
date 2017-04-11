@@ -29,11 +29,10 @@ The update equation is:
 
 $Q(S, A) \leftarrow  Q(S, A) + \alpha[R + \gamma \max_a(Q(S', a)) - Q(S, A)]$
 
-We will use the Gym implementation of the MountainCar environment. Therefore we need to install python and gym-http-api first. Then we can load the `reinforcelearn` package and create the environment. First we need to set the path to the gym-http-api folder.
+We will use the Gym implementation of the MountainCar environment. Therefore we need to install python and gym-http-api first. Then we can load the `reinforcelearn` package and create the environment.
 
 ```{r, eval = FALSE}
 library(reinforcelearn)
-options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.5.2.3Qt5/scripts/gym-http-api")
 MountainCar = makeEnvironment("MountainCar-v0")
 ```
 

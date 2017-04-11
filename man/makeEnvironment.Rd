@@ -4,16 +4,12 @@
 \alias{makeEnvironment}
 \title{Make Reinforcement Learning Environment}
 \usage{
-makeEnvironment(gym.envir.name = NULL,
-  gym.api.path = getOption("gym.api.path"), transition.array = NULL,
+makeEnvironment(gym.envir.name = NULL, transition.array = NULL,
   reward.matrix = NULL, terminal.states = NULL, initial.state = NULL)
 }
 \arguments{
 \item{gym.envir.name}{scalar character, e.g. "FrozenLake-v0",
 see \href{https://gym.openai.com/envs}{OpenAI Gym} for possible environments.}
-
-\item{gym.api.path}{character path to your gym-http-api folder, best practise
-is to set this using options(gym.api.path = "your_path")}
 
 \item{transition.array}{numerical matrix (n.states x n.states x n.actions)
 for each action giving the probabilities for transitions from one state to
@@ -59,10 +55,8 @@ Useful when starting a new episode.}
 
 \examples{
 \dontrun{
-# Create an environment from an OpenAI Gym environment.
-# Make sure you have gym-http-api and python installed.
-# Then set path to the gym-http-api folder, e.g.:
-options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
+# Create an OpenAI Gym environment.
+# Make sure you have Python and Gym installed.
 FrozenLake = makeEnvironment("FrozenLake-v0")
 FrozenLake$reset()
 FrozenLake$step(action = 0)

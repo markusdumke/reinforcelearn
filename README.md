@@ -15,9 +15,7 @@ With `makeEnvironment` you can create a reinforcement learning environment, eith
 ```r
 library(reinforcelearn)
 
-# Create an environment from an OpenAI Gym environment.
-# First set the path to your gym-http-api folder.
-options(gym.api.path = "C:/Users/M/Downloads/WinPython-64bit-3.6.0.1Qt5/scripts/gym-http-api")
+# Create an OpenAI Gym environment.
 FrozenLake = makeEnvironment("FrozenLake-v0")
 FrozenLake$reset()
 FrozenLake$step(action = 0)
@@ -25,9 +23,9 @@ FrozenLake$step(action = 0)
 # You can also create an environment from an MDP
 windygrid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
-                                  reward.matrix = windygrid$reward.matrix,
-                                  terminal.states = windygrid$terminal.states,
-                                  initial.state = 30)
+  reward.matrix = windygrid$reward.matrix,
+  terminal.states = windygrid$terminal.states,
+  initial.state = 30)
 ```
 
 Environments always have an initialization function to create a new instance of the environment, a reset function, which returns an initial state observation and a step function, which takes a step in the environment given an action returning the next state observation, reward and if the episode is finished.
