@@ -100,7 +100,6 @@ qlearning_fa_experience_replay <- function(envir, makeFeatureVector, predict, tr
       Q.state = predict(features.state_, ...)
       action = sample_epsilon_greedy_action(Q.state, epsilon)
       envir$step(action)
-
       next.state = envir$state
 
       k = k + 1
