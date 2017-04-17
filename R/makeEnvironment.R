@@ -156,10 +156,8 @@ makeEnvironment <- function(gym.envir.name = NULL,
           self$transition.array = transition.array
           self$reward.matrix = reward.matrix
           # get terminal states from transition array
-          terminal.states = apply(transition.array, 3, 
-            function(x) apply(x, 1, function(x) which(x == 1)))
-          self$terminal.states = which(apply(terminal.states, 1, 
-            function(x) abs(max(x) - min(x)) < 0.00001)) - 1L
+          terminal.states = apply(transition.array, 3, function(x) diag(x))
+          self$terminal.states = which(apply(terminal.states, 1, function(x) all(x == 1))) - 1L
 
           # state numeration starts with 0
           if (is.null(initial.state)) {
@@ -207,12 +205,3 @@ makeEnvironment <- function(gym.envir.name = NULL,
   envir$new(gym.envir.name, transition.array, 
     reward.matrix, initial.state)
 }
-
-# transition.array = array(0, c(3,3,2))
-# transition.array[,,1] = matrix(c(0,0,1,1,1,0,0,0,0), ncol = 3)
-# transition.array[,,2] = matrix(c(1,0,1,0,1,0,0,0,0), ncol = 3) 
-# 
-# a = apply(transition.array, 3, function(x) apply(x, 1, function(x) which(x == 1)))
-# a = cbind(a, seq_len(self$n.actions))
-# which(apply(a, 1, function(x) abs(max(x) - min(x)) < 0.00001))
-

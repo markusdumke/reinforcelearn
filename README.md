@@ -8,13 +8,26 @@ Reinforcement Learning in R. Work in progress!
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
+### Get started
+Reinforcement Learning with `reinforcelearn` is as easy as
+```r
+library(reinforcelearn)
+
+# Create environment
+transition.array = array(c(0.5, 0, 0.5, 1, 0.2, 0, 0.8, 1), c(2, 2, 2))
+reward.matrix = matrix(c(- 1, 0, - 1, 0), ncol = 2)
+test_env = makeEnvironment(transition.array = transition.array,
+  reward.matrix = reward.matrix)
+#
+# Solve environment
+sarsa(test_env)
+```
+
 ### Create an environment
 
 With `makeEnvironment` you can create a reinforcement learning environment, either from [OpenAI Gym](https://gym.openai.com/) or from the state transition matrix and reward matrix of a Markov Decision Process. To use a Gym environment you need to have Python and Gym installed.
 
 ```r
-library(reinforcelearn)
-
 # Create an OpenAI Gym environment.
 CartPole = makeEnvironment("CartPole-v0")
 CartPole$reset()
@@ -24,7 +37,6 @@ CartPole$step(action = 0)
 windygrid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
   reward.matrix = windygrid$reward.matrix,
-  terminal.states = windygrid$terminal.states,
   initial.state = 30)
 ```
 

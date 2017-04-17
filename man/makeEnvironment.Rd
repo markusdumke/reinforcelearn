@@ -5,7 +5,7 @@
 \title{Make Reinforcement Learning Environment}
 \usage{
 makeEnvironment(gym.envir.name = NULL, transition.array = NULL,
-  reward.matrix = NULL, terminal.states = NULL, initial.state = NULL)
+  reward.matrix = NULL, initial.state = NULL)
 }
 \arguments{
 \item{gym.envir.name}{scalar character, e.g. "CartPole-v0",
@@ -17,9 +17,6 @@ all other states}
 
 \item{reward.matrix}{numerical matrix the rewards for transitions from one
 state to another}
-
-\item{terminal.states}{integer vector: terminal.states of MDP. Note that
-states are numerated starting with 0.}
 
 \item{initial.state}{scalar integer or integer vector: the starting state. If
 a vector is given a starting state will be randomly sampled from this
@@ -68,14 +65,13 @@ MountainCar = makeEnvironment("MountainCar-v0")
 # Create an environment from a transition array and reward matrix (here a simple gridworld).
 grid = gridworld$new()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+  reward.matrix = grid$reward.matrix)
   
 # Create the WindyGridworld environment.
 grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, 
-  terminal.states = grid$terminal.states, 
-  initial.state = 30)
+  reward.matrix = grid$reward.matrix, initial.state = 30)
+  
 }
 \seealso{
 \href{https://gym.openai.com/docs}{OpenAI Gym}
