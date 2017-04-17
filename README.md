@@ -18,7 +18,7 @@ transition.array = array(c(0.5, 0, 0.5, 1, 0.2, 0, 0.8, 1), c(2, 2, 2))
 reward.matrix = matrix(c(- 1, 0, - 1, 0), ncol = 2)
 test_env = makeEnvironment(transition.array = transition.array,
   reward.matrix = reward.matrix)
-#
+
 # Solve environment
 sarsa(test_env)
 ```
