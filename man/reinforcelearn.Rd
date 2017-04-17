@@ -7,15 +7,21 @@
 \title{Reinforcement Learning in R.}
 \description{
 Implementations of reinforcement learning algorithms.
+Create an environment using \link{makeEnvironment}.
 }
-\section{Algorithms}{
+\section{Bandits}{
 
+\link{solveBandit}
+}
+
+\section{Algorithms}{
 
 Dynamic Programming:
 \itemize{
 \item \link{evaluatePolicy}
 }
 
+Model-free Reinforcement Learning
 Monte Carlo Methods:
 \itemize{
 \item \link{predictMC}
@@ -34,12 +40,11 @@ Function Approximation
 }
 }
 
-\section{Environments}{
+\section{Example Environments}{
 
 \itemize{
 \item \link{gridworld}
 \item \link{WindyGridworld}
-\item \link{makeEnvironment}
 }
 }
 

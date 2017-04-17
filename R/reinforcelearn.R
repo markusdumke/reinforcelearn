@@ -1,12 +1,16 @@
 #' Reinforcement Learning in R.
 #' 
 #' Implementations of reinforcement learning algorithms.
+#' Create an environment using [makeEnvironment].
+#' 
+#' @section Bandits:
+#' [solveBandit]
 #' 
 #' @section Algorithms:
-#' 
 #' Dynamic Programming: 
 #' * [evaluatePolicy]
 #' 
+#' Model-free Reinforcement Learning
 #' Monte Carlo Methods:
 #' * [predictMC]
 #' 
@@ -18,10 +22,9 @@
 #' Function Approximation
 #' * [qlearning2]
 #' 
-#' @section Environments:
+#' @section Example Environments:
 #' * [gridworld]
 #' * [WindyGridworld]
-#' * [makeEnvironment]
 #' 
 #' @name reinforcelearn
 #' @docType package
