@@ -145,7 +145,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
           }
           
         } else {
-          mdp_check(transition.array, reward.matrix)
+          MDPtoolbox::mdp_check(transition.array, reward.matrix)
           self$gym = FALSE
           self$state.space = "Discrete"
           self$action.space = "Discrete"
