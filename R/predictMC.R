@@ -11,10 +11,7 @@
 #' are averaged over multiple episodes. The update rule is
 #' \deqn{V(S) <- V(S) + \alpha[G - V(S')]}
 #' 
-#' @inheritParams evaluatePolicy
-#' @param n.episodes scalar integer: the number of episodes
-#' @param method scalar character: first-visit or every-visit method
-#' @param learning.rate scalar numeric between 0 and 1: learning rate
+#' @inheritParams params
 #' @export
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @import checkmate
@@ -23,7 +20,7 @@
 #' set.seed(26)
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+#'   reward.matrix = grid$reward.matrix)
 #'   
 #' # Define random policy
 #' random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 
@@ -94,48 +91,6 @@ predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1,
   return(v)
 }
 
-
-#' Sample episode
-#' 
-#' Sample an episode in an environment given a policy. 
-#' Note that this only works for episodic environments 
-#' (e.g. there must be at least one terminal state). There is no action in the 
-#' last time step and no reward for the first time step: 
-#'  \tabular{rrrrr}{
-#'  S_1 \tab S_2 \tab ... \tab S_T-1 \tab S_T \cr
-#'  A_1 \tab A_2 \tab ... \tab A_T-1 \tab NA \cr
-#'  NA \tab R_2 \tab ... \tab R_T-1 \tab R_T \cr
-#' }
-#' S1, S2, ..., ST-1, ST
-#' A1, A2, ..., AT-1, NA
-#' NA, R2, ..., RT-1, RT
-#'
-#' @inheritParams evaluatePolicy
-#' @param initial.state integer: the initial state. Default is NULL, then the 
-#' initial state will be sampled from the initial.states of the environment
-#' @param initial.action integer: the initial action. Default is NULL, 
-#' then first action will also be sampled from policy.
-#'
-#' @return a list with sampled actions, states and returns of the episode.
-#' @export
-#' @examples
-#' set.seed(26)
-#' grid = gridworld$new()
-#' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states,
-#'   initial.state = grid$initial.state)
-#'   
-#' # Define random policy
-#' random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 
-#'   ncol = Gridworld1$n.actions)
-#' 
-#' # Sample an episode using the random.policy
-#' episode = sampleEpisode(random.policy, Gridworld1, initial.state = 3)
-#' print(episode$actions)
-#' print(episode$rewards)
-#' print(episode$states)
-#' 
-#' 
 sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = NULL) {
   
   rewards = numeric(0)

@@ -3,7 +3,6 @@ library(reinforcelearn)
 grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, 
-  terminal.states = grid$terminal.states, 
   initial.state = 30)
 
 ## ---- results = "hide"---------------------------------------------------

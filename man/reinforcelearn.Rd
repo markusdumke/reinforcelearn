@@ -30,14 +30,16 @@ Temporal-Difference Learning:
 
 Function Approximation
 \itemize{
-\item \link{qlearning_fa}
+\item \link{qlearning2}
 }
 }
 
 \section{Environments}{
 
-\link{gridworld}
-\link{WindyGridworld}
-\link{makeEnvironment}
+\itemize{
+\item \link{gridworld}
+\item \link{WindyGridworld}
+\item \link{makeEnvironment}
+}
 }
 

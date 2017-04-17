@@ -12,11 +12,11 @@ predictMC(envir, policy, n.episodes = 100, discount.factor = 1,
 
 \item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
 
-\item{n.episodes}{scalar integer: the number of episodes}
+\item{n.episodes}{scalar integer: number of episodes}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{method}{scalar character: first-visit or every-visit method}
+\item{method}{scalar character: Monte Carlo first-visit or every-visit method}
 
 \item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 }
@@ -37,7 +37,7 @@ are averaged over multiple episodes. The update rule is
 set.seed(26)
 grid = gridworld$new()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+  reward.matrix = grid$reward.matrix)
   
 # Define random policy
 random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 

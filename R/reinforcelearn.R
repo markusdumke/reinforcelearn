@@ -16,12 +16,12 @@
 #' * [qlearning]
 #' 
 #' Function Approximation
-#' * [qlearning_fa]
+#' * [qlearning2]
 #' 
 #' @section Environments:
-#' [gridworld]
-#' [WindyGridworld]
-#' [makeEnvironment]
+#' * [gridworld]
+#' * [WindyGridworld]
+#' * [makeEnvironment]
 #' 
 #' @name reinforcelearn
 #' @docType package

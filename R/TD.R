@@ -12,12 +12,7 @@
 #' credit for a reward and therefore are updated more strongly than states 
 #' observed infrequently and longer time ago.
 #'
-#' @inheritParams evaluatePolicy
-#' @inheritParams predictMC
-#' @param lambda scalar numeric in (0, 1): Then lambda = 0 only current state 
-#' is updated (this is equivalent to TD(0)), for lambda = 1 all states visited 
-#' are updated, this is roughly equivalent to every-visit Monte Carlo.
-#' @param n.steps integer scalar: number of evaluations (steps in the environment)
+#' @inheritParams params
 #'
 #' @return state value function v
 #' @export
@@ -27,7 +22,7 @@
 #' # Define environment, here simple gridworld
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+#'   reward.matrix = grid$reward.matrix)
 #'   
 #' # Define random policy
 #' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 

@@ -4,22 +4,29 @@
 \alias{qlearning}
 \title{Q-Learning (Table-lookup)}
 \usage{
-qlearning(envir, n.episodes = 10, learning.rate = 0.1, epsilon = 0.1,
-  epsilon.decay = 0.5, discount.factor = 1, seed = NULL)
+qlearning(envir, n.episodes = 10L, learning.rate = 0.1, epsilon = 0.1,
+  epsilon.decay = 0.5, epsilon.decay.after = 100L, initial.value = 0L,
+  discount.factor = 1, seed = NULL)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
-\item{n.episodes}{scalar integer: the number of episodes}
+\item{n.episodes}{scalar integer: number of episodes}
 
 \item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
-\item{epsilon}{scalar numeric between 0 and 1: proportion of random samples
-in epsilon-greedy behaviour policy. Higher values of epsilon lead to more
-exploration.}
+\item{epsilon}{scalar numeric: ratio of random exploration in
+epsilon-greedy action selection}
 
 \item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
-every 100 episodes by multiplying with this factor}
+by this factor}
+
+\item{epsilon.decay.after}{scalar integer: number of episodes afer
+which to decay epsilon}
+
+\item{initial.value}{scalar numeric: initial values for the action
+values Q, set this to the maximal
+possible reward to encourage exploration (optimistic initialization)}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
@@ -42,10 +49,9 @@ the optimal action value function Q*. The update formula is:
 }
 \examples{
 # Solve the WindyGridworld environment using Q-Learning
-windygrid = WindyGridworld$new()
-WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
-  reward.matrix = windygrid$reward.matrix,
-  terminal.states = windygrid$terminal.states,
+grid = WindyGridworld$new()
+WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
+  reward.matrix = grid$reward.matrix,
   initial.state = 30)
 res = qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
 

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-03-30" />
+<meta name="date" content="2017-04-17" />
 
 <title>Solve windy gridworld using SARSA</title>
 
@@ -119,7 +119,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Solve windy gridworld using SARSA</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-03-30</em></h4>
+<h4 class="date"><em>2017-04-17</em></h4>
 
 </div>
 
@@ -144,7 +144,6 @@ Windy gridworld example, image from D.Silver
 grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, 
-  terminal.states = grid$terminal.states, 
   initial.state = 30)</code></pre>
 <p>Then we can apply SARSA to find the optimal action value function <span class="math inline">\(Q\)</span>. Here we will use SARSA(0), which only updates the current state action pair. Try different <span class="math inline">\(\lambda\)</span> values for a trade-off between temporal-difference and monte carlo learning.</p>
 <pre class="r"><code>res = sarsa(WindyGridworld1, n.episodes = 1000, seed = 123)</code></pre>

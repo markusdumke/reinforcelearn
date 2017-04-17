@@ -11,11 +11,7 @@
 #' the optimal action value function Q*. The update formula is: 
 #' \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma max_a Q(S', a) - Q(S, A)]}
 #'
-#' @inheritParams evaluatePolicy
-#' @inheritParams predictMC
-#' @inheritParams sarsa
-#' @param epsilon.decay scalar numeric between 0 and 1: decay epsilon 
-#' every 100 episodes by multiplying with this factor
+#' @inheritParams params
 #'
 #' @return optimal action value function
 #' @seealso [sarsa]
@@ -23,16 +19,15 @@
 #' @export
 #' @examples
 #' # Solve the WindyGridworld environment using Q-Learning
-#' windygrid = WindyGridworld$new()
-#' WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
-#'   reward.matrix = windygrid$reward.matrix,
-#'   terminal.states = windygrid$terminal.states,
+#' grid = WindyGridworld$new()
+#' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
+#'   reward.matrix = grid$reward.matrix,
 #'   initial.state = 30)
 #' res = qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
 #' 
-qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1, 
-  epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1, 
-  seed = NULL) {
+qlearning <- function(envir, n.episodes = 10L, learning.rate = 0.1, 
+  epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
+  initial.value = 0L, discount.factor = 1, seed = NULL) {
   
   # input checking
   stopifnot(envir$state.space == "Discrete")
@@ -40,7 +35,7 @@ qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1,
 
   n.states = envir$n.states
   n.actions = envir$n.actions
-  Q = matrix(0, nrow = n.states, ncol = n.actions)
+  Q = matrix(initial.value, nrow = n.states, ncol = n.actions)
   steps.per.episode = rep(0, n.episodes)
   rewards.per.episode = rep(0, n.episodes)
   
@@ -70,9 +65,9 @@ qlearning <- function(envir, n.episodes = 10, learning.rate = 0.1,
         steps.per.episode[i] = j
         rewards.per.episode[i] = reward.sum
         print(paste("Episode", i, "finished after", j, "time steps."))
-        if (i %% 100 == 0) {
+        if (i %% epsilon.decay.after == 0) {
           epsilon = epsilon.decay * epsilon
-          print(paste("Average Reward of last 100 episodes:", sum(rewards.per.episode[seq(i - 99, i)]) / 100))
+          print(paste("Average Reward of last", epsilon.decay.after, "episodes:", sum(rewards.per.episode[seq(i - epsilon.decay.after + 1, i)]) / epsilon.decay.after))
         }
         break
       } 

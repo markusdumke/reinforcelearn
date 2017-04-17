@@ -7,10 +7,8 @@
 #' 
 #' @details The algorithm runs until the improvement in the value function in two subsequent steps
 #' is smaller than epsilon.
-#' @param policy numeric matrix: a policy specified as a probability matrix (states x actions)
-#' @param envir an R6 class: the reinforcement learning environment created by [makeEnvironment].
-#' @param discount.factor scalar numeric, discounting future rewards
-#' @param psi scalar numeric, algorithm stops when improvement is smaller than psi
+#' 
+#' @inheritParams params
 #'
 #' @return the state value function v, a numeric vector
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
@@ -19,7 +17,7 @@
 #' # Define uniform random policy, take each action with probability 0.25
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+#'   reward.matrix = grid$reward.matrix)
 #' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
 #'   ncol = grid$n.actions)
 #' 

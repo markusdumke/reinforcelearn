@@ -27,43 +27,25 @@ bandit = R6::R6Class("bandit",
       if (action == 3) {
         self$reward = rexp(1, rate = 0.25)
       }
-      # self$reward = self$sampleReward(action)
-    }#,
-    
-    # sampleReward = function(action) {
-    #   if (action == 0) {
-    #     rnorm(1, mean = 1, sd = 1)
-    #   }
-    #   if (action == 1) {
-    #     rnorm(1, mean = 2, sd = 4)
-    #   }
-    #   if (action == 2) {
-    #     ruinf(1, min = 0, max = 5)
-    #   }
-    #   if (action == 3) {
-    #     rexp(1, rate = 0.25)
-    #   }
-    # }
+    }
   )
 )
 
 #' Solve multi-armed bandit
-#'
-#' @param bandit R6 class bandit
-#' @param n.episodes scalar integer: number of episodes
-#' @param action.selection scalar character: which method to use for 
-#' action selection, e.g. "epsilon-greedy", "greedy" or "UCB"
-#' @param epsilon scalar numeric: ratio of random exploration in 
-#' epsilon-greedy action selection
-#' @param initial.value scalar numeric: initial values for the action
-#'  values Q, set this to the maximal 
-#'  possible reward to encourage exploration (optimistic initialization)
-#' @param initial.visits scalar integer: set this to a high number to 
-#' encourage exploration (together with a high initial.value)
-#' @param epsilon.decay scalar numeric between 0 and 1: decay epsilon 
-#' every 100 episodes by this factor
-#' @param ... arguments passed on to action selection algorithm
-#'
+#' 
+#' Multi-armed bandits are a simplified reinforcement learning problem, 
+#' each arm of the bandit pays off a reward and the goal is to maximize 
+#' this reward, i.e. to choose the best arm. The arms of the bandit 
+#' can be seen as actions, after each action the episode ends (there 
+#' are no states). To find the best action, the algorithm is faced with 
+#' a tradeoff between exploration and exploitation.
+#' 
+#' Upper-confidence-bound action selection selects actions with 
+#' \deqn{argmax_a Q(a) + sqrt( (C * log(t)) / N_t(a) ),} where N_t(a) is the 
+#' number of times action a was selected.
+#' 
+#' @inheritParams params
+#' 
 #' @return numeric vector: the action values for the arms of the bandit
 #' @export
 #'
@@ -77,11 +59,12 @@ bandit = R6::R6Class("bandit",
 #'   action.selection = "greedy", 
 #'   initial.value = 5, initial.visits = 100)
 #' solveBandit(ExampleBandit, n.episodes = 1000, 
-#'   action.selection = "UCB", c = 2)
+#'   action.selection = "UCB", C = 2)
 #' # true values: 1, 2, 2.5, 4
 solveBandit = function(bandit, n.episodes = 10L,
   action.selection = c("epsilon-greedy", "greedy", "UCB"), epsilon = 0.1, 
-  epsilon.decay = NULL, initial.value = 0, initial.visits = 0L, c = 2, ...) {
+  epsilon.decay = 0.5, epsilon.decay.after = 100, 
+  initial.value = 0, initial.visits = 0L, C = 2) {
   
   action.selection <- match.arg(action.selection)
   action.visits = rep(initial.visits, bandit$n.actions)
@@ -93,13 +76,16 @@ solveBandit = function(bandit, n.episodes = 10L,
       action = argmax(Q) - 1
     }
     if (action.selection == "epsilon-greedy") {
+      if (i %% epsilon.decay.after == 0) {
+        epsilon = epsilon * epsilon.decay
+      }
       action = sample_epsilon_greedy_action(Q, epsilon)
     }
     if (action.selection == "UCB") {
       if (any(action.visits == 0)) {
         action = sample(which(action.visits == 0), 1) - 1
       } else {
-       action = argmax(Q + c * sqrt(log(i) / action.visits)) - 1 
+        action = argmax(Q + sqrt(C * log(i) / action.visits)) - 1 
       }
     }
     bandit$step(action)

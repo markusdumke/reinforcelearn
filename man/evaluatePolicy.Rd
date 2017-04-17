@@ -32,7 +32,7 @@ is smaller than epsilon.
 # Define uniform random policy, take each action with probability 0.25
 grid = gridworld$new()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+  reward.matrix = grid$reward.matrix)
 random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
   ncol = grid$n.actions)
 

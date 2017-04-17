@@ -5,11 +5,12 @@
 \title{Solve multi-armed bandit}
 \usage{
 solveBandit(bandit, n.episodes = 10L, action.selection = c("epsilon-greedy",
-  "greedy", "UCB"), epsilon = 0.1, epsilon.decay = NULL,
-  initial.value = 0, initial.visits = 0L, c = 2, ...)
+  "greedy", "UCB"), epsilon = 0.1, epsilon.decay = 0.5,
+  epsilon.decay.after = 100, initial.value = 0, initial.visits = 0L,
+  C = 2)
 }
 \arguments{
-\item{bandit}{R6 class bandit}
+\item{bandit}{an R6 class: bandit problem}
 
 \item{n.episodes}{scalar integer: number of episodes}
 
@@ -20,7 +21,10 @@ action selection, e.g. "epsilon-greedy", "greedy" or "UCB"}
 epsilon-greedy action selection}
 
 \item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
-every 100 episodes by this factor}
+by this factor}
+
+\item{epsilon.decay.after}{scalar integer: number of episodes afer
+which to decay epsilon}
 
 \item{initial.value}{scalar numeric: initial values for the action
 values Q, set this to the maximal
@@ -29,13 +33,24 @@ possible reward to encourage exploration (optimistic initialization)}
 \item{initial.visits}{scalar integer: set this to a high number to
 encourage exploration (together with a high initial.value)}
 
-\item{...}{arguments passed on to action selection algorithm}
+\item{C}{scalar numeric: controls the degree of exploration. High
+C values lead to more exploration}
 }
 \value{
 numeric vector: the action values for the arms of the bandit
 }
 \description{
-Solve multi-armed bandit
+Multi-armed bandits are a simplified reinforcement learning problem,
+each arm of the bandit pays off a reward and the goal is to maximize
+this reward, i.e. to choose the best arm. The arms of the bandit
+can be seen as actions, after each action the episode ends (there
+are no states). To find the best action, the algorithm is faced with
+a tradeoff between exploration and exploitation.
+}
+\details{
+Upper-confidence-bound action selection selects actions with
+\deqn{argmax_a Q(a) + sqrt( (C * log(t)) / N_t(a) ),} where N_t(a) is the
+number of times action a was selected.
 }
 \examples{
 ExampleBandit = bandit$new()
@@ -47,6 +62,6 @@ solveBandit(ExampleBandit, n.episodes = 1000,
   action.selection = "greedy", 
   initial.value = 5, initial.visits = 100)
 solveBandit(ExampleBandit, n.episodes = 1000, 
-  action.selection = "UCB", c = 2)
+  action.selection = "UCB", C = 2)
 # true values: 1, 2, 2.5, 4
 }
