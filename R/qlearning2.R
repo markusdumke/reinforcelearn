@@ -95,8 +95,8 @@ qlearning2 <- function(envir, n.episodes = 10L,
       
       batch.states = lapply(batch, "[[", "state")
       batch.next.states = lapply(batch, "[[", "next.state")
-      batch.actions = vapply(batch, "[[", "action", FUN.VALUE = integer(1))
-      batch.rewards = vapply(batch, "[[", "reward", FUN.VALUE = numeric(1))
+      batch.actions = vapply(batch, "[[", "action", FUN.VALUE = double(1)) # sapply(batch, "[[", "action")
+      batch.rewards = vapply(batch, "[[", "reward", FUN.VALUE = double(1)) # sapply(batch, "[[", "reward")
       
       features.state = Reduce(rbind, lapply(batch.states, makeFeatureVector))
       features.next.state = Reduce(rbind, lapply(batch.next.states, makeFeatureVector))
@@ -128,13 +128,12 @@ qlearning2 <- function(envir, n.episodes = 10L,
 
 
 
-
-
+# 
+# 
 # # define the environment
 # grid = WindyGridworld$new()
 # WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
 #   reward.matrix = grid$reward.matrix,
-#   terminal.states = grid$terminal.states,
 #   initial.state = 30L)
 # 
 # # define a tensorflow graph for the function approximator (here a neural network)
@@ -173,7 +172,7 @@ qlearning2 <- function(envir, n.episodes = 10L,
 # }
 # 
 # # # no experience replay
-# res = qlearning_fa2(WindyGridworld1, n.episodes = 100L,
+# res = qlearning2(WindyGridworld1, n.episodes = 100L,
 #   makeFeatureVector, predict, train,
 #   double.qlearning = FALSE, experience.replay = FALSE, replay.memory = NULL,
 #   replay.memory.size = 10000L, batch.size = 32L, copy.parameters = 100L,
@@ -181,7 +180,7 @@ qlearning2 <- function(envir, n.episodes = 10L,
 #   discount.factor = 1, seed = NULL)
 # 
 # # experience replay, this is much better!
-# res = qlearning_fa2(WindyGridworld1, n.episodes = 100L,
+# res = qlearning2(WindyGridworld1, n.episodes = 100L,
 #   makeFeatureVector, predict, train,
 #   double.qlearning = FALSE, experience.replay = TRUE, replay.memory = NULL,
 #   replay.memory.size = 10000L, batch.size = 32L, copy.parameters = 100L,
@@ -206,21 +205,18 @@ qlearning2 <- function(envir, n.episodes = 10L,
 #   }
 # }
 # 
-# # fails
-# 
-# 
-# debug(qlearning_fa2)
-# undebug(qlearning_fa2)
-# 
-# res = qlearning_fa2(WindyGridworld1, n.episodes = 100L,
+# # debug(qlearning2)
+# # undebug(qlearning2)
+# #
+# res = qlearning2(WindyGridworld1, n.episodes = 10000L,
 #   makeFeatureVector, predict, train,
 #   double.qlearning = FALSE, experience.replay = TRUE, replay.memory = replay.memory2,
 #   replay.memory.size = 20000L, batch.size = 32L, copy.parameters = 100L,
 #   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
 #   discount.factor = 1, seed = NULL)
-# # 
+# 
 # # double qlearning
-# res = qlearning_fa2(WindyGridworld1, n.episodes = 100L,
+# res = qlearning2(WindyGridworld1, n.episodes = 100L,
 #   makeFeatureVector, predict, train,
 #   double.qlearning = TRUE, experience.replay = FALSE, replay.memory = NULL,
 #   replay.memory.size = 10000L, batch.size = 32L, copy.parameters = 100L,
