@@ -40,8 +40,8 @@ WindyGridworld = R6::R6Class("WindyGridworld",
     reward.matrix = NULL,
     wind = NULL,
     
-    initialize = function(shape = c(7, 10), initial.state = 30, 
-      terminal.states = 37, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0)) {
+    initialize = function(shape = c(7L, 10L), initial.state = 30L, 
+      terminal.states = 37L, wind = c(0L, 0L, 0L, 1L, 1L, 1L, 2L, 2L, 1L, 0L)) {
       
       self$wind = wind
       self$state.space = "Discrete"
@@ -49,10 +49,10 @@ WindyGridworld = R6::R6Class("WindyGridworld",
       self$initial.state = initial.state
       self$shape = shape
       self$terminal.states = terminal.states
-      self$actions = 0:3
+      self$actions = seq_len(4) - 1L
       self$n.states = prod(shape)
       self$n.actions = length(self$actions)
-      self$states = seq_len(self$n.states) - 1
+      self$states = seq_len(self$n.states) - 1L
       self$non.terminal.states = self$states[self$states != self$terminal.states]
       
       private$computeBorderStates()
@@ -67,10 +67,10 @@ WindyGridworld = R6::R6Class("WindyGridworld",
     border.states.up = NULL,
     border.states.down = NULL,
     computeBorderStates = function() {
-      private$border.states.left = seq(0, self$n.states - self$shape[2], self$shape[2])
-      private$border.states.right = seq(self$shape[2] - 1, self$n.states - 1, self$shape[2])
-      private$border.states.up = seq(0, self$shape[2] - 1)
-      private$border.states.down = seq(self$n.states - self$shape[2], self$n.states - 1)
+      private$border.states.left = seq(0L, self$n.states - self$shape[2], self$shape[2])
+      private$border.states.right = seq(self$shape[2] - 1L, self$n.states - 1, self$shape[2])
+      private$border.states.up = seq(0L, self$shape[2] - 1L)
+      private$border.states.down = seq(self$n.states - self$shape[2], self$n.states - 1L)
       invisible(self)
     },
     
@@ -81,32 +81,36 @@ WindyGridworld = R6::R6Class("WindyGridworld",
         dim = c(self$n.states, self$n.states, self$n.actions),
         dimnames = list(NULL, NULL, self$actions))
       
-      for(state in self$states) {
+      for(state in self$non.terminal.states) {
         for(action in self$actions) {
-          if(action == 0) { # left
-            new.state = ifelse(state %in% private$border.states.left, state, state - 1)
+          if(action == 0L) { # left
+            new.state = ifelse(state %in% private$border.states.left, state, state - 1L)
           }
-          if (action == 1) { # right
-            new.state = ifelse(state %in% private$border.states.right, state, state + 1)
+          if (action == 1L) { # right
+            new.state = ifelse(state %in% private$border.states.right, state, state + 1L)
           }
-          if (action == 2) { # up
+          if (action == 2L) { # up
             new.state = ifelse(state %in% private$border.states.up, state, state - self$shape[2])
           }
-          if (action == 3) { # down
+          if (action == 3L) { # down
             new.state = ifelse(state %in% private$border.states.down, state, state + self$shape[2])
           }
           
           # push next.state upwards because of wind
           column = state
-          while (column > (self$shape[2] - 1)) {
+          while (column > (self$shape[2] - 1L)) {
             column = column - self$shape[2]
           }
-          new.state = new.state - self$wind[column + 1] * self$shape[2]
-          while (new.state <= 0) {
+          new.state = new.state - self$wind[column + 1L] * self$shape[2]
+          while (new.state <= 0L) {
             new.state = new.state + self$shape[2]
           }
-          self$transition.array[state + 1, new.state + 1, action + 1] = 1
+          self$transition.array[state + 1L, new.state + 1L, action + 1L] = 1
         }
+      }
+      for (state in self$terminal.states) {
+        new.state = state
+        self$transition.array[state + 1, new.state + 1, ] = 1
       }
       
       invisible(self)

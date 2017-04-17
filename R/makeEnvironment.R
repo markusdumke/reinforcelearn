@@ -14,8 +14,6 @@
 #'   all other states
 #' @param reward.matrix numerical matrix the rewards for transitions from one 
 #'   state to another
-#' @param terminal.states integer vector: terminal.states of MDP. Note that
-#'   states are numerated starting with 0.
 #' @param initial.state scalar integer or integer vector: the starting state. If
 #'   a vector is given a starting state will be randomly sampled from this 
 #'   vector when reset is called. Note that states are numerated starting with 
@@ -53,17 +51,15 @@
 #' # Create an environment from a transition array and reward matrix (here a simple gridworld).
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, terminal.states = grid$terminal.states)
+#'   reward.matrix = grid$reward.matrix)
 #'   
 #' # Create the WindyGridworld environment.
 #' grid = WindyGridworld$new()
 #' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, 
-#'   terminal.states = grid$terminal.states, 
-#'   initial.state = 30)
+#'   reward.matrix = grid$reward.matrix, initial.state = 30)
+#'   
 makeEnvironment <- function(gym.envir.name = NULL,  
-  transition.array = NULL, reward.matrix = NULL, 
-  terminal.states = NULL, initial.state = NULL) {
+  transition.array = NULL, reward.matrix = NULL, initial.state = NULL) {
   envir = R6::R6Class("envir",
     public = list(
       gym = NULL,
@@ -83,7 +79,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
       state = NULL,
       reward = NULL,
       episode.over = FALSE,
-      n.steps = 0,
+      n.steps = 0L,
       transition.array = NULL, 
       reward.matrix = NULL,
       terminal.states = NULL,
@@ -91,7 +87,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
       
       initialize = function(gym.envir.name = NULL,
         transition.array = NULL, reward.matrix = NULL, 
-        terminal.states = NULL, initial.state = NULL) {
+        initial.state = NULL) {
         if (is.null(gym.envir.name)) {
           gym.envir.name = self$name
         }
@@ -119,7 +115,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
           
           if (action_space_info$name == "Discrete") {
             self$n.actions = action_space_info$n
-            self$actions = seq(0, self$n.actions - 1)
+            self$actions = seq(0L, self$n.actions - 1L)
           }
           
           if (action_space_info$name == "Box") {
@@ -136,7 +132,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
           
           if (state_space_info$name == "Discrete") {
             self$n.states = state_space_info$n
-            self$states = seq(0, self$n.states - 1)
+            self$states = seq(0L, self$n.states - 1L)
           }
           
           if (state_space_info$name == "Box") {
@@ -153,13 +149,19 @@ makeEnvironment <- function(gym.envir.name = NULL,
           self$gym = FALSE
           self$state.space = "Discrete"
           self$action.space = "Discrete"
-          self$actions = seq_len(ncol(reward.matrix)) - 1
+          self$actions = seq_len(ncol(reward.matrix)) - 1L
           self$n.states = nrow(reward.matrix)
           self$n.actions = ncol(reward.matrix)
-          self$states = seq_len(self$n.states) - 1
+          self$states = seq_len(self$n.states) - 1L
           self$transition.array = transition.array
           self$reward.matrix = reward.matrix
-          self$terminal.states = terminal.states # state numeration starts with 0
+          # get terminal states from transition array
+          terminal.states = apply(transition.array, 3, 
+            function(x) apply(x, 1, function(x) which(x == 1)))
+          self$terminal.states = which(apply(terminal.states, 1, 
+            function(x) abs(max(x) - min(x)) < 0.00001)) - 1L
+
+          # state numeration starts with 0
           if (is.null(initial.state)) {
             self$initial.state = self$states[self$states != self$terminal.states]
           } else {
@@ -169,7 +171,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
       },
       
       step = function(action, render = TRUE) {
-        self$n.steps = self$n.steps + 1
+        self$n.steps = self$n.steps + 1L
         if (self$gym == TRUE) {
           res = env_step(self$client, self$instance_id, action, render)
           self$state = res$observation
@@ -193,7 +195,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
         if (self$gym == TRUE) {
           self$state = env_reset(self$client, self$instance_id)
         } else {
-          self$state = ifelse(length(self$initial.state) > 1, 
+          self$state = ifelse(length(self$initial.state) > 1L, 
             sample(self$initial.state, size = 1), self$initial.state)
         }
         self$episode.over = FALSE
@@ -203,5 +205,14 @@ makeEnvironment <- function(gym.envir.name = NULL,
   )
   
   envir$new(gym.envir.name, transition.array, 
-    reward.matrix, terminal.states, initial.state)
+    reward.matrix, initial.state)
 }
+
+# transition.array = array(0, c(3,3,2))
+# transition.array[,,1] = matrix(c(0,0,1,1,1,0,0,0,0), ncol = 3)
+# transition.array[,,2] = matrix(c(1,0,1,0,1,0,0,0,0), ncol = 3) 
+# 
+# a = apply(transition.array, 3, function(x) apply(x, 1, function(x) which(x == 1)))
+# a = cbind(a, seq_len(self$n.actions))
+# which(apply(a, 1, function(x) abs(max(x) - min(x)) < 0.00001))
+

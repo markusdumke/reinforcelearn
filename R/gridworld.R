@@ -115,7 +115,7 @@ gridworld = R6::R6Class("gridworld",
         dimnames = list(NULL, NULL, self$actions))
       # fill in probabilities: when action is taking you off the grid,
       # the new state will be the same as the old state
-      for(state in self$states) {
+      for(state in self$non.terminal.states) {
         for(action in self$actions) {
           if(action == 0) { # left
             new.state = ifelse(state %in% private$border.states.left, state, state - 1)
@@ -131,6 +131,10 @@ gridworld = R6::R6Class("gridworld",
           }
           self$transition.array[state + 1, new.state + 1, action + 1] = 1
         }
+      }
+      for (state in self$terminal.states) {
+        new.state = state
+        self$transition.array[state + 1, new.state + 1, ] = 1
       }
       invisible(self)
     },
