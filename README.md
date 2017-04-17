@@ -103,7 +103,7 @@ train = function(inputs_, outputs_, predictions_ = NULL) {
     feed_dict = dict(inputs = inputs_, nextQ = outputs_))
 }
 
-res = qlearning_fa(WindyGridworld1, makeFeatureVector, predict, train, 
+res = qlearning2(WindyGridworld1, makeFeatureVector, predict, train, 
   n.episodes = 300, seed = 123)
 ```
 
