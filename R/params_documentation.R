@@ -28,12 +28,12 @@
 #' @param method scalar character: Monte Carlo first-visit or every-visit method
 #' @param learning.rate scalar numeric between 0 and 1: learning rate
 #' @param n.steps integer scalar: number of evaluations (steps in the environment)
-#' @param makeFeatureVector function: takes a state observation 
+#' @param preprocessState function: takes a state observation 
 #' as input and returns a preprocessed state, e.g. a one-hot vector
 #' @param predict function: predict returns vector of q values for a 
 #' given preprocessed state observation
 #' @param train function: train the model, update the weights
-#' @param ... arguments passed on to makeFeatureVector, predict or train
+#' @param ... arguments passed on to preprocessState, predict or train
 #' @param experience.replay logical scalar
 #' @param replay.memory list: each list entry is a list with entries
 #' state, action, reward, next.state. replay.memory might be filled
@@ -42,7 +42,8 @@
 #' @param batch.size scalar integer: batch size, how many samples are
 #' drawn from the replay memory. Must be smaller than
 #' size of the replay memory!
-#' @param copy.parameters scalar integer: copy parameters to fixed 
+#' @param frozen.target scalar logical: Q-Learning with frozen target network
+#' @param copy.params.after scalar integer: copy parameters to fixed 
 #' target network every n episodes
 #' @param double.qlearning logical scalar: whether to use double 
 #' qlearning
@@ -50,7 +51,7 @@
 params = function(policy, envir, bandit, discount.factor, psi, lambda, epsilon, 
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 
   initial.value, initial.visits, C, action.selection, learning.rate, 
-  makeFeatureVector, predict, train, ..., experience.replay, replay.memory, 
-  replay.memory.size, batch.size, copy.parameters, double.qlearning) {
+  preprocessState, predict, train, ..., experience.replay, replay.memory, 
+  replay.memory.size, batch.size, frozen.target, copy.params.after, double.qlearning) {
   
 }

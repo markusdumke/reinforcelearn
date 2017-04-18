@@ -4,19 +4,19 @@
 \alias{qlearning2}
 \title{Q-Learning with Function Approximation}
 \usage{
-qlearning2(envir, n.episodes = 10L, makeFeatureVector = NULL,
+qlearning2(envir, n.episodes = 10L, preprocessState = NULL,
   predict = NULL, train = NULL, double.qlearning = FALSE,
   experience.replay = FALSE, replay.memory = NULL,
-  replay.memory.size = 1000L, batch.size = 32L, copy.parameters = 100L,
-  epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
-  discount.factor = 1, seed = NULL, ...)
+  replay.memory.size = 1000L, batch.size = 32L, frozen.target = FALSE,
+  copy.params.after = 100L, epsilon = 0.1, epsilon.decay = 0.5,
+  epsilon.decay.after = 100L, discount.factor = 1, seed = NULL, ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: number of episodes}
 
-\item{makeFeatureVector}{function: takes a state observation
+\item{preprocessState}{function: takes a state observation
 as input and returns a preprocessed state, e.g. a one-hot vector}
 
 \item{predict}{function: predict returns vector of q values for a
@@ -39,7 +39,9 @@ with experience sampled from a random policy.}
 drawn from the replay memory. Must be smaller than
 size of the replay memory!}
 
-\item{copy.parameters}{scalar integer: copy parameters to fixed
+\item{frozen.target}{scalar logical: Q-Learning with frozen target network}
+
+\item{copy.params.after}{scalar integer: copy parameters to fixed
 target network every n episodes}
 
 \item{epsilon}{scalar numeric: ratio of random exploration in
@@ -55,7 +57,7 @@ which to decay epsilon}
 
 \item{seed}{scalar integer: random seed}
 
-\item{...}{arguments passed on to makeFeatureVector, predict or train}
+\item{...}{arguments passed on to preprocessState, predict or train}
 }
 \value{
 list with weights

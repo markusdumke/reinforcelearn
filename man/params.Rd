@@ -7,8 +7,9 @@
 params(policy, envir, bandit, discount.factor, psi, lambda, epsilon,
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes,
   initial.value, initial.visits, C, action.selection, learning.rate,
-  makeFeatureVector, predict, train, ..., experience.replay, replay.memory,
-  replay.memory.size, batch.size, copy.parameters, double.qlearning)
+  preprocessState, predict, train, ..., experience.replay, replay.memory,
+  replay.memory.size, batch.size, frozen.target, copy.params.after,
+  double.qlearning)
 }
 \arguments{
 \item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
@@ -57,7 +58,7 @@ action selection, e.g. "epsilon-greedy", "greedy" or "UCB"}
 
 \item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
-\item{makeFeatureVector}{function: takes a state observation
+\item{preprocessState}{function: takes a state observation
 as input and returns a preprocessed state, e.g. a one-hot vector}
 
 \item{predict}{function: predict returns vector of q values for a
@@ -65,7 +66,7 @@ given preprocessed state observation}
 
 \item{train}{function: train the model, update the weights}
 
-\item{...}{arguments passed on to makeFeatureVector, predict or train}
+\item{...}{arguments passed on to preprocessState, predict or train}
 
 \item{experience.replay}{logical scalar}
 
@@ -79,7 +80,9 @@ with experience sampled from a random policy.}
 drawn from the replay memory. Must be smaller than
 size of the replay memory!}
 
-\item{copy.parameters}{scalar integer: copy parameters to fixed
+\item{frozen.target}{scalar logical: Q-Learning with frozen target network}
+
+\item{copy.params.after}{scalar integer: copy parameters to fixed
 target network every n episodes}
 
 \item{double.qlearning}{logical scalar: whether to use double
