@@ -5,11 +5,13 @@
 \title{Q-Learning with Function Approximation}
 \usage{
 qlearning2(envir, n.episodes = 10L, preprocessState = NULL,
-  predict = NULL, train = NULL, double.qlearning = FALSE,
-  experience.replay = FALSE, replay.memory = NULL,
-  replay.memory.size = 1000L, batch.size = 32L, frozen.target = FALSE,
-  update.target.after = 100L, epsilon = 0.1, epsilon.decay = 0.5,
-  epsilon.decay.after = 100L, discount.factor = 1, seed = NULL, ...)
+  predict = NULL, train = NULL, predict2 = NULL, copy = NULL,
+  double.qlearning = FALSE, experience.replay = FALSE,
+  replay.memory = NULL, replay.memory.size = 1000L,
+  initial.replay.memory.size = 1000L, batch.size = 32L,
+  frozen.target = FALSE, update.target.after = 100L, epsilon = 0.1,
+  epsilon.decay = 0.5, epsilon.decay.after = 100L, discount.factor = 1,
+  seed = NULL, ...)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
@@ -24,6 +26,10 @@ given preprocessed state observation}
 
 \item{train}{function: train the model, update the weights}
 
+\item{predict2}{function: predict function for the target network}
+
+\item{copy}{function: copy model parameters to target network}
+
 \item{double.qlearning}{logical scalar: whether to use double
 qlearning}
 
@@ -33,7 +39,10 @@ qlearning}
 state, action, reward, next.state. replay.memory might be filled
 with experience sampled from a random policy.}
 
-\item{replay.memory.size}{integer scalar}
+\item{replay.memory.size}{integer scalar: size of the replay memory}
+
+\item{initial.replay.memory.size}{integer scalar:
+how much of the replay memory is filled initially}
 
 \item{batch.size}{scalar integer: batch size, how many samples are
 drawn from the replay memory. Must be smaller than
@@ -60,10 +69,14 @@ which to decay epsilon}
 \item{...}{arguments passed on to preprocessState, predict or train}
 }
 \value{
-list with weights
+list with weights and number of steps
 }
 \description{
-You can use Q-Learning with Experience Replay. Therefore you can
+Q-Learning algorithm with Experience Replay and
+Frozen Target Network.
+}
+\details{
+To use experience replay you can
 either specify an initial replay memory filled with experience
 and provide the size of the replay memory. If you do not
 specify a replay memory this will be initially filled with random

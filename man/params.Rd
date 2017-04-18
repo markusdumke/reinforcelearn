@@ -7,9 +7,9 @@
 params(policy, envir, bandit, discount.factor, psi, lambda, epsilon,
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes,
   initial.value, initial.visits, C, action.selection, learning.rate,
-  preprocessState, predict, train, ..., experience.replay, replay.memory,
-  replay.memory.size, batch.size, frozen.target, update.target.after,
-  double.qlearning)
+  preprocessState, predict, predict2, copy, train, ..., experience.replay,
+  replay.memory, replay.memory.size, initial.replay.memory.size, batch.size,
+  frozen.target, update.target.after, double.qlearning)
 }
 \arguments{
 \item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
@@ -64,6 +64,10 @@ as input and returns a preprocessed state, e.g. a one-hot vector}
 \item{predict}{function: predict returns vector of q values for a
 given preprocessed state observation}
 
+\item{predict2}{function: predict function for the target network}
+
+\item{copy}{function: copy model parameters to target network}
+
 \item{train}{function: train the model, update the weights}
 
 \item{...}{arguments passed on to preprocessState, predict or train}
@@ -74,7 +78,10 @@ given preprocessed state observation}
 state, action, reward, next.state. replay.memory might be filled
 with experience sampled from a random policy.}
 
-\item{replay.memory.size}{integer scalar}
+\item{replay.memory.size}{integer scalar: size of the replay memory}
+
+\item{initial.replay.memory.size}{integer scalar:
+how much of the replay memory is filled initially}
 
 \item{batch.size}{scalar integer: batch size, how many samples are
 drawn from the replay memory. Must be smaller than

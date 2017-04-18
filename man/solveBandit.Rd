@@ -6,7 +6,7 @@
 \usage{
 solveBandit(bandit, n.episodes = 10L, action.selection = c("epsilon-greedy",
   "greedy", "UCB"), epsilon = 0.1, epsilon.decay = 0.5,
-  epsilon.decay.after = 100, initial.value = 0, initial.visits = 0L,
+  epsilon.decay.after = 100L, initial.value = 0, initial.visits = 0L,
   C = 2)
 }
 \arguments{
