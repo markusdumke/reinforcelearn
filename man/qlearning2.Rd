@@ -8,7 +8,7 @@ qlearning2(envir, n.episodes = 10L, preprocessState = NULL,
   predict = NULL, train = NULL, double.qlearning = FALSE,
   experience.replay = FALSE, replay.memory = NULL,
   replay.memory.size = 1000L, batch.size = 32L, frozen.target = FALSE,
-  copy.params.after = 100L, epsilon = 0.1, epsilon.decay = 0.5,
+  update.target.after = 100L, epsilon = 0.1, epsilon.decay = 0.5,
   epsilon.decay.after = 100L, discount.factor = 1, seed = NULL, ...)
 }
 \arguments{
@@ -41,8 +41,8 @@ size of the replay memory!}
 
 \item{frozen.target}{scalar logical: Q-Learning with frozen target network}
 
-\item{copy.params.after}{scalar integer: copy parameters to fixed
-target network every n episodes}
+\item{update.target.after}{scalar integer: copy parameters to fixed
+target network every n steps}
 
 \item{epsilon}{scalar numeric: ratio of random exploration in
 epsilon-greedy action selection}

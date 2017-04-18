@@ -16,7 +16,7 @@
 qlearning2 <- function(envir, n.episodes = 10L,
   preprocessState = NULL, predict = NULL, train = NULL, # predict2 = NULL, 
   double.qlearning = FALSE, experience.replay = FALSE, replay.memory = NULL,
-  replay.memory.size = 1000L, batch.size = 32L, frozen.target = FALSE, copy.params.after = 100L,
+  replay.memory.size = 1000L, batch.size = 32L, frozen.target = FALSE, update.target.after = 100L,
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
   discount.factor = 1, seed = NULL, ...) {
   
@@ -121,7 +121,7 @@ qlearning2 <- function(envir, n.episodes = 10L,
       
       # # update target network: get all weights and copy them to target network
       # if (frozen.target == TRUE) {
-      #   if (steps %% copy.params.after == 0) {
+      #   if (steps %% update.target.after == 0) {
       #     # e1_params = [t for t in tf.trainable_variables() if t.name.startswith(estimator1.scope)]
       #     # e1_params = sorted(e1_params, key=lambda v: v.name)
       #     # e2_params = [t for t in tf.trainable_variables() if t.name.startswith(estimator2.scope)]
@@ -204,7 +204,7 @@ qlearning2 <- function(envir, n.episodes = 10L,
 # res = qlearning2(WindyGridworld1, n.episodes = 100L,
 #   preprocessState, predict, train,
 #   double.qlearning = FALSE, experience.replay = FALSE, replay.memory = NULL,
-#   replay.memory.size = 10000L, batch.size = 32L, copy.parameters = 100L,
+#   replay.memory.size = 10000L, batch.size = 32L, update.target.after = 100L,
 #   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
 #   discount.factor = 1, seed = NULL)
 # 
@@ -212,7 +212,7 @@ qlearning2 <- function(envir, n.episodes = 10L,
 # res = qlearning2(WindyGridworld1, n.episodes = 100L,
 #   preprocessState, predict, train,
 #   double.qlearning = FALSE, experience.replay = TRUE, replay.memory = NULL,
-#   replay.memory.size = 10000L, batch.size = 32L, copy.parameters = 100L,
+#   replay.memory.size = 10000L, batch.size = 32L, update.target.after = 100L,
 #   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
 #   discount.factor = 1, seed = NULL)
 # 
@@ -240,7 +240,7 @@ qlearning2 <- function(envir, n.episodes = 10L,
 # res = qlearning2(WindyGridworld1, n.episodes = 10000L,
 #   preprocessState, predict, train,
 #   double.qlearning = FALSE, experience.replay = TRUE, replay.memory = replay.memory2,
-#   replay.memory.size = 20000L, batch.size = 32L, copy.parameters = 100L,
+#   replay.memory.size = 20000L, batch.size = 32L, update.target.after = 100L,
 #   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
 #   discount.factor = 1, seed = NULL)
 # 
@@ -248,6 +248,6 @@ qlearning2 <- function(envir, n.episodes = 10L,
 # res = qlearning2(WindyGridworld1, n.episodes = 100L,
 #   preprocessState, predict, train,
 #   double.qlearning = TRUE, experience.replay = FALSE, replay.memory = NULL,
-#   replay.memory.size = 10000L, batch.size = 32L, copy.parameters = 100L,
+#   replay.memory.size = 10000L, batch.size = 32L, update.target.after = 100L,
 #   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
 #   discount.factor = 1, seed = NULL)

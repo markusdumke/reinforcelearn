@@ -43,8 +43,8 @@
 #' drawn from the replay memory. Must be smaller than
 #' size of the replay memory!
 #' @param frozen.target scalar logical: Q-Learning with frozen target network
-#' @param copy.params.after scalar integer: copy parameters to fixed 
-#' target network every n episodes
+#' @param update.target.after scalar integer: copy parameters to fixed 
+#' target network every n steps
 #' @param double.qlearning logical scalar: whether to use double 
 #' qlearning
 #' 
@@ -52,6 +52,6 @@ params = function(policy, envir, bandit, discount.factor, psi, lambda, epsilon,
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 
   initial.value, initial.visits, C, action.selection, learning.rate, 
   preprocessState, predict, train, ..., experience.replay, replay.memory, 
-  replay.memory.size, batch.size, frozen.target, copy.params.after, double.qlearning) {
+  replay.memory.size, batch.size, frozen.target, update.target.after, double.qlearning) {
   
 }

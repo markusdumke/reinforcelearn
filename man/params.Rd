@@ -8,7 +8,7 @@ params(policy, envir, bandit, discount.factor, psi, lambda, epsilon,
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes,
   initial.value, initial.visits, C, action.selection, learning.rate,
   preprocessState, predict, train, ..., experience.replay, replay.memory,
-  replay.memory.size, batch.size, frozen.target, copy.params.after,
+  replay.memory.size, batch.size, frozen.target, update.target.after,
   double.qlearning)
 }
 \arguments{
@@ -82,8 +82,8 @@ size of the replay memory!}
 
 \item{frozen.target}{scalar logical: Q-Learning with frozen target network}
 
-\item{copy.params.after}{scalar integer: copy parameters to fixed
-target network every n episodes}
+\item{update.target.after}{scalar integer: copy parameters to fixed
+target network every n steps}
 
 \item{double.qlearning}{logical scalar: whether to use double
 qlearning}
