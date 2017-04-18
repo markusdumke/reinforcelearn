@@ -63,7 +63,7 @@ bandit = R6::R6Class("bandit",
 #' # true values: 1, 2, 2.5, 4
 solveBandit = function(bandit, n.episodes = 10L,
   action.selection = c("epsilon-greedy", "greedy", "UCB"), epsilon = 0.1, 
-  epsilon.decay = 0.5, epsilon.decay.after = 100, 
+  epsilon.decay = 0.5, epsilon.decay.after = 100L, 
   initial.value = 0, initial.visits = 0L, C = 2) {
   
   action.selection <- match.arg(action.selection)
@@ -73,7 +73,7 @@ solveBandit = function(bandit, n.episodes = 10L,
   
   for (i in seq_len(n.episodes)) {
     if (action.selection == "greedy") {
-      action = argmax(Q) - 1
+      action = argmax(Q) - 1L
     }
     if (action.selection == "epsilon-greedy") {
       if (i %% epsilon.decay.after == 0) {
@@ -83,9 +83,9 @@ solveBandit = function(bandit, n.episodes = 10L,
     }
     if (action.selection == "UCB") {
       if (any(action.visits == 0)) {
-        action = sample(which(action.visits == 0), 1) - 1
+        action = sample(which(action.visits == 0), 1) - 1L
       } else {
-        action = argmax(Q + sqrt(C * log(i) / action.visits)) - 1 
+        action = argmax(Q + sqrt(C * log(i) / action.visits)) - 1L 
       }
     }
     bandit$step(action)
