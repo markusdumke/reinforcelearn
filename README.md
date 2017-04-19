@@ -1,6 +1,8 @@
 <div align="center">
-  <img src="ReinforceLogo4.png"><br><br>
+  <img width="40%" src="ReinforceLogo2.png"><br><br>
 </div>
+
+-----------------
 
 Reinforcement Learning in R. Work in progress!
 
