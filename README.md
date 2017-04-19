@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="40%" src="ReinforceLogo2.png"><br><br>
+  <img width="50%" src="ReinforceLogo2.png"><br><br>
 </div>
 
 -----------------
