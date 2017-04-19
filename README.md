@@ -137,4 +137,4 @@ Also have a look at the vignettes for further examples.
 | Asynchronous Advantage Actor-Critic (A3C) |                   | no    | Control            | policy- and value-based | ?                    | ?      |                                |
 
 
-License https://www.r-project.org/logo/
+Logo is modification of https://www.r-project.org/logo/.
