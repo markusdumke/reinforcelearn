@@ -159,17 +159,17 @@ res4 = qlearning2(WindyGridworld1, n.episodes = 300L,
   experience.replay = TRUE, replay.memory.size = 10000L,
   initial.replay.memory.size = 10000L,
   frozen.target = TRUE, update.target.after = 100L, seed = 2L)
-  
+
 # DQN with frozen target network and double q-learning
 res = qlearning2(WindyGridworld1, n.episodes = 300L,
-  preprocessState, predict, train, predict2, copy, double.qlearning = TRUE, 
+  preprocessState, predict, train, predict2, copy, double.qlearning = TRUE,
   frozen.target = TRUE, update.target.after = 100L, seed = 2L)
 # double qlearning currently only works for frozen targets
 
 # DQN with experience replay, frozen target network and double q-learning
 res = qlearning2(WindyGridworld1, n.episodes = 300L,
-  preprocessState, predict, train, predict2, copy, double.qlearning = TRUE, 
-  experience.replay = TRUE, replay.memory.size = 10000L, 
+  preprocessState, predict, train, predict2, copy, double.qlearning = TRUE,
+  experience.replay = TRUE, replay.memory.size = 10000L,
   initial.replay.memory.size = 10000L,
   frozen.target = TRUE, update.target.after = 100L, seed = 2L)
 
@@ -195,7 +195,7 @@ res5 = qlearning2(WindyGridworld1, n.episodes = 300L,
   preprocessState, predict, train,
   experience.replay = TRUE, replay.memory = replay.memory2,
   replay.memory.size = 12000L, seed = 2L)
-  
+
 
 }
 \seealso{
