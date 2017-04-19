@@ -1,3 +1,5 @@
+![Alt-Text](ReinforceLogo5.png)
+
 # reinforcelearn
 Reinforcement Learning in R. Work in progress!
 
@@ -131,3 +133,5 @@ Also have a look at the vignettes for further examples.
 | Expected Sarsa                            |      | no    | Control            | value-based             | ?                    | Q      |                                |
 | Asynchronous Advantage Actor-Critic (A3C) |                   | no    | Control            | policy- and value-based | ?                    | ?      |                                |
 
+
+License https://www.r-project.org/logo/
