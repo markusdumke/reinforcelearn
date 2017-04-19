@@ -1,6 +1,5 @@
-![Alt-Text](ReinforceLogo2.png)
+![Alt-Text](ReinforceLogo4.png)
 
-# reinforcelearn
 Reinforcement Learning in R. Work in progress!
 
 ### Installation
