@@ -1,4 +1,4 @@
-![Alt-Text](ReinforceLogo4.png)
+<div style="text-align:center"><img src ="ReinforceLogo4.png" /></div>
 
 Reinforcement Learning in R. Work in progress!
 
