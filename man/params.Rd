@@ -95,7 +95,7 @@ replay memory!}
 
 \item{alpha}{positive scalar numeric: If alpha = 0 sampling
 from replay memory will be uniform, otherwise observations with
-high td error will be prioritized.}
+high td error will be proportionally prioritized.}
 
 \item{theta}{positive scalar numeric: theta is a small positive
 constant that prevents the edge-case of transitions not being
