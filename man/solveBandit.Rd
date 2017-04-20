@@ -27,14 +27,14 @@ by this factor}
 which to decay epsilon}
 
 \item{initial.value}{scalar numeric: initial values for the action
-values Q, set this to the maximal
-possible reward to encourage exploration (optimistic initialization)}
+values Q, set this to the maximal possible reward to encourage
+exploration (optimistic initialization)}
 
 \item{initial.visits}{scalar integer: set this to a high number to
 encourage exploration (together with a high initial.value)}
 
-\item{C}{scalar numeric: controls the degree of exploration. High
-C values lead to more exploration}
+\item{C}{scalar numeric: controls the degree of exploration. High C
+values lead to more exploration}
 }
 \value{
 numeric vector: the action values for the arms of the bandit

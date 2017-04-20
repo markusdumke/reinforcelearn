@@ -8,15 +8,19 @@ td(envir, policy, lambda = 0, n.steps = 100, discount.factor = 1,
   learning.rate = 0.1)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment
+created by \link{makeEnvironment}.}
 
-\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
+\item{policy}{numeric matrix: a policy specified as a probability
+matrix (states x actions)}
 
-\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only current state
-is updated (this is equivalent to TD(0)), for lambda = 1 all states visited
-are updated, this is roughly equivalent to every-visit Monte Carlo.}
+\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only
+current state is updated (this is equivalent to TD(0)), for
+lambda = 1 all states visited are updated, this is roughly
+equivalent to every-visit Monte Carlo.}
 
-\item{n.steps}{integer scalar: number of evaluations (steps in the environment)}
+\item{n.steps}{integer scalar: number of evaluations (steps in the
+environment)}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

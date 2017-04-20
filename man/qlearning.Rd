@@ -9,7 +9,8 @@ qlearning(envir, n.episodes = 10L, learning.rate = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment
+created by \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: number of episodes}
 
@@ -25,8 +26,8 @@ by this factor}
 which to decay epsilon}
 
 \item{initial.value}{scalar numeric: initial values for the action
-values Q, set this to the maximal
-possible reward to encourage exploration (optimistic initialization)}
+values Q, set this to the maximal possible reward to encourage
+exploration (optimistic initialization)}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

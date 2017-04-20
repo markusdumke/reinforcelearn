@@ -9,11 +9,13 @@ sarsa(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1,
   initial.value = 0L, discount.factor = 1, seed = NULL)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment
+created by \link{makeEnvironment}.}
 
-\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only current state
-is updated (this is equivalent to TD(0)), for lambda = 1 all states visited
-are updated, this is roughly equivalent to every-visit Monte Carlo.}
+\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only
+current state is updated (this is equivalent to TD(0)), for
+lambda = 1 all states visited are updated, this is roughly
+equivalent to every-visit Monte Carlo.}
 
 \item{n.episodes}{scalar integer: number of episodes}
 
@@ -29,8 +31,8 @@ by this factor}
 which to decay epsilon}
 
 \item{initial.value}{scalar numeric: initial values for the action
-values Q, set this to the maximal
-possible reward to encourage exploration (optimistic initialization)}
+values Q, set this to the maximal possible reward to encourage
+exploration (optimistic initialization)}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

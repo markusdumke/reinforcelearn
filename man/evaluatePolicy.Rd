@@ -7,13 +7,16 @@
 evaluatePolicy(envir, policy, discount.factor = 1, psi = 1e-04)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment
+created by \link{makeEnvironment}.}
 
-\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
+\item{policy}{numeric matrix: a policy specified as a probability
+matrix (states x actions)}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{psi}{scalar numeric, algorithm stops when improvement is smaller than psi}
+\item{psi}{scalar numeric, algorithm stops when improvement is
+smaller than psi}
 }
 \value{
 the state value function v, a numeric vector

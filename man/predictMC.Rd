@@ -8,15 +8,18 @@ predictMC(envir, policy, n.episodes = 100, discount.factor = 1,
   method = c("first-visit, every-visit"), learning.rate = 0.1)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment
+created by \link{makeEnvironment}.}
 
-\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
+\item{policy}{numeric matrix: a policy specified as a probability
+matrix (states x actions)}
 
 \item{n.episodes}{scalar integer: number of episodes}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{method}{scalar character: Monte Carlo first-visit or every-visit method}
+\item{method}{scalar character: Monte Carlo first-visit or
+every-visit method}
 
 \item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 }

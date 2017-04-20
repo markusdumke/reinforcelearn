@@ -9,22 +9,26 @@ params(policy, envir, bandit, discount.factor, psi, lambda, epsilon,
   initial.value, initial.visits, C, action.selection, learning.rate,
   preprocessState, predict, predict2, copy, train, ..., experience.replay,
   replay.memory, replay.memory.size, initial.replay.memory.size, batch.size,
-  frozen.target, update.target.after, double.qlearning)
+  alpha, frozen.target, update.target.after, double.qlearning)
 }
 \arguments{
-\item{policy}{numeric matrix: a policy specified as a probability matrix (states x actions)}
+\item{policy}{numeric matrix: a policy specified as a probability
+matrix (states x actions)}
 
-\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment
+created by \link{makeEnvironment}.}
 
 \item{bandit}{an R6 class: bandit problem}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{psi}{scalar numeric, algorithm stops when improvement is smaller than psi}
+\item{psi}{scalar numeric, algorithm stops when improvement is
+smaller than psi}
 
-\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only current state
-is updated (this is equivalent to TD(0)), for lambda = 1 all states visited
-are updated, this is roughly equivalent to every-visit Monte Carlo.}
+\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only
+current state is updated (this is equivalent to TD(0)), for
+lambda = 1 all states visited are updated, this is roughly
+equivalent to every-visit Monte Carlo.}
 
 \item{epsilon}{scalar numeric: ratio of random exploration in
 epsilon-greedy action selection}
@@ -37,29 +41,31 @@ which to decay epsilon}
 
 \item{seed}{scalar integer: random seed}
 
-\item{method}{scalar character: Monte Carlo first-visit or every-visit method}
+\item{method}{scalar character: Monte Carlo first-visit or
+every-visit method}
 
-\item{n.steps}{integer scalar: number of evaluations (steps in the environment)}
+\item{n.steps}{integer scalar: number of evaluations (steps in the
+environment)}
 
 \item{n.episodes}{scalar integer: number of episodes}
 
 \item{initial.value}{scalar numeric: initial values for the action
-values Q, set this to the maximal
-possible reward to encourage exploration (optimistic initialization)}
+values Q, set this to the maximal possible reward to encourage
+exploration (optimistic initialization)}
 
 \item{initial.visits}{scalar integer: set this to a high number to
 encourage exploration (together with a high initial.value)}
 
-\item{C}{scalar numeric: controls the degree of exploration. High
-C values lead to more exploration}
+\item{C}{scalar numeric: controls the degree of exploration. High C
+values lead to more exploration}
 
 \item{action.selection}{scalar character: which method to use for
 action selection, e.g. "epsilon-greedy", "greedy" or "UCB"}
 
 \item{learning.rate}{scalar numeric between 0 and 1: learning rate}
 
-\item{preprocessState}{function: takes a state observation
-as input and returns a preprocessed state, e.g. a one-hot vector}
+\item{preprocessState}{function: takes a state observation as input
+and returns a preprocessed state, e.g. a one-hot vector}
 
 \item{predict}{function: predict returns vector of q values for a
 given preprocessed state observation}
@@ -80,14 +86,19 @@ with experience sampled from a random policy.}
 
 \item{replay.memory.size}{integer scalar: size of the replay memory}
 
-\item{initial.replay.memory.size}{integer scalar:
-how much of the replay memory is filled initially}
+\item{initial.replay.memory.size}{integer scalar: how much of the
+replay memory is filled initially}
 
 \item{batch.size}{scalar integer: batch size, how many samples are
-drawn from the replay memory. Must be smaller than
-size of the replay memory!}
+drawn from the replay memory. Must be smaller than size of the
+replay memory!}
 
-\item{frozen.target}{scalar logical: Q-Learning with frozen target network}
+\item{alpha}{positive scalar numeric: If alpha = 0 sampling
+from replay memory will be uniform, otherwise observations with
+high td error will be prioritized.}
+
+\item{frozen.target}{scalar logical: Q-Learning with frozen target
+network}
 
 \item{update.target.after}{scalar integer: copy parameters to fixed
 target network every n steps}
