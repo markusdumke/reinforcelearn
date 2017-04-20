@@ -9,7 +9,7 @@ params(policy, envir, bandit, discount.factor, precision, lambda, epsilon,
   initial.value, initial.visits, C, action.selection, learning.rate,
   preprocessState, predict, predict2, copy, train, ..., experience.replay,
   replay.memory, replay.memory.size, initial.replay.memory.size, batch.size,
-  alpha, frozen.target, update.target.after, double.qlearning)
+  alpha, theta, frozen.target, update.target.after, double.qlearning)
 }
 \arguments{
 \item{policy}{numeric matrix: a policy specified as a probability
@@ -97,6 +97,10 @@ replay memory!}
 from replay memory will be uniform, otherwise observations with
 high td error will be prioritized.}
 
+\item{theta}{positive scalar numeric: theta is a small positive
+constant that prevents the edge-case of transitions not being
+revisited once their error is zero.}
+
 \item{frozen.target}{scalar logical: Q-Learning with frozen target
 network}
 
@@ -105,10 +109,6 @@ target network every n steps}
 
 \item{double.qlearning}{logical scalar: whether to use double
 qlearning}
-
-\item{theta}{positive scalar numeric: theta is a small positive
-constant that prevents the edge-case of transitions not being
-revisited once their error is zero.}
 }
 \description{
 Documentation of all parameters

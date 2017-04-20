@@ -8,18 +8,19 @@ qlearning2(envir, n.episodes = 10L, preprocessState = NULL,
   predict = NULL, train = NULL, predict2 = NULL, copy = NULL,
   double.qlearning = FALSE, experience.replay = FALSE,
   replay.memory = NULL, replay.memory.size = 1000L,
-  initial.replay.memory.size = 1000L, batch.size = 32L,
-  frozen.target = FALSE, update.target.after = 100L, epsilon = 0.1,
-  epsilon.decay = 0.5, epsilon.decay.after = 100L, discount.factor = 1,
-  seed = NULL, ...)
+  initial.replay.memory.size = 1000L, batch.size = 32L, alpha = 0,
+  theta = 0.01, frozen.target = FALSE, update.target.after = 100L,
+  epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
+  discount.factor = 1, seed = NULL, ...)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment created by \link{makeEnvironment}.}
+\item{envir}{an R6 class: the reinforcement learning environment
+created by \link{makeEnvironment}.}
 
 \item{n.episodes}{scalar integer: number of episodes}
 
-\item{preprocessState}{function: takes a state observation
-as input and returns a preprocessed state, e.g. a one-hot vector}
+\item{preprocessState}{function: takes a state observation as input
+and returns a preprocessed state, e.g. a one-hot vector}
 
 \item{predict}{function: predict returns vector of q values for a
 given preprocessed state observation}
@@ -41,14 +42,23 @@ with experience sampled from a random policy.}
 
 \item{replay.memory.size}{integer scalar: size of the replay memory}
 
-\item{initial.replay.memory.size}{integer scalar:
-how much of the replay memory is filled initially}
+\item{initial.replay.memory.size}{integer scalar: how much of the
+replay memory is filled initially}
 
 \item{batch.size}{scalar integer: batch size, how many samples are
-drawn from the replay memory. Must be smaller than
-size of the replay memory!}
+drawn from the replay memory. Must be smaller than size of the
+replay memory!}
 
-\item{frozen.target}{scalar logical: Q-Learning with frozen target network}
+\item{alpha}{positive scalar numeric: If alpha = 0 sampling
+from replay memory will be uniform, otherwise observations with
+high td error will be prioritized.}
+
+\item{theta}{positive scalar numeric: theta is a small positive
+constant that prevents the edge-case of transitions not being
+revisited once their error is zero.}
+
+\item{frozen.target}{scalar logical: Q-Learning with frozen target
+network}
 
 \item{update.target.after}{scalar integer: copy parameters to fixed
 target network every n steps}
@@ -94,20 +104,14 @@ WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
 # define a tensorflow graph for the function approximator (here a neural network)
 library(tensorflow)
 tf$reset_default_graph()
-batch.size = 32L
 inputs = tf$placeholder(tf$float32, shape(NULL, WindyGridworld1$n.states))
-inputs2 = tf$placeholder(tf$float32, shape(NULL, WindyGridworld1$n.states))
 weights = tf$Variable(tf$random_uniform(shape(WindyGridworld1$n.states,
   WindyGridworld1$n.actions), 0, 0.01, seed = 1))
-weights2 = tf$Variable(tf$random_uniform(shape(WindyGridworld1$n.states,
-  WindyGridworld1$n.actions), 0, 0.01, seed = 1))
 Q = tf$matmul(inputs, weights)
-Q2 = tf$matmul(inputs2, weights2)
 nextQ = tf$placeholder(tf$float32, shape(NULL, WindyGridworld1$n.actions))
 loss = tf$reduce_sum(tf$square(nextQ - Q))
 optimizer = tf$train$GradientDescentOptimizer(learning_rate = 0.1)
 trainModel = optimizer$minimize(loss)
-copy.params = tf$assign(weights2, weights)
 
 # initialize the session and the weights
 sess = tf$Session()
@@ -123,80 +127,23 @@ preprocessState = function(state_) {
 predict = function(inputs_) {
   sess$run(Q, feed_dict = dict(inputs = inputs_))
 }
-predict2 = function(inputs_) {
-  sess$run(Q2, feed_dict = dict(inputs2 = inputs_))
-}
 # train model, update weights, e.g. gradient descent: this is supervised learning
 train = function(inputs_, outputs_, predictions_ = NULL) {
   sess$run(tuple(trainModel, weights),
     feed_dict = dict(inputs = inputs_, nextQ = outputs_))
 }
 
-# copy model weights to target
-copy = function() {
-  sess$run(copy.params)
-}
-
-# DQN
-res = qlearning2(WindyGridworld1, n.episodes = 300L,
+# Q-Learning
+res = qlearning2(WindyGridworld1, n.episodes = 100L,
   preprocessState, predict, train, seed = 2L)
 
-# please rerun the tensorflow model building
-# DQN with experience replay
-res2 = qlearning2(WindyGridworld1, n.episodes = 300L,
-  preprocessState, predict, train,
-  experience.replay = TRUE, replay.memory.size = 10000L,
-  initial.replay.memory.size = 10000L, seed = 2L)
-
-# DQN with frozen target network
-res3 = qlearning2(WindyGridworld1, n.episodes = 300L,
-  preprocessState, predict, train, predict2, copy,
-  frozen.target = TRUE, update.target.after = 100L, seed = 2L)
-
-# DQN with experience replay and frozen target network
-res4 = qlearning2(WindyGridworld1, n.episodes = 300L,
-  preprocessState, predict, train, predict2, copy,
-  experience.replay = TRUE, replay.memory.size = 10000L,
-  initial.replay.memory.size = 10000L,
-  frozen.target = TRUE, update.target.after = 100L, seed = 2L)
-
-# DQN with frozen target network and double q-learning
-res = qlearning2(WindyGridworld1, n.episodes = 300L,
-  preprocessState, predict, train, predict2, copy, double.qlearning = TRUE,
-  frozen.target = TRUE, update.target.after = 100L, seed = 2L)
-# double qlearning currently only works for frozen targets
-
-# DQN with experience replay, frozen target network and double q-learning
-res = qlearning2(WindyGridworld1, n.episodes = 300L,
-  preprocessState, predict, train, predict2, copy, double.qlearning = TRUE,
-  experience.replay = TRUE, replay.memory.size = 10000L,
-  initial.replay.memory.size = 10000L,
-  frozen.target = TRUE, update.target.after = 100L, seed = 2L)
-
-# DQN with experience replay passed on to function
-# pass initial random experience to the function
-replay.memory.size = 10000L # steps
-replay.memory2 = vector("list", length = replay.memory.size)
-# fill this initially with experience generated by random policy
-WindyGridworld1$reset()
-for (i in 1:replay.memory.size) {
-  state = WindyGridworld1$state
-  action = sample(0:3, 1)
-  WindyGridworld1$step(action)
-  replay.memory2[[i]] <- list(action = action, reward = WindyGridworld1$reward,
-    state = state, next.state = WindyGridworld1$state)
-  if (WindyGridworld1$episode.over == TRUE) {
-    print(i)
-    WindyGridworld1$reset()
-  }
 }
+\references{
+Hasselt et al. (2015): Deep Reinforcement Learning with Double Q-Learning
 
-res5 = qlearning2(WindyGridworld1, n.episodes = 300L,
-  preprocessState, predict, train,
-  experience.replay = TRUE, replay.memory = replay.memory2,
-  replay.memory.size = 12000L, seed = 2L)
+Mnih et al. (2013): Playing Atari with Deep Reinforcement Learning
 
-
+Schaul et al. (2016): Prioritized Experience Replay
 }
 \seealso{
 \link{qlearning}
