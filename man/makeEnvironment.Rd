@@ -47,6 +47,7 @@ If render = TRUE the environment will be rendered.}
 \item{\code{envir$reset()}}{Resets the
 \code{episode.over} flag of the environment and returns an initial state.
 Useful when starting a new episode.}
+\item{\code{envir$close()}}{Close the python window for a gym environment.}
 }
 }
 
@@ -57,6 +58,7 @@ Useful when starting a new episode.}
 CartPole = makeEnvironment("CartPole-v0")
 CartPole$reset()
 CartPole$step(action = 0)
+CartPole$close()
 
 # Create the MountainCar environment which has a continuous state space.
 MountainCar = makeEnvironment("MountainCar-v0")
