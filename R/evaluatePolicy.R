@@ -5,8 +5,9 @@
 #' With the Bellmann equation the update
 #' \deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
 #' 
-#' @details The algorithm runs until the improvement in the value function in two subsequent steps
-#' is smaller than epsilon.
+#' @details The algorithm runs until the improvement in the value 
+#' function in two subsequent steps
+#' is smaller than precision.
 #' 
 #' @inheritParams params
 #'
@@ -24,7 +25,7 @@
 #' # Evaluate given policy for gridworld example
 #' v = evaluatePolicy(Gridworld1, random.policy)
 #' print(round(matrix(v, ncol = 4, byrow = TRUE)))
-evaluatePolicy = function(envir, policy, discount.factor = 1, psi = 0.0001) {
+evaluatePolicy = function(envir, policy, discount.factor = 1, precision = 0.0001) {
   
   n.states = envir$n.states
   v = rep(0, n.states)
@@ -41,7 +42,7 @@ evaluatePolicy = function(envir, policy, discount.factor = 1, psi = 0.0001) {
       v.new[state + 1] = policy[state + 1, , drop = FALSE] %*%
         (reward.t[, state + 1, drop = FALSE] + discount.factor * t(P[state + 1, , ]) %*%
            as.matrix(v, nrow = 16))
-      improvement = any(abs(v - v.new) > psi)
+      improvement = any(abs(v - v.new) > precision)
     }
     v = v.new
   }

@@ -4,7 +4,7 @@
 \alias{evaluatePolicy}
 \title{Policy Evaluation (Dynamic Programming)}
 \usage{
-evaluatePolicy(envir, policy, discount.factor = 1, psi = 1e-04)
+evaluatePolicy(envir, policy, discount.factor = 1, precision = 1e-04)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment
@@ -15,8 +15,8 @@ matrix (states x actions)}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{psi}{scalar numeric, algorithm stops when improvement is
-smaller than psi}
+\item{precision}{scalar numeric, algorithm stops when improvement is
+smaller than precision}
 }
 \value{
 the state value function v, a numeric vector
@@ -28,8 +28,9 @@ Evaluate a given policy in an environment using dynamic programming.
 With the Bellmann equation the update
 \deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
 
-The algorithm runs until the improvement in the value function in two subsequent steps
-is smaller than epsilon.
+The algorithm runs until the improvement in the value
+function in two subsequent steps
+is smaller than precision.
 }
 \examples{
 # Define uniform random policy, take each action with probability 0.25

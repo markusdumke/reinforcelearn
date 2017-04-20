@@ -4,7 +4,7 @@
 \alias{params}
 \title{Documentation of all parameters}
 \usage{
-params(policy, envir, bandit, discount.factor, psi, lambda, epsilon,
+params(policy, envir, bandit, discount.factor, precision, lambda, epsilon,
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes,
   initial.value, initial.visits, C, action.selection, learning.rate,
   preprocessState, predict, predict2, copy, train, ..., experience.replay,
@@ -22,8 +22,8 @@ created by \link{makeEnvironment}.}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 
-\item{psi}{scalar numeric, algorithm stops when improvement is
-smaller than psi}
+\item{precision}{scalar numeric, algorithm stops when improvement is
+smaller than precision}
 
 \item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only
 current state is updated (this is equivalent to TD(0)), for
@@ -105,6 +105,10 @@ target network every n steps}
 
 \item{double.qlearning}{logical scalar: whether to use double
 qlearning}
+
+\item{theta}{positive scalar numeric: theta is a small positive
+constant that prevents the edge-case of transitions not being
+revisited once their error is zero.}
 }
 \description{
 Documentation of all parameters

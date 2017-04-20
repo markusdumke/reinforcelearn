@@ -5,8 +5,8 @@
 #' @param envir an R6 class: the reinforcement learning environment
 #'   created by [makeEnvironment].
 #' @param discount.factor scalar numeric, discounting future rewards
-#' @param psi scalar numeric, algorithm stops when improvement is
-#'   smaller than psi
+#' @param precision scalar numeric, algorithm stops when improvement is
+#'   smaller than precision
 #' @param lambda scalar numeric in (0, 1): Then lambda = 0 only
 #'   current state is updated (this is equivalent to TD(0)), for
 #'   lambda = 1 all states visited are updated, this is roughly
@@ -55,6 +55,9 @@
 #' @param alpha positive scalar numeric: If alpha = 0 sampling 
 #'   from replay memory will be uniform, otherwise observations with
 #'   high td error will be prioritized.
+#' @param theta positive scalar numeric: theta is a small positive 
+#'   constant that prevents the edge-case of transitions not being 
+#'   revisited once their error is zero. 
 #' @param frozen.target scalar logical: Q-Learning with frozen target
 #'   network
 #' @param update.target.after scalar integer: copy parameters to fixed
@@ -62,7 +65,7 @@
 #' @param double.qlearning logical scalar: whether to use double 
 #'   qlearning
 #' 
-params = function(policy, envir, bandit, discount.factor, psi, lambda, epsilon, 
+params = function(policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 
   initial.value, initial.visits, C, action.selection, learning.rate, 
   preprocessState, predict, predict2, copy, train, ..., experience.replay, replay.memory, 
