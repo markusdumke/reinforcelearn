@@ -37,6 +37,7 @@ With `makeEnvironment` you can create a reinforcement learning environment, eith
 CartPole = makeEnvironment("CartPole-v0")
 CartPole$reset()
 CartPole$step(action = 0)
+CartPole$close()
 
 # You can also create an environment from an MDP
 windygrid = WindyGridworld$new()

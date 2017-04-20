@@ -128,6 +128,7 @@ qlearning2 <- function(envir, n.episodes = 10L, preprocessState = NULL,
     while (envir$episode.over == FALSE) {
       steps.this.episode = steps.this.episode + 1L # increase step counter
       steps = steps + 1L
+      # print(steps)
       replay.steps = replay.steps + 1L
       
       features.state_ = preprocessState(state, ...)
@@ -214,7 +215,10 @@ qlearning2 <- function(envir, n.episodes = 10L, preprocessState = NULL,
       }
     }
   }
-  # # env_monitor_close(envir$client, envir$instance_id)
+  
+  # close python window for gym environment
+  envir$close()
+  
   list(weights = weights, steps.per.episode = steps.per.episode)
 }
 
