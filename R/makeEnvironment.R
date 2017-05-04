@@ -18,6 +18,7 @@
 #'   a vector is given a starting state will be randomly sampled from this 
 #'   vector when reset is called. Note that states are numerated starting with 
 #'   0. If NULL all states are possible initial states.
+#' @param render logical scalar: whether to render the environment
 #' @importFrom R6 R6Class
 #' @importFrom MDPtoolbox mdp_check 
 #' @seealso [OpenAI Gym](https://gym.openai.com/docs)
@@ -61,7 +62,8 @@
 #'   reward.matrix = grid$reward.matrix, initial.state = 30)
 #'   
 makeEnvironment <- function(gym.envir.name = NULL,  
-  transition.array = NULL, reward.matrix = NULL, initial.state = NULL) {
+  transition.array = NULL, reward.matrix = NULL, initial.state = NULL, 
+  render = TRUE) {
   envir = R6::R6Class("envir",
     public = list(
       gym = NULL,
@@ -86,10 +88,12 @@ makeEnvironment <- function(gym.envir.name = NULL,
       reward.matrix = NULL,
       terminal.states = NULL,
       initial.state = NULL,
+      render = NULL,
       
       initialize = function(gym.envir.name = NULL,
         transition.array = NULL, reward.matrix = NULL, 
-        initial.state = NULL) {
+        initial.state = NULL, render = TRUE) {
+        self$render = render
         if (is.null(gym.envir.name)) {
           gym.envir.name = self$name
         }
@@ -170,7 +174,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
         }
       },
       
-      step = function(action, render = TRUE) {
+      step = function(action, render = self$render) {
         self$n.steps = self$n.steps + 1L
         if (self$gym == TRUE) {
           res = env_step(self$client, self$instance_id, action, render)
@@ -212,5 +216,5 @@ makeEnvironment <- function(gym.envir.name = NULL,
   )
   
   envir$new(gym.envir.name, transition.array, 
-    reward.matrix, initial.state)
+    reward.matrix, initial.state, render)
 }

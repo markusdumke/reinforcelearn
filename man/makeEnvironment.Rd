@@ -5,7 +5,7 @@
 \title{Make Reinforcement Learning Environment}
 \usage{
 makeEnvironment(gym.envir.name = NULL, transition.array = NULL,
-  reward.matrix = NULL, initial.state = NULL)
+  reward.matrix = NULL, initial.state = NULL, render = TRUE)
 }
 \arguments{
 \item{gym.envir.name}{scalar character, e.g. "CartPole-v0",
@@ -22,6 +22,8 @@ state to another}
 a vector is given a starting state will be randomly sampled from this
 vector when reset is called. Note that states are numerated starting with
 0. If NULL all states are possible initial states.}
+
+\item{render}{logical scalar: whether to render the environment}
 }
 \value{
 Reinforcement Learning Environment, an R6 class.
