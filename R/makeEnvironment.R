@@ -59,7 +59,7 @@
 #' # Create the WindyGridworld environment.
 #' grid = WindyGridworld$new()
 #' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, initial.state = 30)
+#'   reward.matrix = grid$reward.matrix, initial.state = 30L)
 #'   
 makeEnvironment <- function(gym.envir.name = NULL,  
   transition.array = NULL, reward.matrix = NULL, initial.state = NULL, 
@@ -93,12 +93,15 @@ makeEnvironment <- function(gym.envir.name = NULL,
       initialize = function(gym.envir.name = NULL,
         transition.array = NULL, reward.matrix = NULL, 
         initial.state = NULL, render = TRUE) {
+        
         self$render = render
         if (is.null(gym.envir.name)) {
           gym.envir.name = self$name
         }
         
         if (is.null(transition.array)) {
+          assert_character(gym.envir.name)
+          assert_logical(render)
           package.path = system.file(package = "reinforcelearn")
           path2pythonfile = paste0(package.path, "/gym_http_server.py")
           command <- "python"
@@ -149,8 +152,9 @@ makeEnvironment <- function(gym.envir.name = NULL,
                 list(c(state_space_info$low[[i]], state_space_info$high[[i]])))
             }
           }
-          
         } else {
+          assert_matrix(reward.matrix, any.missing = FALSE)
+          assert_array(transition.array, any.missing = FALSE, d = 3)
           MDPtoolbox::mdp_check(transition.array, reward.matrix)
           self$gym = FALSE
           self$state.space = "Discrete"
@@ -164,11 +168,12 @@ makeEnvironment <- function(gym.envir.name = NULL,
           # get terminal states from transition array
           terminal.states = apply(transition.array, 3, function(x) diag(x))
           self$terminal.states = which(apply(terminal.states, 1, function(x) all(x == 1))) - 1L
-
+          
           # state numeration starts with 0
           if (is.null(initial.state)) {
             self$initial.state = self$states[self$states != self$terminal.states]
           } else {
+            assert_integer(initial.state)
             self$initial.state = initial.state
           }
         }

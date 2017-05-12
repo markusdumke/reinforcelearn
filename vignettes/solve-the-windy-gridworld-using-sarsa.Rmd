@@ -34,7 +34,7 @@ library(reinforcelearn)
 grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, 
-  initial.state = 30)
+  initial.state = 30L)
 ```
 
 Then we can apply SARSA to find the optimal action value function $Q$. Here we will use SARSA(0), which only updates the current state action pair. Try different $\lambda$ values for a trade-off between temporal-difference and monte carlo learning.

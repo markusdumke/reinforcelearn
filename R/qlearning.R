@@ -22,7 +22,7 @@
 #' grid = WindyGridworld$new()
 #' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
 #'   reward.matrix = grid$reward.matrix,
-#'   initial.state = 30)
+#'   initial.state = 30L)
 #' res = qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
 #' 
 qlearning <- function(envir, n.episodes = 10L, learning.rate = 0.1, 

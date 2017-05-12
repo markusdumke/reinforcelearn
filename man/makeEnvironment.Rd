@@ -74,7 +74,7 @@ Gridworld1 = makeEnvironment(transition.array = grid$transition.array,
 # Create the WindyGridworld environment.
 grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, initial.state = 30)
+  reward.matrix = grid$reward.matrix, initial.state = 30L)
   
 }
 \seealso{

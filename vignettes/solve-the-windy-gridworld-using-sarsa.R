@@ -3,7 +3,7 @@ library(reinforcelearn)
 grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, 
-  initial.state = 30)
+  initial.state = 30L)
 
 ## ---- results = "hide"---------------------------------------------------
 res = sarsa(WindyGridworld1, n.episodes = 1000, seed = 123)
