@@ -5,9 +5,9 @@
 \title{Solve multi-armed bandit}
 \usage{
 solveBandit(bandit, n.episodes = 10L, action.selection = c("epsilon-greedy",
-  "greedy", "UCB"), epsilon = 0.1, epsilon.decay = 0.5,
-  epsilon.decay.after = 100L, initial.value = 0, initial.visits = 0L,
-  C = 2)
+  "greedy", "UCB", "gradient-bandit"), epsilon = 0.1, epsilon.decay = 0.5,
+  epsilon.decay.after = 100L, alpha = 0.1, initial.value = 0,
+  initial.visits = 0L, C = 2)
 }
 \arguments{
 \item{bandit}{an R6 class: bandit problem}
@@ -26,6 +26,10 @@ by this factor}
 \item{epsilon.decay.after}{scalar integer: number of episodes afer
 which to decay epsilon}
 
+\item{alpha}{parameter of gradient bandit algorithm, higher alpha
+value gives more weight to recent rewards
+(useful for non-stationary environments)}
+
 \item{initial.value}{scalar numeric: initial values for the action
 values Q, set this to the maximal possible reward to encourage
 exploration (optimistic initialization)}
@@ -37,7 +41,9 @@ encourage exploration (together with a high initial.value)}
 values lead to more exploration}
 }
 \value{
-numeric vector: the action values for the arms of the bandit
+numeric vector: the action values for the arms of the bandit,
+for gradient-bandit action selection the probabilities for
+each action will be returned.
 }
 \description{
 Multi-armed bandits are a simplified reinforcement learning problem,
@@ -53,6 +59,7 @@ Upper-confidence-bound action selection selects actions with
 number of times action a was selected.
 }
 \examples{
+set.seed(123)
 ExampleBandit = bandit$new()
 solveBandit(ExampleBandit, n.episodes = 1000, 
   action.selection = "greedy")
@@ -64,4 +71,7 @@ solveBandit(ExampleBandit, n.episodes = 1000,
 solveBandit(ExampleBandit, n.episodes = 1000, 
   action.selection = "UCB", C = 2)
 # true values: 1, 2, 2.5, 4
+# Gradient bandit algorithm
+solveBandit(ExampleBandit, n.episodes = 10000, 
+  action.selection = "gradient-bandit", alpha = 0.1)
 }

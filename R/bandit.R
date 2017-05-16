@@ -45,11 +45,17 @@ bandit = R6::R6Class("bandit",
 #' number of times action a was selected.
 #' 
 #' @inheritParams params
+#' @param alpha parameter of gradient bandit algorithm, higher alpha 
+#'   value gives more weight to recent rewards 
+#'   (useful for non-stationary environments)
 #' 
-#' @return numeric vector: the action values for the arms of the bandit
+#' @return numeric vector: the action values for the arms of the bandit, 
+#' for gradient-bandit action selection the probabilities for 
+#' each action will be returned.
 #' @export
 #'
 #' @examples
+#' set.seed(123)
 #' ExampleBandit = bandit$new()
 #' solveBandit(ExampleBandit, n.episodes = 1000, 
 #'   action.selection = "greedy")
@@ -61,15 +67,19 @@ bandit = R6::R6Class("bandit",
 #' solveBandit(ExampleBandit, n.episodes = 1000, 
 #'   action.selection = "UCB", C = 2)
 #' # true values: 1, 2, 2.5, 4
+#' # Gradient bandit algorithm
+#' solveBandit(ExampleBandit, n.episodes = 10000, 
+#'   action.selection = "gradient-bandit", alpha = 0.1)
 solveBandit = function(bandit, n.episodes = 10L,
-  action.selection = c("epsilon-greedy", "greedy", "UCB"), epsilon = 0.1, 
-  epsilon.decay = 0.5, epsilon.decay.after = 100L, 
+  action.selection = c("epsilon-greedy", "greedy", "UCB", "gradient-bandit"), epsilon = 0.1, 
+  epsilon.decay = 0.5, epsilon.decay.after = 100L, alpha = 0.1,
   initial.value = 0, initial.visits = 0L, C = 2) {
   
-  action.selection <- match.arg(action.selection)
+  action.selection = match.arg(action.selection)
   action.visits = rep(initial.visits, bandit$n.actions)
   rewards = rep(initial.value * initial.visits, bandit$n.actions)
   Q = rep(initial.value, bandit$n.actions)
+  H = rep(0, bandit$n.actions)
   
   for (i in seq_len(n.episodes)) {
     if (action.selection == "greedy") {
@@ -88,26 +98,37 @@ solveBandit = function(bandit, n.episodes = 10L,
         action = argmax(Q + sqrt(C * log(i) / action.visits)) - 1L 
       }
     }
+    if (action.selection == "gradient-bandit") {
+      Q = exp(H) / sum(exp(H))
+      action = sample(bandit$actions, 1, prob = Q)
+    }
     bandit$step(action)
-    action.visits[action + 1] = action.visits[action + 1] + 1
+    
+    action.visits[action + 1] = action.visits[action + 1] + 1L
     rewards[action + 1] = rewards[action + 1] + bandit$reward
-    Q[action + 1] = rewards[action + 1] / action.visits[action + 1]
+    if (action.selection != "gradient-bandit") {
+      Q[action + 1] = rewards[action + 1] / action.visits[action + 1]
+    }
+    
+    if (action.selection == "gradient-bandit") {
+      total.reward = sum(rewards)
+      total.action.visits = sum(action.visits)
+      average.reward = total.reward / total.action.visits
+      H[ - action + 1] = H[ - action + 1] - alpha * (bandit$reward - average.reward) * Q[ - action + 1]
+      H[action + 1] = H[action + 1] + alpha * 
+        (bandit$reward - average.reward) * (1 - Q[action + 1])
+    }
   }
   Q
 }
+
+# alpha parameter for nonstationary environments
 
 # continuous action space
 # contextual bandits
 
 # Exploration - Exploitation
-
-# greedy ok
-# epsilon-greedy ok
-# UCB ok
-# optimistic initialization ok
-# softmax
 # Thompson Sampling
-
 # Information state space
 # Bayesian Bandit
 # Probability matching
