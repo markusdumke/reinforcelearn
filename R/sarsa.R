@@ -83,23 +83,3 @@ sarsa <- function(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1,
   list(Q = Q, steps.per.episode = steps.per.episode, 
     rewards.per.episode = rewards.per.episode)
 }
-
-# Q a numeric vector: the action value function for a given state
-# epsilon numeric scalar in [0, 1]: probability of selecting a random action
-# sample_epsilon_greedy_action(c(1, 2, 3), epsilon = 0.2)
-sample_epsilon_greedy_action <- function(Q, epsilon) {
-  
-  greedy_action = argmax(Q)
-  random_actions = seq(1, length(Q))
-  # non_greedy_actions = actions[actions != greedy_action]
-  action = sample(c(greedy_action, random_actions), size = 1,  
-    prob = c(1 - epsilon, rep(epsilon / length(random_actions), length(random_actions))))
-  
-  action - 1
-}
-
-# Argmax (ties broken randomly)
-# x numeric matrix or numeric vector
-argmax <- function(x) {
-  nnet::which.is.max(x)
-}
