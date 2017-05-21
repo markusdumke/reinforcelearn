@@ -58,18 +58,20 @@
 #' @param theta positive scalar numeric: theta is a small positive 
 #'   constant that prevents the edge-case of transitions not being 
 #'   revisited once their error is zero. 
-#' @param frozen.target scalar logical: Q-Learning with frozen target
+#' @param fixed.target scalar logical: Q-Learning with fixed target
 #'   network
 #' @param update.target.after scalar integer: copy parameters to fixed
 #'   target network every n steps
 #' @param double.qlearning logical scalar: whether to use double 
 #'   qlearning
+#' @param sigma scalar integer: sampling parameter, for sigma = 0 the 
+#'   sarsa algorithm is obtained, for sigma = 1 expected sarsa.
 #' 
 params = function(policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 
   initial.value, initial.visits, C, action.selection, learning.rate, 
   preprocessState, predict, predict2, copy, train, ..., experience.replay, replay.memory, 
   replay.memory.size, initial.replay.memory.size, batch.size, alpha, theta,
-  frozen.target, update.target.after, double.qlearning) {
+  fixed.target, update.target.after, double.qlearning, sigma) {
   
 }

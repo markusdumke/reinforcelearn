@@ -9,7 +9,7 @@ params(policy, envir, bandit, discount.factor, precision, lambda, epsilon,
   initial.value, initial.visits, C, action.selection, learning.rate,
   preprocessState, predict, predict2, copy, train, ..., experience.replay,
   replay.memory, replay.memory.size, initial.replay.memory.size, batch.size,
-  alpha, theta, frozen.target, update.target.after, double.qlearning)
+  alpha, theta, fixed.target, update.target.after, double.qlearning, sigma)
 }
 \arguments{
 \item{policy}{numeric matrix: a policy specified as a probability
@@ -101,7 +101,7 @@ high td error will be proportionally prioritized.}
 constant that prevents the edge-case of transitions not being
 revisited once their error is zero.}
 
-\item{frozen.target}{scalar logical: Q-Learning with frozen target
+\item{fixed.target}{scalar logical: Q-Learning with fixed target
 network}
 
 \item{update.target.after}{scalar integer: copy parameters to fixed
@@ -109,6 +109,9 @@ target network every n steps}
 
 \item{double.qlearning}{logical scalar: whether to use double
 qlearning}
+
+\item{sigma}{scalar integer: sampling parameter, for sigma = 0 the
+sarsa algorithm is obtained, for sigma = 1 expected sarsa.}
 }
 \description{
 Documentation of all parameters

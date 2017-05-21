@@ -1,29 +1,21 @@
-#' SARSA (Table-lookup)
+#' Q(sigma) (Table-lookup)
 #' 
-#' Sarsa is an on-policy TD control algorithm to find the optimal policy.
-#' The action value function Q will be updated 
-#' towards the action value function of the next state S' and next action A' 
-#' using an epsilon-greedy policy derived from Q.
-#' The update formula is: 
-#' \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma Q(S', A') - Q(S, A)]}
+#' Q(sigma) is a generalization of Sarsa and Expected Sarsa algorithms.
 #'  
 #' @inheritParams params
 #'
-#' @importFrom stats runif
-#' @importFrom nnet which.is.max
 #' @return optimal action value function Q
 #' @export
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
-#' @seealso [td]
+#' @references De Asis et al. (2017): Multi-step Reinforcement Learning: A Unifying Algorithm
+#' @seealso [sarsa]
 #' @seealso [qlearning]
 #' @examples 
 #' grid = WindyGridworld$new()
 #' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, 
-#'   initial.state = 30L)
-#' res = sarsa(WindyGridworld1, n.episodes = 100, seed = 123)
+#'   reward.matrix = grid$reward.matrix, initial.state = 30L)
+#' res = qSigma(WindyGridworld1, n.episodes = 100, seed = 123)
 #' 
-sarsa <- function(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1, 
+qSigma <- function(envir, sigma = 1, lambda = 0, n.episodes = 100, learning.rate = 0.1, 
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
   initial.value = 0L, discount.factor = 1, seed = NULL) {
   
@@ -38,30 +30,36 @@ sarsa <- function(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1,
   rewards.per.episode = rep(0, n.episodes)
   
   for (i in seq_len(n.episodes)) {
-    
     eligibility = matrix(0, nrow = n.states, ncol = n.actions)
     envir$reset()
     state = envir$state
     j = 0
     reward.sum = 0
     action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon)
+    policy = 
     
     while (envir$episode.over == FALSE) {
-      
       envir$step(action)
       next.state = envir$state
       reward = envir$reward
       reward.sum = reward.sum + reward
-      next.action = sample_epsilon_greedy_action(Q[next.state + 1, ], epsilon)
+      
+      if (envir$episode.over == TRUE) {
+        td.error = reward - Q[state + 1, action + 1]
+      } else {
+        next.action = sample_epsilon_greedy_action(Q[next.state + 1, ], epsilon)
+        policy = returnPolicy(Q[next.state + 1, ], epsilon)
+        V = sum(policy * Q[next.state + 1, ])
+        td.error = reward + discount.factor * (sigma * Q[next.state + 1, action + 1] + 
+            (1 - sigma) * V) - Q[state + 1, action + 1]
+      }
       
       indicator = matrix(0, nrow = n.states, ncol = n.actions)
       indicator[state + 1, action + 1] = 1
       eligibility = discount.factor * lambda * eligibility + indicator
       
       # update Q for visited state-action pair
-      TD.target = reward + discount.factor * Q[next.state + 1, next.action + 1]
-      TD.error = TD.target - Q[state + 1, action + 1] 
-      Q = Q + learning.rate * TD.error * eligibility
+      Q = Q + learning.rate * td.error * eligibility
       
       j = j + 1
       state = next.state
