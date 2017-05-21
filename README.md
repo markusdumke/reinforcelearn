@@ -70,7 +70,7 @@ print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 Table-lookup reinforcement learning is great to understand and play around with algorithms. But when applying RL to large-scale real world problems building one huge table is not feasible anymore. Instead of representing every state-action pair in a big table one would use a function approximator to represent the value function.
 
 With `reinforcelearn` you can specify your own function approximator very flexible suited to a specific task.
-Just create a `predict`, `train` and `preprocessState` function, which can then be passed to the algorithm, e.g. `qlearning_fa()`. Here is an example:
+Just create a `predict`, `train` and `preprocessState` function, which can then be passed to the algorithm, e.g. `qlearning2()`. Here is an example:
 
 ```r
 # Solve the Windy Gridworld task using a neural network as function approximator
