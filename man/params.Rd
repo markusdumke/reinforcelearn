@@ -4,15 +4,18 @@
 \alias{params}
 \title{Documentation of all parameters}
 \usage{
-params(policy, envir, bandit, discount.factor, precision, lambda, epsilon,
-  epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes,
-  initial.value, initial.visits, C, action.selection, learning.rate,
+params(policy, initial.policy, envir, bandit, discount.factor, precision,
+  lambda, epsilon, epsilon.decay, epsilon.decay.after, seed, method, n.steps,
+  n.episodes, initial.value, initial.visits, C, action.selection, learning.rate,
   preprocessState, predict, predict2, copy, train, ..., experience.replay,
   replay.memory, replay.memory.size, initial.replay.memory.size, batch.size,
   alpha, theta, fixed.target, update.target.after, double.qlearning, sigma)
 }
 \arguments{
 \item{policy}{numeric matrix: a policy specified as a probability
+matrix (states x actions)}
+
+\item{initial.policy}{numeric matrix: a policy specified as a probability
 matrix (states x actions)}
 
 \item{envir}{an R6 class: the reinforcement learning environment

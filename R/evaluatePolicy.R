@@ -2,7 +2,7 @@
 #'
 #' Evaluate a given policy in an environment using dynamic programming. 
 #' 
-#' With the Bellmann equation the update
+#' With the Bellmann equation update
 #' \deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
 #' 
 #' @details The algorithm runs until the improvement in the value 
@@ -37,6 +37,21 @@ evaluatePolicy = function(envir, policy, discount.factor = 1, precision = 0.0001
   improvement = TRUE
 
   # iterate while improvement in value function greater than epsilon for each element
+  while (improvement == TRUE) {
+    for (state in non.terminal.states) {
+      v.new[state + 1] = policy[state + 1, , drop = FALSE] %*%
+        (reward.t[, state + 1, drop = FALSE] + discount.factor * t(P[state + 1, , ]) %*%
+           as.matrix(v, nrow = 16))
+      improvement = any(abs(v - v.new) > precision)
+    }
+    v = v.new
+  }
+  v
+}
+
+evaluatePolicy2 = function(policy, P, reward.t, v, non.terminal.states, discount.factor, precision) {
+  improvement = TRUE
+  v.new = v
   while (improvement == TRUE) {
     for (state in non.terminal.states) {
       v.new[state + 1] = policy[state + 1, , drop = FALSE] %*%

@@ -25,7 +25,7 @@ the state value function v, a numeric vector
 Evaluate a given policy in an environment using dynamic programming.
 }
 \details{
-With the Bellmann equation the update
+With the Bellmann equation update
 \deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
 
 The algorithm runs until the improvement in the value

@@ -2,6 +2,8 @@
 #' 
 #' @param policy numeric matrix: a policy specified as a probability
 #'   matrix (states x actions)
+#' @param initial.policy numeric matrix: a policy specified as a probability
+#'   matrix (states x actions)
 #' @param envir an R6 class: the reinforcement learning environment
 #'   created by [makeEnvironment].
 #' @param discount.factor scalar numeric, discounting future rewards
@@ -67,7 +69,7 @@
 #' @param sigma scalar integer: sampling parameter, for sigma = 0 the 
 #'   sarsa algorithm is obtained, for sigma = 1 expected sarsa.
 #' 
-params = function(policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
+params = function(policy, initial.policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 
   initial.value, initial.visits, C, action.selection, learning.rate, 
   preprocessState, predict, predict2, copy, train, ..., experience.replay, replay.memory, 
