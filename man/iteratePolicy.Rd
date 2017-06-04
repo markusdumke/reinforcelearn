@@ -20,7 +20,7 @@ matrix (states x actions)}
 smaller than precision}
 }
 \value{
-the optimal state value function and optimal policy
+a list with the optimal state value function and optimal policy
 }
 \description{
 Find optimal policy by dynamic programming. Iterate between evaluating a

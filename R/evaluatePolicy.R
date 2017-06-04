@@ -25,40 +25,27 @@
 #' # Evaluate given policy for gridworld example
 #' v = evaluatePolicy(Gridworld1, random.policy)
 #' print(round(matrix(v, ncol = 4, byrow = TRUE)))
+#' 
 evaluatePolicy = function(envir, policy, discount.factor = 1, precision = 0.0001) {
   
   n.states = envir$n.states
   v = rep(0, n.states)
   v.new = v
   non.terminal.states = setdiff(seq(0, n.states - 1), envir$terminal.states)
-
   P = envir$transition.array
-  reward.t = t(envir$reward.matrix)
   improvement = TRUE
-
+  
   # iterate while improvement in value function greater than epsilon for each element
+  v2 = matrix(0, ncol = envir$n.actions, nrow = envir$n.states)
   while (improvement == TRUE) {
-    for (state in non.terminal.states) {
-      v.new[state + 1] = policy[state + 1, , drop = FALSE] %*%
-        (reward.t[, state + 1, drop = FALSE] + discount.factor * t(P[state + 1, , ]) %*%
-           as.matrix(v, nrow = 16))
-      improvement = any(abs(v - v.new) > precision)
+    for (i in seq_len(envir$n.actions)) {
+      v2[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
+        (envir$reward.matrix[non.terminal.states + 1, i] + 
+        discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
+            v[non.terminal.states + 1])
     }
-    v = v.new
-  }
-  v
-}
-
-evaluatePolicy2 = function(policy, P, reward.t, v, non.terminal.states, discount.factor, precision) {
-  improvement = TRUE
-  v.new = v
-  while (improvement == TRUE) {
-    for (state in non.terminal.states) {
-      v.new[state + 1] = policy[state + 1, , drop = FALSE] %*%
-        (reward.t[, state + 1, drop = FALSE] + discount.factor * t(P[state + 1, , ]) %*%
-           as.matrix(v, nrow = 16))
-      improvement = any(abs(v - v.new) > precision)
-    }
+    v.new = rowSums(v2)
+    improvement = any(abs(v - v.new) > precision)
     v = v.new
   }
   v

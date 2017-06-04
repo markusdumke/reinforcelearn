@@ -6,7 +6,7 @@
 #'
 #' @inheritParams params
 #'
-#' @return the optimal state value function and optimal policy
+#' @return a list with the optimal state value function and optimal policy
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
@@ -40,16 +40,4 @@ iteratePolicy <- function(envir, initial.policy = NULL,
   }
   
   list(v = v, policy = policy)
-}
-
-
-improvePolicy = function(v, envir, discount.factor) {
-  # multiply each transition matrix for each action P[, ,  i] 
-  #   with reward plus discounted value of next state
-  Q = apply(envir$transition.array, 3, function(x) 
-    rowSums(x %*% (envir$reward.matrix + discount.factor * v)))
-  greedy.actions = apply(Q, 1, argmax)
-  policy = matrix(0, nrow = nrow(Q), ncol = ncol(Q))
-  policy[matrix(c(seq_len(envir$n.states), greedy.actions), ncol = 2)] = 1
-  policy
 }

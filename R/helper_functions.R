@@ -1,5 +1,34 @@
 # internal helper functions
 
+# Dynamic Programming: Evaluate a policy
+evaluatePolicy2 = function(policy, P, reward.t, v, non.terminal.states, discount.factor, precision) {
+  improvement = TRUE
+  v.new = v
+  while (improvement == TRUE) {
+    for (state in non.terminal.states) {
+      v.new[state + 1] = policy[state + 1, , drop = FALSE] %*%
+        (reward.t[, state + 1, drop = FALSE] + discount.factor * t(P[state + 1, , ]) %*%
+           as.matrix(v, nrow = 16))
+      improvement = any(abs(v - v.new) > precision)
+    }
+    v = v.new
+  }
+  v
+}
+
+# Dynamic Programming: Policy Improvement yb acting greedily with respect to V
+improvePolicy = function(v, envir, discount.factor) {
+  # multiply each transition matrix for each action P[, ,  i] 
+  #   with reward plus discounted value of next state
+  Q = apply(envir$transition.array, 3, function(x) 
+    rowSums(x %*% (envir$reward.matrix + discount.factor * v)))
+  greedy.actions = apply(Q, 1, argmax)
+  policy = matrix(0, nrow = nrow(Q), ncol = ncol(Q))
+  policy[matrix(c(seq_len(envir$n.states), greedy.actions), ncol = 2)] = 1
+  policy
+}
+
+
 # Q a numeric vector: the action value function for a given state
 # epsilon numeric scalar in [0, 1]: probability of selecting a random action
 # sample_epsilon_greedy_action(c(1, 2, 3), epsilon = 0.2)
