@@ -14,7 +14,6 @@
 #' @return the state value function v, a numeric vector
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
-#' @importFrom Matrix bdiag
 #' @examples
 #' # Define uniform random policy, take each action with equal probability
 #' grid = gridworld$new()

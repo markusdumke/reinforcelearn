@@ -23,7 +23,6 @@ iteratePolicy <- function(envir, initial.policy = NULL,
     initial.policy = matrix(1 / envir$n.actions, nrow = envir$n.states, 
       ncol = envir$n.actions)
   }
-  
   policy = initial.policy
   v = rep(0, envir$n.states)
   
