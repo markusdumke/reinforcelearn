@@ -78,8 +78,7 @@ WindyGridworld = R6::R6Class("WindyGridworld",
     makeTransitionArray = function() {
       
       self$transition.array = array(matrix(0, nrow = self$n.states, ncol = self$n.states),
-        dim = c(self$n.states, self$n.states, self$n.actions),
-        dimnames = list(NULL, NULL, self$actions))
+        dim = c(self$n.states, self$n.states, self$n.actions))
       
       for(state in self$non.terminal.states) {
         for(action in self$actions) {
@@ -120,7 +119,7 @@ WindyGridworld = R6::R6Class("WindyGridworld",
       # reward matrix: matrix depending on actions and states
       # reward of - 1 for each step
       self$reward.matrix = matrix(- 1, nrow = self$n.states, 
-        ncol = self$n.actions, dimnames = list(NULL, self$actions))
+        ncol = self$n.actions)
       
       # set rewards of terminal states to 0
       self$reward.matrix[self$terminal.states + 1, ] = 0
