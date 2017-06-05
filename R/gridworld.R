@@ -111,8 +111,7 @@ gridworld = R6::R6Class("gridworld",
       # make probability transition array for each action (3-dimensional array)
       self$transition.array = array(matrix(0, nrow = self$n.states, 
         ncol = self$n.states),
-        dim = c(self$n.states, self$n.states, self$n.actions),
-        dimnames = list(NULL, NULL, self$actions))
+        dim = c(self$n.states, self$n.states, self$n.actions))
       # fill in probabilities: when action is taking you off the grid,
       # the new state will be the same as the old state
       for(state in self$non.terminal.states) {
@@ -143,7 +142,7 @@ gridworld = R6::R6Class("gridworld",
       # reward matrix: matrix depending on actions and states
       # reward of - 1 for each step
       self$reward.matrix = matrix(- 1, nrow = self$n.states, 
-        ncol = self$n.actions, dimnames = list(NULL, self$actions))
+        ncol = self$n.actions)
       
       # set rewards of terminal states to 0
       self$reward.matrix[self$terminal.states + 1, ] = 0

@@ -25,14 +25,11 @@ iteratePolicy <- function(envir, initial.policy = NULL,
   }
   
   policy = initial.policy
-  n.states = envir$n.states
-  v = rep(0, n.states)
-  non.terminal.states = setdiff(seq(0, n.states - 1), envir$terminal.states)
-  P = envir$transition.array
-  reward.t = t(envir$reward.matrix)
+  v = rep(0, envir$n.states)
+  non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
   
   while (TRUE) {
-    v = evaluatePolicy2(policy, P, reward.t, v, non.terminal.states, 
+    v = evaluatePolicy2(policy, envir, v, non.terminal.states, 
       discount.factor, precision)
     policy.old = policy
     policy = improvePolicy(v, envir, discount.factor)

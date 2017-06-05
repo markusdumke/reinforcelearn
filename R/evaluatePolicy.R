@@ -7,15 +7,16 @@
 #' 
 #' @details The algorithm runs until the improvement in the value 
 #' function in two subsequent steps
-#' is smaller than precision.
+#' is smaller than the given precision for all states.
 #' 
 #' @inheritParams params
 #'
 #' @return the state value function v, a numeric vector
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
+#' @importFrom Matrix bdiag
 #' @examples
-#' # Define uniform random policy, take each action with probability 0.25
+#' # Define uniform random policy, take each action with equal probability
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
 #'   reward.matrix = grid$reward.matrix)
@@ -28,23 +29,17 @@
 #' 
 evaluatePolicy = function(envir, policy, discount.factor = 1, precision = 0.0001) {
   
-  n.states = envir$n.states
-  v = rep(0, n.states)
+  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+  v = rep(0, envir$n.states)
   v.new = v
-  non.terminal.states = setdiff(seq(0, n.states - 1), envir$terminal.states)
-  P = envir$transition.array
+  P = matrix(envir$transition.array, nrow = envir$n.states, ncol = envir$n.actions * envir$n.states)
+  R = envir$reward.matrix
   improvement = TRUE
   
-  # iterate while improvement in value function greater than epsilon for each element
-  v2 = matrix(0, ncol = envir$n.actions, nrow = envir$n.states)
   while (improvement == TRUE) {
-    for (i in seq_len(envir$n.actions)) {
-      v2[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
-        (envir$reward.matrix[non.terminal.states + 1, i] + 
-        discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
-            v[non.terminal.states + 1])
-    }
-    v.new = rowSums(v2)
+    v2 = Matrix::bdiag(v, v, v, v)
+    d = matrix(policy * (R + (P %*% v2)), nrow = 16, ncol = 4)
+    v.new = rowSums(d)
     improvement = any(abs(v - v.new) > precision)
     v = v.new
   }

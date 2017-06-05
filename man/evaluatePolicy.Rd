@@ -30,10 +30,10 @@ With the Bellmann equation update
 
 The algorithm runs until the improvement in the value
 function in two subsequent steps
-is smaller than precision.
+is smaller than the given precision for all states.
 }
 \examples{
-# Define uniform random policy, take each action with probability 0.25
+# Define uniform random policy, take each action with equal probability
 grid = gridworld$new()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix)
