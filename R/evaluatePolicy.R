@@ -39,15 +39,15 @@ evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1, precisio
   improvement = TRUE
   
   # iterate while improvement in value function greater than epsilon for each element
-  v2 = matrix(0, ncol = envir$n.actions, nrow = envir$n.states)
+  Q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
   while (improvement == TRUE) {
     for (i in seq_len(envir$n.actions)) {
-      v2[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
+      Q[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
         (envir$reward.matrix[non.terminal.states + 1, i] + 
         discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
             v[non.terminal.states + 1])
     }
-    v.new = rowSums(v2)
+    v.new = rowSums(Q)
     improvement = any(abs(v - v.new) > precision)
     v = v.new
   }

@@ -43,14 +43,12 @@ sample_epsilon_greedy_action = function(Q, epsilon) {
 }
 
 # returns probabilities of actions according to epsilon-greedy policy
-# arguments same as above
-returnPolicy = function(Q, epsilon) {
-  greedy_action = argmax(Q)
-  n.actions = length(Q)
-  policy = rep(0, n.actions)
-  policy[greedy_action] = 1 - epsilon
-  policy = policy + epsilon / n.actions
-  policy
+# Q: matrix
+returnPolicy = function(Q, epsilon = 0) {
+  greedy.actions = apply(Q, 1, argmax)
+  policy = matrix(0, nrow = nrow(Q), ncol = ncol(Q))
+  policy[matrix(c(seq_len(nrow(Q)), greedy.actions), ncol = 2)] = 1 - epsilon
+  policy + epsilon / ncol(Q)
 }
 
 # Argmax (ties broken randomly)

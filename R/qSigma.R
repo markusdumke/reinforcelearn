@@ -48,7 +48,7 @@ qSigma <- function(envir, sigma = 1, lambda = 0, n.episodes = 100, learning.rate
         td.error = reward - Q[state + 1, action + 1]
       } else {
         next.action = sample_epsilon_greedy_action(Q[next.state + 1, ], epsilon)
-        policy = returnPolicy(Q[next.state + 1, ], epsilon)
+        policy = returnPolicy(Q[next.state + 1, , drop = FALSE], epsilon)
         V = sum(policy * Q[next.state + 1, ])
         td.error = reward + discount.factor * (sigma * Q[next.state + 1, action + 1] + 
             (1 - sigma) * V) - Q[state + 1, action + 1]
