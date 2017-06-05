@@ -4,7 +4,8 @@
 \alias{evaluatePolicy}
 \title{Policy Evaluation (Dynamic Programming)}
 \usage{
-evaluatePolicy(envir, policy, discount.factor = 1, precision = 1e-04)
+evaluatePolicy(envir, policy, v = NULL, discount.factor = 1,
+  precision = 1e-04)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment
@@ -12,6 +13,8 @@ created by \link{makeEnvironment}.}
 
 \item{policy}{numeric matrix: a policy specified as a probability
 matrix (states x actions)}
+
+\item{v}{numeric vector: initial state value function v}
 
 \item{discount.factor}{scalar numeric, discounting future rewards}
 

@@ -26,11 +26,9 @@ iteratePolicy <- function(envir, initial.policy = NULL,
   
   policy = initial.policy
   v = rep(0, envir$n.states)
-  non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
   
   while (TRUE) {
-    v = evaluatePolicy2(policy, envir, v, non.terminal.states, 
-      discount.factor, precision)
+    v = evaluatePolicy(envir, policy, v, discount.factor, precision)
     policy.old = policy
     policy = improvePolicy(v, envir, discount.factor)
     if (identical(policy.old, policy)) break

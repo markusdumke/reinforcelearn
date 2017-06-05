@@ -1,23 +1,21 @@
 # internal helper functions
 
-# Dynamic Programming: Evaluate a policy
-evaluatePolicy2 = function(policy, envir, v, non.terminal.states, discount.factor, precision) {
-  improvement = TRUE
-  v.new = v
-  v2 = matrix(0, ncol = envir$n.actions, nrow = envir$n.states)
-  while (improvement == TRUE) {
-    for (i in seq_len(envir$n.actions)) {
-      v2[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
-        (envir$reward.matrix[non.terminal.states + 1, i] + 
-        discount.factor * envir$transition.array[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
-            v[non.terminal.states + 1])
-    }
-    v.new = rowSums(v2)
-    improvement = any(abs(v - v.new) > precision)
-    v = v.new
-  }
-  v
-}
+# # Dynamic Programming: Evaluate a policy
+# evaluatePolicy2 = function(policy, envir, v, non.terminal.states, discount.factor, precision) {
+#   v.new = v
+#   P = matrix(envir$transition.array, nrow = envir$n.states, ncol = envir$n.actions * envir$n.states)
+#   R = envir$reward.matrix
+#   improvement = TRUE
+#   
+#   while (improvement == TRUE) {
+#     v2 = Matrix::bdiag(v, v, v, v)
+#     d = matrix(policy * (R + (P %*% v2)), nrow = envir$n.states, ncol = envir$n.actions)
+#     v.new = rowSums(d)
+#     improvement = any(abs(v - v.new) > precision)
+#     v = v.new
+#   }
+#   v
+# }
 
 # Dynamic Programming: Policy Improvement by acting greedily with respect to V
 improvePolicy = function(v, envir, discount.factor) {

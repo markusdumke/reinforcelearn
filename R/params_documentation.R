@@ -68,12 +68,13 @@
 #'   qlearning
 #' @param sigma scalar integer: sampling parameter, for sigma = 0 the 
 #'   sarsa algorithm is obtained, for sigma = 1 expected sarsa.
+#' @param v numeric vector: initial state value function v
 #' 
 params = function(policy, initial.policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 
   initial.value, initial.visits, C, action.selection, learning.rate, 
   preprocessState, predict, predict2, copy, train, ..., experience.replay, replay.memory, 
   replay.memory.size, initial.replay.memory.size, batch.size, alpha, theta,
-  fixed.target, update.target.after, double.qlearning, sigma) {
+  fixed.target, update.target.after, double.qlearning, sigma, v) {
   
 }

@@ -27,10 +27,14 @@
 #' v = evaluatePolicy(Gridworld1, random.policy)
 #' print(round(matrix(v, ncol = 4, byrow = TRUE)))
 #' 
-evaluatePolicy = function(envir, policy, discount.factor = 1, precision = 0.0001) {
+evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1, precision = 0.0001) {
   
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
-  v = rep(0, envir$n.states)
+  if (is.null(v)) {
+    v = rep(0, envir$n.states)
+  } else {
+    checkmate::assertVector(v, len = envir$n.states)
+  }
   v.new = v
   P = matrix(envir$transition.array, nrow = envir$n.states, ncol = envir$n.actions * envir$n.states)
   R = envir$reward.matrix
