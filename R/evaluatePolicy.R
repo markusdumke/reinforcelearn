@@ -38,7 +38,7 @@ evaluatePolicy = function(envir, policy, discount.factor = 1, precision = 0.0001
   
   while (improvement == TRUE) {
     v2 = Matrix::bdiag(v, v, v, v)
-    d = matrix(policy * (R + (P %*% v2)), nrow = 16, ncol = 4)
+    d = matrix(policy * (R + (P %*% v2)), nrow = envir$n.states, ncol = envir$n.actions)
     v.new = rowSums(d)
     improvement = any(abs(v - v.new) > precision)
     v = v.new
