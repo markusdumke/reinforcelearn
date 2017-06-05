@@ -35,17 +35,45 @@ evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1, precisio
   } else {
     checkmate::assertVector(v, len = envir$n.states)
   }
-  v.new = v
-  P = matrix(envir$transition.array, nrow = envir$n.states, ncol = envir$n.actions * envir$n.states)
-  R = envir$reward.matrix
+  non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
+  P = envir$transition.array
   improvement = TRUE
   
+  # iterate while improvement in value function greater than epsilon for each element
+  v2 = matrix(0, ncol = envir$n.actions, nrow = envir$n.states)
   while (improvement == TRUE) {
-    v2 = Matrix::bdiag(v, v, v, v)
-    d = matrix(policy * (R + (P %*% v2)), nrow = envir$n.states, ncol = envir$n.actions)
-    v.new = rowSums(d)
+    for (i in seq_len(envir$n.actions)) {
+      v2[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
+        (envir$reward.matrix[non.terminal.states + 1, i] + 
+        discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
+            v[non.terminal.states + 1])
+    }
+    v.new = rowSums(v2)
     improvement = any(abs(v - v.new) > precision)
     v = v.new
   }
   v
 }
+# vectorized, but slower version
+# evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1, precision = 0.0001) {
+#   
+#   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+#   if (is.null(v)) {
+#     v = rep(0, envir$n.states)
+#   } else {
+#     checkmate::assertVector(v, len = envir$n.states)
+#   }
+#   v.new = v
+#   P = matrix(envir$transition.array, nrow = envir$n.states, ncol = envir$n.actions * envir$n.states)
+#   R = envir$reward.matrix
+#   improvement = TRUE
+#   
+#   while (improvement == TRUE) {
+#     v2 = Matrix::bdiag(v, v, v, v)
+#     d = matrix(policy * (R + (P %*% v2)), nrow = envir$n.states, ncol = envir$n.actions)
+#     v.new = rowSums(d)
+#     improvement = any(abs(v - v.new) > precision)
+#     v = v.new
+#   }
+#   v
+# }
