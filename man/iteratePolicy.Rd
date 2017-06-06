@@ -5,7 +5,7 @@
 \title{Policy Iteration}
 \usage{
 iteratePolicy(envir, initial.policy = NULL, discount.factor = 1,
-  precision = 1e-04)
+  precision = 1e-04, iter = NULL)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment
@@ -18,14 +18,22 @@ matrix (states x actions)}
 
 \item{precision}{scalar numeric, algorithm stops when improvement is
 smaller than precision}
+
+\item{iter}{integer: number of iterations}
 }
 \value{
-a list with the optimal state value function and optimal policy
+a list with the optimal state value function (a numeric vector)
+and the optimal policy (a matrix of dimension: number of states x number of actions)
 }
 \description{
 Find optimal policy by dynamic programming. Iterate between evaluating a
-given policy (until convergence) and improving the policy by a greedy update.
+given policy and improving the policy by a greedy update.
 Converges to the optimal policy.
+}
+\details{
+The algorithm runs until the policy does not change
+in two subsequent steps or if the
+specified number of iterations is exhausted.
 }
 \examples{
 grid = gridworld$new()
