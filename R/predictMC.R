@@ -4,10 +4,10 @@
 #' function is estimated from mean returns of episodes.
 #' 
 #' Only works for episodic tasks (i.e. there must be at least one terminal 
-#' state)! An incremental mean update is implemented. Use a high learning.rate value to
+#' state)! An incremental mean update is implemented. Use a high learning.rate to
 #' give recent episodes a higher weight if you have a non-stationary environment
 #' . First-visit Monte Carlo estimates the return following the first visit to 
-#' a state, every-visit Monte Carlo following all visits in the episode. Returns 
+#' a state, every-visit Monte Carlo following all visits to a state in the episode. Returns 
 #' are averaged over multiple episodes. The update rule is
 #' \deqn{V(S) <- V(S) + \alpha[G - V(S')]}
 #' 
@@ -31,34 +31,52 @@
 #'   method = "first-visit", learning.rate = NULL)
 #' v = predictMC(Gridworld1, random.policy, n.episodes = 100, 
 #'   method = "every-visit", learning.rate = NULL)
-predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1, 
-  method = c("first-visit, every-visit"), learning.rate = 0.1) {
+predictMC = function(envir, policy, n.episodes = 100L, v = NULL,  
+  method = c("first-visit", "every-visit"), discount.factor = 1, 
+  learning.rate = 0.1, print.out = 50L) {
   
-  # print("Currently not implemented.")
+  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+  if (is.null(v)) {
+    v = rep(0, envir$n.states)
+  } else {
+    checkmate::assertNumeric(v, len = envir$n.states)
+  }
+  
+  if (envir$n.actions != ncol(policy)) {
+    stop("The number of columns of the policy must be equal to the number of actions.")
+  }
+  if (envir$n.states != nrow(policy)) {
+    stop("The number of rows of the policy must be equal to the number of states.")
+  }
+  if (any(rowSums(policy) != 1)) {
+    stop("The probabilities of each row of the policy must sum to 1.")
+  }
+  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertInt(n.episodes, null.ok = TRUE)
+  checkmate::assertInt(print.out)
+  checkmate::assertChoice(method, c("first-visit", "every-visit"))
+  if (!is.null(learning.rate)) {
+    checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
+  }
+  
   # save in learning.rate_input the user inputs to reuse this later
   learning.rate_input = learning.rate
-  check_choice(method, c("first-visit, every-visit"))
-  if (!is.null(learning.rate)) {
-    check_number(learning.rate, lower = 0, upper = 1)
-  }
-  check_number(discount.factor, lower = 0, upper = 1)
-
   n.states = envir$n.states
-  v = rep(0, n.states)
   n.visits = rep(0, n.states)
-
+  
   for (i in seq_len(n.episodes)) {
-    if (i %% 50 == 0) {
+    if (i %% print.out == 0) {
       print(paste("Episode:", i))
+      print(v)
     }
     envir$reset()
     episode = sampleEpisode(policy, envir)
-
+    
     if (method == "first-visit") {
       # for each state visited in this episode apply mean update
       # find first occurence if state, weighted sum of following rewards
       # incremental mean update
-      for (j in unique(episode$states)) {
+      for (j in unique(episode$states[seq_len(length(episode$states) - 1)])) {
         first.occurence = min(which(episode$states == j))
         sequ = seq(first.occurence + 1, length(episode$rewards))
         n.visits[j + 1] = n.visits[j + 1] + 1
@@ -70,9 +88,9 @@ predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1,
         v[j + 1] = v[j + 1] + learning.rate * (G - v[j + 1])
       }
     }
-
+    
     if (method == "every-visit") {
-      for (j in unique(episode$states)) {
+      for (j in unique(episode$states[seq_len(length(episode$states) - 1)])) {
         occurences = which(episode$states == j)
         for (k in occurences) {
           sequ = seq(k + 1, length(episode$rewards))
@@ -88,7 +106,7 @@ predictMC = function(envir, policy, n.episodes = 100, discount.factor = 1,
       }
     }
   }
-  return(v)
+  v
 }
 
 sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = NULL) {
@@ -116,7 +134,6 @@ sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = N
     rewards = append(rewards, envir$reward)
     i = i + 1
   }
-  states = append(states, envir$state)
   list(states = states, actions = c(actions, NA), rewards = c(NA, rewards))
 }
 

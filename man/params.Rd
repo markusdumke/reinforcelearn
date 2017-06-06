@@ -10,7 +10,7 @@ params(policy, initial.policy, envir, bandit, discount.factor, precision,
   preprocessState, predict, predict2, copy, train, ..., experience.replay,
   replay.memory, replay.memory.size, initial.replay.memory.size, batch.size,
   alpha, theta, fixed.target, update.target.after, double.qlearning, sigma, v,
-  iter)
+  iter, print.out)
 }
 \arguments{
 \item{policy}{numeric matrix: a policy specified as a probability
@@ -120,6 +120,8 @@ sarsa algorithm is obtained, for sigma = 1 expected sarsa.}
 \item{v}{numeric vector: initial state value function v}
 
 \item{iter}{integer: number of iterations}
+
+\item{print.out}{integer: when to print out the iteration number}
 }
 \description{
 Documentation of all parameters

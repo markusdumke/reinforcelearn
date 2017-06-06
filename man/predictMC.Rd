@@ -4,8 +4,9 @@
 \alias{predictMC}
 \title{Monte Carlo Prediction (Table-lookup)}
 \usage{
-predictMC(envir, policy, n.episodes = 100, discount.factor = 1,
-  method = c("first-visit, every-visit"), learning.rate = 0.1)
+predictMC(envir, policy, n.episodes = 100L, v = NULL,
+  method = c("first-visit", "every-visit"), discount.factor = 1,
+  learning.rate = 0.1, print.out = 50L)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment
@@ -16,12 +17,16 @@ matrix (states x actions)}
 
 \item{n.episodes}{scalar integer: number of episodes}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{v}{numeric vector: initial state value function v}
 
 \item{method}{scalar character: Monte Carlo first-visit or
 every-visit method}
 
+\item{discount.factor}{scalar numeric, discounting future rewards}
+
 \item{learning.rate}{scalar numeric between 0 and 1: learning rate}
+
+\item{print.out}{integer: when to print out the iteration number}
 }
 \description{
 Predict state value function v with Monte Carlo methods. The state value
@@ -29,10 +34,10 @@ function is estimated from mean returns of episodes.
 }
 \details{
 Only works for episodic tasks (i.e. there must be at least one terminal
-state)! An incremental mean update is implemented. Use a high learning.rate value to
+state)! An incremental mean update is implemented. Use a high learning.rate to
 give recent episodes a higher weight if you have a non-stationary environment
 . First-visit Monte Carlo estimates the return following the first visit to
-a state, every-visit Monte Carlo following all visits in the episode. Returns
+a state, every-visit Monte Carlo following all visits to a state in the episode. Returns
 are averaged over multiple episodes. The update rule is
 \deqn{V(S) <- V(S) + \alpha[G - V(S')]}
 }
