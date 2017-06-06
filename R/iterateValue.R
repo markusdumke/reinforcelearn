@@ -33,7 +33,7 @@ iterateValue <- function(envir, v = NULL, discount.factor = 1,
   }
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
   checkmate::assertNumber(precision, lower = 0)
-  checkmate::assertNumber(iter, null.ok = TRUE)
+  checkmate::assertInt(iter, null.ok = TRUE)
   non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
   P = envir$transition.array
   improvement = TRUE

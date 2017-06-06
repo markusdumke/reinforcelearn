@@ -27,7 +27,7 @@ iteratePolicy <- function(envir, initial.policy = NULL,
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
   checkmate::assertNumber(precision, lower = 0)
-  checkmate::assertNumber(iter, null.ok = TRUE)
+  checkmate::assertInt(iter, null.ok = TRUE)
   
   if (is.null(initial.policy)) {
     initial.policy = matrix(1 / envir$n.actions, nrow = envir$n.states, 
