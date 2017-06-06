@@ -14,6 +14,7 @@
 #' and the optimal policy (a matrix of dimension: number of states x number of actions)
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
+#' @seealso iterateValue
 #' @examples
 #' grid = gridworld$new()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
@@ -24,9 +25,9 @@ iteratePolicy <- function(envir, initial.policy = NULL,
   discount.factor = 1, precision = 0.0001, iter = NULL) {
   
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
-  checkmate::assertNumeric(discount.factor, len = 1, lower = 0, upper = 1)
-  checkmate::assertNumeric(precision, len = 1, lower = 0)
-  checkmate::assertInteger(iter, null.ok = TRUE, len = 1)
+  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(precision, lower = 0)
+  checkmate::assertNumber(iter, null.ok = TRUE)
   
   if (is.null(initial.policy)) {
     initial.policy = matrix(1 / envir$n.actions, nrow = envir$n.states, 

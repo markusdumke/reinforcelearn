@@ -45,3 +45,6 @@ res = iteratePolicy(Gridworld1)
 \references{
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
+\seealso{
+iterateValue
+}

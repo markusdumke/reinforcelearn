@@ -45,9 +45,9 @@ evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1,
   if (any(rowSums(policy) != 1)) {
     stop("The probabilities of each row of the policy must sum to 1.")
   }
-  checkmate::assertNumeric(discount.factor, len = 1, lower = 0, upper = 1)
-  checkmate::assertNumeric(precision, len = 1, lower = 0)
-  checkmate::assertInteger(iter, null.ok = TRUE, len = 1)
+  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(precision, lower = 0)
+  checkmate::assertNumber(iter, null.ok = TRUE)
   
   non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
   P = envir$transition.array
