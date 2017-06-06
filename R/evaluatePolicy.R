@@ -1,13 +1,13 @@
 #' Policy Evaluation (Dynamic Programming)
 #'
-#' Evaluate a given policy in an environment using dynamic programming. 
-#' 
-#' With the Bellmann equation update
+#' Evaluate a given policy in an environment using dynamic programming 
+#' using  the Bellmann expectation equation as an update rule
 #' \deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
 #' 
 #' @details The algorithm runs until the improvement in the value 
 #' function in two subsequent steps
-#' is smaller than the given precision for all states.
+#' is smaller than the given precision in all states or if the 
+#' specified number of iterations is exhausted.
 #' 
 #' @inheritParams params
 #'
@@ -23,28 +23,46 @@
 #'   ncol = grid$n.actions)
 #' 
 #' # Evaluate given policy for gridworld example
-#' v = evaluatePolicy(Gridworld1, random.policy)
+#' v = evaluatePolicy(Gridworld1, random.policy, iter = 100)
+#' v = evaluatePolicy(Gridworld1, random.policy, precision = 0.001)
 #' print(round(matrix(v, ncol = 4, byrow = TRUE)))
 #' 
-evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1, precision = 0.0001) {
+evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1, 
+  precision = 0.0001, iter = NULL) {
   
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   if (is.null(v)) {
     v = rep(0, envir$n.states)
   } else {
-    checkmate::assertVector(v, len = envir$n.states)
+    checkmate::assertNumeric(v, len = envir$n.states)
   }
+  if (envir$n.actions != ncol(policy)) {
+    stop("The number of columns of the policy must be equal to the number of actions.")
+  }
+  if (envir$n.states != nrow(policy)) {
+    stop("The number of rows of the policy must be equal to the number of states.")
+  }
+  if (any(rowSums(policy) != 1)) {
+    stop("The probabilities of each row of the policy must sum to 1.")
+  }
+  checkmate::assertNumeric(discount.factor, len = 1, lower = 0, upper = 1)
+  checkmate::assertNumeric(precision, len = 1, lower = 0)
+  checkmate::assertInteger(iter, null.ok = TRUE, len = 1)
+  
   non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
   P = envir$transition.array
   improvement = TRUE
-  
-  # iterate while improvement in value function greater than epsilon for each element
+  j = 0
   Q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
   while (improvement == TRUE) {
+    if (!is.null(iter)) {
+      j = j + 1
+      if (j > iter) break
+    }
     for (i in seq_len(envir$n.actions)) {
       Q[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
         (envir$reward.matrix[non.terminal.states + 1, i] + 
-        discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
+            discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
             v[non.terminal.states + 1])
     }
     v.new = rowSums(Q)

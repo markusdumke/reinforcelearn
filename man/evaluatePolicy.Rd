@@ -5,7 +5,7 @@
 \title{Policy Evaluation (Dynamic Programming)}
 \usage{
 evaluatePolicy(envir, policy, v = NULL, discount.factor = 1,
-  precision = 1e-04)
+  precision = 1e-04, iter = NULL)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment
@@ -20,20 +20,22 @@ matrix (states x actions)}
 
 \item{precision}{scalar numeric, algorithm stops when improvement is
 smaller than precision}
+
+\item{iter}{integer: number of iterations}
 }
 \value{
 the state value function v, a numeric vector
 }
 \description{
-Evaluate a given policy in an environment using dynamic programming.
+Evaluate a given policy in an environment using dynamic programming
+using  the Bellmann expectation equation as an update rule
+\deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
 }
 \details{
-With the Bellmann equation update
-\deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
-
 The algorithm runs until the improvement in the value
 function in two subsequent steps
-is smaller than the given precision for all states.
+is smaller than the given precision in all states or if the
+specified number of iterations is exhausted.
 }
 \examples{
 # Define uniform random policy, take each action with equal probability
@@ -44,7 +46,8 @@ random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states,
   ncol = grid$n.actions)
 
 # Evaluate given policy for gridworld example
-v = evaluatePolicy(Gridworld1, random.policy)
+v = evaluatePolicy(Gridworld1, random.policy, iter = 100)
+v = evaluatePolicy(Gridworld1, random.policy, precision = 0.001)
 print(round(matrix(v, ncol = 4, byrow = TRUE)))
 
 }

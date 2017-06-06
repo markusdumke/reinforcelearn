@@ -1,5 +1,5 @@
 #' Documentation of all parameters
-#' 
+#' @param iter integer: number of iterations
 #' @param policy numeric matrix: a policy specified as a probability
 #'   matrix (states x actions)
 #' @param initial.policy numeric matrix: a policy specified as a probability
@@ -75,6 +75,6 @@ params = function(policy, initial.policy, envir, bandit, discount.factor, precis
   initial.value, initial.visits, C, action.selection, learning.rate, 
   preprocessState, predict, predict2, copy, train, ..., experience.replay, replay.memory, 
   replay.memory.size, initial.replay.memory.size, batch.size, alpha, theta,
-  fixed.target, update.target.after, double.qlearning, sigma, v) {
+  fixed.target, update.target.after, double.qlearning, sigma, v, iter) {
   
 }
