@@ -65,10 +65,6 @@ predictMC = function(envir, policy, n.episodes = 100L, v = NULL,
   n.visits = rep(0, n.states)
   
   for (i in seq_len(n.episodes)) {
-    if (i %% print.out == 0) {
-      print(paste("Episode:", i))
-      print(v)
-    }
     envir$reset()
     episode = sampleEpisode(policy, envir)
     
@@ -104,6 +100,10 @@ predictMC = function(envir, policy, n.episodes = 100L, v = NULL,
         }
         # sequences = sapply(occurences, function(x) seq(x, length(episode$rewards))) # use vapply!
       }
+    }
+    if (i %% print.out == 0) {
+      print(paste("Episode:", i))
+      print(v)
     }
   }
   v
