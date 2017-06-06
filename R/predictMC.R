@@ -27,11 +27,11 @@
 #'   ncol = Gridworld1$n.actions)
 #'   
 #' # Estimate state value function with Monte Carlo prediction
-#' v = predictMC(Gridworld1, random.policy, n.episodes = 100, 
+#' v = predictMonteCarlo(Gridworld1, random.policy, n.episodes = 100, 
 #'   method = "first-visit", learning.rate = NULL)
-#' v = predictMC(Gridworld1, random.policy, n.episodes = 100, 
+#' v = predictMonteCarlo(Gridworld1, random.policy, n.episodes = 100, 
 #'   method = "every-visit", learning.rate = NULL)
-predictMC = function(envir, policy, n.episodes = 100L, v = NULL,  
+predictMonteCarlo = function(envir, policy, n.episodes = 100L, v = NULL,  
   method = c("first-visit", "every-visit"), discount.factor = 1, 
   learning.rate = 0.1, print.out = 50L) {
   
