@@ -89,7 +89,7 @@ solveBandit = function(bandit, n.episodes = 10L,
       if (i %% epsilon.decay.after == 0) {
         epsilon = epsilon * epsilon.decay
       }
-      action = sample_epsilon_greedy_action(Q, epsilon)
+      action = sampleAction(Q, epsilon)
     }
     if (action.selection == "UCB") {
       if (any(action.visits == 0)) {

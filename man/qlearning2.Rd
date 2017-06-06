@@ -9,7 +9,7 @@ qlearning2(envir, n.episodes = 10L, preprocessState = NULL,
   double.qlearning = FALSE, experience.replay = FALSE,
   replay.memory = NULL, replay.memory.size = 1000L,
   initial.replay.memory.size = 1000L, batch.size = 32L, alpha = 0,
-  theta = 0.01, frozen.target = FALSE, update.target.after = 100L,
+  theta = 0.01, fixed.target = FALSE, update.target.after = 100L,
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
   discount.factor = 1, seed = NULL, ...)
 }
@@ -57,7 +57,7 @@ high td error will be proportionally prioritized.}
 constant that prevents the edge-case of transitions not being
 revisited once their error is zero.}
 
-\item{frozen.target}{scalar logical: Q-Learning with frozen target
+\item{fixed.target}{scalar logical: Q-Learning with fixed target
 network}
 
 \item{update.target.after}{scalar integer: copy parameters to fixed
@@ -94,6 +94,7 @@ experience.
 Double Q-Learning works right now only if \code{frozen.target == TRUE}.
 }
 \examples{
+\dontrun{
 # define the environment
 grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
@@ -136,7 +137,7 @@ train = function(inputs_, outputs_, predictions_ = NULL) {
 # Q-Learning
 res = qlearning2(WindyGridworld1, n.episodes = 100L,
   preprocessState, predict, train, seed = 2L)
-
+}
 }
 \references{
 Hasselt et al. (2015): Deep Reinforcement Learning with Double Q-Learning

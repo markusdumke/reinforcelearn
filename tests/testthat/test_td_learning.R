@@ -69,7 +69,7 @@
 #   set.seed(154)
 #   x = c()
 #   for (i in 1:10000){
-#     x = c(x, sample_epsilon_greedy_action(c(1, 2, 3), epsilon = 0.3))
+#     x = c(x, sampleAction(c(1, 2, 3), epsilon = 0.3))
 #   }
 #   expect_equal(as.data.frame(table(x))[, 2] / 10000, c(0.1, 0.1, 0.8), tol = 0.1)
 # })

@@ -32,8 +32,8 @@ improvePolicy = function(v, envir, discount.factor) {
 
 # Q a numeric vector: the action value function for a given state
 # epsilon numeric scalar in [0, 1]: probability of selecting a random action
-# sample_epsilon_greedy_action(c(1, 2, 3), epsilon = 0.2)
-sample_epsilon_greedy_action = function(Q, epsilon) {
+# sampleAction(c(1, 2, 3), epsilon = 0.2)
+sampleAction = function(Q, epsilon) {
   greedy_action = argmax(Q)
   random_actions = seq(1, length(Q))
   # non_greedy_actions = actions[actions != greedy_action]

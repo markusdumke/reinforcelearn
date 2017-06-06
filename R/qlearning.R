@@ -48,7 +48,7 @@ qlearning <- function(envir, n.episodes = 10L, learning.rate = 0.1,
     
     while (envir$episode.over == FALSE) {
       
-      action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon)
+      action = sampleAction(Q[state + 1, ], epsilon)
       envir$step(action)
       next.state = envir$state
       reward = envir$reward

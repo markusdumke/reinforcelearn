@@ -44,7 +44,7 @@ sarsa <- function(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1,
     state = envir$state
     j = 0
     reward.sum = 0
-    action = sample_epsilon_greedy_action(Q[state + 1, ], epsilon)
+    action = sampleAction(Q[state + 1, ], epsilon)
     
     while (envir$episode.over == FALSE) {
       
@@ -52,7 +52,7 @@ sarsa <- function(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1,
       next.state = envir$state
       reward = envir$reward
       reward.sum = reward.sum + reward
-      next.action = sample_epsilon_greedy_action(Q[next.state + 1, ], epsilon)
+      next.action = sampleAction(Q[next.state + 1, ], epsilon)
       
       indicator = matrix(0, nrow = n.states, ncol = n.actions)
       indicator[state + 1, action + 1] = 1

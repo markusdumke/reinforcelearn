@@ -51,7 +51,7 @@
 #'     reward.sum = 0
 #'     
 #'     while (envir$episode.over == FALSE) {
-#'       action = sample_epsilon_greedy_action(Q1[state, ] + Q2[state, ], epsilon)
+#'       action = sampleAction(Q1[state, ] + Q2[state, ], epsilon)
 #'       envir$step(action)
 #'       next.state = envir$state
 #'       reward = envir$reward
