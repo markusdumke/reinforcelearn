@@ -83,7 +83,7 @@ list with weights and number of steps
 }
 \description{
 Q-Learning algorithm with Experience Replay and
-Frozen Target Network and Double Q-Learning.
+Fixed Target Network and Double Q-Learning.
 }
 \details{
 To use experience replay you can
@@ -91,7 +91,7 @@ either specify an initial replay memory filled with experience
 and provide the size of the replay memory. If you do not
 specify a replay memory this will be initially filled with random
 experience.
-Double Q-Learning works right now only if \code{frozen.target == TRUE}.
+Double Q-Learning works right now only if \code{fixed.target == TRUE}.
 }
 \examples{
 \dontrun{

@@ -1,14 +1,14 @@
 #' Q-Learning with Function Approximation
 #'
 #' Q-Learning algorithm with Experience Replay and
-#' Frozen Target Network and Double Q-Learning.
+#' Fixed Target Network and Double Q-Learning.
 #'
 #' To use experience replay you can
 #' either specify an initial replay memory filled with experience
 #' and provide the size of the replay memory. If you do not
 #' specify a replay memory this will be initially filled with random
 #' experience.
-#' Double Q-Learning works right now only if `frozen.target == TRUE`.
+#' Double Q-Learning works right now only if `fixed.target == TRUE`.
 #'
 #' @inheritParams params
 #'
@@ -75,8 +75,8 @@ qlearning2 <- function(envir, n.episodes = 10L, preprocessState = NULL,
   # input checking
   if (!is.null(seed)) { set.seed(seed) } # set random seed
   if (double.qlearning == TRUE) {
-    if(frozen.target == FALSE) {
-      stop("Double Q-Learning only works when frozen.target == TRUE")
+    if(fixed.target == FALSE) {
+      stop("Double Q-Learning only works when fixed.target == TRUE")
     }
   }
   if (replay.memory.size < length(replay.memory)) {
@@ -173,7 +173,7 @@ qlearning2 <- function(envir, n.episodes = 10L, preprocessState = NULL,
       
       # compute target values
       # for double qlearning action selection and evaluation are decoupled
-      if (frozen.target == FALSE) {
+      if (fixed.target == FALSE) {
         Q.next.state = predict(features.batch.next.states, ...)
         td.target =  batch.rewards + discount.factor * apply(Q.next.state, 1, max)
         # td.target =  batch.rewards + discount.factor * Q.next.state[argmax(Q.next.state)] # equivalent to the above
@@ -196,7 +196,7 @@ qlearning2 <- function(envir, n.episodes = 10L, preprocessState = NULL,
       priority[indexes] = abs(td.error) + theta
       
       # update target network: get all weights and copy them to target network
-      if (frozen.target == TRUE) {
+      if (fixed.target == TRUE) {
         if (steps %% update.target.after == 0L) {
           # tf$trainable$variables()
           copy()
