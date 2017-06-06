@@ -3,10 +3,16 @@
 #' Find optimal policy by dynamic programming. Iterate between evaluating a
 #' given policy (only one step), then improving the policy by a greedy update.
 #' Converges to the optimal policy.
+#' 
+#' @details The algorithm runs until the improvement in the value 
+#' function in two subsequent steps
+#' is smaller than the given precision in all states or if the 
+#' specified number of iterations is exhausted.
 #'
 #' @inheritParams params
 #'
-#' @return a list with the optimal state value function and optimal policy
+#' @return a list with the optimal state value function (a numeric vector) 
+#'   and the optimal policy (a matrix of dimension: number of states x number of actions)
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
@@ -15,24 +21,33 @@
 #'   reward.matrix = grid$reward.matrix)
 #' res = iterateValue(Gridworld1)
 #' 
-iterateValue <- function(envir, v = NULL, discount.factor = 1, precision = 0.0001) {
+iterateValue <- function(envir, v = NULL, discount.factor = 1, 
+  precision = 0.0001, iter = NULL) {
   
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   if (is.null(v)) {
     v = rep(0, envir$n.states)
   } else {
-    checkmate::assertVector(v, len = envir$n.states)
+    checkmate::assertNumeric(v, len = envir$n.states)
   }
+  checkmate::assertNumeric(discount.factor, len = 1, lower = 0, upper = 1)
+  checkmate::assertNumeric(precision, len = 1, lower = 0)
+  checkmate::assertInteger(iter, null.ok = TRUE, len = 1)
   non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
   P = envir$transition.array
   improvement = TRUE
+  j = 0
   
   Q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
   while (improvement == TRUE) {
+    if (!is.null(iter)) {
+      j = j + 1
+      if (j > iter) break
+    }
     for (i in seq_len(envir$n.actions)) {
       Q[non.terminal.states + 1, i] = envir$reward.matrix[non.terminal.states + 1, i] + 
         discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
-            v[non.terminal.states + 1]
+        v[non.terminal.states + 1]
     }
     v.new = apply(Q, 1, max)
     improvement = any(abs(v - v.new) > precision)

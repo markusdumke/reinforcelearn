@@ -4,7 +4,8 @@
 \alias{iterateValue}
 \title{Value Iteration}
 \usage{
-iterateValue(envir, v = NULL, discount.factor = 1, precision = 1e-04)
+iterateValue(envir, v = NULL, discount.factor = 1, precision = 1e-04,
+  iter = NULL)
 }
 \arguments{
 \item{envir}{an R6 class: the reinforcement learning environment
@@ -16,14 +17,23 @@ created by \link{makeEnvironment}.}
 
 \item{precision}{scalar numeric, algorithm stops when improvement is
 smaller than precision}
+
+\item{iter}{integer: number of iterations}
 }
 \value{
-a list with the optimal state value function and optimal policy
+a list with the optimal state value function (a numeric vector)
+and the optimal policy (a matrix of dimension: number of states x number of actions)
 }
 \description{
 Find optimal policy by dynamic programming. Iterate between evaluating a
 given policy (only one step), then improving the policy by a greedy update.
 Converges to the optimal policy.
+}
+\details{
+The algorithm runs until the improvement in the value
+function in two subsequent steps
+is smaller than the given precision in all states or if the
+specified number of iterations is exhausted.
 }
 \examples{
 grid = gridworld$new()
