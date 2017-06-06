@@ -55,3 +55,36 @@ returnPolicy = function(Q, epsilon = 0) {
 argmax = function(x) {
   nnet::which.is.max(x)
 }
+
+sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = NULL) {
+  
+  rewards = numeric(0)
+  if (!is.null(initial.action)) {
+    actions = initial.action
+  } else {
+    actions = integer(0)
+  }
+  if (!is.null(initial.state)) {
+    states = initial.state
+    envir$state = initial.state
+  } else {
+    envir$reset()
+    states = envir$state
+  }
+  
+  i = 1
+  
+  while (envir$episode.over == FALSE) {
+    actions = append(actions, sample(envir$actions, prob = policy[states[i], ], size = 1))
+    envir$step(actions[i])
+    states = append(states, envir$state)
+    rewards = append(rewards, envir$reward)
+    i = i + 1
+  }
+  list(states = states, actions = c(actions, NA), rewards = c(NA, rewards))
+}
+
+# Estimate return
+estimateReturn <- function(rewards, discount.factor) {
+  sum(discount.factor ^ seq(0, length(rewards) - 1) * rewards)
+}
