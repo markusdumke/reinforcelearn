@@ -24,7 +24,8 @@ Dynamic Programming:
 Model-free Reinforcement Learning
 Monte Carlo Methods:
 \itemize{
-\item \link{predictMC}
+\item \link{predictMonteCarlo}
+\item \link{MonteCarloControl}
 }
 
 Temporal-Difference Learning:

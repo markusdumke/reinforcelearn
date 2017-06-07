@@ -12,7 +12,8 @@
 #' 
 #' Model-free Reinforcement Learning
 #' Monte Carlo Methods:
-#' * [predictMC]
+#' * [predictMonteCarlo]
+#' * [MonteCarloControl]
 #' 
 #' Temporal-Difference Learning:
 #' * [td]
