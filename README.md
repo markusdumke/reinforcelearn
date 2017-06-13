@@ -43,7 +43,7 @@ CartPole$close()
 windygrid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
   reward.matrix = windygrid$reward.matrix,
-  initial.state = 30)
+  initial.state = 30L)
 ```
 
 Environments always have an initialization function to create a new instance of the environment, a reset function, which returns an initial state observation and a step function, which takes a step in the environment given an action returning the next state observation, reward and if the episode is finished.
