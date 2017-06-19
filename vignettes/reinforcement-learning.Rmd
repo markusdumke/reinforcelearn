@@ -1,5 +1,5 @@
 ---
-title: "Solve windy gridworld using SARSA"
+title: "Reinforcement Learning"
 author: "Markus Dumke"
 date: "`r Sys.Date()`"
 output:rmarkdown::html_vignette:
@@ -10,7 +10,48 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
   
-## Windy Gridworld Environment
+## What is Reinforcement Learning
+
+Reinforcement Learning is a field of Machine Learning adressing the problem of optimal decision making. The problem could be anything from mastering a complex game to controlling the behaviour of a robot.
+
+RL problems can be formulated as an interaction between an agent and an environment over time. At each time step the agent can choose one action from a set of possible actions and gets rewarded by the environment with a numeric value. The goal is to maximize the sum of rewards over time. The state of the environment tells something about the problem, e.g. the position of all pawns on a chess board, and can be used from the agent as a basis for the action selection.
+
+## Set up an environment
+
+First we need to set up a reinforcement learning environment. Therefore we need to specify the transition and reward dynamics of the problem. The state transition array is a three-dimensional array specifying all transition probabilities between the states for each action. The reward matrix specifies the rewards obtained for each state-action combination. We can then simply pass these on to the `makeEnvironment` function.
+
+```{r}
+library(reinforcelearn)
+```
+
+```{r}
+t = array(c(0.5, 0, 0.5, 1, 0.2, 0, 0.8, 1), c(2, 2, 2))
+r = matrix(c(- 1, 0, - 1, 0), ncol = 2)
+Env = makeEnvironment(transition.array = t, reward.matrix = r)
+```
+
+Another possibility is to use one of the existing OpenAI Gym environments: [https://gym.openai.com/docs](https://gym.openai.com/docs)
+
+Using one of these environments is then as simple as
+
+```{r, eval = FALSE}
+MCar = makeEnvironment("MountainCar-v0")
+```
+
+Note that you need to have the prerequisites Python and Gym installed.
+
+## Solve an environment
+
+Once you have created an environment you can then solve the environment with one of the implemented algorithms, e.g. Sarsa or Q-Learning.
+
+```{r, eval = FALSE}
+res = sarsa(Env)
+```
+
+## Reinforcement Learning with function approximation
+  
+  
+## An extended example: The Windy Gridworld Environment
   
 The windy gridworld is a simple example from Sutton & Barto (2017). The goal is to move from a starting state (S) to a goal state (G) as fast as possible, because each step you receive a negative reward of -1 along the way. You can move along the grid using the standard moves (left, right, up and down). In each column of the grid a deterministic wind pushes you up a certain number of steps. E.g. if you are in the cell to the left of the goal state and go right, you will end up two cells above the goal.
  

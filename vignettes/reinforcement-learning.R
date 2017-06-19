@@ -1,5 +1,19 @@
 ## ------------------------------------------------------------------------
 library(reinforcelearn)
+
+## ------------------------------------------------------------------------
+t = array(c(0.5, 0, 0.5, 1, 0.2, 0, 0.8, 1), c(2, 2, 2))
+r = matrix(c(- 1, 0, - 1, 0), ncol = 2)
+Env = makeEnvironment(transition.array = t, reward.matrix = r)
+
+## ---- eval = FALSE-------------------------------------------------------
+#  MCar = makeEnvironment("MountainCar-v0")
+
+## ---- eval = FALSE-------------------------------------------------------
+#  res = sarsa(Env)
+
+## ------------------------------------------------------------------------
+library(reinforcelearn)
 grid = WindyGridworld$new()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, 
