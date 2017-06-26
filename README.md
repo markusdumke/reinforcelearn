@@ -14,7 +14,7 @@ devtools::install_github("markdumke/reinforcelearn")
 ```
 
 ### Get started
-Reinforcement Learning with `reinforcelearn` is as easy as
+Reinforcement Learning with the package `reinforcelearn` is as easy as
 ```r
 library(reinforcelearn)
 
