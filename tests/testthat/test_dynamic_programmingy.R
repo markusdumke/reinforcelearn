@@ -2,7 +2,7 @@
 # context("Evaluate Policy")
 # 
 # # Define uniform random policy, take each action with probability 0.25
-# grid = gridworld$new()
+# grid = makeGridworld()
 # n.states = nrow(grid$reward.matrix)
 # n.actions = ncol(grid$reward.matrix)
 # random.policy = matrix(1 / n.actions, nrow = n.states, ncol = n.actions)

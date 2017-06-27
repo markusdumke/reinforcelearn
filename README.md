@@ -40,9 +40,9 @@ CartPole$step(action = 0)
 CartPole$close()
 
 # You can also create an environment from an MDP
-windygrid = WindyGridworld$new()
-WindyGridworld1 = makeEnvironment(transition.array = windygrid$transition.array,
-  reward.matrix = windygrid$reward.matrix,
+grid = makeWindyGridworld()
+WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
+  reward.matrix = grid$reward.matrix,
   initial.state = 30L)
 ```
 

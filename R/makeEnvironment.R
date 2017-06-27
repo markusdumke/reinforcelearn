@@ -52,12 +52,12 @@
 #' }
 #' 
 #' # Create an environment from a transition array and reward matrix (here a simple gridworld).
-#' grid = gridworld$new()
+#' grid = makeGridworld()
 #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
 #'   reward.matrix = grid$reward.matrix)
 #'   
 #' # Create the WindyGridworld environment.
-#' grid = WindyGridworld$new()
+#' grid = makeWindyGridworld()
 #' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
 #'   reward.matrix = grid$reward.matrix, initial.state = 30L)
 #'   
@@ -113,7 +113,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
           self$client = client
           
           env_id = gym.envir.name
-          instance_id = env_create(client, env_id)
+          instance_id = env_create(client, env_id) # error
           self$instance_id = instance_id
           
           outdir = "/tmp/random-agent-results"

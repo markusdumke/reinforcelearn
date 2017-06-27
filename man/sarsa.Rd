@@ -50,7 +50,7 @@ The update formula is:
 \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma Q(S', A') - Q(S, A)]}
 }
 \examples{
-grid = WindyGridworld$new()
+grid = makeWindyGridworld()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, 
   initial.state = 30L)

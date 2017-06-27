@@ -45,7 +45,7 @@ observed infrequently and longer time ago.
 }
 \examples{
 # Define environment, here simple gridworld
-grid = gridworld$new()
+grid = makeGridworld()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix)
   

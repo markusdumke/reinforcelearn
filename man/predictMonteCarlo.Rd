@@ -43,7 +43,7 @@ are averaged over multiple episodes. The update rule is
 }
 \examples{
 set.seed(26)
-grid = gridworld$new()
+grid = makeGridworld()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix)
   

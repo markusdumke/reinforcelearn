@@ -39,7 +39,7 @@ specified number of iterations is exhausted.
 }
 \examples{
 # Define uniform random policy, take each action with equal probability
-grid = gridworld$new()
+grid = makeGridworld()
 Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix)
 random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 

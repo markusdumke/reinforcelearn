@@ -49,7 +49,7 @@ optimal action value function Q
 Q(sigma) is a generalization of Sarsa and Expected Sarsa algorithms.
 }
 \examples{
-grid = WindyGridworld$new()
+grid = makeWindyGridworld()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
   reward.matrix = grid$reward.matrix, initial.state = 30L)
 res = qSigma(WindyGridworld1, n.episodes = 100, seed = 123)

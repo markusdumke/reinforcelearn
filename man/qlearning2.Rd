@@ -96,7 +96,7 @@ Double Q-Learning works right now only if \code{fixed.target == TRUE}.
 \examples{
 \dontrun{
 # define the environment
-grid = WindyGridworld$new()
+grid = makeWindyGridworld()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
   reward.matrix = grid$reward.matrix,
   initial.state = 30L)

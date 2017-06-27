@@ -50,11 +50,11 @@ the optimal action value function Q*. The update formula is:
 }
 \examples{
 # Solve the WindyGridworld environment using Q-Learning
-grid = WindyGridworld$new()
-WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
+grid = makeWindyGridworld()
+Gridworld1 = makeEnvironment(transition.array = grid$transition.array,
   reward.matrix = grid$reward.matrix,
   initial.state = 30L)
-res = qlearning(WindyGridworld1, n.episodes = 100, seed = 123)
+res = qlearning(Gridworld1, n.episodes = 100, seed = 123)
 
 }
 \references{

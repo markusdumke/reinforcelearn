@@ -13,13 +13,13 @@
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @seealso [predictMonteCarlo]
 #' @examples 
-#' grid = WindyGridworld$new()
+#' grid = makeWindyGridworld()
 #' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
 #'  reward.matrix = grid$reward.matrix, 
 #'  initial.state = 30L)
 #' # res = MonteCarloControl(WindyGridworld1, n.episodes = 100)
 MonteCarloControl = function(envir, n.episodes = 100L, discount.factor = 1, 
-  learning.rate = 0.1, epsilon = 0.1, initial.policy = NULL) {
+  learning.rate = 0.1, epsilon = 0.1, initial.policy = NULL) { # decrease epsilon
   
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
@@ -48,7 +48,7 @@ MonteCarloControl = function(envir, n.episodes = 100L, discount.factor = 1,
     unique.state.action.pairs = unique(data.frame(states = episode$states[seq_len(length(episode$states) - 1)], 
       actions = episode$actions[seq_len(length(episode$actions) - 1)]))
 
-    for (j in seq_along(unique.state.action.pairs)) {
+    for (j in seq_len(nrow(unique.state.action.pairs))) {
       first.occurence = min(which(episode$states == unique.state.action.pairs[j, 1] & 
           episode$actions == unique.state.action.pairs[j, 2]))
       sequ = seq(first.occurence + 1, length(episode$rewards))

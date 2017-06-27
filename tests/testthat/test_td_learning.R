@@ -2,7 +2,7 @@
 # context("Model-free TD Prediction")
 # 
 # set.seed(1477)
-# grid = gridworld$new()
+# grid = makeGridworld()
 # 
 # # Define random policy
 # n.states = nrow(grid$reward.matrix)

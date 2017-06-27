@@ -37,7 +37,7 @@ Works only for episodic tasks (i.e. there must be a terminal state)!
 This method uses the first-visit Monte Carlo policy evaluation.
 }
 \examples{
-grid = WindyGridworld$new()
+grid = makeWindyGridworld()
 WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
  reward.matrix = grid$reward.matrix, 
  initial.state = 30L)
