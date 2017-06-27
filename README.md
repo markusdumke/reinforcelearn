@@ -30,13 +30,20 @@ sarsa(test_env)
 
 ### Create an environment
 
-With `makeEnvironment` you can create a reinforcement learning environment, either from [OpenAI Gym](https://gym.openai.com/) or from the state transition matrix and reward matrix of a Markov Decision Process. To use a Gym environment you need to have Python and Gym installed.
+With `makeEnvironment` you can create a reinforcement learning environment, either from [OpenAI Gym](https://gym.openai.com/) or from the state transition matrix and reward matrix of a Markov Decision Process. The `makeEnvironment` will create an `R6 class`, from which you can then access attributes about state and action space and use the `reset` and `step` methods to sample experiences from the environment.
+
+To use a Gym environment you need to have the prerequisites installed: [gym-http-api](https://github.com/openai/gym-http-api)
 
 ```r
 # Create an OpenAI Gym environment.
 CartPole = makeEnvironment("CartPole-v0")
-CartPole$reset()
-CartPole$step(action = 0)
+
+CartPole$reset() # returns initial state observation
+# take random action for 100 steps
+for (i in 1:100) {
+  action = sample(CartPole$actions)
+  CartPole$step(action)
+}
 CartPole$close()
 
 # You can also create an environment from an MDP
