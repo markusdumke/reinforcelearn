@@ -18,6 +18,8 @@
 #' @export
 #' @examples
 #' grid = makeWindyGridworld()
+#' grid = makeEnvironment(transition.array = grid$transition.array, 
+#'   reward.matrix = reward.matrix, initial.state = 30L)
 #' @seealso [makeEnvironment]
 #' 
 makeWindyGridworld <- function(shape = c(7L, 10L), terminal.states = 37L, 

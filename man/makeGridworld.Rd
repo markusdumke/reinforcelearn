@@ -40,6 +40,8 @@ get a reward of -1, until you reach into a terminal state.
 }
 \examples{
 grid = makeGridworld()
+grid = makeEnvironment(transition.array = grid$transition.array, 
+  reward.matrix = reward.matrix)
 }
 \references{
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
