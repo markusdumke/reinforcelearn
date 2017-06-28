@@ -29,7 +29,7 @@
 #' @examples
 #' grid = makeGridworld()
 #' grid = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = reward.matrix)
+#'   reward.matrix = grid$reward.matrix)
 #' @seealso [makeEnvironment]
 #' 
 makeGridworld <- function(shape = c(4L, 4L), terminal.states = c(0L, 15L)) {

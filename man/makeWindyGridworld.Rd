@@ -30,7 +30,7 @@ get a reward of -1, until you reach into a terminal state.
 \examples{
 grid = makeWindyGridworld()
 grid = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = reward.matrix, initial.state = 30L)
+  reward.matrix = grid$reward.matrix, initial.state = 30L)
 }
 \references{
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
