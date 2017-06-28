@@ -37,11 +37,10 @@ Works only for episodic tasks (i.e. there must be a terminal state)!
 This method uses the first-visit Monte Carlo policy evaluation.
 }
 \examples{
-grid = makeWindyGridworld()
-WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
- reward.matrix = grid$reward.matrix, 
- initial.state = 30L)
-# res = MonteCarloControl(WindyGridworld1, n.episodes = 100)
+grid = makeEnvironment(transition.array = windyGridworld$transitions,
+  reward.matrix = windyGridworld$rewards,
+  initial.state = 30L)
+# res = MonteCarloControl(grid, n.episodes = 100)
 }
 \references{
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction

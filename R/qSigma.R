@@ -10,10 +10,10 @@
 #' @seealso [sarsa]
 #' @seealso [qlearning]
 #' @examples 
-#' grid = makeWindyGridworld()
-#' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix, initial.state = 30L)
-#' res = qSigma(WindyGridworld1, n.episodes = 100, seed = 123)
+#' grid = makeEnvironment(transition.array = windyGridworld$transitions,
+#'   reward.matrix = windyGridworld$rewards,
+#'   initial.state = 30L)
+#' res = qSigma(grid, n.episodes = 100, seed = 123)
 #' 
 qSigma <- function(envir, sigma = 1, lambda = 0, n.episodes = 100, learning.rate = 0.1, 
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 

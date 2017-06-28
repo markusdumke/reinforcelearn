@@ -36,10 +36,9 @@ is smaller than the given precision in all states or if the
 specified number of iterations is exhausted.
 }
 \examples{
-grid = makeGridworld()
-Gridworld1 = makeEnvironment(transition.array = grid$transition.array,
-  reward.matrix = grid$reward.matrix)
-res = iterateValue(Gridworld1)
+grid = makeEnvironment(transition.array = gridworld$transitions, 
+  reward.matrix = gridworld$rewards)
+res = iterateValue(grid)
 
 }
 \references{

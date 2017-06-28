@@ -5,7 +5,7 @@
 #' #' The idea behind Double Q-Learning is to have two separate action value
 #' #' functions Q1 and Q2. Actions are chosen from an epsilon-greedy policy derived
 #' #' from Q1 + Q2. With equal probability either Q1 or Q2 is then updated
-#' #' following the same update rule as in Q-Learning. 
+#' #' following the same update rule as in Q-Learning.
 #' #' This avoids the maximization bias in Q-Learning.
 #' #'
 #' #' Under the assumption that all state-action pairs are visited (which is
@@ -19,12 +19,65 @@
 #' #' @export
 #' #' @examples
 #' #' # Solve the WindyGridworld environment using Double Q-Learning
-#' #' grid = makeWindyGridworld()
-#' #' Gridworld1 = makeEnvironment(transition.array = grid$transition.array,
-#' #'   reward.matrix = grid$reward.matrix,
+#' #' grid = makeEnvironment(transition.array = windyGridworld$transitions,
+#' #'   reward.matrix = windyGridworld$rewards,
 #' #'   initial.state = 30L)
-#' #' res = doubleqlearning(Gridworld1, n.episodes = 100, seed = 123)
+#' #' res = doubleqlearning(grid, n.episodes = 100, seed = 123)
 #' #'
+#' doubleqlearning <- function(envir, n.episodes = 10L, learning.rate = 0.1, 
+#'   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
+#'   initial.value = 0L, discount.factor = 1, seed = NULL) {
+#'   
+#'   # input checking
+#'   stopifnot(envir$state.space == "Discrete")
+#'   if (!is.null(seed)) set.seed(seed)
+#' 
+#'   n.states = envir$n.states
+#'   n.actions = envir$n.actions
+#'   Q = matrix(initial.value, nrow = n.states, ncol = n.actions)
+#'   steps.per.episode = rep(0, n.episodes)
+#'   rewards.per.episode = rep(0, n.episodes)
+#'   
+#'   for (i in seq_len(n.episodes)) {
+#'     
+#'     envir$reset()
+#'     state = envir$state
+#'     j = 0
+#'     reward.sum = 0
+#'     
+#'     while (envir$episode.over == FALSE) {
+#'       
+#'       action = sampleAction(Q[state + 1, ], epsilon)
+#'       envir$step(action)
+#'       next.state = envir$state
+#'       reward = envir$reward
+#'       reward.sum = reward.sum + reward
+#'       
+#'       # update Q for visited state-action pair maximizing over Q values of next state
+#'       TD.target = reward + discount.factor * max(Q[next.state + 1, ]) 
+#'       TD.error = TD.target - Q[state + 1, action + 1] 
+#'       Q[state + 1, action + 1] = Q[state + 1, action + 1] + learning.rate * TD.error
+#'       state = next.state
+#'       j = j + 1
+#'       
+#'       if (envir$episode.over) {
+#'         steps.per.episode[i] = j
+#'         rewards.per.episode[i] = reward.sum
+#'         print(paste("Episode", i, "finished after", j, "time steps."))
+#'         if (i %% epsilon.decay.after == 0) {
+#'           epsilon = epsilon.decay * epsilon
+#'           print(paste("Average Reward of last", epsilon.decay.after, "episodes:", sum(rewards.per.episode[seq(i - epsilon.decay.after + 1, i)]) / epsilon.decay.after))
+#'         }
+#'         break
+#'       } 
+#'     }
+#'   }
+#'   
+#'   list(Q = Q, steps.per.episode = steps.per.episode, 
+#'     rewards.per.episode = rewards.per.episode)
+#' }
+#' 
+#' 
 #' doubleqlearning <- function(envir, n.episodes = 100, learning.rate = 0.1,
 #'   epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1,
 #'   seed = NULL) {

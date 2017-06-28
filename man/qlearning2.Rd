@@ -96,20 +96,19 @@ Double Q-Learning works right now only if \code{fixed.target == TRUE}.
 \examples{
 \dontrun{
 # define the environment
-grid = makeWindyGridworld()
-WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array,
-  reward.matrix = grid$reward.matrix,
+grid = makeEnvironment(transition.array = windyGridworld$transitions,
+  reward.matrix = windyGridworld$rewards,
   initial.state = 30L)
 
 # Build the DQN
 # define a tensorflow graph for the function approximator (here a neural network)
 library(tensorflow)
 tf$reset_default_graph()
-inputs = tf$placeholder(tf$float32, shape(NULL, WindyGridworld1$n.states))
-weights = tf$Variable(tf$random_uniform(shape(WindyGridworld1$n.states,
-  WindyGridworld1$n.actions), 0, 0.01, seed = 1))
+inputs = tf$placeholder(tf$float32, shape(NULL, grid$n.states))
+weights = tf$Variable(tf$random_uniform(shape(grid$n.states,
+  grid$n.actions), 0, 0.01, seed = 1))
 Q = tf$matmul(inputs, weights)
-nextQ = tf$placeholder(tf$float32, shape(NULL, WindyGridworld1$n.actions))
+nextQ = tf$placeholder(tf$float32, shape(NULL, grid$n.actions))
 loss = tf$reduce_sum(tf$square(nextQ - Q))
 optimizer = tf$train$GradientDescentOptimizer(learning_rate = 0.1)
 trainModel = optimizer$minimize(loss)
@@ -120,7 +119,7 @@ sess$run(tf$global_variables_initializer())
 
 # takes the state and returns a one-hot vector
 preprocessState = function(state_) {
-  one_hot = matrix(0L, nrow = length(state_), ncol = WindyGridworld1$n.states)
+  one_hot = matrix(0L, nrow = length(state_), ncol = grid$n.states)
   one_hot[cbind(seq_along(state_), state_)] = 1L
   one_hot
 }
@@ -135,7 +134,7 @@ train = function(inputs_, outputs_, predictions_ = NULL) {
 }
 
 # Q-Learning
-res = qlearning2(WindyGridworld1, n.episodes = 100L,
+res = qlearning2(grid, n.episodes = 100L,
   preprocessState, predict, train, seed = 2L)
 }
 }

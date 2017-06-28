@@ -6,8 +6,8 @@
 library(reinforcelearn)
 
 ## ------------------------------------------------------------------------
-t = array(c(0.5, 0, 0.5, 1, 0.2, 0, 0.8, 1), c(2, 2, 2))
-r = matrix(c(- 1, 0, - 1, 0), ncol = 2)
+t = gridworld$transitions
+r = gridworld$rewards
 Env = makeEnvironment(transition.array = t, reward.matrix = r)
 
 ## ---- eval = FALSE-------------------------------------------------------
@@ -26,7 +26,7 @@ Env = makeEnvironment(transition.array = t, reward.matrix = r)
 #  MCar$close()
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  res = sarsa(Env)
+#  res = iterateValue(Env)
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  

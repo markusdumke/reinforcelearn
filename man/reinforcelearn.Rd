@@ -44,8 +44,8 @@ Function Approximation
 \section{Example Environments}{
 
 \itemize{
-\item \link{makeGridworld}
-\item \link{makeWindyGridworld}
+\item \link{gridworld}
+\item \link{windyGridworld}
 }
 }
 

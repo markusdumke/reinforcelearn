@@ -43,18 +43,17 @@ are averaged over multiple episodes. The update rule is
 }
 \examples{
 set.seed(26)
-grid = makeGridworld()
-Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix)
+grid = makeEnvironment(transition.array = gridworld$transitions, 
+  reward.matrix = gridworld$rewards)
   
 # Define random policy
-random.policy = matrix(1 / Gridworld1$n.actions, nrow = Gridworld1$n.states, 
-  ncol = Gridworld1$n.actions)
+random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
+  ncol = grid$n.actions)
   
 # Estimate state value function with Monte Carlo prediction
-v = predictMonteCarlo(Gridworld1, random.policy, n.episodes = 100, 
+v = predictMonteCarlo(grid, random.policy, n.episodes = 100, 
   method = "first-visit", learning.rate = NULL)
-v = predictMonteCarlo(Gridworld1, random.policy, n.episodes = 100, 
+v = predictMonteCarlo(grid, random.policy, n.episodes = 100, 
   method = "every-visit", learning.rate = NULL)
 }
 \references{

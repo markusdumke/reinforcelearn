@@ -50,11 +50,10 @@ The update formula is:
 \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma Q(S', A') - Q(S, A)]}
 }
 \examples{
-grid = makeWindyGridworld()
-WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, 
+grid = makeEnvironment(transition.array = windyGridworld$transitions,
+  reward.matrix = windyGridworld$rewards,
   initial.state = 30L)
-res = sarsa(WindyGridworld1, n.episodes = 100, seed = 123)
+res = sarsa(grid, n.episodes = 100, seed = 123)
 
 }
 \references{

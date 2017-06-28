@@ -2,7 +2,8 @@
 # context("Monte Carlo Methods")
 # 
 # set.seed(1477)
-# grid = makeGridworld()
+# grid = makeEnvironment(transition.array = gridworld$transitions, 
+#   reward.matrix = gridworld$rewards)
 # 
 # # Define random policy
 # n.states = nrow(grid$reward.matrix)

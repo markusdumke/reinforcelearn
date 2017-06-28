@@ -67,14 +67,13 @@ MountainCar = makeEnvironment("MountainCar-v0")
 }
 
 # Create an environment from a transition array and reward matrix (here a simple gridworld).
-grid = makeGridworld()
-Gridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix)
+grid = makeEnvironment(transition.array = gridworld$transitions,
+  reward.matrix = gridworld$rewards)
   
 # Create the WindyGridworld environment.
-grid = makeWindyGridworld()
-WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-  reward.matrix = grid$reward.matrix, initial.state = 30L)
+grid = makeEnvironment(transition.array = windyGridworld$transitions,
+  reward.matrix = windyGridworld$rewards,
+  initial.state = 30L)
   
 }
 \seealso{

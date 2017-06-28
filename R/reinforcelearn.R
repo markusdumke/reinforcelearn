@@ -24,8 +24,8 @@
 #' * [qlearning2]
 #' 
 #' @section Example Environments:
-#' * [makeGridworld]
-#' * [makeWindyGridworld]
+#' * [gridworld]
+#' * [windyGridworld]
 #' 
 #' @name reinforcelearn
 #' @docType package

@@ -32,8 +32,8 @@ library(reinforcelearn)
 ```
 
 ```{r}
-t = array(c(0.5, 0, 0.5, 1, 0.2, 0, 0.8, 1), c(2, 2, 2))
-r = matrix(c(- 1, 0, - 1, 0), ncol = 2)
+t = gridworld$transitions
+r = gridworld$rewards
 Env = makeEnvironment(transition.array = t, reward.matrix = r)
 ```
 
@@ -67,10 +67,10 @@ MCar$close()
 
 ## Solve an environment
 
-Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (called policy) with one of the implemented algorithms, e.g. Sarsa or Q-Learning.
+Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (called policy) with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
 
 ```{r, eval = FALSE}
-res = sarsa(Env)
+res = iterateValue(Env)
 ```
 
 ## Reinforcement Learning with function approximation

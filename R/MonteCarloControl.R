@@ -13,11 +13,10 @@
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @seealso [predictMonteCarlo]
 #' @examples 
-#' grid = makeWindyGridworld()
-#' WindyGridworld1 = makeEnvironment(transition.array = grid$transition.array, 
-#'  reward.matrix = grid$reward.matrix, 
-#'  initial.state = 30L)
-#' # res = MonteCarloControl(WindyGridworld1, n.episodes = 100)
+#' grid = makeEnvironment(transition.array = windyGridworld$transitions,
+#'   reward.matrix = windyGridworld$rewards,
+#'   initial.state = 30L)
+#' # res = MonteCarloControl(grid, n.episodes = 100)
 MonteCarloControl = function(envir, n.episodes = 100L, discount.factor = 1, 
   learning.rate = 0.1, epsilon = 0.1, initial.policy = NULL) { # decrease epsilon
   

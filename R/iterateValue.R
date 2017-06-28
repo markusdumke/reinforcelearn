@@ -17,10 +17,9 @@
 #' @export
 #' @seealso iteratePolicy
 #' @examples
-#' grid = makeGridworld()
-#' Gridworld1 = makeEnvironment(transition.array = grid$transition.array,
-#'   reward.matrix = grid$reward.matrix)
-#' res = iterateValue(Gridworld1)
+#' grid = makeEnvironment(transition.array = gridworld$transitions, 
+#'   reward.matrix = gridworld$rewards)
+#' res = iterateValue(grid)
 #' 
 iterateValue <- function(envir, v = NULL, discount.factor = 1, 
   precision = 0.0001, iter = NULL) {
