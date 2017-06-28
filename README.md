@@ -36,15 +36,15 @@ To use a Gym environment you need to have the prerequisites installed: [gym-http
 
 ```r
 # Create an OpenAI Gym environment.
-CartPole = makeEnvironment("CartPole-v0")
+MountainCar = makeEnvironment("MountainCar-v0")
 
-CartPole$reset() # returns initial state observation
-# take random actions for 100 steps
-for (i in 1:100) {
-  action = sample(CartPole$actions, 1)
-  CartPole$step(action)
+MountainCar$reset() # returns initial state observation
+# take random actions for 200 steps
+for (i in 1:200) {
+  action = sample(MountainCar$actions, 1)
+  MountainCar$step(action)
 }
-CartPole$close()
+MountainCar$close()
 
 # You can also create an environment from a MDP
 grid = makeEnvironment(transition.array = windyGridworld$transitions,
