@@ -69,7 +69,7 @@ MCar$close()
 
 Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (called policy) with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
 
-```{r, eval = FALSE}
+```{r}
 res = iterateValue(Env)
 ```
 

@@ -25,8 +25,8 @@ Env = makeEnvironment(transition.array = t, reward.matrix = r)
 #  }
 #  MCar$close()
 
-## ---- eval = FALSE-------------------------------------------------------
-#  res = iterateValue(Env)
+## ------------------------------------------------------------------------
+res = iterateValue(Env)
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  
