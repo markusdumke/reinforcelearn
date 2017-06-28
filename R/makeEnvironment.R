@@ -91,9 +91,8 @@ makeEnvironment <- function(gym.envir.name = NULL,
       initial.state = NULL,
       render = NULL,
       
-      initialize = function(gym.envir.name = NULL,
-        transition.array = NULL, reward.matrix = NULL, 
-        initial.state = NULL, render = TRUE) {
+      initialize = function(gym.envir.name, transition.array, 
+        reward.matrix, initial.state, render) {
         
         self$render = render
         if (is.null(gym.envir.name)) {
