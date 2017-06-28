@@ -50,6 +50,8 @@
 #' # Create the MountainCar environment which has a continuous state space.
 #' MountainCar = makeEnvironment("MountainCar-v0")
 #' }
+#' MountainCar$state.space
+#' MountainCar$state.space.bounds
 #' 
 #' # Create an environment from a transition array and reward matrix (here a simple gridworld).
 #' grid = makeEnvironment(transition.array = gridworld$transitions,
