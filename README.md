@@ -59,7 +59,7 @@ Environments created with `makeEnvironment` always have an initialization functi
 After you created an environment you can use various reinforcement learning algorithms. For example, for a tabular environment like  gridworld you can use tabular Q-Learning to solve it and find the optimal action value function Q*. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon, the ratio of random actions sampled by an epsilon-greedy behaviour policy.
 
 ```r
-res = sarsa(grid, n.episodes = 1000, seed = 123)
+res = qlearning(grid, n.episodes = 1000, seed = 123)
 # reshape action value function Q
 print(matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE))
 ```
