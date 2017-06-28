@@ -102,10 +102,10 @@ makeEnvironment <- function(gym.envir.name = NULL,
         if (is.null(transition.array)) {
           assert_character(gym.envir.name)
           assert_logical(render)
-          package.path = system.file(package = "reinforcelearn")
-          path2pythonfile = paste0(package.path, "/gym_http_server.py")
-          command <- "python"
-          system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
+          # package.path = system.file(package = "reinforcelearn")
+          # path2pythonfile = paste0(package.path, "/gym_http_server.py")
+          # command <- "python"
+          # system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
           self$gym = TRUE
           self$name = gym.envir.name
           remote_base = "http://127.0.0.1:5000"
@@ -219,7 +219,12 @@ makeEnvironment <- function(gym.envir.name = NULL,
       }
     )
   )
-  
+  # if (!is.null(gym.envir.name)) {
+  #   package.path = system.file(package = "reinforcelearn")
+  #   path2pythonfile = paste0(package.path, "/gym_http_server.py")
+  #   command <- "python"
+  #   system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
+  # }
   envir$new(gym.envir.name, transition.array, 
     reward.matrix, initial.state, render)
 }

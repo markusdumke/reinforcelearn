@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 from flask import Flask, request, jsonify
-from functools import wraps
 import uuid
 import gym
-from gym import wrappers
 import numpy as np
 import six
 import argparse
 import sys
+import json
+
 
 import logging
 logger = logging.getLogger('werkzeug')
@@ -41,9 +41,11 @@ class Envs(object):
         except KeyError:
             raise InvalidUsage('Instance_id {} unknown'.format(instance_id))
 
-    def create(self, env_id):
+    def create(self, env_id, seed=None):
         try:
             env = gym.make(env_id)
+            if seed:
+                env.seed(seed)
         except gym.error.Error:
             raise InvalidUsage("Attempted to look up malformed environment ID '{}'".format(env_id))
 
@@ -90,9 +92,15 @@ class Envs(object):
                 print('TypeError')
         return action
 
-    def get_action_space_contains(self, instance_id, x):
+    def get_observation_space_contains(self, instance_id, j):
         env = self._lookup_env(instance_id)
-        return env.action_space.contains(int(x))
+        info = self._get_space_properties(env.observation_space)
+        for key, value in j.items():
+            # Convert both values to json for comparibility
+            if json.dumps(info[key]) != json.dumps(value):
+                print('Values for "{}" do not match. Passed "{}", Observed "{}".'.format(key, value, info[key]))
+                return False
+        return True
 
     def get_observation_space_info(self, instance_id):
         env = self._lookup_env(instance_id)
@@ -114,7 +122,6 @@ class Envs(object):
         elif info['name'] == 'HighLow':
             info['num_rows'] = space.num_rows
             info['matrix'] = [((float(x) if x != -np.inf else -1e100) if x != +np.inf else +1e100) for x in np.array(space.matrix).flatten()]
-
         return info
 
     def monitor_start(self, instance_id, directory, force, resume, video_callable):
@@ -123,7 +130,7 @@ class Envs(object):
             v_c = lambda count: False
         else:
             v_c = lambda count: count % video_callable == 0
-        self.envs[instance_id] = wrappers.Monitor(env, directory, force=force, resume=resume, video_callable=v_c) 
+        self.envs[instance_id] = gym.wrappers.Monitor(env, directory, force=force, resume=resume, video_callable=v_c) 
 
     def monitor_close(self, instance_id):
         env = self._lookup_env(instance_id)
@@ -136,8 +143,8 @@ class Envs(object):
 
 ########## App setup ##########
 app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 envs = Envs()
-
 ########## Error handling ##########
 class InvalidUsage(Exception):
     status_code = 400
@@ -187,6 +194,7 @@ def env_create():
 
     Parameters:
         - env_id: gym environment ID string, such as 'CartPole-v0'
+        - seed: set the seed for this env's random number generator(s).
     Returns:
         - instance_id: a short identifier (such as '3c657dbc')
         for the created environment instance. The instance_id is
@@ -194,7 +202,8 @@ def env_create():
         manipulated
     """
     env_id = get_required_param(request.get_json(), 'env_id')
-    instance_id = envs.create(env_id)
+    seed = get_optional_param(request.get_json(), 'seed', None)
+    instance_id = envs.create(env_id, seed)
     return jsonify(instance_id = instance_id)
 
 @app.route('/v1/envs/', methods=['GET'])
@@ -290,12 +299,27 @@ def env_action_space_contains(instance_id, x):
     Parameters:
         - instance_id: a short identifier (such as '3c657dbc')
         for the environment instance
-	- x: the value to be checked as member
+	    - x: the value to be checked as member
     Returns:
         - member: whether the value passed as parameter belongs to the action_space
     """  
 
     member = envs.get_action_space_contains(instance_id, x)
+    return jsonify(member = member)
+
+@app.route('/v1/envs/<instance_id>/observation_space/contains', methods=['POST'])
+def env_observation_space_contains(instance_id):
+    """
+    Assess that the parameters are members of the env's observation_space
+
+    Parameters:
+        - instance_id: a short identifier (such as '3c657dbc')
+        for the environment instance
+    Returns:
+        - member: whether all the values passed belong to the observation_space
+    """
+    j = request.get_json()
+    member = envs.get_observation_space_contains(instance_id, j)
     return jsonify(member = member)
 
 @app.route('/v1/envs/<instance_id>/observation_space/', methods=['GET'])
