@@ -11,13 +11,14 @@ Reinforcement Learning in R. Work in progress!
 ```r
 # install.packages("devtools")
 devtools::install_github("markdumke/reinforcelearn")
+
+# Loading the package
+library(reinforcelearn)
 ```
 
 ### Get started
 Reinforcement Learning with the package `reinforcelearn` is as easy as
 ```r
-library(reinforcelearn)
-
 # Create gridworld environment
 t = gridworld$transitions
 r = gridworld$rewards
