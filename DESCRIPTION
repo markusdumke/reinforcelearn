@@ -1,7 +1,7 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
-Version: 0.0.0.9063
+Version: 0.0.0.9064
 Author: Markus Dumke
 Maintainer: Markus Dumke <markusdumke@gmail.com>
 Description: Implementations of Reinforcement Learning Algorithms, e.g. Monte 
@@ -16,12 +16,12 @@ SystemRequirements: Python, OpenAI Gym (only required if Gym environments are us
 Imports:
     R6 (>= 2.2.0),
     checkmate (>= 1.8.2),
-    gym (>= 0.1.0),
     nnet (>= 7.3-12),
     MDPtoolbox (>= 4.0.3)
 Suggests: testthat,
     knitr,
     rmarkdown,
-    tensorflow
+    tensorflow,
+    gym
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
