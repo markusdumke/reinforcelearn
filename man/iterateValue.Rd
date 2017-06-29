@@ -8,21 +8,27 @@ iterateValue(envir, v = NULL, discount.factor = 1, precision = 1e-04,
   iter = NULL)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment
-created by \link{makeEnvironment}.}
+\item{envir}{[\code{R6 class}] \cr 
+The reinforcement learning environment
+created by \code{\link{makeEnvironment}}.}
 
-\item{v}{numeric vector: initial state value function v}
+\item{v}{[\code{numeric}] \cr 
+Initial state value function.}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+Discounting future rewards.}
 
-\item{precision}{scalar numeric, algorithm stops when improvement is
+\item{precision}{[\code{numeric(1)}] \cr 
+Algorithm stops when improvement is
 smaller than precision}
 
-\item{iter}{integer: number of iterations}
+\item{iter}{[\code{integer(1)}] \cr 
+Number of iterations.}
 }
 \value{
-a list with the optimal state value function (a numeric vector)
-and the optimal policy (a matrix of dimension: number of states x number of actions)
+[\code{list(2)}] \cr
+  Returns the optimal state value function [\code{numeric}] 
+  and the optimal policy [\code{matrix}] (number of states x number of actions)
 }
 \description{
 Find optimal policy by dynamic programming. Iterate between evaluating a
@@ -30,9 +36,9 @@ given policy (only one step), then improving the policy by a greedy update.
 Converges to the optimal policy.
 }
 \details{
-The algorithm runs until the improvement in the value
+The algorithm runs until the improvement in the value 
 function in two subsequent steps
-is smaller than the given precision in all states or if the
+is smaller than the given precision in all states or if the 
 specified number of iterations is exhausted.
 }
 \examples{
@@ -45,5 +51,5 @@ res = iterateValue(grid)
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
-iteratePolicy
+\code{\link{iteratePolicy}}
 }

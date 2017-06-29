@@ -1,6 +1,6 @@
 #' Example Bandit
 #' @export
-#' @return R6 class
+#' @return [\code{R6 class}] \cr Returns an example bandit.
 bandit = R6::R6Class("bandit", 
   public = list(
     actions = NULL,
@@ -45,11 +45,13 @@ bandit = R6::R6Class("bandit",
 #' number of times action a was selected.
 #' 
 #' @inheritParams params
-#' @param alpha parameter of gradient bandit algorithm, higher alpha 
+#' @param alpha [\code{numeric(1)}] \cr 
+#'   Parameter of gradient bandit algorithm, higher alpha 
 #'   value gives more weight to recent rewards 
 #'   (useful for non-stationary environments)
 #' 
-#' @return numeric vector: the action values for the arms of the bandit, 
+#' @return [\code{numeric}]\cr
+#' Returns the action values for the arms of the bandit, 
 #' for gradient-bandit action selection the probabilities for 
 #' each action will be returned.
 #' @export

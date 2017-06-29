@@ -10,52 +10,61 @@ solveBandit(bandit, n.episodes = 10L, action.selection = c("epsilon-greedy",
   initial.visits = 0L, C = 2)
 }
 \arguments{
-\item{bandit}{an R6 class: bandit problem}
+\item{bandit}{[\code{R6 class}] \cr 
+Bandit problem, e.g. \code{\link{bandit}}.}
 
-\item{n.episodes}{scalar integer: number of episodes}
+\item{n.episodes}{[\code{integer(1)}] \cr 
+Number of episodes.}
 
-\item{action.selection}{scalar character: which method to use for
+\item{action.selection}{[\code{character(1)}] \cr 
+Which method to use for 
 action selection, e.g. "epsilon-greedy", "greedy" or "UCB"}
 
-\item{epsilon}{scalar numeric: ratio of random exploration in
+\item{epsilon}{[\code{numeric(1) in [0,1]}] \cr 
+Ratio of random exploration in 
 epsilon-greedy action selection}
 
-\item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
-by this factor}
+\item{epsilon.decay}{[\code{numeric(1) in [0,1]}] \cr 
+Decay epsilon by this factor.}
 
-\item{epsilon.decay.after}{scalar integer: number of episodes afer
-which to decay epsilon}
+\item{epsilon.decay.after}{[\code{numeric(1)}] \cr
+Number of episodes after which to decay epsilon.}
 
-\item{alpha}{parameter of gradient bandit algorithm, higher alpha
-value gives more weight to recent rewards
+\item{alpha}{[\code{numeric(1)}] \cr 
+Parameter of gradient bandit algorithm, higher alpha 
+value gives more weight to recent rewards 
 (useful for non-stationary environments)}
 
-\item{initial.value}{scalar numeric: initial values for the action
+\item{initial.value}{[\code{numeric(1)}] \cr 
+Initial values for the action 
 values Q, set this to the maximal possible reward to encourage
 exploration (optimistic initialization)}
 
-\item{initial.visits}{scalar integer: set this to a high number to
-encourage exploration (together with a high initial.value)}
+\item{initial.visits}{[\code{integer(1)}] \cr 
+Set this to a high number to encourage exploration 
+(together with a high \code{initial.value}).}
 
-\item{C}{scalar numeric: controls the degree of exploration. High C
+\item{C}{[\code{numeric(1)}] \cr 
+Controls the degree of exploration. High C
 values lead to more exploration}
 }
 \value{
-numeric vector: the action values for the arms of the bandit,
-for gradient-bandit action selection the probabilities for
+[\code{numeric}]\cr
+Returns the action values for the arms of the bandit, 
+for gradient-bandit action selection the probabilities for 
 each action will be returned.
 }
 \description{
-Multi-armed bandits are a simplified reinforcement learning problem,
-each arm of the bandit pays off a reward and the goal is to maximize
-this reward, i.e. to choose the best arm. The arms of the bandit
-can be seen as actions, after each action the episode ends (there
-are no states). To find the best action, the algorithm is faced with
+Multi-armed bandits are a simplified reinforcement learning problem, 
+each arm of the bandit pays off a reward and the goal is to maximize 
+this reward, i.e. to choose the best arm. The arms of the bandit 
+can be seen as actions, after each action the episode ends (there 
+are no states). To find the best action, the algorithm is faced with 
 a tradeoff between exploration and exploitation.
 }
 \details{
-Upper-confidence-bound action selection selects actions with
-\deqn{argmax_a Q(a) + sqrt( (C * log(t)) / N_t(a) ),} where N_t(a) is the
+Upper-confidence-bound action selection selects actions with 
+\deqn{argmax_a Q(a) + sqrt( (C * log(t)) / N_t(a) ),} where N_t(a) is the 
 number of times action a was selected.
 }
 \examples{

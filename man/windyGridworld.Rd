@@ -3,7 +3,8 @@
 \name{windyGridworld}
 \alias{windyGridworld}
 \title{Windy Gridworld}
-\format{a list with the transition array and reward matrix}
+\format{[\code{list(2)}] \cr
+  List with the transition array and reward matrix.}
 \description{
 Windy Gridworld problem for reinforcement learning. Actions include
 going left, right, up and down. In each column the wind pushes you up a

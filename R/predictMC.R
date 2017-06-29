@@ -10,12 +10,13 @@
 #' a state, every-visit Monte Carlo following all visits to a state in the episode. Returns 
 #' are averaged over multiple episodes. The update rule is
 #' \deqn{V(S) <- V(S) + \alpha[G - V(S')]}
-#' 
+#' @return [\code{numeric}] \cr
+#'   Returns the state value function v.
 #' @inheritParams params
 #' @export
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @import checkmate
-#' @seealso [td]
+#' @seealso \code{\link{td}}
 #' @examples 
 #' set.seed(26)
 #' grid = makeEnvironment(transition.array = gridworld$transitions, 

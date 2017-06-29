@@ -6,21 +6,19 @@
 #' take you off the grid, you remain in the previous state. For each step you
 #' get a reward of -1, until you reach into a terminal state.
 #'
-#' @param shape length-two integer, shape of the grid
-#' @param terminal.states integer vector of the terminal states in the 
-#' gridworld, states are numerated starting with 0 with increasing 
-#' number from left to right
-#' @param wind integer vector specifying the strength of the upward 
-#' wind in each cell.
+#' @inheritParams makeGridworld
+#' @param wind [\code{integer}] \cr 
+#'   Strength of the upward wind in each cell.
 #' 
-#' @return R6 class
+#' @return [\code{R6 class}] \cr
+#'   Returns the windy gridworld environment.
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
 #' grid = makeWindyGridworld()
 #' grid = makeEnvironment(transition.array = grid$transition.array, 
 #'   reward.matrix = grid$reward.matrix, initial.state = 30L)
-#' @seealso [makeEnvironment]
+#' @seealso \code{\link{makeEnvironment}}
 #' 
 makeWindyGridworld <- function(shape = c(7L, 10L), terminal.states = 37L, 
   wind = c(0L, 0L, 0L, 1L, 1L, 1L, 2L, 2L, 1L, 0L)) {

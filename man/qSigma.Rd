@@ -10,40 +10,51 @@ qSigma(envir, sigma = 1, lambda = 0, n.episodes = 100,
   seed = NULL)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment
-created by \link{makeEnvironment}.}
+\item{envir}{[\code{R6 class}] \cr 
+The reinforcement learning environment
+created by \code{\link{makeEnvironment}}.}
 
-\item{sigma}{scalar integer: sampling parameter, for sigma = 0 the
-sarsa algorithm is obtained, for sigma = 1 expected sarsa.}
+\item{sigma}{[\code{numeric(1) in [0,1]}] \cr 
+Sampling parameter, for \code{sigma = 0} the 
+sarsa algorithm is obtained, for \code{sigma = 1} expected sarsa.}
 
-\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only
-current state is updated (this is equivalent to TD(0)), for
-lambda = 1 all states visited are updated, this is roughly
-equivalent to every-visit Monte Carlo.}
+\item{lambda}{[\code{numeric(1) in [0, 1]}] \cr 
+Then \code{lambda = 0} only current state is updated 
+(this is equivalent to TD(0)), for \code{lambda = 1} 
+all states visited are updated, this is roughly equivalent to 
+every-visit Monte Carlo.}
 
-\item{n.episodes}{scalar integer: number of episodes}
+\item{n.episodes}{[\code{integer(1)}] \cr 
+Number of episodes.}
 
-\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{[\code{numeric(1) in [0,1]}] \cr 
+Learning rate (step size).}
 
-\item{epsilon}{scalar numeric: ratio of random exploration in
+\item{epsilon}{[\code{numeric(1) in [0,1]}] \cr 
+Ratio of random exploration in 
 epsilon-greedy action selection}
 
-\item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
-by this factor}
+\item{epsilon.decay}{[\code{numeric(1) in [0,1]}] \cr 
+Decay epsilon by this factor.}
 
-\item{epsilon.decay.after}{scalar integer: number of episodes afer
-which to decay epsilon}
+\item{epsilon.decay.after}{[\code{numeric(1)}] \cr
+Number of episodes after which to decay epsilon.}
 
-\item{initial.value}{scalar numeric: initial values for the action
+\item{initial.value}{[\code{numeric(1)}] \cr 
+Initial values for the action 
 values Q, set this to the maximal possible reward to encourage
 exploration (optimistic initialization)}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+Discounting future rewards.}
 
-\item{seed}{scalar integer: random seed}
+\item{seed}{[\code{integer(1)}] \cr 
+Random seed.}
 }
 \value{
-optimal action value function Q
+[\code{list(3)}] \cr
+  Returns the optimal action value function [\code{matrix}] and the 
+  number of steps and rewards per episode [\code{numeric}]
 }
 \description{
 Q(sigma) is a generalization of Sarsa and Expected Sarsa algorithms.
@@ -59,7 +70,7 @@ res = qSigma(grid, n.episodes = 100, seed = 123)
 De Asis et al. (2017): Multi-step Reinforcement Learning: A Unifying Algorithm
 }
 \seealso{
-\link{sarsa}
+\code{\link{sarsa}}
 
-\link{qlearning}
+\code{\link{qlearning}}
 }

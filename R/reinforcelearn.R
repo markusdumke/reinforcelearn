@@ -2,7 +2,7 @@
 #' 
 #' Implementations of reinforcement learning algorithms.
 #' Create an environment using [makeEnvironment].
-#' 
+#' @md
 #' @section Bandits:
 #' [solveBandit]
 #' 
@@ -21,7 +21,7 @@
 #' * [qlearning]
 #' 
 #' Function Approximation
-#' * [qlearning2]
+#' 
 #' 
 #' @section Example Environments:
 #' * [gridworld]

@@ -8,32 +8,38 @@ MonteCarloControl(envir, n.episodes = 100L, discount.factor = 1,
   learning.rate = 0.1, epsilon = 0.1, initial.policy = NULL)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment
-created by \link{makeEnvironment}.}
+\item{envir}{[\code{R6 class}] \cr 
+The reinforcement learning environment
+created by \code{\link{makeEnvironment}}.}
 
-\item{n.episodes}{scalar integer: number of episodes}
+\item{n.episodes}{[\code{integer(1)}] \cr 
+Number of episodes.}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+Discounting future rewards.}
 
-\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{[\code{numeric(1) in [0,1]}] \cr 
+Learning rate (step size).}
 
-\item{epsilon}{scalar numeric: ratio of random exploration in
+\item{epsilon}{[\code{numeric(1) in [0,1]}] \cr 
+Ratio of random exploration in 
 epsilon-greedy action selection}
 
-\item{initial.policy}{numeric matrix: a policy specified as a probability
-matrix (states x actions)}
+\item{initial.policy}{[\code{matrix}] \cr 
+A policy specified as a probability matrix (states x actions)}
 }
 \value{
-list with action value function Q and policy
+[\code{list(2)}] \cr
+  Returns the action value function Q and policy
 }
 \description{
-Find optimal policy by sampling full episodes of experience and
-estimate values of every state-action pair.
-To ensure that every state-action pair is visited, an epsilon-greedy policy is used,
+Find optimal policy by sampling full episodes of experience and 
+estimate values of every state-action pair. 
+To ensure that every state-action pair is visited, an epsilon-greedy policy is used, 
 so that every state-action pair has a positive probability of being selected.
 }
 \details{
-Works only for episodic tasks (i.e. there must be a terminal state)!
+Works only for episodic tasks (i.e. there must be a terminal state)! 
 This method uses the first-visit Monte Carlo policy evaluation.
 }
 \examples{
@@ -46,5 +52,5 @@ grid = makeEnvironment(transition.array = windyGridworld$transitions,
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
-\link{predictMonteCarlo}
+\code{\link{predictMonteCarlo}}
 }

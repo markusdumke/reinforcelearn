@@ -11,11 +11,12 @@
 #'
 #' @inheritParams params
 #'
-#' @return a list with the optimal state value function (a numeric vector) 
-#'   and the optimal policy (a matrix of dimension: number of states x number of actions)
+#' @return [\code{list(2)}] \cr
+#'   Returns the optimal state value function [\code{numeric}] 
+#'   and the optimal policy [\code{matrix}] (number of states x number of actions)
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
-#' @seealso iteratePolicy
+#' @seealso \code{\link{iteratePolicy}}
 #' @examples
 #' grid = makeEnvironment(transition.array = gridworld$transitions, 
 #'   reward.matrix = gridworld$rewards)

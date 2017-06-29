@@ -9,43 +9,52 @@ qlearning(envir, n.episodes = 10L, learning.rate = 0.1, epsilon = 0.1,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment
-created by \link{makeEnvironment}.}
+\item{envir}{[\code{R6 class}] \cr 
+The reinforcement learning environment
+created by \code{\link{makeEnvironment}}.}
 
-\item{n.episodes}{scalar integer: number of episodes}
+\item{n.episodes}{[\code{integer(1)}] \cr 
+Number of episodes.}
 
-\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{[\code{numeric(1) in [0,1]}] \cr 
+Learning rate (step size).}
 
-\item{epsilon}{scalar numeric: ratio of random exploration in
+\item{epsilon}{[\code{numeric(1) in [0,1]}] \cr 
+Ratio of random exploration in 
 epsilon-greedy action selection}
 
-\item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
-by this factor}
+\item{epsilon.decay}{[\code{numeric(1) in [0,1]}] \cr 
+Decay epsilon by this factor.}
 
-\item{epsilon.decay.after}{scalar integer: number of episodes afer
-which to decay epsilon}
+\item{epsilon.decay.after}{[\code{numeric(1)}] \cr
+Number of episodes after which to decay epsilon.}
 
-\item{initial.value}{scalar numeric: initial values for the action
+\item{initial.value}{[\code{numeric(1)}] \cr 
+Initial values for the action 
 values Q, set this to the maximal possible reward to encourage
 exploration (optimistic initialization)}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+Discounting future rewards.}
 
-\item{seed}{scalar integer: random seed}
+\item{seed}{[\code{integer(1)}] \cr 
+Random seed.}
 }
 \value{
-optimal action value function
+[\code{list(3)}] \cr
+  Returns the optimal action value function [\code{matrix}] and the 
+  number of steps and rewards per episode [\code{numeric}]
 }
 \description{
 Off-policy TD control algorithm. Q-Learning finds the optimal action value
 function Q independent of the policy followed. Using an epsilon-greedy
-behaviour policy states and actions are sampled. Given a state-action pair
-the optimal next action is considered by taking the max over all possible
+behaviour policy states and actions are sampled. Given a state-action pair 
+the optimal next action is considered by taking the max over all possible 
 successor action values.
-
-Under the assumption that all state-action pairs are visited (which is
-achieved using a stochastic epsilon-greedy policy) Q-Learning converges to
-the optimal action value function Q*. The update formula is:
+ 
+Under the assumption that all state-action pairs are visited (which is 
+achieved using a stochastic epsilon-greedy policy) Q-Learning converges to 
+the optimal action value function Q*. The update formula is: 
 \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma max_a Q(S', a) - Q(S, A)]}
 }
 \examples{
@@ -60,5 +69,5 @@ res = qlearning(grid, n.episodes = 100, seed = 123)
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
-\link{sarsa}
+\code{\link{sarsa}}
 }

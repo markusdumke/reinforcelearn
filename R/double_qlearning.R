@@ -13,8 +13,8 @@
 #' #' the optimal action value function Q*.
 #' #' @inheritParams params
 #' #'
-#' #' @return optimal action value function
-#' #' @seealso [qlearning]
+#' #' @return [\code{matrix}] \cr optimal action value function
+#' #' @seealso \code{\link{qlearning}}
 #' #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' #' @export
 #' #' @examples

@@ -11,11 +11,13 @@
 #'
 #' @importFrom stats runif
 #' @importFrom nnet which.is.max
-#' @return optimal action value function Q
+#' @return [\code{list(3)}] \cr
+#'   Returns the optimal action value function [\code{matrix}] and the 
+#'   number of steps and rewards per episode [\code{numeric}]
 #' @export
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
-#' @seealso [td]
-#' @seealso [qlearning]
+#' @seealso \code{\link{qSigma}}
+#' @seealso \code{\link{qlearning}}
 #' @examples 
 #' grid = makeEnvironment(transition.array = windyGridworld$transitions,
 #'   reward.matrix = windyGridworld$rewards,

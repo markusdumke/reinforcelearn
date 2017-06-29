@@ -9,7 +9,7 @@
 bandit
 }
 \value{
-R6 class
+[\code{R6 class}] \cr Returns an example bandit.
 }
 \description{
 Example Bandit

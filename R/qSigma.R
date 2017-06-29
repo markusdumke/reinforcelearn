@@ -4,11 +4,13 @@
 #'  
 #' @inheritParams params
 #'
-#' @return optimal action value function Q
+#' @return [\code{list(3)}] \cr
+#'   Returns the optimal action value function [\code{matrix}] and the 
+#'   number of steps and rewards per episode [\code{numeric}]
 #' @export
 #' @references De Asis et al. (2017): Multi-step Reinforcement Learning: A Unifying Algorithm
-#' @seealso [sarsa]
-#' @seealso [qlearning]
+#' @seealso \code{\link{sarsa}}
+#' @seealso \code{\link{qlearning}}
 #' @examples 
 #' grid = makeEnvironment(transition.array = windyGridworld$transitions,
 #'   reward.matrix = windyGridworld$rewards,

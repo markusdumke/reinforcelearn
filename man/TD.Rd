@@ -8,39 +8,44 @@ td(envir, policy, lambda = 0, n.steps = 100, discount.factor = 1,
   learning.rate = 0.1)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment
-created by \link{makeEnvironment}.}
+\item{envir}{[\code{R6 class}] \cr 
+The reinforcement learning environment
+created by \code{\link{makeEnvironment}}.}
 
-\item{policy}{numeric matrix: a policy specified as a probability
-matrix (states x actions)}
+\item{policy}{[\code{matrix}] \cr 
+A policy specified as a probability matrix (states x actions)}
 
-\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only
-current state is updated (this is equivalent to TD(0)), for
-lambda = 1 all states visited are updated, this is roughly
-equivalent to every-visit Monte Carlo.}
+\item{lambda}{[\code{numeric(1) in [0, 1]}] \cr 
+Then \code{lambda = 0} only current state is updated 
+(this is equivalent to TD(0)), for \code{lambda = 1} 
+all states visited are updated, this is roughly equivalent to 
+every-visit Monte Carlo.}
 
-\item{n.steps}{integer scalar: number of evaluations (steps in the
-environment)}
+\item{n.steps}{[\code{integer(1)}] \cr 
+Number of evaluations (steps in the environment)}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+Discounting future rewards.}
 
-\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{[\code{numeric(1) in [0,1]}] \cr 
+Learning rate (step size).}
 }
 \value{
-state value function v
+[\code{numeric}] \cr
+  Returns the state value function v
 }
 \description{
-Temporal difference (TD) learning is a method to estimate the state value
-function for a given policy. It works by sampling one step from the
+Temporal difference (TD) learning is a method to estimate the state value 
+function for a given policy. It works by sampling one step from the 
 environment and plugging this into the update equation (Bootstrapping). This
 also works for non-episodic environments.
 }
 \details{
-The implementation works with eligibility traces. Eligibility traces combine
+The implementation works with eligibility traces. Eligibility traces combine 
 a frequency and recency heuristic. Whenever a state is visited, the
-eligibility of this state is increased. Over time the eligibility decreases
-exponentially. This way, states that occured often and recently get most
-credit for a reward and therefore are updated more strongly than states
+eligibility of this state is increased. Over time the eligibility decreases 
+exponentially. This way, states that occured often and recently get most 
+credit for a reward and therefore are updated more strongly than states 
 observed infrequently and longer time ago.
 }
 \examples{
@@ -60,5 +65,5 @@ print(round(matrix(v, ncol = 4, byrow = TRUE)))
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
-\link{sarsa}
+\code{\link{predictMonteCarlo}}
 }

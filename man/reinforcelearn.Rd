@@ -36,9 +36,6 @@ Temporal-Difference Learning:
 }
 
 Function Approximation
-\itemize{
-\item \link{qlearning2}
-}
 }
 
 \section{Example Environments}{

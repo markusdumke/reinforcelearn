@@ -13,115 +13,144 @@ params(policy, initial.policy, envir, bandit, discount.factor, precision,
   iter, print.out)
 }
 \arguments{
-\item{policy}{numeric matrix: a policy specified as a probability
-matrix (states x actions)}
+\item{policy}{[\code{matrix}] \cr 
+A policy specified as a probability matrix (states x actions)}
 
-\item{initial.policy}{numeric matrix: a policy specified as a probability
-matrix (states x actions)}
+\item{initial.policy}{[\code{matrix}] \cr 
+A policy specified as a probability matrix (states x actions)}
 
-\item{envir}{an R6 class: the reinforcement learning environment
-created by \link{makeEnvironment}.}
+\item{envir}{[\code{R6 class}] \cr 
+The reinforcement learning environment
+created by \code{\link{makeEnvironment}}.}
 
-\item{bandit}{an R6 class: bandit problem}
+\item{bandit}{[\code{R6 class}] \cr 
+Bandit problem, e.g. \code{\link{bandit}}.}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+Discounting future rewards.}
 
-\item{precision}{scalar numeric, algorithm stops when improvement is
+\item{precision}{[\code{numeric(1)}] \cr 
+Algorithm stops when improvement is
 smaller than precision}
 
-\item{lambda}{scalar numeric in (0, 1): Then lambda = 0 only
-current state is updated (this is equivalent to TD(0)), for
-lambda = 1 all states visited are updated, this is roughly
-equivalent to every-visit Monte Carlo.}
+\item{lambda}{[\code{numeric(1) in [0, 1]}] \cr 
+Then \code{lambda = 0} only current state is updated 
+(this is equivalent to TD(0)), for \code{lambda = 1} 
+all states visited are updated, this is roughly equivalent to 
+every-visit Monte Carlo.}
 
-\item{epsilon}{scalar numeric: ratio of random exploration in
+\item{epsilon}{[\code{numeric(1) in [0,1]}] \cr 
+Ratio of random exploration in 
 epsilon-greedy action selection}
 
-\item{epsilon.decay}{scalar numeric between 0 and 1: decay epsilon
-by this factor}
+\item{epsilon.decay}{[\code{numeric(1) in [0,1]}] \cr 
+Decay epsilon by this factor.}
 
-\item{epsilon.decay.after}{scalar integer: number of episodes afer
-which to decay epsilon}
+\item{epsilon.decay.after}{[\code{numeric(1)}] \cr
+Number of episodes after which to decay epsilon.}
 
-\item{seed}{scalar integer: random seed}
+\item{seed}{[\code{integer(1)}] \cr 
+Random seed.}
 
-\item{method}{scalar character: Monte Carlo first-visit or
-every-visit method}
+\item{method}{[\code{character(1)}] \cr 
+Monte Carlo first-visit or every-visit method}
 
-\item{n.steps}{integer scalar: number of evaluations (steps in the
-environment)}
+\item{n.steps}{[\code{integer(1)}] \cr 
+Number of evaluations (steps in the environment)}
 
-\item{n.episodes}{scalar integer: number of episodes}
+\item{n.episodes}{[\code{integer(1)}] \cr 
+Number of episodes.}
 
-\item{initial.value}{scalar numeric: initial values for the action
+\item{initial.value}{[\code{numeric(1)}] \cr 
+Initial values for the action 
 values Q, set this to the maximal possible reward to encourage
 exploration (optimistic initialization)}
 
-\item{initial.visits}{scalar integer: set this to a high number to
-encourage exploration (together with a high initial.value)}
+\item{initial.visits}{[\code{integer(1)}] \cr 
+Set this to a high number to encourage exploration 
+(together with a high \code{initial.value}).}
 
-\item{C}{scalar numeric: controls the degree of exploration. High C
+\item{C}{[\code{numeric(1)}] \cr 
+Controls the degree of exploration. High C
 values lead to more exploration}
 
-\item{action.selection}{scalar character: which method to use for
+\item{action.selection}{[\code{character(1)}] \cr 
+Which method to use for 
 action selection, e.g. "epsilon-greedy", "greedy" or "UCB"}
 
-\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{[\code{numeric(1) in [0,1]}] \cr 
+Learning rate (step size).}
 
-\item{preprocessState}{function: takes a state observation as input
-and returns a preprocessed state, e.g. a one-hot vector}
+\item{preprocessState}{[\code{function}] \cr 
+Takes a state observation as input
+and returns a preprocessed state, e.g. a one-hot vector.}
 
-\item{predict}{function: predict returns vector of q values for a
-given preprocessed state observation}
+\item{predict}{[\code{function}] \cr 
+Predict returns vector of q values for a 
+given preprocessed state observation.}
 
-\item{predict2}{function: predict function for the target network}
+\item{predict2}{[\code{function}] \cr 
+Predict function for the target network.}
 
-\item{copy}{function: copy model parameters to target network}
+\item{copy}{[\code{function}] \cr 
+Copy model parameters to target network.}
 
-\item{train}{function: train the model, update the weights}
+\item{train}{[\code{function}] \cr 
+Train the model, update the weights.}
 
-\item{...}{arguments passed on to preprocessState, predict or train}
+\item{...}{[\code{any}] \cr 
+Arguments passed on to preprocessState, predict or train.}
 
-\item{experience.replay}{logical scalar}
+\item{experience.replay}{[\code{logical(1)}] \cr 
+Should experience replay be used?}
 
-\item{replay.memory}{list: each list entry is a list with entries
-state, action, reward, next.state. replay.memory might be filled
-with experience sampled from a random policy.}
+\item{replay.memory}{[\code{list}] \cr 
+Replay memory: Each list entry is a list with entries 
+state, action, reward, next.state. If missing the replay memory 
+will be filled with initial experience sampled from a random policy.}
 
-\item{replay.memory.size}{integer scalar: size of the replay memory}
+\item{replay.memory.size}{[\code{integer(1)}] \cr 
+Size of the replay memory.}
 
-\item{initial.replay.memory.size}{integer scalar: how much of the
-replay memory is filled initially}
+\item{initial.replay.memory.size}{[\code{integer(1)}] \cr 
+How much of the replay memory is filled initially.}
 
-\item{batch.size}{scalar integer: batch size, how many samples are
+\item{batch.size}{[\code{integer(1)}] \cr 
+Batch size, how many samples are 
 drawn from the replay memory. Must be smaller than size of the
 replay memory!}
 
-\item{alpha}{positive scalar numeric: If alpha = 0 sampling
+\item{alpha}{[\code{numeric(1) >= 0}] \cr 
+If alpha = 0 sampling 
 from replay memory will be uniform, otherwise observations with
 high td error will be proportionally prioritized.}
 
-\item{theta}{positive scalar numeric: theta is a small positive
-constant that prevents the edge-case of transitions not being
+\item{theta}{[\code{numeric(1) >= 0}] \cr 
+Theta is a small positive 
+constant that prevents the edge-case of transitions not being 
 revisited once their error is zero.}
 
-\item{fixed.target}{scalar logical: Q-Learning with fixed target
-network}
+\item{fixed.target}{[\code{logical(1)}] \cr 
+Q-Learning with fixed target network.}
 
-\item{update.target.after}{scalar integer: copy parameters to fixed
-target network every n steps}
+\item{update.target.after}{[\code{integer(1)}] \cr 
+Copy parameters to fixed target network every n steps.}
 
-\item{double.qlearning}{logical scalar: whether to use double
-qlearning}
+\item{double.qlearning}{[\code{logical(1)}] \cr 
+Whether to use double qlearning.}
 
-\item{sigma}{scalar integer: sampling parameter, for sigma = 0 the
-sarsa algorithm is obtained, for sigma = 1 expected sarsa.}
+\item{sigma}{[\code{numeric(1) in [0,1]}] \cr 
+Sampling parameter, for \code{sigma = 0} the 
+sarsa algorithm is obtained, for \code{sigma = 1} expected sarsa.}
 
-\item{v}{numeric vector: initial state value function v}
+\item{v}{[\code{numeric}] \cr 
+Initial state value function.}
 
-\item{iter}{integer: number of iterations}
+\item{iter}{[\code{integer(1)}] \cr 
+Number of iterations.}
 
-\item{print.out}{integer: when to print out the iteration number}
+\item{print.out}{[\code{integer(1)}] \cr 
+When to print out the iteration number and value function.}
 }
 \description{
 Documentation of all parameters

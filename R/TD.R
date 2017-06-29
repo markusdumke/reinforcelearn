@@ -14,10 +14,11 @@
 #'
 #' @inheritParams params
 #'
-#' @return state value function v
+#' @return [\code{numeric}] \cr
+#'   Returns the state value function v
 #' @export
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
-#' @seealso [sarsa]
+#' @seealso \code{\link{predictMonteCarlo}}
 #' @examples 
 #' # Define environment, here simple gridworld
 #' grid = makeEnvironment(transition.array = gridworld$transitions, 

@@ -8,48 +8,51 @@ makeEnvironment(gym.envir.name = NULL, transition.array = NULL,
   reward.matrix = NULL, initial.state = NULL, render = TRUE)
 }
 \arguments{
-\item{gym.envir.name}{scalar character, e.g. "CartPole-v0",
-see \href{https://gym.openai.com/envs}{OpenAI Gym} for possible environments.}
+\item{gym.envir.name}{[\code{character(1)}] \cr
+Name of Gym environment, e.g. "CartPole-v0", have a look at \url{https://gym.openai.com/envs}.}
 
-\item{transition.array}{numerical matrix (n.states x n.states x n.actions)
-for each action giving the probabilities for transitions from one state to
-all other states}
+\item{transition.array}{[\code{array (n.states x n.states x n.actions) }] \cr
+Transition array: For each action giving the probabilities for 
+transitions between states.}
 
-\item{reward.matrix}{numerical matrix the rewards for transitions from one
-state to another}
+\item{reward.matrix}{[\code{matrix (n.states x n.actions)}] \cr 
+Reward matrix: The reward for taking action a in state s.}
 
-\item{initial.state}{scalar integer or integer vector: the starting state. If
-a vector is given a starting state will be randomly sampled from this
-vector when reset is called. Note that states are numerated starting with
-0. If NULL all states are possible initial states.}
+\item{initial.state}{[\code{integer}] \cr
+The starting state. If a vector is given a starting state will be
+randomly sampled from this vector when reset is called. 
+Note that states are numerated starting with 
+0. If \code{NULL} all states are possible initial states.}
 
-\item{render}{logical scalar: whether to render the environment}
+\item{render}{[\code{logical(1)}] \cr 
+Whether to render the environment.}
 }
 \value{
-Reinforcement Learning Environment, an R6 class.
+[\code{R6 class}] \cr 
+  Reinforcement Learning Environment
 }
 \description{
-This function creates an environment for reinforcement learning.
-You could either use an existing environment from OpenAI Gym or specify the
+This function creates an environment for reinforcement learning. 
+You could either use an existing environment from OpenAI Gym or specify the 
 transition array and reward matrix for a Markov Decision Process.
 }
 \details{
-State and action space can be either "Discrete" or "Box". For the discrete
+State and action space can be either "Discrete" or "Box". For the discrete 
 case states and actions are numerated starting from 0.
 }
 \section{Methods}{
  \describe{
-\item{\code{envir$initialize()}}{Creates a new environment.}
+\item{\code{envir$initialize()}}{Creates a new environment.} 
 \item{\code{envir$step(action, render = TRUE)}}{
 Takes a step in the environment given an action,
-returns the next state, reward and if the episode is finished (logical).
-If a transition array and reward matrix are given, the next step will be
-sampled from the MDP, else the step \link[gym:env_step]{gym::env_step} function will be called.
-If render = TRUE the environment will be rendered.}
+  returns the next state, reward and if the episode is finished (logical). 
+  If a transition array and reward matrix are given, the next step will be 
+  sampled from the MDP, else the step \code{\link[gym]{env_step}} function will be called.
+  If render = TRUE the environment will be rendered.} 
 \item{\code{envir$reset()}}{Resets the
-\code{episode.over} flag of the environment and returns an initial state.
-Useful when starting a new episode.}
-\item{\code{envir$close()}}{Close the python window for a gym environment.}
+  \code{episode.over} flag of the environment and returns an initial state.
+   Useful when starting a new episode.}
+\item{\code{envir$close()}}{Close the python window for a gym environment.}   
 }
 }
 
@@ -57,6 +60,7 @@ Useful when starting a new episode.}
 \dontrun{
 # Create an OpenAI Gym environment.
 # Make sure you have Python and Gym installed.
+startServer()
 CartPole = makeEnvironment("CartPole-v0")
 CartPole$reset()
 CartPole$step(action = 0)
@@ -80,5 +84,5 @@ grid = makeEnvironment(transition.array = windyGridworld$transitions,
   
 }
 \seealso{
-\href{https://gym.openai.com/docs}{OpenAI Gym}
+\url{https://github.com/openai/gym-http-api}
 }

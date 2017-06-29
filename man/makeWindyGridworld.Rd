@@ -8,17 +8,20 @@ makeWindyGridworld(shape = c(7L, 10L), terminal.states = 37L, wind = c(0L,
   0L, 0L, 1L, 1L, 1L, 2L, 2L, 1L, 0L))
 }
 \arguments{
-\item{shape}{length-two integer, shape of the grid}
+\item{shape}{[\code{integer(2)}] \cr 
+Shape of the gridworld}
 
-\item{terminal.states}{integer vector of the terminal states in the
-gridworld, states are numerated starting with 0 with increasing
+\item{terminal.states}{[\code{integer}] \cr 
+Terminal states in the 
+gridworld, states are numerated starting with 0 with increasing 
 number from left to right}
 
-\item{wind}{integer vector specifying the strength of the upward
-wind in each cell.}
+\item{wind}{[\code{integer}] \cr 
+Strength of the upward wind in each cell.}
 }
 \value{
-R6 class
+[\code{R6 class}] \cr
+  Returns the windy gridworld environment.
 }
 \description{
 Windy Gridworld problem for reinforcement learning. Actions include
@@ -36,5 +39,5 @@ grid = makeEnvironment(transition.array = grid$transition.array,
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
-\link{makeEnvironment}
+\code{\link{makeEnvironment}}
 }

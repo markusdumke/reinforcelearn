@@ -1,75 +1,104 @@
 #' Documentation of all parameters
-#' @param iter integer: number of iterations
-#' @param print.out integer: when to print out the iteration number 
-#' @param policy numeric matrix: a policy specified as a probability
-#'   matrix (states x actions)
-#' @param initial.policy numeric matrix: a policy specified as a probability
-#'   matrix (states x actions)
-#' @param envir an R6 class: the reinforcement learning environment
-#'   created by [makeEnvironment].
-#' @param discount.factor scalar numeric, discounting future rewards
-#' @param precision scalar numeric, algorithm stops when improvement is
+#' @param iter [\code{integer(1)}] \cr 
+#'   Number of iterations.
+#' @param print.out [\code{integer(1)}] \cr 
+#'   When to print out the iteration number and value function.
+#' @param policy [\code{matrix}] \cr 
+#'   A policy specified as a probability matrix (states x actions)
+#' @param initial.policy [\code{matrix}] \cr 
+#'   A policy specified as a probability matrix (states x actions)
+#' @param envir [\code{R6 class}] \cr 
+#'   The reinforcement learning environment
+#'   created by \code{\link{makeEnvironment}}.
+#' @param discount.factor [\code{numeric(1) in [0,1]}] \cr 
+#'   Discounting future rewards.
+#' @param precision [\code{numeric(1)}] \cr 
+#'   Algorithm stops when improvement is
 #'   smaller than precision
-#' @param lambda scalar numeric in (0, 1): Then lambda = 0 only
-#'   current state is updated (this is equivalent to TD(0)), for
-#'   lambda = 1 all states visited are updated, this is roughly
-#'   equivalent to every-visit Monte Carlo.
-#' @param bandit an R6 class: bandit problem
-#' @param n.episodes scalar integer: number of episodes
-#' @param action.selection scalar character: which method to use for 
+#' @param lambda [\code{numeric(1) in [0, 1]}] \cr 
+#'   Then \code{lambda = 0} only current state is updated 
+#'   (this is equivalent to TD(0)), for \code{lambda = 1} 
+#'   all states visited are updated, this is roughly equivalent to 
+#'   every-visit Monte Carlo.
+#' @param bandit [\code{R6 class}] \cr 
+#'   Bandit problem, e.g. \code{\link{bandit}}.
+#' @param n.episodes [\code{integer(1)}] \cr 
+#'   Number of episodes.
+#' @param action.selection [\code{character(1)}] \cr 
+#'   Which method to use for 
 #'   action selection, e.g. "epsilon-greedy", "greedy" or "UCB"
-#' @param epsilon scalar numeric: ratio of random exploration in 
+#' @param epsilon [\code{numeric(1) in [0,1]}] \cr 
+#'   Ratio of random exploration in 
 #'   epsilon-greedy action selection
-#' @param initial.value scalar numeric: initial values for the action 
+#' @param initial.value [\code{numeric(1)}] \cr 
+#'   Initial values for the action 
 #'   values Q, set this to the maximal possible reward to encourage
 #'   exploration (optimistic initialization)
-#' @param initial.visits scalar integer: set this to a high number to 
-#'   encourage exploration (together with a high initial.value)
-#' @param epsilon.decay scalar numeric between 0 and 1: decay epsilon 
-#'   by this factor
-#' @param epsilon.decay.after scalar integer: number of episodes afer 
-#'   which to decay epsilon
-#' @param C scalar numeric: controls the degree of exploration. High C
+#' @param initial.visits [\code{integer(1)}] \cr 
+#'   Set this to a high number to encourage exploration 
+#'   (together with a high \code{initial.value}).
+#' @param epsilon.decay [\code{numeric(1) in [0,1]}] \cr 
+#'   Decay epsilon by this factor.
+#' @param epsilon.decay.after [\code{numeric(1)}] \cr  
+#'   Number of episodes after which to decay epsilon.
+#' @param C [\code{numeric(1)}] \cr 
+#'   Controls the degree of exploration. High C
 #'   values lead to more exploration
-#' @param seed scalar integer: random seed
-#' @param method scalar character: Monte Carlo first-visit or
-#'   every-visit method
-#' @param learning.rate scalar numeric between 0 and 1: learning rate
-#' @param n.steps integer scalar: number of evaluations (steps in the
-#'   environment)
-#' @param preprocessState function: takes a state observation as input
-#'   and returns a preprocessed state, e.g. a one-hot vector
-#' @param predict function: predict returns vector of q values for a 
-#'   given preprocessed state observation
-#' @param predict2 function: predict function for the target network
-#' @param copy function: copy model parameters to target network
-#' @param train function: train the model, update the weights
-#' @param ... arguments passed on to preprocessState, predict or train
-#' @param experience.replay logical scalar
-#' @param replay.memory list: each list entry is a list with entries 
-#'   state, action, reward, next.state. replay.memory might be filled 
-#'   with experience sampled from a random policy.
-#' @param replay.memory.size integer scalar: size of the replay memory
-#' @param initial.replay.memory.size integer scalar: how much of the
-#'   replay memory is filled initially
-#' @param batch.size scalar integer: batch size, how many samples are 
+#' @param seed [\code{integer(1)}] \cr 
+#'   Random seed.
+#' @param method [\code{character(1)}] \cr 
+#'   Monte Carlo first-visit or every-visit method
+#' @param learning.rate [\code{numeric(1) in [0,1]}] \cr 
+#'   Learning rate (step size).
+#' @param n.steps [\code{integer(1)}] \cr 
+#'   Number of evaluations (steps in the environment)
+#' @param preprocessState [\code{function}] \cr 
+#'   Takes a state observation as input
+#'   and returns a preprocessed state, e.g. a one-hot vector.
+#' @param predict [\code{function}] \cr 
+#'   Predict returns vector of q values for a 
+#'   given preprocessed state observation.
+#' @param predict2 [\code{function}] \cr 
+#'   Predict function for the target network.
+#' @param copy [\code{function}] \cr 
+#'   Copy model parameters to target network.
+#' @param train [\code{function}] \cr 
+#'   Train the model, update the weights.
+#' @param ... [\code{any}] \cr 
+#'   Arguments passed on to preprocessState, predict or train.
+#' @param experience.replay [\code{logical(1)}] \cr 
+#'   Should experience replay be used?
+#' @param replay.memory [\code{list}] \cr 
+#'   Replay memory: Each list entry is a list with entries 
+#'   state, action, reward, next.state. If missing the replay memory 
+#'   will be filled with initial experience sampled from a random policy.
+#' @param replay.memory.size [\code{integer(1)}] \cr 
+#'   Size of the replay memory.
+#' @param initial.replay.memory.size [\code{integer(1)}] \cr 
+#'   How much of the replay memory is filled initially.
+#' @param batch.size [\code{integer(1)}] \cr 
+#'   Batch size, how many samples are 
 #'   drawn from the replay memory. Must be smaller than size of the
 #'   replay memory!
-#' @param alpha positive scalar numeric: If alpha = 0 sampling 
+#' @param alpha [\code{numeric(1) >= 0}] \cr 
+#'   If alpha = 0 sampling 
 #'   from replay memory will be uniform, otherwise observations with
 #'   high td error will be proportionally prioritized.
-#' @param theta positive scalar numeric: theta is a small positive 
+#' @param theta [\code{numeric(1) >= 0}] \cr 
+#'   Theta is a small positive 
 #'   constant that prevents the edge-case of transitions not being 
 #'   revisited once their error is zero. 
-#' @param fixed.target scalar logical: Q-Learning with fixed target
-#'   network
-#' @param update.target.after scalar integer: copy parameters to fixed
-#'   target network every n steps
-#' @param double.qlearning logical scalar: whether to use double 
-#'   qlearning
-#' @param sigma scalar integer: sampling parameter, for sigma = 0 the 
-#'   sarsa algorithm is obtained, for sigma = 1 expected sarsa.
-#' @param v numeric vector: initial state value function v
+#' @param fixed.target [\code{logical(1)}] \cr 
+#'   Q-Learning with fixed target network.
+#' @param update.target.after [\code{integer(1)}] \cr 
+#'   Copy parameters to fixed target network every n steps.
+#' @param double.qlearning [\code{logical(1)}] \cr 
+#'   Whether to use double qlearning.
+#' @param sigma [\code{numeric(1) in [0,1]}] \cr 
+#'   Sampling parameter, for \code{sigma = 0} the 
+#'   sarsa algorithm is obtained, for \code{sigma = 1} expected sarsa.
+#' @param v [\code{numeric}] \cr 
+#'   Initial state value function.
 #' 
 params = function(policy, initial.policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 

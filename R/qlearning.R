@@ -13,8 +13,10 @@
 #'
 #' @inheritParams params
 #'
-#' @return optimal action value function
-#' @seealso [sarsa]
+#' @return [\code{list(3)}] \cr
+#'   Returns the optimal action value function [\code{matrix}] and the 
+#'   number of steps and rewards per episode [\code{numeric}]
+#' @seealso \code{\link{sarsa}}
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @examples

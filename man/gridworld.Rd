@@ -3,7 +3,8 @@
 \name{gridworld}
 \alias{gridworld}
 \title{Gridworld}
-\format{a list with the transition array and reward matrix}
+\format{[\code{list(2)}] \cr 
+  List with the transition array and reward matrix.}
 \description{
 Simple gridworld environment for reinforcement learning.
 Grid of shape 4x4 with two terminal states in the upper left and

@@ -2,11 +2,14 @@
 #' 
 #' Simple gridworld environment for reinforcement learning.
 #'
-#' @param shape length-two integer, shape of the grid
-#' @param terminal.states integer vector of the terminal states in the 
-#' gridworld, states are numerated starting with 0 with increasing 
-#' number from left to right
-#' @return R6 class
+#' @param shape [\code{integer(2)}] \cr 
+#'   Shape of the gridworld
+#' @param terminal.states [\code{integer}] \cr 
+#'   Terminal states in the 
+#'   gridworld, states are numerated starting with 0 with increasing 
+#'   number from left to right
+#' @return [\code{R6 class}] \cr
+#'   Returns the gridworld environment.
 #' @details The states are enumerated as follows (example 4x4 grid):
 #' \tabular{rrrr}{
 #'  0 \tab 1 \tab 2 \tab 3 \cr
@@ -30,7 +33,7 @@
 #' grid = makeGridworld()
 #' grid = makeEnvironment(transition.array = grid$transition.array, 
 #'   reward.matrix = grid$reward.matrix)
-#' @seealso [makeEnvironment]
+#' @seealso \code{\link{makeEnvironment}}
 #' 
 makeGridworld <- function(shape = c(4L, 4L), terminal.states = c(0L, 15L)) {
   gridworld = R6::R6Class("gridworld",

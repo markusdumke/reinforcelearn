@@ -9,35 +9,45 @@ predictMonteCarlo(envir, policy, n.episodes = 100L, v = NULL,
   learning.rate = 0.1, print.out = 50L)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment
-created by \link{makeEnvironment}.}
+\item{envir}{[\code{R6 class}] \cr 
+The reinforcement learning environment
+created by \code{\link{makeEnvironment}}.}
 
-\item{policy}{numeric matrix: a policy specified as a probability
-matrix (states x actions)}
+\item{policy}{[\code{matrix}] \cr 
+A policy specified as a probability matrix (states x actions)}
 
-\item{n.episodes}{scalar integer: number of episodes}
+\item{n.episodes}{[\code{integer(1)}] \cr 
+Number of episodes.}
 
-\item{v}{numeric vector: initial state value function v}
+\item{v}{[\code{numeric}] \cr 
+Initial state value function.}
 
-\item{method}{scalar character: Monte Carlo first-visit or
-every-visit method}
+\item{method}{[\code{character(1)}] \cr 
+Monte Carlo first-visit or every-visit method}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+Discounting future rewards.}
 
-\item{learning.rate}{scalar numeric between 0 and 1: learning rate}
+\item{learning.rate}{[\code{numeric(1) in [0,1]}] \cr 
+Learning rate (step size).}
 
-\item{print.out}{integer: when to print out the iteration number}
+\item{print.out}{[\code{integer(1)}] \cr 
+When to print out the iteration number and value function.}
+}
+\value{
+[\code{numeric}] \cr
+  Returns the state value function v.
 }
 \description{
-Predict state value function v with Monte Carlo methods. The state value
+Predict state value function v with Monte Carlo methods. The state value 
 function is estimated from mean returns of episodes.
 }
 \details{
-Only works for episodic tasks (i.e. there must be at least one terminal
+Only works for episodic tasks (i.e. there must be at least one terminal 
 state)! An incremental mean update is implemented. Use a high learning.rate to
 give recent episodes a higher weight if you have a non-stationary environment
-. First-visit Monte Carlo estimates the return following the first visit to
-a state, every-visit Monte Carlo following all visits to a state in the episode. Returns
+. First-visit Monte Carlo estimates the return following the first visit to 
+a state, every-visit Monte Carlo following all visits to a state in the episode. Returns 
 are averaged over multiple episodes. The update rule is
 \deqn{V(S) <- V(S) + \alpha[G - V(S')]}
 }
@@ -60,5 +70,5 @@ v = predictMonteCarlo(grid, random.policy, n.episodes = 100,
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
-\link{td}
+\code{\link{td}}
 }

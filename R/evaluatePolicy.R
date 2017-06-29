@@ -11,7 +11,7 @@
 #' 
 #' @inheritParams params
 #'
-#' @return the state value function v, a numeric vector
+#' @return [\code{numeric}]\cr Returns the state value function v.
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 #' @export
 #' @examples

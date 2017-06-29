@@ -7,14 +7,17 @@
 makeGridworld(shape = c(4L, 4L), terminal.states = c(0L, 15L))
 }
 \arguments{
-\item{shape}{length-two integer, shape of the grid}
+\item{shape}{[\code{integer(2)}] \cr 
+Shape of the gridworld}
 
-\item{terminal.states}{integer vector of the terminal states in the
-gridworld, states are numerated starting with 0 with increasing
+\item{terminal.states}{[\code{integer}] \cr 
+Terminal states in the 
+gridworld, states are numerated starting with 0 with increasing 
 number from left to right}
 }
 \value{
-R6 class
+[\code{R6 class}] \cr
+  Returns the gridworld environment.
 }
 \description{
 Simple gridworld environment for reinforcement learning.
@@ -22,17 +25,17 @@ Simple gridworld environment for reinforcement learning.
 \details{
 The states are enumerated as follows (example 4x4 grid):
 \tabular{rrrr}{
-0 \tab 1 \tab 2 \tab 3 \cr
-4 \tab 5 \tab 6 \tab 7 \cr
-8 \tab 9 \tab 10 \tab 11 \cr
-12 \tab 13 \tab 14 \tab 15 \cr
+ 0 \tab 1 \tab 2 \tab 3 \cr
+ 4 \tab 5 \tab 6 \tab 7 \cr
+ 8 \tab 9 \tab 10 \tab 11 \cr
+ 12 \tab 13 \tab 14 \tab 15 \cr
 }
 So a board position could look like this (T: terminal state, x: current state):
 \tabular{rrrr}{
-T \tab o \tab o \tab o \cr
-o \tab o \tab o \tab o \cr
-o \tab x \tab o \tab o \cr
-o \tab o \tab o \tab T \cr
+ T \tab o \tab o \tab o \cr
+ o \tab o \tab o \tab o \cr
+ o \tab x \tab o \tab o \cr
+ o \tab o \tab o \tab T \cr
 }
 Possible actions include going left, right, down or up. If an action would
 take you off the grid, you remain in the previous state. For each step you
@@ -47,5 +50,5 @@ grid = makeEnvironment(transition.array = grid$transition.array,
 Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
 }
 \seealso{
-\link{makeEnvironment}
+\code{\link{makeEnvironment}}
 }

@@ -5,7 +5,8 @@
 #' specific number of steps (for the next action). If an action would
 #' take you off the grid, you remain in the previous state. For each step you
 #' get a reward of -1, until you reach into a terminal state.
-#' @format a list with the transition array and reward matrix
+#' @format [\code{list(2)}] \cr
+#'   List with the transition array and reward matrix.
 #' @name windyGridworld
 NULL
 #' @export

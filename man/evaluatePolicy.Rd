@@ -8,33 +8,38 @@ evaluatePolicy(envir, policy, v = NULL, discount.factor = 1,
   precision = 1e-04, iter = NULL)
 }
 \arguments{
-\item{envir}{an R6 class: the reinforcement learning environment
-created by \link{makeEnvironment}.}
+\item{envir}{[\code{R6 class}] \cr 
+The reinforcement learning environment
+created by \code{\link{makeEnvironment}}.}
 
-\item{policy}{numeric matrix: a policy specified as a probability
-matrix (states x actions)}
+\item{policy}{[\code{matrix}] \cr 
+A policy specified as a probability matrix (states x actions)}
 
-\item{v}{numeric vector: initial state value function v}
+\item{v}{[\code{numeric}] \cr 
+Initial state value function.}
 
-\item{discount.factor}{scalar numeric, discounting future rewards}
+\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+Discounting future rewards.}
 
-\item{precision}{scalar numeric, algorithm stops when improvement is
+\item{precision}{[\code{numeric(1)}] \cr 
+Algorithm stops when improvement is
 smaller than precision}
 
-\item{iter}{integer: number of iterations}
+\item{iter}{[\code{integer(1)}] \cr 
+Number of iterations.}
 }
 \value{
-the state value function v, a numeric vector
+[\code{numeric}]\cr Returns the state value function v.
 }
 \description{
-Evaluate a given policy in an environment using dynamic programming
+Evaluate a given policy in an environment using dynamic programming 
 using  the Bellmann expectation equation as an update rule
 \deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
 }
 \details{
-The algorithm runs until the improvement in the value
+The algorithm runs until the improvement in the value 
 function in two subsequent steps
-is smaller than the given precision in all states or if the
+is smaller than the given precision in all states or if the 
 specified number of iterations is exhausted.
 }
 \examples{

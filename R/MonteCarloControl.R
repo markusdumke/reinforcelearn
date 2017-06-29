@@ -7,11 +7,12 @@
 #' 
 #' Works only for episodic tasks (i.e. there must be a terminal state)! 
 #' This method uses the first-visit Monte Carlo policy evaluation.
-#' @return list with action value function Q and policy
+#' @return [\code{list(2)}] \cr
+#'   Returns the action value function Q and policy
 #' @inheritParams params
 #' @export
 #' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
-#' @seealso [predictMonteCarlo]
+#' @seealso \code{\link{predictMonteCarlo}}
 #' @examples 
 #' grid = makeEnvironment(transition.array = windyGridworld$transitions,
 #'   reward.matrix = windyGridworld$rewards,
