@@ -14,14 +14,12 @@ RoxygenNote: 6.0.1
 BugReports: https://github.com/markdumke/reinforcelearn/issues
 SystemRequirements: Python, OpenAI Gym (only required if Gym environments are used)
 Imports:
-    R6 (>= 2.2.0),
     checkmate (>= 1.8.2),
+    MDPtoolbox (>= 4.0.3),
     nnet (>= 7.3-12),
-    MDPtoolbox (>= 4.0.3)
-Suggests: testthat,
+    R6 (>= 2.2.0)
+Suggests: gym (>= 0.1.0),
     knitr,
     rmarkdown,
-    tensorflow,
-    gym
-Roxygen: list(markdown = TRUE)
+    testthat,
 VignetteBuilder: knitr
