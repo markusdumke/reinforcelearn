@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-06-28" />
+<meta name="date" content="2017-06-29" />
 
 <title>Reinforcement Learning</title>
 
@@ -119,7 +119,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Reinforcement Learning</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-06-28</em></h4>
+<h4 class="date"><em>2017-06-29</em></h4>
 
 </div>
 
@@ -136,28 +136,29 @@ devtools::install_github(&quot;markdumke/reinforcelearn&quot;)</code></pre>
 <h2>Set up an environment</h2>
 <p>First we need to set up a reinforcement learning environment. Therefore we need to specify the transition and reward dynamics of the problem. The state transition array is a three-dimensional array specifying all transition probabilities between the states for each action. The reward matrix specifies the rewards obtained for each state-action combination. We can then simply pass these on to the <code>makeEnvironment</code> function.</p>
 <pre class="r"><code>library(reinforcelearn)</code></pre>
-<pre class="r"><code>t = gridworld$transitions
-r = gridworld$rewards
-Env = makeEnvironment(transition.array = t, reward.matrix = r)</code></pre>
+<pre class="r"><code>transitions = gridworld$transitions
+rewards = gridworld$rewards
+env = makeEnvironment(transition.array = transitions, 
+  reward.matrix = rewards)</code></pre>
 <p>Another possibility is to use one of the existing OpenAI Gym environments: <a href="https://gym.openai.com/docs" class="uri">https://gym.openai.com/docs</a></p>
 <p>Using one of these environments is then as simple as</p>
-<pre class="r"><code>MCar = makeEnvironment(&quot;MountainCar-v0&quot;)</code></pre>
+<pre class="r"><code>mcar = makeEnvironment(&quot;MountainCar-v0&quot;)</code></pre>
 <p>Note that you need to have the prerequisites Python and Gym installed.</p>
 <p>The environment created is now an R6 class with a set of attributes and methods. There are attrbutes describing the properties of the state and action space, e.g.</p>
-<pre class="r"><code>MCar$action.space # Discrete
-MCar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]</code></pre>
+<pre class="r"><code>mcar$action.space # Discrete
+mcar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]</code></pre>
 <p>The <code>reset</code>, <code>step</code> and <code>close</code> method can be used to sample experience. Here is an example running a random agent for 200 steps on the MountainCar task.</p>
-<pre class="r"><code>MCar$reset()
+<pre class="r"><code>mcar$reset()
 for (i in 1:200) {
-  action = sample(MCar$actions, 1)
-  MCar$step(action)
+  action = sample(mcar$actions, 1)
+  mcar$step(action)
 }
-MCar$close()</code></pre>
+mcar$close()</code></pre>
 </div>
 <div id="solve-an-environment" class="section level2">
 <h2>Solve an environment</h2>
 <p>Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (called policy) with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.</p>
-<pre class="r"><code>res = iterateValue(Env)</code></pre>
+<pre class="r"><code>res = iterateValue(env)</code></pre>
 </div>
 <div id="reinforcement-learning-with-function-approximation" class="section level2">
 <h2>Reinforcement Learning with function approximation</h2>

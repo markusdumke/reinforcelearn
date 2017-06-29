@@ -6,27 +6,28 @@
 library(reinforcelearn)
 
 ## ------------------------------------------------------------------------
-t = gridworld$transitions
-r = gridworld$rewards
-Env = makeEnvironment(transition.array = t, reward.matrix = r)
+transitions = gridworld$transitions
+rewards = gridworld$rewards
+env = makeEnvironment(transition.array = transitions, 
+  reward.matrix = rewards)
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  MCar = makeEnvironment("MountainCar-v0")
+#  mcar = makeEnvironment("MountainCar-v0")
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  MCar$action.space # Discrete
-#  MCar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
+#  mcar$action.space # Discrete
+#  mcar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  MCar$reset()
+#  mcar$reset()
 #  for (i in 1:200) {
-#    action = sample(MCar$actions, 1)
-#    MCar$step(action)
+#    action = sample(mcar$actions, 1)
+#    mcar$step(action)
 #  }
-#  MCar$close()
+#  mcar$close()
 
 ## ------------------------------------------------------------------------
-res = iterateValue(Env)
+res = iterateValue(env)
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  

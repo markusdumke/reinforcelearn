@@ -32,9 +32,10 @@ library(reinforcelearn)
 ```
 
 ```{r}
-t = gridworld$transitions
-r = gridworld$rewards
-Env = makeEnvironment(transition.array = t, reward.matrix = r)
+transitions = gridworld$transitions
+rewards = gridworld$rewards
+env = makeEnvironment(transition.array = transitions, 
+  reward.matrix = rewards)
 ```
 
 Another possibility is to use one of the existing OpenAI Gym environments: [https://gym.openai.com/docs](https://gym.openai.com/docs)
@@ -42,7 +43,7 @@ Another possibility is to use one of the existing OpenAI Gym environments: [http
 Using one of these environments is then as simple as
 
 ```{r, eval = FALSE}
-MCar = makeEnvironment("MountainCar-v0")
+mcar = makeEnvironment("MountainCar-v0")
 ```
 
 Note that you need to have the prerequisites Python and Gym installed.
@@ -50,19 +51,19 @@ Note that you need to have the prerequisites Python and Gym installed.
 The environment created is now an R6 class with a set of attributes and methods. There are attrbutes describing the properties of the state and action space, e.g.
 
 ```{r, eval = FALSE}
-MCar$action.space # Discrete
-MCar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
+mcar$action.space # Discrete
+mcar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
 ```
 
 The `reset`, `step` and `close` method can be used to sample experience. Here is an example running a random agent for 200 steps on the MountainCar task.
 
 ```{r, eval = FALSE}
-MCar$reset()
+mcar$reset()
 for (i in 1:200) {
-  action = sample(MCar$actions, 1)
-  MCar$step(action)
+  action = sample(mcar$actions, 1)
+  mcar$step(action)
 }
-MCar$close()
+mcar$close()
 ```
 
 ## Solve an environment
@@ -70,7 +71,7 @@ MCar$close()
 Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (called policy) with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
 
 ```{r}
-res = iterateValue(Env)
+res = iterateValue(env)
 ```
 
 ## Reinforcement Learning with function approximation
