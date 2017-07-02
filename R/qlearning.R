@@ -28,12 +28,20 @@
 #' 
 qlearning <- function(envir, n.episodes = 10L, learning.rate = 0.1, 
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
-  initial.value = 0L, discount.factor = 1, seed = NULL) {
+  initial.value = 0, discount.factor = 1, seed = NULL) {
   
   # input checking
   stopifnot(envir$state.space == "Discrete")
+  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertInt(n.episodes, lower = 1)
+  checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
+  checkmate::assertNumber(epsilon, lower = 0, upper = 1)
+  checkmate::assertNumber(epsilon.decay, lower = 0, upper = 1)
+  checkmate::assertInt(epsilon.decay.after, lower = 1)
+  checkmate::assertNumber(initial.value)
+  checkmate::assertInt(seed, lower = 1, null.ok = TRUE)
   if (!is.null(seed)) set.seed(seed)
-
+  
   n.states = envir$n.states
   n.actions = envir$n.actions
   Q = matrix(initial.value, nrow = n.states, ncol = n.actions)
@@ -59,6 +67,7 @@ qlearning <- function(envir, n.episodes = 10L, learning.rate = 0.1,
       TD.target = reward + discount.factor * max(Q[next.state + 1, ]) 
       TD.error = TD.target - Q[state + 1, action + 1] 
       Q[state + 1, action + 1] = Q[state + 1, action + 1] + learning.rate * TD.error
+      print(Q)
       state = next.state
       j = j + 1
       

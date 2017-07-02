@@ -30,6 +30,14 @@ sarsa <- function(envir, lambda = 0, n.episodes = 100, learning.rate = 0.1,
   
   # input checking
   stopifnot(envir$state.space == "Discrete")
+  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertInt(n.episodes, lower = 1)
+  checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
+  checkmate::assertNumber(epsilon, lower = 0, upper = 1)
+  checkmate::assertNumber(epsilon.decay, lower = 0, upper = 1)
+  checkmate::assertInt(epsilon.decay.after, lower = 1)
+  checkmate::assertNumber(initial.value)
+  checkmate::assertInt(seed, lower = 1, null.ok = TRUE)
   if (!is.null(seed)) set.seed(seed)
   
   n.states = envir$n.states

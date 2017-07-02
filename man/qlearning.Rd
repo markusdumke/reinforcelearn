@@ -5,7 +5,7 @@
 \title{Q-Learning (Table-lookup)}
 \usage{
 qlearning(envir, n.episodes = 10L, learning.rate = 0.1, epsilon = 0.1,
-  epsilon.decay = 0.5, epsilon.decay.after = 100L, initial.value = 0L,
+  epsilon.decay = 0.5, epsilon.decay.after = 100L, initial.value = 0,
   discount.factor = 1, seed = NULL)
 }
 \arguments{
@@ -26,7 +26,7 @@ epsilon-greedy action selection}
 \item{epsilon.decay}{[\code{numeric(1) in [0,1]}] \cr 
 Decay epsilon by this factor.}
 
-\item{epsilon.decay.after}{[\code{numeric(1)}] \cr
+\item{epsilon.decay.after}{[\code{integer(1)}] \cr
 Number of episodes after which to decay epsilon.}
 
 \item{initial.value}{[\code{numeric(1)}] \cr 

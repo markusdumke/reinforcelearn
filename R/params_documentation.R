@@ -39,7 +39,7 @@
 #'   (together with a high \code{initial.value}).
 #' @param epsilon.decay [\code{numeric(1) in [0,1]}] \cr 
 #'   Decay epsilon by this factor.
-#' @param epsilon.decay.after [\code{numeric(1)}] \cr  
+#' @param epsilon.decay.after [\code{integer(1)}] \cr  
 #'   Number of episodes after which to decay epsilon.
 #' @param C [\code{numeric(1)}] \cr 
 #'   Controls the degree of exploration. High C
