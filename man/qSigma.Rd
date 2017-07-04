@@ -4,9 +4,9 @@
 \alias{qSigma}
 \title{Q(sigma) (Table-lookup)}
 \usage{
-qSigma(envir, sigma = 1, lambda = 0, n.episodes = 100,
+qSigma(envir, sigma = 1, lambda = 0, n.episodes = 100L,
   learning.rate = 0.1, epsilon = 0.1, epsilon.decay = 0.5,
-  epsilon.decay.after = 100L, initial.value = 0L, discount.factor = 1,
+  epsilon.decay.after = 100L, initial.value = 0, discount.factor = 1,
   seed = NULL)
 }
 \arguments{

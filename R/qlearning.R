@@ -26,12 +26,13 @@
 #'   initial.state = 30L)
 #' res = qlearning(grid, n.episodes = 100, seed = 123)
 #' 
-qlearning <- function(envir, n.episodes = 10L, learning.rate = 0.1, 
+qlearning <- function(envir, n.episodes = 100L, learning.rate = 0.1, 
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
   initial.value = 0, discount.factor = 1, seed = NULL) {
   
   # input checking
-  stopifnot(envir$state.space == "Discrete")
+  checkmate::assertClass(envir, "R6")
+  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
   checkmate::assertInt(n.episodes, lower = 1)
   checkmate::assertNumber(learning.rate, lower = 0, upper = 1)

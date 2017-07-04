@@ -55,7 +55,8 @@ makeGridworld <- function(shape = c(4L, 4L), terminal.states = c(0L, 15L)) {
         if (any(terminal.states > prod(shape))) {
           stop("Terminal states must be inside the grid!")
         }
-        check_count(terminal.states, positive = TRUE)
+        checkmate::checkCount(shape, positive = TRUE)
+        checkmate::checkCount(terminal.states)
         self$state.space = "Discrete"
         self$action.space = "Discrete"
         self$shape = shape

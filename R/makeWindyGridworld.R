@@ -38,6 +38,9 @@ makeWindyGridworld <- function(shape = c(7L, 10L), terminal.states = 37L,
       wind = NULL,
       
       initialize = function(shape, terminal.states, wind) {
+        checkmate::checkCount(shape, positive = TRUE)
+        checkmate::checkCount(terminal.states)
+        checkmate::checkCount(wind)
         self$wind = wind
         self$state.space = "Discrete"
         self$action.space = "Discrete"

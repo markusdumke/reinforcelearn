@@ -25,6 +25,7 @@
 iterateValue <- function(envir, v = NULL, discount.factor = 1, 
   precision = 0.0001, iter = NULL) {
   
+  checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   if (is.null(v)) {
     v = rep(0, envir$n.states)

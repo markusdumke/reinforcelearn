@@ -21,10 +21,13 @@
 MonteCarloControl = function(envir, n.episodes = 100L, discount.factor = 1, 
   learning.rate = 0.1, epsilon = 0.1, initial.policy = NULL) { # decrease epsilon
   
+  checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
   checkmate::assertInt(n.episodes, null.ok = TRUE)
-  
+  checkmate::assertNumber(epsilon, lower = 0, upper = 1)
+  checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
+   
   if (is.null(initial.policy)) {
     initial.policy = matrix(1 / envir$n.actions, nrow = envir$n.states, 
       ncol = envir$n.actions)

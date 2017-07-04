@@ -4,10 +4,10 @@
 \alias{solveBandit}
 \title{Solve multi-armed bandit}
 \usage{
-solveBandit(bandit, n.episodes = 10L, action.selection = c("epsilon-greedy",
-  "greedy", "UCB", "gradient-bandit"), epsilon = 0.1, epsilon.decay = 0.5,
-  epsilon.decay.after = 100L, alpha = 0.1, initial.value = 0,
-  initial.visits = 0L, C = 2)
+solveBandit(bandit, n.episodes = 100L,
+  action.selection = c("epsilon-greedy", "greedy", "UCB", "gradient-bandit"),
+  epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
+  alpha = 0.1, initial.value = 0, initial.visits = 0L, C = 2)
 }
 \arguments{
 \item{bandit}{[\code{R6 class}] \cr 

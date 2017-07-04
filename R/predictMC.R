@@ -35,6 +35,7 @@ predictMonteCarlo = function(envir, policy, n.episodes = 100L, v = NULL,
   method = c("first-visit", "every-visit"), discount.factor = 1, 
   learning.rate = 0.1, print.out = 50L) {
   
+  checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   if (is.null(v)) {
     v = rep(0, envir$n.states)

@@ -24,6 +24,7 @@
 iteratePolicy <- function(envir, initial.policy = NULL, 
   discount.factor = 1, precision = 0.0001, iter = NULL) {
   
+  checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
   checkmate::assertNumber(precision, lower = 0)

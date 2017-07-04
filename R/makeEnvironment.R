@@ -101,8 +101,8 @@ makeEnvironment <- function(gym.envir.name = NULL,
             stop("Please install the gym package to use gym environments. Also make sure you have the prerequisites installed: https://github.com/openai/gym-http-api",
               call. = FALSE)
           }
-          assertCharacter(gym.envir.name)
-          assertLogical(render)
+          checkmate::assertCharacter(gym.envir.name)
+          checkmate::assertLogical(render)
           self$gym = TRUE
           self$render = render
           remote_base = "http://127.0.0.1:5000"
@@ -147,8 +147,8 @@ makeEnvironment <- function(gym.envir.name = NULL,
             }
           }
         } else {
-          assertMatrix(reward.matrix, any.missing = FALSE)
-          assertArray(transition.array, any.missing = FALSE, d = 3)
+          checkmate::assertMatrix(reward.matrix, any.missing = FALSE)
+          checkmate::assertArray(transition.array, any.missing = FALSE, d = 3)
           MDPtoolbox::mdp_check(transition.array, reward.matrix)
           self$gym = FALSE
           self$state.space = "Discrete"

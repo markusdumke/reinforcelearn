@@ -35,6 +35,21 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
   discount.factor = 1, learning.rate = 0.1) {
   
   # input checking
+  checkmate::assertClass(envir, "R6")
+  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
+  checkmate::assertNumber(lambda, lower = 0, upper = 1)
+  checkmate::assertInt(n.steps, lower = 1)
+  if (envir$n.actions != ncol(policy)) {
+    stop("The number of columns of the policy must be equal to the number of actions.")
+  }
+  if (envir$n.states != nrow(policy)) {
+    stop("The number of rows of the policy must be equal to the number of states.")
+  }
+  if (any(rowSums(policy) != 1)) {
+    stop("The probabilities of each row of the policy must sum to 1.")
+  }
   
   # exact learning.rate version?
   
@@ -68,7 +83,7 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
       eligibility = rep(0, n.states)
     }
   }
-
+  
   v
 }
 

@@ -4,7 +4,7 @@
 \alias{qlearning}
 \title{Q-Learning (Table-lookup)}
 \usage{
-qlearning(envir, n.episodes = 10L, learning.rate = 0.1, epsilon = 0.1,
+qlearning(envir, n.episodes = 100L, learning.rate = 0.1, epsilon = 0.1,
   epsilon.decay = 0.5, epsilon.decay.after = 100L, initial.value = 0,
   discount.factor = 1, seed = NULL)
 }

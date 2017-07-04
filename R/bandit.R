@@ -72,10 +72,23 @@ bandit = R6::R6Class("bandit",
 #' # Gradient bandit algorithm
 #' solveBandit(ExampleBandit, n.episodes = 10000, 
 #'   action.selection = "gradient-bandit", alpha = 0.1)
-solveBandit = function(bandit, n.episodes = 10L,
+solveBandit = function(bandit, n.episodes = 100L,
   action.selection = c("epsilon-greedy", "greedy", "UCB", "gradient-bandit"), epsilon = 0.1, 
   epsilon.decay = 0.5, epsilon.decay.after = 100L, alpha = 0.1,
   initial.value = 0, initial.visits = 0L, C = 2) {
+  
+  checkmate::assertClass(bandit, "R6")
+  checkmate::assertInt(n.episodes, lower = 1)
+  checkmate::assertChoice(action.selection, c("epsilon-greedy", 
+    "greedy", "UCB", "gradient-bandit"))
+  checkmate::assertNumber(epsilon, lower = 0, upper = 1)
+  checkmate::assertNumber(epsilon.decay, lower = 0, upper = 1)
+  checkmate::assertInt(epsilon.decay.after, lower = 1)
+  checkmate::assertNumber(alpha, lower = 0, upper = 1)
+  checkmate::assertNumber(initial.value)
+  checkmate::assertInt(initial.visits, lower = 0)
+  checkmate::assertNumber(C)
+  
   
   action.selection = match.arg(action.selection)
   action.visits = rep(initial.visits, bandit$n.actions)
