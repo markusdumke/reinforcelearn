@@ -50,7 +50,7 @@ bandit = R6::R6Class("bandit",
 #'   value gives more weight to recent rewards 
 #'   (useful for non-stationary environments)
 #' 
-#' @return [\code{numeric}]\cr
+#' @return [\code{numeric}] \cr
 #' Returns the action values for the arms of the bandit, 
 #' for gradient-bandit action selection the probabilities for 
 #' each action will be returned.

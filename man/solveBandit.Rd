@@ -49,7 +49,7 @@ Controls the degree of exploration. High C
 values lead to more exploration}
 }
 \value{
-[\code{numeric}]\cr
+[\code{numeric}] \cr
 Returns the action values for the arms of the bandit, 
 for gradient-bandit action selection the probabilities for 
 each action will be returned.
