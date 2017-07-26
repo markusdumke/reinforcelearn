@@ -56,7 +56,7 @@ qlearning = function(envir, n.episodes = 100L, learning.rate = 0.1,
     j = 0
     reward.sum = 0
     
-    while (envir$episode.over == FALSE) {
+    while (envir$done == FALSE) {
       
       action = sampleAction(Q[state + 1, ], epsilon)
       envir$step(action)
@@ -72,7 +72,7 @@ qlearning = function(envir, n.episodes = 100L, learning.rate = 0.1,
       state = next.state
       j = j + 1
       
-      if (envir$episode.over) {
+      if (envir$done) {
         steps.per.episode[i] = j
         rewards.per.episode[i] = reward.sum
         print(paste("Episode", i, "finished after", j, "time steps."))

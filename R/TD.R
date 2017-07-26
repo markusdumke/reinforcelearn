@@ -77,7 +77,7 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
     v = v + learning.rate * TD.error * eligibility
     state = envir$state
     
-    if (envir$episode.over == TRUE) {
+    if (envir$done == TRUE) {
       envir$reset()
       state = envir$state
       eligibility = rep(0, n.states)

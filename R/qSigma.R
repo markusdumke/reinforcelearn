@@ -51,13 +51,13 @@ qSigma = function(envir, sigma = 1, lambda = 0, n.episodes = 100L, learning.rate
     action = sampleAction(Q[state + 1, ], epsilon)
     policy = 
     
-    while (envir$episode.over == FALSE) {
+    while (envir$done == FALSE) {
       envir$step(action)
       next.state = envir$state
       reward = envir$reward
       reward.sum = reward.sum + reward
       
-      if (envir$episode.over == TRUE) {
+      if (envir$done == TRUE) {
         td.error = reward - Q[state + 1, action + 1]
       } else {
         next.action = sampleAction(Q[next.state + 1, ], epsilon)
@@ -78,7 +78,7 @@ qSigma = function(envir, sigma = 1, lambda = 0, n.episodes = 100L, learning.rate
       state = next.state
       action = next.action
       
-      if (envir$episode.over) {
+      if (envir$done) {
         steps.per.episode[i] = j
         rewards.per.episode[i] = reward.sum
         print(paste("Episode", i, "finished after", j, "time steps."))

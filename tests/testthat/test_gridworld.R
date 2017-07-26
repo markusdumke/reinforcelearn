@@ -19,7 +19,7 @@
 #   expect_equal(grid$n.steps, 0)
 #   expect_equal(grid$n.actions, 4)
 #   expect_equal(grid$actions, c("left", "right", "up", "down"))
-#   expect_equal(grid$episode.over, FALSE)
+#   expect_equal(grid$done, FALSE)
 # })
 # 
 # test_that("Reward matrix is correct", {

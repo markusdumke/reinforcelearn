@@ -74,7 +74,7 @@ sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = N
   
   i = 1
   
-  while (envir$episode.over == FALSE) {
+  while (envir$done == FALSE) {
     actions = append(actions, sample(envir$actions, prob = policy[states[i], ], size = 1))
     envir$step(actions[i])
     states = append(states, envir$state)

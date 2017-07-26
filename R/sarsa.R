@@ -57,7 +57,7 @@ sarsa = function(envir, lambda = 0, n.episodes = 100L, learning.rate = 0.1,
     reward.sum = 0
     action = sampleAction(Q[state + 1, ], epsilon)
     
-    while (envir$episode.over == FALSE) {
+    while (envir$done == FALSE) {
       
       envir$step(action)
       next.state = envir$state
@@ -78,7 +78,7 @@ sarsa = function(envir, lambda = 0, n.episodes = 100L, learning.rate = 0.1,
       state = next.state
       action = next.action
       
-      if (envir$episode.over) {
+      if (envir$done) {
         steps.per.episode[i] = j
         rewards.per.episode[i] = reward.sum
         print(paste("Episode", i, "finished after", j, "time steps."))
