@@ -168,7 +168,7 @@ makeEnvironment = function(gym.envir.name = NULL,
           if (is.null(initial.state)) {
             self$initial.state = self$states[self$states != self$terminal.states]
           } else {
-            assertInteger(initial.state)
+            assertIntegerish(initial.state)
             self$initial.state = initial.state
           }
         }
