@@ -17,7 +17,7 @@
 #'   initial.state = 30L)
 #' res = qSigma(grid, n.episodes = 100, seed = 123)
 #' 
-qSigma <- function(envir, sigma = 1, lambda = 0, n.episodes = 100L, learning.rate = 0.1, 
+qSigma = function(envir, sigma = 1, lambda = 0, n.episodes = 100L, learning.rate = 0.1, 
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
   initial.value = 0, discount.factor = 1, seed = NULL) {
   

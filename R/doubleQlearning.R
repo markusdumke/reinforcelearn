@@ -24,7 +24,7 @@
 #' #'   initial.state = 30L)
 #' #' res = doubleqlearning(grid, n.episodes = 100, seed = 123)
 #' #'
-#' doubleqlearning <- function(envir, n.episodes = 10L, learning.rate = 0.1, 
+#' doubleqlearning = function(envir, n.episodes = 10L, learning.rate = 0.1, 
 #'   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
 #'   initial.value = 0L, discount.factor = 1, seed = NULL) {
 #'   
@@ -78,7 +78,7 @@
 #' }
 #' 
 #' 
-#' doubleqlearning <- function(envir, n.episodes = 100, learning.rate = 0.1,
+#' doubleqlearning = function(envir, n.episodes = 100, learning.rate = 0.1,
 #'   epsilon = 0.1, epsilon.decay = 0.5, discount.factor = 1,
 #'   seed = NULL) {
 #' 

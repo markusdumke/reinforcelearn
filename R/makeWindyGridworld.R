@@ -20,7 +20,7 @@
 #'   reward.matrix = grid$reward.matrix, initial.state = 30L)
 #' @seealso \code{\link{makeEnvironment}}
 #' 
-makeWindyGridworld <- function(shape = c(7L, 10L), terminal.states = 37L, 
+makeWindyGridworld = function(shape = c(7L, 10L), terminal.states = 37L, 
   wind = c(0L, 0L, 0L, 1L, 1L, 1L, 2L, 2L, 1L, 0L)) {
   WindyGridworld = R6::R6Class("WindyGridworld",
     public = list(

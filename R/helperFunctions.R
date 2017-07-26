@@ -85,6 +85,6 @@ sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = N
 }
 
 # Estimate return
-estimateReturn <- function(rewards, discount.factor) {
+estimateReturn = function(rewards, discount.factor) {
   sum(discount.factor ^ seq(0, length(rewards) - 1) * rewards)
 }

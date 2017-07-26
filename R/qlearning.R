@@ -26,7 +26,7 @@
 #'   initial.state = 30L)
 #' res = qlearning(grid, n.episodes = 100, seed = 123)
 #' 
-qlearning <- function(envir, n.episodes = 100L, learning.rate = 0.1, 
+qlearning = function(envir, n.episodes = 100L, learning.rate = 0.1, 
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
   initial.value = 0, discount.factor = 1, seed = NULL) {
   
@@ -68,7 +68,7 @@ qlearning <- function(envir, n.episodes = 100L, learning.rate = 0.1,
       TD.target = reward + discount.factor * max(Q[next.state + 1, ]) 
       TD.error = TD.target - Q[state + 1, action + 1] 
       Q[state + 1, action + 1] = Q[state + 1, action + 1] + learning.rate * TD.error
-      print(Q)
+      # print(Q)
       state = next.state
       j = j + 1
       

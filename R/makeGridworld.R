@@ -35,7 +35,7 @@
 #'   reward.matrix = grid$reward.matrix)
 #' @seealso \code{\link{makeEnvironment}}
 #' 
-makeGridworld <- function(shape = c(4L, 4L), terminal.states = c(0L, 15L)) {
+makeGridworld = function(shape = c(4L, 4L), terminal.states = c(0L, 15L)) {
   gridworld = R6::R6Class("gridworld",
     public = list(
       state.space = NULL,

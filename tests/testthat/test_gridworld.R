@@ -25,7 +25,7 @@
 # test_that("Reward matrix is correct", {
 #   grid = gridworld$new(shape = c(2, 1), terminal.states = 1)
 #   res = matrix(rep(c(0, - 1), 4), ncol = 4)
-#   colnames(res) <- c("left", "right", "up", "down")
+#   colnames(res) = c("left", "right", "up", "down")
 #   expect_equal(grid$reward.matrix, res)
 # })
 # 

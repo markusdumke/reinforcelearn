@@ -21,7 +21,7 @@
 #'   reward.matrix = gridworld$rewards)
 #' res = iteratePolicy(grid)
 #' 
-iteratePolicy <- function(envir, initial.policy = NULL, 
+iteratePolicy = function(envir, initial.policy = NULL, 
   discount.factor = 1, precision = 0.0001, iter = NULL) {
   
   checkmate::assertClass(envir, "R6")

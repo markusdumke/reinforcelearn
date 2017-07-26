@@ -11,7 +11,7 @@ makeEnvironment(gym.envir.name = NULL, transition.array = NULL,
 \item{gym.envir.name}{[\code{character(1)}] \cr
 Name of Gym environment, e.g. "CartPole-v0", have a look at \url{https://gym.openai.com/envs}.}
 
-\item{transition.array}{[\code{array (n.states x n.states x n.actions) }] \cr
+\item{transition.array}{[\code{array (n.states x n.states x n.actions)}] \cr
 Transition array: For each action giving the probabilities for 
 transitions between states.}
 
@@ -77,7 +77,7 @@ MountainCar$state.space.bounds
 grid = makeEnvironment(transition.array = gridworld$transitions,
   reward.matrix = gridworld$rewards)
   
-# Create the WindyGridworld environment.
+# Create the WindyGridworld environment from transition array and reward matrix.
 grid = makeEnvironment(transition.array = windyGridworld$transitions,
   reward.matrix = windyGridworld$rewards,
   initial.state = 30L)
