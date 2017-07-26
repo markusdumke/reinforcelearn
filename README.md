@@ -38,7 +38,6 @@ To use a Gym environment you need to have the prerequisites installed: [gym-http
 
 ```r
 # Create an OpenAI Gym environment.
-startServer()
 MountainCar = makeEnvironment("MountainCar-v0")
 
 MountainCar$reset() # returns initial state observation

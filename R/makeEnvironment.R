@@ -1,26 +1,30 @@
 #' Make Reinforcement Learning Environment
 #' 
 #' This function creates an environment for reinforcement learning. 
-#' You could either use an existing environment from OpenAI Gym or specify the 
-#' transition array and reward matrix for a Markov Decision Process.
+#' You could either use an existing environment from OpenAI Gym or 
+#' specify the transition array and reward matrix of a 
+#' Markov Decision Process.
 #' 
-#' State and action space can be either "Discrete" or "Box". For the discrete 
-#' case states and actions are numerated starting from 0.
+#' State and action space can be either "Discrete" or "Box". In the 
+#' discrete case states and actions are numerated starting from 0.
 #'
 #' @param gym.envir.name [\code{character(1)}] \cr
-#'   Name of Gym environment, e.g. "CartPole-v0", have a look at \url{https://gym.openai.com/envs}.
-#' @param transition.array [\code{array (n.states x n.states x n.actions) }] \cr
-#'   Transition array: For each action giving the probabilities for 
+#'   Name of Gym environment, e.g. "CartPole-v0", have a look at 
+#'   \url{https://gym.openai.com/envs}.
+#' @param transition.array [\code{array (n.states x n.states x n.actions)}] \cr
+#'   Transition array: For each action specifying the probabilities for 
 #'   transitions between states.
 #' @param reward.matrix [\code{matrix (n.states x n.actions)}] \cr 
 #'   Reward matrix: The reward for taking action a in state s.
 #' @param initial.state [\code{integer}] \cr
 #'   The starting state. If a vector is given a starting state will be
-#'   randomly sampled from this vector when reset is called. 
+#'   randomly sampled from this vector when \code{reset} is called. 
 #'   Note that states are numerated starting with 
 #'   0. If \code{NULL} all states are possible initial states.
 #' @param render [\code{logical(1)}] \cr 
-#'   Whether to render the environment.
+#'   Whether to render the environment. If \code{TRUE} a python window 
+#'   with a graphical interface opens when steps are sampled in the 
+#'   environment for a gym environment.
 #' @importFrom R6 R6Class
 #' @importFrom MDPtoolbox mdp_check 
 #' @seealso \url{https://github.com/openai/gym-http-api}
@@ -29,22 +33,23 @@
 #' @section Methods: \describe{
 #' \item{\code{envir$initialize()}}{Creates a new environment.} 
 #' \item{\code{envir$step(action, render = TRUE)}}{
-#' Takes a step in the environment given an action,
-#'   returns the next state, reward and if the episode is finished (logical). 
-#'   If a transition array and reward matrix are given, the next step will be 
-#'   sampled from the MDP, else the step \code{\link[gym]{env_step}} function will be called.
-#'   If render = TRUE the environment will be rendered.} 
+#'   Takes a step in the environment given an action,
+#'   returns the next state, reward and if the episode has finished. 
+#'   If a transition array and reward matrix are given, the next step 
+#'   will be sampled from the MDP, else the step 
+#'   \code{\link[gym]{env_step}} function will be called.
+#'   If \code{render = TRUE} a Gym environment will be rendered.} 
 #' \item{\code{envir$reset()}}{Resets the
-#'   \code{episode.over} flag of the environment and returns an initial state.
+#'   \code{done} flag of the environment and returns an initial state.
 #'    Useful when starting a new episode.}
-#' \item{\code{envir$close()}}{Close the python window for a gym environment.}   
+#' \item{\code{envir$close()}}{Close the python window for a gym 
+#'   environment.}   
 #' }
 #' @export
 #' @examples
 #' \dontrun{
 #' # Create an OpenAI Gym environment.
 #' # Make sure you have Python and Gym installed.
-#' startServer()
 #' CartPole = makeEnvironment("CartPole-v0")
 #' CartPole$reset()
 #' CartPole$step(action = 0)
@@ -61,12 +66,12 @@
 #' grid = makeEnvironment(transition.array = gridworld$transitions,
 #'   reward.matrix = gridworld$rewards)
 #'   
-#' # Create the WindyGridworld environment.
+#' # Create the WindyGridworld environment from transition array and reward matrix.
 #' grid = makeEnvironment(transition.array = windyGridworld$transitions,
 #'   reward.matrix = windyGridworld$rewards,
 #'   initial.state = 30L)
 #'   
-makeEnvironment <- function(gym.envir.name = NULL,  
+makeEnvironment = function(gym.envir.name = NULL,  
   transition.array = NULL, reward.matrix = NULL, initial.state = NULL, 
   render = TRUE) {
   envir = R6::R6Class("envir",
@@ -75,11 +80,9 @@ makeEnvironment <- function(gym.envir.name = NULL,
       action.space = NULL,
       action.space.bounds = NULL,
       actions = NULL,
-      client = NULL,
-      episode.over = FALSE, # maybe call this done
+      done = FALSE,
       gym = NULL,
       initial.state = NULL,
-      instance.id = NULL,
       n.actions = NULL,
       n.states = NULL,
       n.steps = 0L,
@@ -93,7 +96,7 @@ makeEnvironment <- function(gym.envir.name = NULL,
       states = NULL,
       terminal.states = NULL,
       transition.array = NULL, 
-
+      
       initialize = function(gym.envir.name, transition.array, 
         reward.matrix, initial.state, render) {
         if (!is.null(gym.envir.name)) {
@@ -107,9 +110,9 @@ makeEnvironment <- function(gym.envir.name = NULL,
           self$render = render
           remote_base = "http://127.0.0.1:5000"
           client = gym::create_GymClient(remote_base)
-          self$client = client
+          private$client = client
           instance.id = gym::env_create(client, gym.envir.name)
-          self$instance.id = instance.id
+          private$instance.id = instance.id
           
           outdir = "/tmp/random-agent-results"
           gym::env_monitor_start(client, instance.id, outdir, force = TRUE, resume = FALSE)
@@ -174,16 +177,16 @@ makeEnvironment <- function(gym.envir.name = NULL,
       step = function(action, render = self$render) {
         self$n.steps = self$n.steps + 1L
         if (self$gym == TRUE) {
-          res = gym::env_step(self$client, self$instance.id, action, render)
+          res = gym::env_step(private$client, private$instance.id, action, render)
           self$state = res$observation
           self$reward = res$reward
-          self$episode.over = res$done
+          self$done = res$done
         } else {
           self$reward = self$reward.matrix[self$state + 1, action + 1]
           self$state = sample(self$states, size = 1, 
             prob = self$transition.array[self$state + 1, , action + 1])
           if (self$state %in% self$terminal.states) {
-            self$episode.over = TRUE
+            self$done = TRUE
           }
         }
         invisible(self)
@@ -191,29 +194,33 @@ makeEnvironment <- function(gym.envir.name = NULL,
       
       reset = function() {
         if (self$gym == TRUE) {
-          self$state = gym::env_reset(self$client, self$instance.id)
+          self$state = gym::env_reset(private$client, private$instance.id)
         } else {
           self$state = ifelse(length(self$initial.state) > 1L, 
             sample(self$initial.state, size = 1), self$initial.state)
         }
-        self$episode.over = FALSE
+        self$done = FALSE
         invisible(self)
       },
       
       close = function() {
         if (self$gym == TRUE) {
-          gym::env_close(self$client, self$instance.id)
+          gym::env_close(private$client, private$instance.id)
         }
         invisible(self)
       }
+    ),
+    private = list(
+      client = NULL,
+      instance.id = NULL
     )
   )
-  # if (!is.null(gym.envir.name)) {
-  #   package.path = system.file(package = "reinforcelearn")
-  #   path2pythonfile = paste0(package.path, "/gym_http_server.py")
-  #   command <- "python"
-  #   system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
-  # }
+  if (!is.null(gym.envir.name)) {
+    package.path = system.file(package = "reinforcelearn")
+    path2pythonfile = paste0(package.path, "/gym_http_server.py")
+    command = "python"
+    system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
+  }
   envir$new(gym.envir.name, transition.array, 
     reward.matrix, initial.state, render)
 }

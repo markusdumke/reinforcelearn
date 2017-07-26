@@ -9,10 +9,11 @@ makeEnvironment(gym.envir.name = NULL, transition.array = NULL,
 }
 \arguments{
 \item{gym.envir.name}{[\code{character(1)}] \cr
-Name of Gym environment, e.g. "CartPole-v0", have a look at \url{https://gym.openai.com/envs}.}
+Name of Gym environment, e.g. "CartPole-v0", have a look at 
+\url{https://gym.openai.com/envs}.}
 
 \item{transition.array}{[\code{array (n.states x n.states x n.actions)}] \cr
-Transition array: For each action giving the probabilities for 
+Transition array: For each action specifying the probabilities for 
 transitions between states.}
 
 \item{reward.matrix}{[\code{matrix (n.states x n.actions)}] \cr 
@@ -20,12 +21,14 @@ Reward matrix: The reward for taking action a in state s.}
 
 \item{initial.state}{[\code{integer}] \cr
 The starting state. If a vector is given a starting state will be
-randomly sampled from this vector when reset is called. 
+randomly sampled from this vector when \code{reset} is called. 
 Note that states are numerated starting with 
 0. If \code{NULL} all states are possible initial states.}
 
 \item{render}{[\code{logical(1)}] \cr 
-Whether to render the environment.}
+Whether to render the environment. If \code{TRUE} a python window 
+with a graphical interface opens when steps are sampled in the 
+environment for a gym environment.}
 }
 \value{
 [\code{R6 class}] \cr 
@@ -33,26 +36,29 @@ Whether to render the environment.}
 }
 \description{
 This function creates an environment for reinforcement learning. 
-You could either use an existing environment from OpenAI Gym or specify the 
-transition array and reward matrix for a Markov Decision Process.
+You could either use an existing environment from OpenAI Gym or 
+specify the transition array and reward matrix of a 
+Markov Decision Process.
 }
 \details{
-State and action space can be either "Discrete" or "Box". For the discrete 
-case states and actions are numerated starting from 0.
+State and action space can be either "Discrete" or "Box". In the 
+discrete case states and actions are numerated starting from 0.
 }
 \section{Methods}{
  \describe{
 \item{\code{envir$initialize()}}{Creates a new environment.} 
 \item{\code{envir$step(action, render = TRUE)}}{
-Takes a step in the environment given an action,
-  returns the next state, reward and if the episode is finished (logical). 
-  If a transition array and reward matrix are given, the next step will be 
-  sampled from the MDP, else the step \code{\link[gym]{env_step}} function will be called.
-  If render = TRUE the environment will be rendered.} 
+  Takes a step in the environment given an action,
+  returns the next state, reward and if the episode has finished. 
+  If a transition array and reward matrix are given, the next step 
+  will be sampled from the MDP, else the step 
+  \code{\link[gym]{env_step}} function will be called.
+  If \code{render = TRUE} a Gym environment will be rendered.} 
 \item{\code{envir$reset()}}{Resets the
-  \code{episode.over} flag of the environment and returns an initial state.
+  \code{done} flag of the environment and returns an initial state.
    Useful when starting a new episode.}
-\item{\code{envir$close()}}{Close the python window for a gym environment.}   
+\item{\code{envir$close()}}{Close the python window for a gym 
+  environment.}   
 }
 }
 
@@ -60,7 +66,6 @@ Takes a step in the environment given an action,
 \dontrun{
 # Create an OpenAI Gym environment.
 # Make sure you have Python and Gym installed.
-startServer()
 CartPole = makeEnvironment("CartPole-v0")
 CartPole$reset()
 CartPole$step(action = 0)
