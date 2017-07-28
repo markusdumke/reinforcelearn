@@ -11,13 +11,13 @@
 #' the optimal action value function Q*. The update formula is: 
 #' \deqn{Q(S, A) <- Q(S, A) + \alpha[R + \gamma max_a Q(S', a) - Q(S, A)]}
 #'
-#' @inheritParams params
+#' @inheritParams documentParams
 #'
 #' @return [\code{list(3)}] \cr
 #'   Returns the optimal action value function [\code{matrix}] and the 
 #'   number of steps and rewards per episode [\code{numeric}]
 #' @seealso \code{\link{sarsa}}
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
 #' # Solve the WindyGridworld environment using Q-Learning
@@ -30,7 +30,6 @@ qlearning = function(envir, n.episodes = 100L, learning.rate = 0.1,
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L, 
   initial.value = 0, discount.factor = 1, seed = NULL) {
   
-  # input checking
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
@@ -46,45 +45,42 @@ qlearning = function(envir, n.episodes = 100L, learning.rate = 0.1,
   n.states = envir$n.states
   n.actions = envir$n.actions
   Q = matrix(initial.value, nrow = n.states, ncol = n.actions)
-  steps.per.episode = rep(0, n.episodes)
-  rewards.per.episode = rep(0, n.episodes)
+  episode.steps = rep(0, n.episodes)
+  episode.rewards = rep(0, n.episodes)
   
   for (i in seq_len(n.episodes)) {
-    
     envir$reset()
     state = envir$state
     j = 0
     reward.sum = 0
     
     while (envir$done == FALSE) {
-      
+      j = j + 1
       action = sampleAction(Q[state + 1, ], epsilon)
       envir$step(action)
       next.state = envir$state
-      reward = envir$reward
-      reward.sum = reward.sum + reward
+      reward.sum = reward.sum + envir$reward
       
       # update Q for visited state-action pair maximizing over Q values of next state
-      TD.target = reward + discount.factor * max(Q[next.state + 1, ]) 
-      TD.error = TD.target - Q[state + 1, action + 1] 
-      Q[state + 1, action + 1] = Q[state + 1, action + 1] + learning.rate * TD.error
-      # print(Q)
+      td.target = envir$reward + discount.factor * max(Q[next.state + 1, ]) 
+      td.error = td.target - Q[state + 1, action + 1] 
+      Q[state + 1, action + 1] = Q[state + 1, action + 1] + learning.rate * td.error
       state = next.state
-      j = j + 1
       
       if (envir$done) {
-        steps.per.episode[i] = j
-        rewards.per.episode[i] = reward.sum
+        episode.steps[i] = j
+        episode.rewards[i] = reward.sum
         print(paste("Episode", i, "finished after", j, "time steps."))
         if (i %% epsilon.decay.after == 0) {
           epsilon = epsilon.decay * epsilon
-          print(paste("Average Reward of last", epsilon.decay.after, "episodes:", sum(rewards.per.episode[seq(i - epsilon.decay.after + 1, i)]) / epsilon.decay.after))
+          print(paste("Average Reward of last", epsilon.decay.after, "episodes:", 
+            sum(episode.rewards[seq(i - epsilon.decay.after + 1, i)]) / epsilon.decay.after))
         }
         break
       } 
     }
   }
   
-  list(Q = Q, steps.per.episode = steps.per.episode, 
-    rewards.per.episode = rewards.per.episode)
+  list(Q = Q, episode.steps = episode.steps, 
+    episode.rewards = episode.rewards)
 }

@@ -29,7 +29,7 @@
 #' Possible actions include going left, right, down or up. If an action would
 #' take you off the grid, you remain in the previous state. For each step you
 #' get a reward of -1, until you reach into a terminal state.
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
 #' grid = makeGridworld()

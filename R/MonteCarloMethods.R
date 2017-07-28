@@ -12,9 +12,9 @@
 #' \deqn{V(S) <- V(S) + \alpha[G - V(S')]}
 #' @return [\code{numeric}] \cr
 #'   Returns the state value function v.
-#' @inheritParams params
+#' @inheritParams documentParams
 #' @export
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @import checkmate
 #' @seealso \code{\link{td}}
 #' @examples 
@@ -123,9 +123,9 @@ predictMonteCarlo = function(envir, policy, n.episodes = 100L, v = NULL,
 #' This method uses the first-visit Monte Carlo policy evaluation.
 #' @return [\code{list(2)}] \cr
 #'   Returns the action value function Q and policy
-#' @inheritParams params
+#' @inheritParams documentParams
 #' @export
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @seealso \code{\link{predictMonteCarlo}}
 #' @examples 
 #' grid = makeEnvironment(transition.array = windyGridworld$transitions,

@@ -56,5 +56,5 @@ print(round(matrix(v, ncol = 4, byrow = TRUE)))
 
 }
 \references{
-Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 }

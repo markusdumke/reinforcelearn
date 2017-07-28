@@ -47,7 +47,7 @@ grid = makeEnvironment(transition.array = grid$transition.array,
   reward.matrix = grid$reward.matrix)
 }
 \references{
-Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 }
 \seealso{
 \code{\link{makeEnvironment}}

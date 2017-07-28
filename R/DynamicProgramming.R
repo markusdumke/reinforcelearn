@@ -9,10 +9,10 @@
 #' is smaller than the given precision in all states or if the 
 #' specified number of iterations is exhausted.
 #' 
-#' @inheritParams params
+#' @inheritParams documentParams
 #'
 #' @return [\code{numeric}]\cr Returns the state value function v.
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
 #' # Define uniform random policy, take each action with equal probability
@@ -106,12 +106,12 @@ evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1,
 #' in two subsequent steps or if the 
 #' specified number of iterations is exhausted.
 #'
-#' @inheritParams params
+#' @inheritParams documentParams
 #'
 #' @return [\code{list(2)}] \cr
 #' Returns the optimal state value function [\code{numeric}] 
 #' and the optimal policy [\code{matrix}] (number of states x number of actions)
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @seealso \code{\link{iterateValue}}
 #' @examples
@@ -181,12 +181,12 @@ iteratePolicy = function(envir, initial.policy = NULL,
 #' is smaller than the given precision in all states or if the 
 #' specified number of iterations is exhausted.
 #'
-#' @inheritParams params
+#' @inheritParams documentParams
 #'
 #' @return [\code{list(2)}] \cr
 #'   Returns the optimal state value function [\code{numeric}] 
 #'   and the optimal policy [\code{matrix}] (number of states x number of actions)
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @seealso \code{\link{iteratePolicy}}
 #' @examples

@@ -62,7 +62,7 @@ v = td(grid, random.policy, lambda = 0, n.steps = 1000)
 print(round(matrix(v, ncol = 4, byrow = TRUE)))
 }
 \references{
-Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 }
 \seealso{
 \code{\link{predictMonteCarlo}}

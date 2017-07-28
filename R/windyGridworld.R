@@ -12,7 +12,7 @@
 #' 
 #' @return [\code{R6 class}] \cr
 #'   Returns the windy gridworld environment.
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
 #' grid = makeWindyGridworld()

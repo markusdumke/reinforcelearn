@@ -44,7 +44,7 @@ bandit = R6::R6Class("bandit",
 #' \deqn{argmax_a Q(a) + sqrt( (C * log(t)) / N_t(a) ),} where N_t(a) is the 
 #' number of times action a was selected.
 #' 
-#' @inheritParams params
+#' @inheritParams documentParams
 #' @param alpha [\code{numeric(1)}] \cr 
 #'   Parameter of gradient bandit algorithm, higher alpha 
 #'   value gives more weight to recent rewards 

@@ -100,7 +100,7 @@
 #' @param v [\code{numeric}] \cr 
 #'   Initial state value function.
 #' 
-params = function(policy, initial.policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
+documentParams = function(policy, initial.policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 
   initial.value, initial.visits, C, action.selection, learning.rate, 
   preprocessState, predict, predict2, copy, train, ..., experience.replay, replay.memory, 

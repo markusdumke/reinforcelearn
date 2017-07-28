@@ -49,7 +49,7 @@ grid = makeEnvironment(transition.array = windyGridworld$transitions,
 # res = MonteCarloControl(grid, n.episodes = 100)
 }
 \references{
-Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 }
 \seealso{
 \code{\link{predictMonteCarlo}}

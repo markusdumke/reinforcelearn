@@ -47,7 +47,7 @@ res = iteratePolicy(grid)
 
 }
 \references{
-Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 }
 \seealso{
 \code{\link{iterateValue}}

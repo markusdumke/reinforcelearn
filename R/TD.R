@@ -12,12 +12,12 @@
 #' credit for a reward and therefore are updated more strongly than states 
 #' observed infrequently and longer time ago.
 #'
-#' @inheritParams params
+#' @inheritParams documentParams
 #'
 #' @return [\code{numeric}] \cr
 #'   Returns the state value function v
 #' @export
-#' @references Sutton and Barto (Book draft 2016): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @seealso \code{\link{predictMonteCarlo}}
 #' @examples 
 #' # Define environment, here simple gridworld
