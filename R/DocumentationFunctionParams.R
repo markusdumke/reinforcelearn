@@ -20,8 +20,6 @@
 #'   (this is equivalent to TD(0)), for \code{lambda = 1} 
 #'   all states visited are updated, this is roughly equivalent to 
 #'   every-visit Monte Carlo.
-#' @param bandit [\code{R6 class}] \cr 
-#'   Bandit problem, e.g. \code{\link{bandit}}.
 #' @param n.episodes [\code{integer(1)}] \cr 
 #'   Number of episodes.
 #' @param action.selection [\code{character(1)}] \cr 
@@ -100,11 +98,10 @@
 #' @param v [\code{numeric}] \cr 
 #'   Initial state value function.
 #' 
-documentParams = function(policy, initial.policy, envir, bandit, discount.factor, precision, lambda, epsilon, 
+documentParams = function(policy, initial.policy, envir, discount.factor, precision, lambda, epsilon, 
   epsilon.decay, epsilon.decay.after, seed, method, n.steps, n.episodes, 
   initial.value, initial.visits, C, action.selection, learning.rate, 
   preprocessState, predict, predict2, copy, train, ..., experience.replay, replay.memory, 
   replay.memory.size, initial.replay.memory.size, batch.size, alpha, theta,
   fixed.target, update.target.after, double.qlearning, sigma, v, iter, print.out) {
-  
 }

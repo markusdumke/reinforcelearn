@@ -4,13 +4,13 @@
 \alias{documentParams}
 \title{Documentation of all parameters}
 \usage{
-documentParams(policy, initial.policy, envir, bandit, discount.factor,
-  precision, lambda, epsilon, epsilon.decay, epsilon.decay.after, seed, method,
-  n.steps, n.episodes, initial.value, initial.visits, C, action.selection,
-  learning.rate, preprocessState, predict, predict2, copy, train, ...,
-  experience.replay, replay.memory, replay.memory.size,
-  initial.replay.memory.size, batch.size, alpha, theta, fixed.target,
-  update.target.after, double.qlearning, sigma, v, iter, print.out)
+documentParams(policy, initial.policy, envir, discount.factor, precision,
+  lambda, epsilon, epsilon.decay, epsilon.decay.after, seed, method, n.steps,
+  n.episodes, initial.value, initial.visits, C, action.selection, learning.rate,
+  preprocessState, predict, predict2, copy, train, ..., experience.replay,
+  replay.memory, replay.memory.size, initial.replay.memory.size, batch.size,
+  alpha, theta, fixed.target, update.target.after, double.qlearning, sigma, v,
+  iter, print.out)
 }
 \arguments{
 \item{policy}{[\code{matrix}] \cr 
@@ -22,9 +22,6 @@ A policy specified as a probability matrix (states x actions)}
 \item{envir}{[\code{R6 class}] \cr 
 The reinforcement learning environment
 created by \code{\link{makeEnvironment}}.}
-
-\item{bandit}{[\code{R6 class}] \cr 
-Bandit problem, e.g. \code{\link{bandit}}.}
 
 \item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
 Discounting future rewards.}

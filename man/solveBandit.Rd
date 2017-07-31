@@ -4,14 +4,18 @@
 \alias{solveBandit}
 \title{Solve multi-armed bandit}
 \usage{
-solveBandit(bandit, n.episodes = 100L,
+solveBandit(step, n.actions, n.episodes = 100L,
   action.selection = c("epsilon-greedy", "greedy", "UCB", "gradient-bandit"),
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
   alpha = 0.1, initial.value = 0, initial.visits = 0L, C = 2)
 }
 \arguments{
-\item{bandit}{[\code{R6 class}] \cr 
-Bandit problem, e.g. \code{\link{bandit}}.}
+\item{step}{[\code{function}] \cr 
+A function, which takes an action (a scalar 
+integer) as first argument and returns a numeric scalar reward.}
+
+\item{n.actions}{[\code{integer(1)}] \cr 
+Number of actions.}
 
 \item{n.episodes}{[\code{integer(1)}] \cr 
 Number of episodes.}
@@ -62,25 +66,35 @@ can be seen as actions, after each action the episode ends (there
 are no states). To find the best action, the algorithm is faced with 
 a tradeoff between exploration and exploitation.
 }
-\details{
-Upper-confidence-bound action selection selects actions with 
-\deqn{argmax_a Q(a) + sqrt( (C * log(t)) / N_t(a) ),} where N_t(a) is the 
-number of times action a was selected.
-}
 \examples{
 set.seed(123)
-ExampleBandit = bandit$new()
-solveBandit(ExampleBandit, n.episodes = 1000, 
+# Define reward function
+step = function(action) {
+  if (action == 0) {
+    reward = rnorm(1, mean = 1, sd = 1)
+  }
+  if (action == 1) {
+    reward = rnorm(1, mean = 2, sd = 4)
+  }
+  if (action == 2) {
+    reward = runif(1, min = 0, max = 5)
+  }
+  if (action == 3) {
+    reward = rexp(1, rate = 0.25)
+  }
+  reward
+}
+solveBandit(step, n.actions = 4, n.episodes = 1000, 
   action.selection = "greedy")
-solveBandit(ExampleBandit, n.episodes = 1000, 
+solveBandit(step, n.actions = 4, n.episodes = 1000, 
   action.selection = "epsilon-greedy", epsilon = 0.5)
-solveBandit(ExampleBandit, n.episodes = 1000, 
+solveBandit(step, n.actions = 4, n.episodes = 1000, 
   action.selection = "greedy", 
   initial.value = 5, initial.visits = 100)
-solveBandit(ExampleBandit, n.episodes = 1000, 
+solveBandit(step, n.actions = 4, n.episodes = 1000, 
   action.selection = "UCB", C = 2)
 # true values: 1, 2, 2.5, 4
 # Gradient bandit algorithm
-solveBandit(ExampleBandit, n.episodes = 10000, 
+solveBandit(step, n.actions = 4, n.episodes = 10000, 
   action.selection = "gradient-bandit", alpha = 0.1)
 }
