@@ -153,6 +153,8 @@ makeGridworld = function(shape = c(4L, 4L), terminal.states = c(0L, 15L)) {
   gridworld$new(shape, terminal.states)
 }
 
+# writeLines(". . . .\n. . x .\n. . . .\n. . . .") # visualize gridworld
+
 #' Gridworld
 #'
 #' Simple gridworld environment for reinforcement learning.

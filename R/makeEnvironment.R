@@ -108,8 +108,8 @@ makeEnvironment = function(gym.envir.name = NULL,
           checkmate::assertLogical(render)
           self$gym = TRUE
           self$render = render
-          remote_base = "http://127.0.0.1:5000"
-          client = gym::create_GymClient(remote_base)
+          remote.base = "http://127.0.0.1:5000"
+          client = gym::create_GymClient(remote.base)
           private$client = client
           instance.id = gym::env_create(client, gym.envir.name)
           private$instance.id = instance.id

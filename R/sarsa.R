@@ -63,9 +63,9 @@ sarsa = function(envir, lambda = 0, n.episodes = 100L, learning.rate = 0.1,
       indicator = matrix(0, nrow = n.states, ncol = n.actions)
       indicator[state + 1, action + 1] = 1
       eligibility = discount.factor * lambda * eligibility + indicator
-      TD.target = envir$reward + discount.factor * Q[next.state + 1, next.action + 1]
-      TD.error = TD.target - Q[state + 1, action + 1] 
-      Q = Q + learning.rate * TD.error * eligibility
+      td.target = envir$reward + discount.factor * Q[next.state + 1, next.action + 1]
+      td.error = td.target - Q[state + 1, action + 1] 
+      Q = Q + learning.rate * td.error * eligibility
       
       j = j + 1
       state = next.state
