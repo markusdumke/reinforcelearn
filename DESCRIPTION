@@ -1,7 +1,7 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
-Version: 0.0.0.9071
+Version: 0.0.0.9072
 Author: Markus Dumke
 Maintainer: Markus Dumke <markusdumke@gmail.com>
 Description: Reinforcement Learning algorithms with and without function approximation, e.g. Monte 
@@ -19,6 +19,7 @@ Imports:
     nnet (>= 7.3-12),
     R6 (>= 2.2.0)
 Suggests: gym (>= 0.1.0),
+    keras (>= 0.3.16),
     knitr,
     rmarkdown,
     testthat,

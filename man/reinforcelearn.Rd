@@ -43,6 +43,7 @@ Function Approximation
 \itemize{
 \item \link{gridworld}
 \item \link{windyGridworld}
+\item \link{cliff}
 }
 }
 

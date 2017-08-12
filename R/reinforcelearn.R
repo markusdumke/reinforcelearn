@@ -26,6 +26,7 @@
 #' @section Example Environments:
 #' * [gridworld]
 #' * [windyGridworld]
+#' * [cliff]
 #' 
 #' @name reinforcelearn
 #' @docType package
