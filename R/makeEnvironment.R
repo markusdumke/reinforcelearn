@@ -85,7 +85,8 @@ makeEnvironment = function(gym.envir.name = NULL,
       initial.state = NULL,
       n.actions = NULL,
       n.states = NULL,
-      n.steps = 0L,
+      n.steps = NULL,
+      previous.state = NULL,
       render = NULL,
       reward = NULL,
       reward.matrix = NULL,
@@ -176,6 +177,7 @@ makeEnvironment = function(gym.envir.name = NULL,
       
       step = function(action, render = self$render) {
         self$n.steps = self$n.steps + 1L
+        self$previous.state = self$state
         if (self$gym == TRUE) {
           res = gym::env_step(private$client, private$instance.id, action, render)
           self$state = res$observation
@@ -193,6 +195,7 @@ makeEnvironment = function(gym.envir.name = NULL,
       },
       
       reset = function() {
+        self$n.steps = 0
         if (self$gym == TRUE) {
           self$state = gym::env_reset(private$client, private$instance.id)
         } else {
