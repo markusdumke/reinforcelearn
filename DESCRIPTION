@@ -1,11 +1,10 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
-Version: 0.0.0.9072
+Version: 0.0.0.9100
 Author: Markus Dumke
 Maintainer: Markus Dumke <markusdumke@gmail.com>
-Description: Reinforcement Learning algorithms with and without function approximation, e.g. Monte 
-    Carlo methods and temporal-difference learning in an on-policy or off-policy setting.
+Description: Reinforcement learning algorithms which can be used with function approximation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
