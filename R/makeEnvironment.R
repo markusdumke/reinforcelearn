@@ -32,7 +32,7 @@
 #'   Reinforcement Learning Environment
 #' @section Methods: \describe{
 #' \item{\code{envir$initialize()}}{Creates a new environment.} 
-#' \item{\code{envir$step(action, render = TRUE)}}{
+#' \item{\code{envir$step(action, render)}}{
 #'   Takes a step in the environment given an action,
 #'   returns the next state, reward and if the episode has finished. 
 #'   If a transition array and reward matrix are given, the next step 
@@ -106,7 +106,7 @@ makeEnvironment = function(gym.envir.name = NULL,
               call. = FALSE)
           }
           checkmate::assertCharacter(gym.envir.name)
-          checkmate::assertLogical(render)
+          checkmate::assertFlag(render)
           self$gym = TRUE
           self$render = render
           remote.base = "http://127.0.0.1:5000"
@@ -227,3 +227,6 @@ makeEnvironment = function(gym.envir.name = NULL,
   envir$new(gym.envir.name, transition.array, 
     reward.matrix, initial.state, render)
 }
+
+globalVariables("self")
+globalVariables("private")

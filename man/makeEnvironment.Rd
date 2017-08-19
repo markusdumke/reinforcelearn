@@ -47,7 +47,7 @@ discrete case states and actions are numerated starting from 0.
 \section{Methods}{
  \describe{
 \item{\code{envir$initialize()}}{Creates a new environment.} 
-\item{\code{envir$step(action, render = TRUE)}}{
+\item{\code{envir$step(action, render)}}{
   Takes a step in the environment given an action,
   returns the next state, reward and if the episode has finished. 
   If a transition array and reward matrix are given, the next step 
