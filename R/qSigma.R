@@ -156,7 +156,7 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
       Q2 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
     }
   } else {
-    model %>% compile(loss = 'mse', optimizer = optimizer_sgd(lr = learning.rate))
+    keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = learning.rate))
     if (double.learning) {
       model_ = model
     }
