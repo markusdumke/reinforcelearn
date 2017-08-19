@@ -1,4 +1,4 @@
-library(testthat)
-library(reinforcelearn)
-
-test_check("reinforcelearn")
+# library(testthat)
+# library(reinforcelearn)
+# 
+# test_check("reinforcelearn")
