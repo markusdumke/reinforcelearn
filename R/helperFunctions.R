@@ -28,26 +28,25 @@ improvePolicy = function(Q) {
   policy
 }
 
-
-# Q a numeric vector: the action value function for a given state
-# epsilon numeric scalar in [0, 1]: probability of selecting a random action
-# sampleAction(c(1, 2, 3), epsilon = 0.2)
-sampleAction = function(Q, epsilon) {
-  greedy_action = argmax(Q)
-  random_actions = seq(1, length(Q))
-  # non_greedy_actions = actions[actions != greedy_action]
-  action = sample(c(greedy_action, random_actions), size = 1,  
-    prob = c(1 - epsilon, rep(epsilon / length(random_actions), length(random_actions))))
+sampleActionBandit = function(Q, epsilon) {
+  greedy.action = argmax(Q)
+  random.actions = seq(1, length(Q))
+  # non.greedy.actions = actions[actions != greedy.action]
+  action = sample(c(greedy.action, random.actions), size = 1,
+    prob = c(1 - epsilon, rep(epsilon / length(random.actions), length(random.actions))))
   action - 1L
 }
 
-# returns probabilities of actions according to epsilon-greedy policy
-# Q: matrix
-returnPolicy = function(Q, epsilon = 0) {
-  greedy.actions = apply(Q, 1, argmax)
-  policy = matrix(0, nrow = nrow(Q), ncol = ncol(Q))
-  policy[matrix(c(seq_len(nrow(Q)), greedy.actions), ncol = 2)] = 1 - epsilon
-  policy + epsilon / ncol(Q)
+# returnPolicy = function(Q, epsilon = 0) {
+#   greedy.action = argmax(Q) # apply(Q, 1, argmax)
+#   n.actions = length(Q)
+#   policy = matrix(0, nrow = 1, ncol = n.actions)
+#   policy[matrix(c(seq_len(n.actions), greedy.action), ncol = 2)] = 1 - epsilon
+#   policy + epsilon / n.actions
+# }
+
+sampleAction2 = function(policy) {
+  sample(seq_len(ncol(policy)), prob = policy[1, ], size = 1) - 1L
 }
 
 # Argmax (ties broken randomly)

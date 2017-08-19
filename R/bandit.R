@@ -27,6 +27,7 @@
 #'
 #' @examples
 #' set.seed(123)
+#' 
 #' # Define reward function
 #' step = function(action) {
 #'   if (action == 0) {
@@ -43,6 +44,7 @@
 #'   }
 #'   reward
 #' }
+#' 
 #' solveBandit(step, n.actions = 4, n.episodes = 1000, 
 #'   action.selection = "greedy")
 #' solveBandit(step, n.actions = 4, n.episodes = 1000, 
@@ -53,6 +55,7 @@
 #' solveBandit(step, n.actions = 4, n.episodes = 1000, 
 #'   action.selection = "UCB", C = 2)
 #' # true values: 1, 2, 2.5, 4
+#' 
 #' # Gradient bandit algorithm
 #' solveBandit(step, n.actions = 4, n.episodes = 10000, 
 #'   action.selection = "gradient-bandit", alpha = 0.1)
@@ -86,7 +89,7 @@ solveBandit = function(step, n.actions, n.episodes = 100L,
       if (i %% epsilon.decay.after == 0) {
         epsilon = epsilon * epsilon.decay
       }
-      action = sampleAction(Q, epsilon)
+      action = sampleActionBandit(Q, epsilon)
     }
     if (action.selection == "UCB") {
       if (any(action.visits == 0)) {
@@ -111,7 +114,7 @@ solveBandit = function(step, n.actions, n.episodes = 100L,
       total.reward = sum(rewards)
       total.action.visits = sum(action.visits)
       average.reward = total.reward / total.action.visits
-      H[ - action + 1] = H[ - action + 1] - alpha * (reward - average.reward) * Q[ - action + 1]
+      H[- action + 1] = H[- action + 1] - alpha * (reward - average.reward) * Q[ - action + 1]
       H[action + 1] = H[action + 1] + alpha * 
         (reward - average.reward) * (1 - Q[action + 1])
     }

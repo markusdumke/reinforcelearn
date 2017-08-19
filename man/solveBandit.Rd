@@ -68,6 +68,7 @@ a tradeoff between exploration and exploitation.
 }
 \examples{
 set.seed(123)
+
 # Define reward function
 step = function(action) {
   if (action == 0) {
@@ -84,6 +85,7 @@ step = function(action) {
   }
   reward
 }
+
 solveBandit(step, n.actions = 4, n.episodes = 1000, 
   action.selection = "greedy")
 solveBandit(step, n.actions = 4, n.episodes = 1000, 
@@ -94,6 +96,7 @@ solveBandit(step, n.actions = 4, n.episodes = 1000,
 solveBandit(step, n.actions = 4, n.episodes = 1000, 
   action.selection = "UCB", C = 2)
 # true values: 1, 2, 2.5, 4
+
 # Gradient bandit algorithm
 solveBandit(step, n.actions = 4, n.episodes = 10000, 
   action.selection = "gradient-bandit", alpha = 0.1)
