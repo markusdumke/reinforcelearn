@@ -47,10 +47,10 @@
 #'   Must be smaller than size of the replay memory!
 #' @param alpha [\code{numeric(1) in [0, 1]}] \cr 
 #'   If \code{alpha = 0} sampling from replay memory will be uniform, otherwise observations with
-#'   high temporal-difference error will be proportionally prioritized. Not implemented!
+#'   high temporal-difference error will be proportionally prioritized.
 #' @param theta [\code{numeric(1) in (0, 1]}] \cr 
 #'   \code{theta} is a small positive constant that prevents the edge-case of transitions not being 
-#'   revisited once their error is zero. Not implemented!
+#'   revisited once their error is zero.
 #' @param model [\code{keras model}] \cr 
 #'   A neural network model specified using the \code{keras} package. 
 #'   See Details for more information.
@@ -165,6 +165,7 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
   if (is.null(replay.memory)) {
     replay.memory = initializeReplayMemory(envir, replay.memory.size)
   }
+  priority = rep(1, times = replay.memory.size)
   replay.steps = 0
   episode.steps = rep(0, n.episodes)
   
@@ -175,16 +176,23 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
       if (replay.steps > replay.memory.size) {
         replay.steps = 1
       }
+      priority[replay.steps] = max(priority)
       data = interactWithEnvironment(value.function, envir, preprocessState, Q1, model, epsilon) # use Q1 + Q2
       replay.memory = add2ReplayMemory(replay.memory, data, index = replay.steps)
-      batch = sampleBatch(replay.memory, batch.size)
+      probability = priority ^ alpha / sum(priority ^ alpha)
+      indexes = sample(seq_along(replay.memory), size = batch.size, prob = probability)
+      batch = sampleBatch(replay.memory, batch.size, indexes)
       if (double.learning) {
-        Q1 = trainModel(value.function, batch, preprocessState, Q1, Q2, model, model_, 
-          epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size)
+        res = trainModel(value.function, batch, preprocessState, Q1, Q2, model, model_, 
+          epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size,
+          priority, theta, indexes)
       } else {
-        Q1 = trainModel(value.function, batch, preprocessState, Q1, Q1, model, model, 
-          epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size)
+        res = trainModel(value.function, batch, preprocessState, Q1, Q1, model, model, 
+          epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size,
+          priority, theta, indexes)
       }
+      Q1 = res$Q
+      priority = res$priority
       if (double.learning & (envir$n.steps %% update.target.after == 0)) {
         Q2 = updateTargetModel(value.function, Q1, Q2, model, model_)
       }
@@ -263,9 +271,7 @@ add2ReplayMemory = function(replay.memory, data, index) {
   replay.memory
 }
 
-sampleBatch = function(replay.memory, batch.size) {
-  probability = rep(1, length(replay.memory)) # priority ^ alpha / sum(priority ^ alpha)
-  indexes = sample(seq_along(replay.memory), size = batch.size, prob = probability)
+sampleBatch = function(replay.memory, batch.size, indexes) {
   batch = replay.memory[indexes]
   states = lapply(batch, "[[", "state")
   next.states = lapply(batch, "[[", "next.state")
@@ -277,14 +283,14 @@ sampleBatch = function(replay.memory, batch.size) {
 }
 
 trainModel = function(value.function, batch, preprocessState, Q1, Q2, model, model_, 
-  epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size) {
+  epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size, 
+  priority, theta, indexes) {
   td.target = computeTDTarget(value.function, batch, preprocessState, Q1, Q2, model, model_, 
     epsilon.target, discount.factor, sigma, epsilon, batch.size)
-  if (value.function == "table") {
-    td.error = computeTDError(value.function, batch, td.target, preprocessState, Q1, model)
-  }
+  td.error = computeTDError(value.function, batch, td.target, preprocessState, Q1, model)
   Q = updateQ(value.function, preprocessState, Q1, model, batch, learning.rate, td.target, td.error)
-  Q
+  priority = updatePriority(priority, td.error, theta, indexes)
+  list(Q = Q, priority = priority)
 }
 
 computeTDTarget = function(value.function, batch, preprocessState, Q1, Q2, 
@@ -335,4 +341,9 @@ updateTargetModel = function(value.function, Q1, Q2, model, model_) {
   } else if (value.function == "neural.network") {
     keras::set_weights(model_, keras::get_weights(model))
   }
+}
+
+updatePriority = function(priority, td.error, theta, indexes) {
+  priority[indexes] = abs(td.error) + theta
+  priority
 }

@@ -100,11 +100,11 @@ Must be smaller than size of the replay memory!}
 
 \item{alpha}{[\code{numeric(1) in [0, 1]}] \cr 
 If \code{alpha = 0} sampling from replay memory will be uniform, otherwise observations with
-high temporal-difference error will be proportionally prioritized. Not implemented!}
+high temporal-difference error will be proportionally prioritized.}
 
 \item{theta}{[\code{numeric(1) in (0, 1]}] \cr 
 \code{theta} is a small positive constant that prevents the edge-case of transitions not being 
-revisited once their error is zero. Not implemented!}
+revisited once their error is zero.}
 
 \item{model}{[\code{keras model}] \cr 
 A neural network model specified using the \code{keras} package. 
