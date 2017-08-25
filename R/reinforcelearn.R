@@ -9,19 +9,14 @@
 #' @section Algorithms:
 #' Dynamic Programming: 
 #' * [evaluatePolicy]
+#' * [iteratePolicy]
+#' * [iterateValue]
 #' 
 #' Model-free Reinforcement Learning
-#' Monte Carlo Methods:
-#' * [predictMonteCarlo]
-#' * [MonteCarloControl]
-#' 
-#' Temporal-Difference Learning:
-#' * [td]
+#' * [qSigma]
 #' * [sarsa]
 #' * [qlearning]
-#' 
-#' Function Approximation
-#' 
+#' * [expectedSarsa]
 #' 
 #' @section Example Environments:
 #' * [gridworld]

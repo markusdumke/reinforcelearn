@@ -19,23 +19,17 @@ Create an environment using \link{makeEnvironment}.
 Dynamic Programming:
 \itemize{
 \item \link{evaluatePolicy}
+\item \link{iteratePolicy}
+\item \link{iterateValue}
 }
 
 Model-free Reinforcement Learning
-Monte Carlo Methods:
 \itemize{
-\item \link{predictMonteCarlo}
-\item \link{MonteCarloControl}
-}
-
-Temporal-Difference Learning:
-\itemize{
-\item \link{td}
+\item \link{qSigma}
 \item \link{sarsa}
 \item \link{qlearning}
+\item \link{expectedSarsa}
 }
-
-Function Approximation
 }
 
 \section{Example Environments}{
