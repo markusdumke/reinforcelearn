@@ -13,7 +13,7 @@
 #'   between the two targets is used.
 #' @param lambda [\code{numeric(1) in [0, 1]}] \cr 
 #'   The \code{lambda} parameter combines different n-step returns using eligibility traces. 
-#'   Not implemented!
+#'   Only used if the replay memory is of size 1, i.e. no experience replay is used.
 #' @param n.episodes [\code{integer(1)}] \cr 
 #'   Number of episodes.
 #' @param learning.rate [\code{R6 class}] \cr 
@@ -60,7 +60,10 @@
 #' @param update.target.after [\code{integer(1)}] \cr 
 #'   When using double learning the target network / table will be updated after 
 #'   \code{update.target.after} steps.
-#' 
+#' @param eligibility [\code{character(1)}] \cr 
+#'   Type of eligibility trace, could be \code{"replace"} for replacing traces or 
+#'   \code{"accumulate"} for accumulating traces. Only used if the replay memory is of size 1, 
+#'   i.e. no experience replay is used.
 #' @rdname qSigma
 #' @return [\code{list(2)}] \cr
 #'   Returns the action value function or model parameters [\code{matrix}] and the 
@@ -104,11 +107,9 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
   epsilon.decay.after = 100, initial.value = 0, discount.factor = 1, 
   on.policy = TRUE, double.learning = FALSE, replay.memory = NULL, 
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
-  model = NULL, preprocessState = NULL, update.target.after = 1) {
+  model = NULL, preprocessState = NULL, update.target.after = 1, eligibility = "accumulate") {
   
-  # Fixme: add prioritization of experience replay
-  # Fixme: add eligibility traces
-  # Fixme: implement this as R6 class methods
+  # Fixme: implement this as class methods, add documentation and tests
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$action.space == "Discrete")
@@ -130,6 +131,7 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
     stop("Batch size must be smaller than replay memory size!")
   }
   checkmate::assertChoice(value.function, c("table", "neural.network", "linear"))
+  checkmate::assertChoice(eligibility, c("accumulate", "replace"))
   # checkmate::assertFlag(experience.replay)
   checkmate::assertFlag(on.policy)
   checkmate::assertFlag(double.learning)
@@ -170,7 +172,11 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
   episode.steps = rep(0, n.episodes)
   
   for (i in seq_len(n.episodes)) {
+    if (value.function == "table") {
+      E = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+    }
     envir$reset()
+    
     while(envir$done == FALSE) {
       replay.steps = replay.steps + 1
       if (replay.steps > replay.memory.size) {
@@ -178,6 +184,11 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
       }
       priority[replay.steps] = max(priority)
       data = interactWithEnvironment(value.function, envir, preprocessState, Q1, model, epsilon) # use Q1 + Q2
+      if (value.function == "table" & replay.memory.size == 1) {
+        E = increaseEligibility(eligibility, E, data$state, data$action)
+      } else {
+        E = 1
+      }
       replay.memory = add2ReplayMemory(replay.memory, data, index = replay.steps)
       probability = priority ^ alpha / sum(priority ^ alpha)
       indexes = sample(seq_along(replay.memory), size = batch.size, prob = probability)
@@ -185,14 +196,17 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
       if (double.learning) {
         res = trainModel(value.function, batch, preprocessState, Q1, Q2, model, model_, 
           epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size,
-          priority, theta, indexes)
+          priority, theta, indexes, E, replay.memory.size)
       } else {
         res = trainModel(value.function, batch, preprocessState, Q1, Q1, model, model, 
           epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size,
-          priority, theta, indexes)
+          priority, theta, indexes, E, replay.memory.size)
       }
       Q1 = res$Q
       priority = res$priority
+      if (value.function == "table" & replay.memory.size == 1) {
+        E = reduceEligibility(E, lambda, discount.factor)
+      }
       if (double.learning & (envir$n.steps %% update.target.after == 0)) {
         Q2 = updateTargetModel(value.function, Q1, Q2, model, model_)
       }
@@ -266,6 +280,21 @@ sampleAction = function(policy, size) {
   action
 }
 
+increaseEligibility = function(eligibility, E, state, action) {
+  if (eligibility == "accumulate") {
+    E[state + 1, action + 1] = E[state + 1, action + 1] + 1
+  } else {
+    E[state + 1, ] = 0
+    E[state + 1, action + 1] = 1
+  }
+  E
+}
+
+reduceEligibility = function(E, lambda, discount.factor) {
+  E = lambda * discount.factor * E
+  E
+}
+
 add2ReplayMemory = function(replay.memory, data, index) {
   replay.memory[[index]] = data
   replay.memory
@@ -284,11 +313,12 @@ sampleBatch = function(replay.memory, batch.size, indexes) {
 
 trainModel = function(value.function, batch, preprocessState, Q1, Q2, model, model_, 
   epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size, 
-  priority, theta, indexes) {
+  priority, theta, indexes, E, replay.memory.size) {
   td.target = computeTDTarget(value.function, batch, preprocessState, Q1, Q2, model, model_, 
     epsilon.target, discount.factor, sigma, epsilon, batch.size)
   td.error = computeTDError(value.function, batch, td.target, preprocessState, Q1, model)
-  Q = updateQ(value.function, preprocessState, Q1, model, batch, learning.rate, td.target, td.error)
+  Q = updateQ(value.function, preprocessState, Q1, model, batch, learning.rate, 
+    td.target, td.error, E, replay.memory.size)
   priority = updatePriority(priority, td.error, theta, indexes)
   list(Q = Q, priority = priority)
 }
@@ -320,13 +350,17 @@ computeTDError = function(value.function, batch, td.target, preprocessState, Q1,
   td.error
 }
 
-updateQ = function(value.function, preprocessState, Q1, model, batch, learning.rate, td.target, td.error) {
+updateQ = function(value.function, preprocessState, Q1, model, batch, learning.rate, td.target, td.error, E, replay.memory.size) {
   states = t(sapply(batch$states, preprocessState))
   Q.state = predictQ(value.function, states, Q1, model)
   actions = batch$actions
   if (value.function == "table") {
-    Q1[matrix(c(states + 1, actions + 1), ncol = 2)] = Q1[matrix(c(states + 1, actions + 1), ncol = 2)] +
-      learning.rate * td.error
+    if (replay.memory.size == 1) {
+      Q1 = Q1 + learning.rate * td.error * E
+    } else {
+      Q1[matrix(c(states + 1, actions + 1), ncol = 2)] = Q1[matrix(c(states + 1, actions + 1), ncol = 2)] +
+        learning.rate * td.error * E
+    }
     return(Q1)
   } else if (value.function == "neural.network") {
     y = Q.state

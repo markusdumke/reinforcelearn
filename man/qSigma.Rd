@@ -13,28 +13,31 @@ qSigma(envir, value.function = "table", sigma = 1, lambda = 0,
   discount.factor = 1, on.policy = TRUE, double.learning = FALSE,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
   alpha = 0, theta = 0.01, model = NULL, preprocessState = NULL,
-  update.target.after = 1)
+  update.target.after = 1, eligibility = "accumulate")
 
 qlearning(envir, value.function = "table", lambda = 0, n.episodes = 100,
   learning.rate = 0.1, epsilon = 0.1, epsilon.decay = 0.5,
   epsilon.decay.after = 100, initial.value = 0, discount.factor = 1,
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, model = NULL,
-  preprocessState = NULL, update.target.after = 1)
+  preprocessState = NULL, update.target.after = 1,
+  eligibility = "accumulate")
 
 sarsa(envir, value.function = "table", lambda = 0, n.episodes = 100,
   learning.rate = 0.1, epsilon = 0.1, epsilon.decay = 0.5,
   epsilon.decay.after = 100, initial.value = 0, discount.factor = 1,
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, model = NULL,
-  preprocessState = NULL, update.target.after = 1)
+  preprocessState = NULL, update.target.after = 1,
+  eligibility = "accumulate")
 
 expectedSarsa(envir, value.function = "table", lambda = 0,
   n.episodes = 100, learning.rate = 0.1, epsilon = 0.1,
   epsilon.decay = 0.5, epsilon.decay.after = 100, initial.value = 0,
   discount.factor = 1, double.learning = FALSE, replay.memory = NULL,
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
-  model = NULL, preprocessState = NULL, update.target.after = 1)
+  model = NULL, preprocessState = NULL, update.target.after = 1,
+  eligibility = "accumulate")
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr 
@@ -53,7 +56,7 @@ between the two targets is used.}
 
 \item{lambda}{[\code{numeric(1) in [0, 1]}] \cr 
 The \code{lambda} parameter combines different n-step returns using eligibility traces. 
-Not implemented!}
+Only used if the replay memory is of size 1, i.e. no experience replay is used.}
 
 \item{n.episodes}{[\code{integer(1)}] \cr 
 Number of episodes.}
@@ -117,6 +120,11 @@ preprocesses this in a way the algorithm can work with it. See Details for more 
 \item{update.target.after}{[\code{integer(1)}] \cr 
 When using double learning the target network / table will be updated after 
 \code{update.target.after} steps.}
+
+\item{eligibility}{[\code{character(1)}] \cr 
+Type of eligibility trace, could be \code{"replace"} for replacing traces or 
+\code{"accumulate"} for accumulating traces. Only used if the replay memory is of size 1, 
+i.e. no experience replay is used.}
 }
 \value{
 [\code{list(2)}] \cr
