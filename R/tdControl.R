@@ -6,14 +6,14 @@ qlearning = function(envir, value.function = "table", lambda = 0,
   epsilon.decay.after = 100, initial.value = 0, discount.factor = 1, 
   double.learning = FALSE, replay.memory = NULL, 
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
-  model = NULL, preprocessState = NULL, update.target.after = 1) {
+  model = NULL, preprocessState = NULL, update.target.after = 1, eligibility = "accumulate") {
   
   qSigma(envir, value.function, sigma = 0, lambda, 
     n.episodes, learning.rate, epsilon, epsilon.decay, 
     epsilon.decay.after, initial.value, discount.factor, 
     on.policy = FALSE, double.learning, replay.memory, 
     replay.memory.size, batch.size, alpha, theta, 
-    model, preprocessState, update.target.after)
+    model, preprocessState, update.target.after, eligibility)
 }
 
 #' @export
@@ -24,14 +24,14 @@ sarsa = function(envir, value.function = "table", lambda = 0,
   epsilon.decay.after = 100, initial.value = 0, discount.factor = 1, 
   double.learning = FALSE, replay.memory = NULL, 
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
-  model = NULL, preprocessState = NULL, update.target.after = 1) {
+  model = NULL, preprocessState = NULL, update.target.after = 1, eligibility = "accumulate") {
   
   qSigma(envir, value.function, sigma = 1, lambda, 
     n.episodes, learning.rate, epsilon, epsilon.decay, 
     epsilon.decay.after, initial.value, discount.factor, 
     on.policy = TRUE, double.learning, replay.memory, 
     replay.memory.size, batch.size, alpha, theta, 
-    model, preprocessState, update.target.after)
+    model, preprocessState, update.target.after, eligibility)
 }
 
 #' @export
@@ -42,12 +42,12 @@ expectedSarsa = function(envir, value.function = "table", lambda = 0,
   epsilon.decay.after = 100, initial.value = 0, discount.factor = 1, 
   double.learning = FALSE, replay.memory = NULL, 
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
-  model = NULL, preprocessState = NULL, update.target.after = 1) {
+  model = NULL, preprocessState = NULL, update.target.after = 1, eligibility = "accumulate") {
   
   qSigma(envir, value.function, sigma = 0, lambda, 
     n.episodes, learning.rate, epsilon, epsilon.decay, 
     epsilon.decay.after, initial.value, discount.factor, 
     on.policy = TRUE, double.learning, replay.memory, 
     replay.memory.size, batch.size, alpha, theta, 
-    model, preprocessState, update.target.after)
+    model, preprocessState, update.target.after, eligibility)
 }
