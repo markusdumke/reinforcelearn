@@ -18,7 +18,6 @@
 #'   Returns the state value function v
 #' @export
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
-#' @seealso \code{\link{predictMonteCarlo}}
 #' @examples 
 #' # Define environment, here simple gridworld
 #' grid = makeEnvironment(transition.array = gridworld$transitions, 
@@ -72,9 +71,9 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
     indicator[state + 1] = 1
     
     eligibility = discount.factor * lambda * eligibility + indicator
-    TD.target = envir$reward + discount.factor * v[envir$state + 1]
-    TD.error = TD.target - v[state + 1]
-    v = v + learning.rate * TD.error * eligibility
+    td.target = envir$reward + discount.factor * v[envir$state + 1]
+    td.error = td.target - v[state + 1]
+    v = v + learning.rate * td.error * eligibility
     state = envir$state
     
     if (envir$done == TRUE) {
@@ -88,10 +87,10 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
 }
 
 
-# rewards reward vector
-# v value function from state (S_t+n)
-compute_nstep_return = function(rewards, discount.factor, v) {
-  
-  sum(discount.factor ^ seq(0, length(rewards)) * c(rewards, v))
-}
-
+# # rewards reward vector
+# # v value function from state (S_t+n)
+# compute_nstep_return = function(rewards, discount.factor, v) {
+#   
+#   sum(discount.factor ^ seq(0, length(rewards)) * c(rewards, v))
+# }
+# 

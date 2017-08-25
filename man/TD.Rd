@@ -64,6 +64,3 @@ print(round(matrix(v, ncol = 4, byrow = TRUE)))
 \references{
 Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 }
-\seealso{
-\code{\link{predictMonteCarlo}}
-}
