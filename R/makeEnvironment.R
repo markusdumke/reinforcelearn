@@ -169,7 +169,7 @@ makeEnvironment = function(gym.envir.name = NULL,
           if (is.null(initial.state)) {
             self$initial.state = self$states[self$states != self$terminal.states]
           } else {
-            assertIntegerish(initial.state)
+            checkmate::assertIntegerish(initial.state)
             self$initial.state = initial.state
           }
         }
