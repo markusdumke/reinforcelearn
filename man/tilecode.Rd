@@ -4,9 +4,8 @@
 \alias{tilecode}
 \title{Tile Coding}
 \usage{
-tilecode(x, y, n.tilings = 2, n.tiles = 4, tilemove.x = -0.2125/n.tilings,
-  tilemove.y = -0.0175/n.tilings, lower.bound.x = -1.2,
-  lower.bound.y = -0.07, upper.bound.x = 0.6, upper.bound.y = 0.07)
+tilecode(x, y, n.tilings, n.tiles, tilemove.x, tilemove.y, lower.bound.x,
+  lower.bound.y, upper.bound.x, upper.bound.y)
 }
 \arguments{
 \item{x}{[\code{numeric(1)}] \cr x: first dimension of the state.}

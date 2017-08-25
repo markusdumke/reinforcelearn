@@ -31,9 +31,8 @@
 #'   lower.bound.x = bounds[[1]][1], lower.bound.y = bounds[[2]][1], 
 #'   upper.bound.x = bounds[[1]][2], upper.bound.y = bounds[[2]][2])
 #' }
-tilecode = function(x, y, n.tilings = 2, n.tiles = 4, tilemove.x = - 0.2125 / n.tilings, 
-  tilemove.y = - 0.0175 / n.tilings, lower.bound.x = - 1.2, lower.bound.y = - 0.07, 
-  upper.bound.x = 0.6, upper.bound.y = 0.07) {
+tilecode = function(x, y, n.tilings, n.tiles, tilemove.x, tilemove.y, 
+  lower.bound.x, lower.bound.y, upper.bound.x, upper.bound.y) {
   
   x = x - lower.bound.x
   y = y - lower.bound.y
