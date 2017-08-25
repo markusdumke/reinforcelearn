@@ -35,8 +35,8 @@ tilecode(x, y, n.tilings, n.tiles, tilemove.x, tilemove.y, lower.bound.x,
 Tile Coding for a two-dimensional state space with uniformly offset tilings.
 }
 \examples{
-tilecode(x = 0.3, y = 0.1, n.tilings = 2, tilemove.x =  - 0.4 / n.tilings, 
-  tilemove.y = - 0.4 / n.tilings, lower.bound.x = 0, lower.bound.y = 0, 
+tilecode(x = 0.3, y = 0.1, n.tilings = 2, n.tiles = 4, tilemove.x =  - 0.4 / 2, 
+  tilemove.y = - 0.4 / 2, lower.bound.x = 0, lower.bound.y = 0, 
   upper.bound.x = 1, upper.bound.y = 1)
 
 \dontrun{
