@@ -25,6 +25,7 @@ Dynamic Programming:
 
 Model-free Reinforcement Learning
 \itemize{
+\item \link{td}
 \item \link{qSigma}
 \item \link{sarsa}
 \item \link{qlearning}

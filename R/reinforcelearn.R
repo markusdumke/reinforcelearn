@@ -13,6 +13,7 @@
 #' * [iterateValue]
 #' 
 #' Model-free Reinforcement Learning
+#' * [td]
 #' * [qSigma]
 #' * [sarsa]
 #' * [qlearning]
