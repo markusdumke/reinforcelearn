@@ -5,39 +5,43 @@
 \alias{qlearning}
 \alias{sarsa}
 \alias{expectedSarsa}
-\title{Q Sigma}
+\title{Q Learning}
 \usage{
-qSigma(envir, value.function = "table", sigma = 1, lambda = 0,
-  n.episodes = 100, learning.rate = 0.1, epsilon = 0.1,
-  epsilon.decay = 0.5, epsilon.decay.after = 100, initial.value = 0,
-  discount.factor = 1, on.policy = TRUE, double.learning = FALSE,
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, model = NULL, preprocessState = NULL,
-  update.target.after = 1, eligibility = "accumulate")
-
-qlearning(envir, value.function = "table", lambda = 0, n.episodes = 100,
-  learning.rate = 0.1, epsilon = 0.1, epsilon.decay = 0.5,
-  epsilon.decay.after = 100, initial.value = 0, discount.factor = 1,
-  double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
-  batch.size = 1, alpha = 0, theta = 0.01, model = NULL,
-  preprocessState = NULL, update.target.after = 1,
-  eligibility = "accumulate")
-
-sarsa(envir, value.function = "table", lambda = 0, n.episodes = 100,
-  learning.rate = 0.1, epsilon = 0.1, epsilon.decay = 0.5,
-  epsilon.decay.after = 100, initial.value = 0, discount.factor = 1,
-  double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
-  batch.size = 1, alpha = 0, theta = 0.01, model = NULL,
-  preprocessState = NULL, update.target.after = 1,
-  eligibility = "accumulate")
-
-expectedSarsa(envir, value.function = "table", lambda = 0,
-  n.episodes = 100, learning.rate = 0.1, epsilon = 0.1,
-  epsilon.decay = 0.5, epsilon.decay.after = 100, initial.value = 0,
-  discount.factor = 1, double.learning = FALSE, replay.memory = NULL,
+qSigma(envir, value.function = "table", n.episodes = 100, sigma = 1,
+  lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount.factor = 1,
+  on.policy = TRUE, double.learning = FALSE, replay.memory = NULL,
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
-  model = NULL, preprocessState = NULL, update.target.after = 1,
-  eligibility = "accumulate")
+  eligibility = "accumulate", update.target.after = 1,
+  preprocessState = NULL, model = NULL, updateEpsilon = NULL,
+  updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
+  updateLearningRate = NULL, updateTheta = NULL, initial.value = 0)
+
+qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
+  learning.rate = 0.1, epsilon = 0.1, discount.factor = 1,
+  double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
+  batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
+  update.target.after = 1, preprocessState = NULL, model = NULL,
+  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
+  updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
+  initial.value = 0)
+
+sarsa(envir, value.function = "table", n.episodes = 100, lambda = 0,
+  learning.rate = 0.1, epsilon = 0.1, discount.factor = 1,
+  double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
+  batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
+  update.target.after = 1, preprocessState = NULL, model = NULL,
+  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
+  updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
+  initial.value = 0)
+
+expectedSarsa(envir, value.function = "table", n.episodes = 100,
+  lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount.factor = 1,
+  double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
+  batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
+  update.target.after = 1, preprocessState = NULL, model = NULL,
+  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
+  updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
+  initial.value = 0)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr 
@@ -47,6 +51,9 @@ created by \code{\link{makeEnvironment}}.}
 \item{value.function}{[\code{character(1)}] \cr 
 How to represent the value function? Currently are \code{"table"} 
 and \code{"neural.network"} are supported.}
+
+\item{n.episodes}{[\code{integer(1)}] \cr 
+Number of episodes.}
 
 \item{sigma}{[\code{numeric(1) in [0, 1]}] \cr 
 Parameter of the Q(sigma) algorithm. It controls if the temporal-difference target 
@@ -58,25 +65,11 @@ between the two targets is used.}
 The \code{lambda} parameter combines different n-step returns using eligibility traces. 
 Only used if the replay memory is of size 1, i.e. no experience replay is used.}
 
-\item{n.episodes}{[\code{integer(1)}] \cr 
-Number of episodes.}
-
 \item{learning.rate}{[\code{R6 class}] \cr 
 Learning rate used for gradient descent.}
 
 \item{epsilon}{[\code{numeric(1) in [0, 1]}] \cr 
 Ratio of random exploration in epsilon-greedy action selection.}
-
-\item{epsilon.decay}{[\code{numeric(1) in [0, 1]}] \cr 
-Decay \code{epsilon} by multiplying with this factor.}
-
-\item{epsilon.decay.after}{[\code{integer(1)}] \cr 
-Number of episodes after which to decay epsilon.}
-
-\item{initial.value}{[\code{numeric(1)}] \cr 
-Initial value for the value function. Only used with a tabular value function. 
-Set this to the maximal possible reward to encourage
-exploration (optimistic initialization).}
 
 \item{discount.factor}{[\code{numeric(1) in [0, 1]}] \cr 
 Discount factor.}
@@ -91,8 +84,9 @@ Should double learning be used?}
 
 \item{replay.memory}{[\code{list}] \cr 
 Initial replay memory, which can be passed on. Make sure, it is the same size as 
-\code{replay.memory.size}. When omitted, the replay memory will be 
-initially filled with random experiences.}
+\code{replay.memory.size}. Each list element must be a list containing state, action, 
+reward and next.state. When the \code{replay.memory} argument is \code{NULL}, 
+the replay memory will be initially filled with random experiences.}
 
 \item{replay.memory.size}{[\code{integer(1)}] \cr 
 Size of the replay memory.}
@@ -109,22 +103,52 @@ high temporal-difference error will be proportionally prioritized.}
 \code{theta} is a small positive constant that prevents the edge-case of transitions not being 
 revisited once their error is zero.}
 
-\item{model}{[\code{keras model}] \cr 
-A neural network model specified using the \code{keras} package. 
-See Details for more information.}
-
-\item{preprocessState}{[\code{function}] \cr 
-A function that takes the state observation returned from the environment as an input and 
-preprocesses this in a way the algorithm can work with it. See Details for more information.}
+\item{eligibility}{[\code{character(1)}] \cr 
+Type of eligibility trace, could be \code{"replace"} for replacing traces, 
+\code{"accumulate"} for accumulating traces or \code{"dutch"} for dutch traces. 
+Only used if the replay memory is of size 1, i.e. no experience replay is used.}
 
 \item{update.target.after}{[\code{integer(1)}] \cr 
 When using double learning the target network / table will be updated after 
 \code{update.target.after} steps.}
 
-\item{eligibility}{[\code{character(1)}] \cr 
-Type of eligibility trace, could be \code{"replace"} for replacing traces or 
-\code{"accumulate"} for accumulating traces. Only used if the replay memory is of size 1, 
-i.e. no experience replay is used.}
+\item{preprocessState}{[\code{function}] \cr 
+A function that takes the state observation returned from the environment as an input and 
+preprocesses this in a way the algorithm can work with it. See Details for more information.}
+
+\item{model}{[\code{keras model}] \cr 
+A neural network model specified using the \code{keras} package. 
+See Details for more information.}
+
+\item{updateEpsilon}{[\code{function]}] \cr 
+A function that updates epsilon. It takes two arguments, \code{epsilon} and the current number 
+of episodes which are finished, and returns the new \code{epsilon} value.}
+
+\item{updateSigma}{[\code{function]}] \cr 
+A function that updates sigma. It takes two arguments, \code{sigma} and the current number 
+of episodes which are finished, and returns the new \code{sigma} value.}
+
+\item{updateLambda}{[\code{function]}] \cr 
+A function that updates lambda. It takes two arguments, \code{lambda} and the current number 
+of episodes which are finished, and returns the new \code{lambda} value.}
+
+\item{updateAlpha}{[\code{function]}] \cr 
+A function that updates alpha. It takes two arguments, \code{alpha} and the current number 
+of episodes which are finished, and returns the new \code{alpha} value.}
+
+\item{updateLearningRate}{[\code{function]}] \cr 
+A function that updates the learning rate. It takes two arguments, \code{learning.rate} 
+and the current number of episodes which are finished, and returns the new 
+\code{learning.rate} value.}
+
+\item{updateTheta}{[\code{function]}] \cr 
+A function that updates theta. It takes two arguments, \code{theta} and the current number 
+of episodes which are finished, and returns the new \code{theta} value.}
+
+\item{initial.value}{[\code{numeric(1)}] \cr 
+Initial value for the value function. Only used with a tabular value function. 
+Set this to the maximal possible reward to encourage
+exploration (optimistic initialization).}
 }
 \value{
 [\code{list(2)}] \cr
@@ -132,7 +156,56 @@ i.e. no experience replay is used.}
   number of steps per episode [\code{numeric}].
 }
 \description{
-Q Sigma
+Value-based reinforcement learning control algorithms.
+}
+\details{
+You must specify the reinforcement learning environment using the \code{envir} argument. 
+It takes an \code{R6 class} created by \code{\link{makeEnvironment}} as input. 
+See documentation there.
+
+The algorithms can be used to find the optimal action value function using the principle 
+of generalized policy iteration. They all learn online using temporal-difference learning. 
+Q(sigma) subsumes the well known Q-Learning, Sarsa and Expected Sarsa algorithms as special cases.
+The default call \code{qsigma()} is exactly equivalent to Sarsa(0). A weighted mean between sarsa
+and expected sarsa updates can be used by varying the parameter \code{sigma}. 
+When \code{on.policy == TRUE} the policy used to compute the expected sarsa is the epsilon-greedy
+policy used for action selection, when \code{on.policy == FALSE} a greedy target policy will be 
+used as in Q-Learning. See De Asis et al. (2017) for more details.
+
+The functions \code{qlearning}, \code{sarsa} and \code{expectedSarsa} are there for convenience. 
+They all call the \code{qSigma} function with a special set of parameters.
+
+When \code{value.function == "table"} the action value function will be represented using a table, 
+a linear combination of features and a neural network can also be used. For a neural network you 
+need to pass on a keras model via the \code{model} argument. This way it is possible to 
+construct a Deep Q-Network (DQN).
+
+The raw state observation returned from the environment can be preprocessed using 
+the \code{preprocessState} function. This function takes the state observation as input and 
+returns a preprocessed state which can be directly used by the function approximator. 
+This is especially important when using function approximation.
+
+Experience replay can be used by specifying a prefilled replay memory through the 
+\code{replay.memory} argument or by specifying the length of the replay memory, 
+which will then be filled with random experience. Using the defaults experiences are sampled 
+uniformly, a proportional prioritization proposed by Schaul et al. (2016) can also be used by 
+varying the parameters \code{alpha} and \code{theta}.
+
+Using eligibility traces the one-step algorithms can be extended to multi-step algorithms. The 
+parameter \code{lambda} controls the tradeoff between one-step and multi-step methods. Three 
+different kinds of eligibility traces are implemented, accumulating, replacing and dutch traces.
+See Sutton and Barto (Book draft 2017, Chapter 12) for more details.
+This only works if no experience replay is used, i.e. \code{replay.memory.size == 1} and for a 
+tabular value function.
+
+Double Learning can be used with all of the functions. 
+Then two Q value functions are used, Q1 for action selection and 
+Q2 for action evaluation. After a number of steps the weights of Q2 are replaced by the weights 
+of Q1. See Hasselt et al. (2015) for details.
+
+The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{lambda} and
+\code{learning.rate} can be changed over time. Therefore pass on functions that return a new 
+value of the hyperparamter. These updates will be applied after each episode.
 }
 \examples{
 grid = makeEnvironment(transition.array = windyGridworld$transitions,
@@ -143,6 +216,16 @@ qSigma(grid, sigma = 0.5)
 qlearning(grid)
 sarsa(grid)
 expectedSarsa(grid)
+
+# Decay epsilon over time. Each 10 episodes epsilon will be halfed.
+decayEpsilon = function(epsilon, i) {
+  if (i \%\% 10 == 0) {
+    epsilon = epsilon * 0.5
+  }
+  epsilon
+}
+
+qSigma(grid,  epsilon = 0.5, updateEpsilon = decayEpsilon)
 
 \dontrun{
 library(keras)

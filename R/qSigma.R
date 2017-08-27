@@ -1,4 +1,54 @@
-#' Q Sigma
+#' Q Learning
+#' 
+#' Value-based reinforcement learning control algorithms.
+#' 
+#' You must specify the reinforcement learning environment using the \code{envir} argument. 
+#' It takes an \code{R6 class} created by \code{\link{makeEnvironment}} as input. 
+#' See documentation there.
+#' 
+#' The algorithms can be used to find the optimal action value function using the principle 
+#' of generalized policy iteration. They all learn online using temporal-difference learning. 
+#' Q(sigma) subsumes the well known Q-Learning, Sarsa and Expected Sarsa algorithms as special cases.
+#' The default call \code{qsigma()} is exactly equivalent to Sarsa(0). A weighted mean between sarsa
+#' and expected sarsa updates can be used by varying the parameter \code{sigma}. 
+#' When \code{on.policy == TRUE} the policy used to compute the expected sarsa is the epsilon-greedy
+#' policy used for action selection, when \code{on.policy == FALSE} a greedy target policy will be 
+#' used as in Q-Learning. See De Asis et al. (2017) for more details. 
+#' 
+#' The functions \code{qlearning}, \code{sarsa} and \code{expectedSarsa} are there for convenience. 
+#' They all call the \code{qSigma} function with a special set of parameters.
+#' 
+#' When \code{value.function == "table"} the action value function will be represented using a table, 
+#' a linear combination of features and a neural network can also be used. For a neural network you 
+#' need to pass on a keras model via the \code{model} argument. This way it is possible to 
+#' construct a Deep Q-Network (DQN).
+#' 
+#' The raw state observation returned from the environment can be preprocessed using 
+#' the \code{preprocessState} function. This function takes the state observation as input and 
+#' returns a preprocessed state which can be directly used by the function approximator. 
+#' This is especially important when using function approximation.
+#' 
+#' Experience replay can be used by specifying a prefilled replay memory through the 
+#' \code{replay.memory} argument or by specifying the length of the replay memory, 
+#' which will then be filled with random experience. Using the defaults experiences are sampled 
+#' uniformly, a proportional prioritization proposed by Schaul et al. (2016) can also be used by 
+#' varying the parameters \code{alpha} and \code{theta}.
+#' 
+#' Using eligibility traces the one-step algorithms can be extended to multi-step algorithms. The 
+#' parameter \code{lambda} controls the tradeoff between one-step and multi-step methods. Three 
+#' different kinds of eligibility traces are implemented, accumulating, replacing and dutch traces.
+#' See Sutton and Barto (Book draft 2017, Chapter 12) for more details.
+#' This only works if no experience replay is used, i.e. \code{replay.memory.size == 1} and for a 
+#' tabular value function.
+#' 
+#' Double Learning can be used with all of the functions. 
+#' Then two Q value functions are used, Q1 for action selection and 
+#' Q2 for action evaluation. After a number of steps the weights of Q2 are replaced by the weights 
+#' of Q1. See Hasselt et al. (2015) for details.
+#' 
+#' The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{lambda} and
+#' \code{learning.rate} can be changed over time. Therefore pass on functions that return a new 
+#' value of the hyperparamter. These updates will be applied after each episode.
 #' 
 #' @param envir [\code{R6 class}] \cr 
 #'   The reinforcement learning environment
@@ -20,10 +70,25 @@
 #'   Learning rate used for gradient descent.
 #' @param epsilon [\code{numeric(1) in [0, 1]}] \cr 
 #'   Ratio of random exploration in epsilon-greedy action selection.
-#' @param epsilon.decay [\code{numeric(1) in [0, 1]}] \cr 
-#'   Decay \code{epsilon} by multiplying with this factor.
-#' @param epsilon.decay.after [\code{integer(1)}] \cr 
-#'   Number of episodes after which to decay epsilon.
+#' @param updateEpsilon [\code{function]}] \cr 
+#'   A function that updates epsilon. It takes two arguments, \code{epsilon} and the current number 
+#'   of episodes which are finished, and returns the new \code{epsilon} value.
+#' @param updateSigma [\code{function]}] \cr 
+#'   A function that updates sigma. It takes two arguments, \code{sigma} and the current number 
+#'   of episodes which are finished, and returns the new \code{sigma} value.
+#' @param updateLambda [\code{function]}] \cr 
+#'   A function that updates lambda. It takes two arguments, \code{lambda} and the current number 
+#'   of episodes which are finished, and returns the new \code{lambda} value.
+#' @param updateLearningRate [\code{function]}] \cr 
+#'   A function that updates the learning rate. It takes two arguments, \code{learning.rate} 
+#'   and the current number of episodes which are finished, and returns the new 
+#'   \code{learning.rate} value.
+#' @param updateAlpha [\code{function]}] \cr 
+#'   A function that updates alpha. It takes two arguments, \code{alpha} and the current number 
+#'   of episodes which are finished, and returns the new \code{alpha} value.
+#' @param updateTheta [\code{function]}] \cr 
+#'   A function that updates theta. It takes two arguments, \code{theta} and the current number 
+#'   of episodes which are finished, and returns the new \code{theta} value.
 #' @param initial.value [\code{numeric(1)}] \cr 
 #'   Initial value for the value function. Only used with a tabular value function. 
 #'   Set this to the maximal possible reward to encourage
@@ -38,8 +103,9 @@
 #'   Should double learning be used?
 #' @param replay.memory [\code{list}] \cr 
 #'   Initial replay memory, which can be passed on. Make sure, it is the same size as 
-#'   \code{replay.memory.size}. When omitted, the replay memory will be 
-#'   initially filled with random experiences.
+#'   \code{replay.memory.size}. Each list element must be a list containing state, action, 
+#'   reward and next.state. When the \code{replay.memory} argument is \code{NULL}, 
+#'   the replay memory will be initially filled with random experiences.
 #' @param replay.memory.size [\code{integer(1)}] \cr 
 #'   Size of the replay memory.
 #' @param batch.size [\code{integer(1)}] \cr 
@@ -61,9 +127,9 @@
 #'   When using double learning the target network / table will be updated after 
 #'   \code{update.target.after} steps.
 #' @param eligibility [\code{character(1)}] \cr 
-#'   Type of eligibility trace, could be \code{"replace"} for replacing traces or 
-#'   \code{"accumulate"} for accumulating traces. Only used if the replay memory is of size 1, 
-#'   i.e. no experience replay is used.
+#'   Type of eligibility trace, could be \code{"replace"} for replacing traces, 
+#'   \code{"accumulate"} for accumulating traces or \code{"dutch"} for dutch traces. 
+#'   Only used if the replay memory is of size 1, i.e. no experience replay is used.
 #' @rdname qSigma
 #' @return [\code{list(2)}] \cr
 #'   Returns the action value function or model parameters [\code{matrix}] and the 
@@ -85,6 +151,16 @@
 #' sarsa(grid)
 #' expectedSarsa(grid)
 #' 
+#' # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
+#' decayEpsilon = function(epsilon, i) {
+#'   if (i %% 10 == 0) {
+#'     epsilon = epsilon * 0.5
+#'   }
+#'   epsilon
+#' }
+#' 
+#' qSigma(grid,  epsilon = 0.5, updateEpsilon = decayEpsilon)
+#' 
 #' \dontrun{
 #' library(keras)
 #' model = keras_model_sequential()
@@ -102,12 +178,13 @@
 #'   replay.memory.size = 1000, batch.size = 32)
 #' }
 #' 
-qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0, 
-  n.episodes = 100, learning.rate = 0.1, epsilon = 0.1, epsilon.decay = 0.5, 
-  epsilon.decay.after = 100, initial.value = 0, discount.factor = 1, 
-  on.policy = TRUE, double.learning = FALSE, replay.memory = NULL, 
-  replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
-  model = NULL, preprocessState = NULL, update.target.after = 1, eligibility = "accumulate") {
+qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, lambda = 0, 
+  learning.rate = 0.1, epsilon = 0.1, discount.factor = 1, on.policy = TRUE, 
+  double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1, 
+  batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate", 
+  update.target.after = 1, preprocessState = NULL, model = NULL, 
+  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
+  updateLearningRate = NULL, updateTheta = NULL, initial.value = 0) {
   
   # Fixme: implement this as class methods, add documentation and tests
   
@@ -116,13 +193,11 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
   checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
   checkmate::assertNumber(epsilon, lower = 0, upper = 1)
-  checkmate::assertNumber(epsilon.decay, lower = 0, upper = 1)
   checkmate::assertNumber(alpha, lower = 0, upper = 1)
   checkmate::assertNumber(theta, lower = 0, upper = 1)
   checkmate::assertNumber(initial.value)
   checkmate::assertNumber(lambda, lower = 0, upper = 1)
   checkmate::assertNumber(sigma, lower = 0, upper = 1)
-  checkmate::assertInt(epsilon.decay.after, lower = 1)
   checkmate::assertInt(n.episodes, lower = 1)
   checkmate::assertInt(replay.memory.size, lower = 1)
   checkmate::assertInt(batch.size, lower = 1)
@@ -131,19 +206,49 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
     stop("Batch size must be smaller than replay memory size!")
   }
   checkmate::assertChoice(value.function, c("table", "neural.network", "linear"))
-  checkmate::assertChoice(eligibility, c("accumulate", "replace"))
+  checkmate::assertChoice(eligibility, c("accumulate", "replace", "dutch"))
   # checkmate::assertFlag(experience.replay)
   checkmate::assertFlag(on.policy)
   checkmate::assertFlag(double.learning)
-  checkmate::assertList(replay.memory, null.ok = TRUE)
+  checkmate::assertList(replay.memory, types = "list", len = replay.memory.size, null.ok = TRUE)
+  checkmate::assertList(replay.memory[[1]], len = 4, null.ok = TRUE,
+    names = c("state", "action", "reward", "next.state"))
   checkmate::assertFunction(preprocessState, args = "state", ordered = TRUE, null.ok = TRUE)
+  checkmate::assertFunction(updateEpsilon,  nargs = 2, null.ok = TRUE)
+  checkmate::assertFunction(updateSigma,  nargs = 2, null.ok = TRUE)
+  checkmate::assertFunction(updateLambda,  nargs = 2, null.ok = TRUE)
+  checkmate::assertFunction(updateAlpha,  nargs = 2, null.ok = TRUE)
+  checkmate::assertFunction(updateTheta,  nargs = 2, null.ok = TRUE)
+  checkmate::assertFunction(updateLearningRate,  nargs = 2, null.ok = TRUE) 
+  # fixme neural network update learning.rate
   # Fixme: perform a check on model and preprocessState
   # Fixme: seed for python neural network?
   
+  doNothing = function(x, y) {
+    x
+  }
+  
+  if (is.null(updateEpsilon)) {
+    updateEpsilon = doNothing
+  }
+  if (is.null(updateLambda)) {
+    updateLambda = doNothing
+  }
+  if (is.null(updateAlpha)) {
+    updateAlpha = doNothing
+  }
+  if (is.null(updateTheta)) {
+    updateTheta = doNothing
+  }
+  if (is.null(updateSigma)) {
+    updateSigma = doNothing
+  }
+    if (is.null(updateLearningRate)) {
+    updateLearningRate = doNothing
+  }
+  
   if (is.null(preprocessState)) {
-    preprocessState = function(state) {
-      state
-    }
+    preprocessState = doNothing
   }
   
   if (on.policy) {
@@ -185,7 +290,7 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
       priority[replay.steps] = max(priority)
       data = interactWithEnvironment(value.function, envir, preprocessState, Q1, model, epsilon) # use Q1 + Q2
       if (value.function == "table" & replay.memory.size == 1) {
-        E = increaseEligibility(eligibility, E, data$state, data$action)
+        E = increaseEligibility(eligibility, E, data$state, data$action, learning.rate)
       } else {
         E = 1
       }
@@ -213,11 +318,14 @@ qSigma = function(envir, value.function = "table", sigma = 1, lambda = 0,
       if (envir$done) {
         episode.steps[i] = envir$n.steps
         print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-        if (i %% epsilon.decay.after == 0) {
-          epsilon = epsilon.decay * epsilon
-          if (on.policy) {
-            epsilon.target = epsilon
-          }
+        epsilon = updateEpsilon(epsilon, i)
+        sigma = updateSigma(sigma, i)
+        lambda = updateLambda(lambda, i)
+        alpha = updateAlpha(alpha, i)
+        theta = updateTheta(theta, i)
+        learning.rate = updateLearningRate(learning.rate, i)
+        if (on.policy) {
+          epsilon.target = epsilon
         }
         break
       }
@@ -280,12 +388,15 @@ sampleAction = function(policy, size) {
   action
 }
 
-increaseEligibility = function(eligibility, E, state, action) {
+increaseEligibility = function(eligibility, E, state, action, learning.rate) {
   if (eligibility == "accumulate") {
     E[state + 1, action + 1] = E[state + 1, action + 1] + 1
-  } else {
+  } else if (eligibility == "replace") {
     E[state + 1, ] = 0
     E[state + 1, action + 1] = 1
+  } else {
+    E[state + 1, ] = 0
+    E[state + 1, action + 1] = (1 - learning.rate) * E[state + 1, action + 1] + 1
   }
   E
 }
