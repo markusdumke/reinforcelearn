@@ -2,7 +2,7 @@
 % Please edit documentation in R/DynamicProgramming.R
 \name{iteratePolicy}
 \alias{iteratePolicy}
-\title{Policy Iteration}
+\title{Policy Iteration (Dynamic Programming)}
 \usage{
 iteratePolicy(envir, initial.policy = NULL, discount.factor = 1,
   precision = 1e-04, iter = NULL)

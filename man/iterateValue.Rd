@@ -2,7 +2,7 @@
 % Please edit documentation in R/DynamicProgramming.R
 \name{iterateValue}
 \alias{iterateValue}
-\title{Value Iteration}
+\title{Value Iteration (Dynamic Programming)}
 \usage{
 iterateValue(envir, v = NULL, discount.factor = 1, precision = 1e-04,
   iter = NULL)
