@@ -96,7 +96,7 @@ evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1,
 
 #---------------------------------------------------------------------
 
-#' Policy Iteration
+#' Policy Iteration (Dynamic Programming)
 #' 
 #' Find optimal policy by dynamic programming. Iterate between evaluating a 
 #' given policy and improving the policy by a greedy update. 
@@ -170,7 +170,7 @@ iteratePolicy = function(envir, initial.policy = NULL,
 
 #---------------------------------------------------------------------
 
-#' Value Iteration
+#' Value Iteration (Dynamic Programming)
 #'
 #' Find optimal policy by dynamic programming. Iterate between evaluating a
 #' given policy (only one step), then improving the policy by a greedy update.
