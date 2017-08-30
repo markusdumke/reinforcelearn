@@ -8,6 +8,6 @@
 #' @format [\code{list(2)}] \cr
 #'   List with the transition array and reward matrix.
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
-#' @name windyGridworld
+#' @name windy.gridworld
 NULL
 #' @export
