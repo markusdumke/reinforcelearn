@@ -37,7 +37,7 @@ Model-free Reinforcement Learning
 
 \itemize{
 \item \link{gridworld}
-\item \link{windyGridworld}
+\item \link{windy.gridworld}
 \item \link{cliff}
 }
 }

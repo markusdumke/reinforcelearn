@@ -66,10 +66,15 @@
 #' grid = makeEnvironment(transition.array = gridworld$transitions,
 #'   reward.matrix = gridworld$rewards)
 #'   
-#' # Create the WindyGridworld environment from transition array and reward matrix.
-#' grid = makeEnvironment(transition.array = windyGridworld$transitions,
-#'   reward.matrix = windyGridworld$rewards,
-#'   initial.state = 30L)
+#' # Create the Windy Gridworld environment from transition array and reward matrix.
+#' grid = makeEnvironment(transition.array = windy.gridworld$transitions,
+#'   reward.matrix = windy.gridworld$rewards,
+#'   initial.state = 30)
+#'   
+#' # Create the Cliff Walking environment from transition array and reward matrix.
+#' grid = makeEnvironment(transition.array = cliff$transitions,
+#'   reward.matrix = cliff$rewards,
+#'   initial.state = 36)
 #'   
 makeEnvironment = function(gym.envir.name = NULL,  
   transition.array = NULL, reward.matrix = NULL, initial.state = NULL, 

@@ -21,7 +21,7 @@
 #' 
 #' @section Example Environments:
 #' * [gridworld]
-#' * [windyGridworld]
+#' * [windy.gridworld]
 #' * [cliff]
 #' 
 #' @name reinforcelearn

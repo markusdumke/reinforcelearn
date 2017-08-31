@@ -47,9 +47,9 @@ for (i in 1:200) {
 MountainCar$close()
 
 # You can also create an environment from a MDP
-grid = makeEnvironment(transition.array = windyGridworld$transitions,
-  reward.matrix = windyGridworld$rewards,
-  initial.state = 30L)
+grid = makeEnvironment(transition.array = windy.gridworld$transitions,
+  reward.matrix = windy.gridworld$rewards,
+  initial.state = 30)
 ```
 
 Environments created with `makeEnvironment` always have an initialization function to create a new instance of the environment, a reset function, which returns an initial state observation and a step function, which takes a step in the environment given an action returning the next state observation, reward and if the episode is finished.
@@ -64,7 +64,7 @@ res = qlearning(grid, n.episodes = 800)
 print(matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE))
 ```
 
-We can then define the optimal policy by taking the argmax over the action value function Q.
+We can then get the optimal policy by taking the argmax over the action value function Q.
 
 ```r
 optimal.policy = max.col(res$Q)

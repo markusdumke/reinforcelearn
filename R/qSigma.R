@@ -142,8 +142,8 @@
 #' @importFrom stats predict
 #' @export
 #' @examples 
-#' grid = makeEnvironment(transition.array = windyGridworld$transitions,
-#'   reward.matrix = windyGridworld$rewards,
+#' grid = makeEnvironment(transition.array = windy.gridworld$transitions,
+#'   reward.matrix = windy.gridworld$rewards,
 #'   initial.state = 30L)
 #'   
 #' qSigma(grid, sigma = 0.5)
@@ -243,7 +243,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   if (is.null(updateSigma)) {
     updateSigma = doNothing
   }
-    if (is.null(updateLearningRate)) {
+  if (is.null(updateLearningRate)) {
     updateLearningRate = doNothing
   }
   
@@ -492,3 +492,11 @@ updatePriority = function(priority, td.error, theta, indexes) {
   priority[indexes] = abs(td.error) + theta
   priority
 }
+
+
+# decayParam = function(param, time, when) {
+#   if (time %% when == 0) {
+#     param = param * decay.factor
+#   }
+#   param
+# }
