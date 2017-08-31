@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeGridworld.R
 \name{makeGridworld}
 \alias{makeGridworld}
-\title{Make Gridworld Environment}
+\title{Make Gridworld}
 \usage{
 makeGridworld(shape = c(4, 4), goal.states = c(0, 15),
   cliff.states = NULL, reward.step = -1, reward.cliff = -100,
@@ -34,7 +34,7 @@ If it is a vector, all states will have equal probability.}
 \value{
 [\code{list(2)}] \cr
   Returns a list with the state transition array [\code{array(3)}] and reward matrix 
-  [\code{matrix}]of the gridworld.
+  [\code{matrix}] of the gridworld.
   These can then be passed on to \code{makeEnvironment} to create a full reinforcement 
   learning environment.
 }

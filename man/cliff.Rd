@@ -14,6 +14,15 @@ so taking a step into this cliff will yield a high negative reward of - 100 and 
 back to the starting state. 
 Elsewise rewards are - 1, for the goal state 0.
 }
+\details{
+This is the gridworld (goal state denoted G, cliff states denoted C, start state denoted S):
+\tabular{rrrrrrrrrrrr}{
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ S \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab G \cr
+}
+}
 \references{
-Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.6
 }

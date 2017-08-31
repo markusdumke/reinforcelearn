@@ -1,4 +1,4 @@
-#' Make Gridworld Environment
+#' Make Gridworld
 #' 
 #' \code{makeGridworld} is used to create gridworld environments, 
 #' which can be used as reinforcement learning problems.
@@ -20,7 +20,7 @@
 #'   Strength of the upward wind in each cell.
 #' @return [\code{list(2)}] \cr
 #'   Returns a list with the state transition array [\code{array(3)}] and reward matrix 
-#'   [\code{matrix}]of the gridworld.
+#'   [\code{matrix}] of the gridworld.
 #'   These can then be passed on to \code{makeEnvironment} to create a full reinforcement 
 #'   learning environment.
 #' @details 

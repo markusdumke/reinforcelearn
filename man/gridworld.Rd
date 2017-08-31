@@ -11,6 +11,15 @@ Grid of shape 4x4 with two goal states in the upper left and
 bottom right of the grid. Episodes start in any of the other
 states. Possible actions include going left, right, up and down.
 }
+\details{
+This is the gridworld (goal state denoted G):
+\tabular{rrrr}{
+ G \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab G \cr
+}
+}
 \references{
-Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 4.1
 }

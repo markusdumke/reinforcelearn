@@ -12,6 +12,23 @@ specific number of steps (for the next action). If an action would
 take you off the grid, you remain in the previous state. For each step you
 get a reward of -1, until you reach into a terminal state.
 }
+\details{
+This is the gridworld (goal state denoted G, start state denoted S). 
+The last row specifies the upward wind in each column.
+\tabular{rrrrrrrrrr}{
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ S \tab . \tab . \tab . \tab . \tab . \tab . \tab G \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+ 0 \tab 0 \tab 0 \tab 1 \tab 1 \tab 1 \tab 2 \tab 2 \tab 1 \tab 0 \cr
+}
+}
 \references{
-Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.5
 }

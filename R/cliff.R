@@ -8,9 +8,17 @@
 #' back to the starting state. 
 #' Elsewise rewards are - 1, for the goal state 0.
 #' 
+#' This is the gridworld (goal state denoted G, cliff states denoted C, start state denoted S):
+#' \tabular{rrrrrrrrrrrr}{
+#'  . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+#'  . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+#'  . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+#'  S \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab G \cr
+#' }
+#' 
 #' @format [\code{list(2)}] \cr 
 #'   List with transition array and reward matrix.
-#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.6
 #' @name cliff
 NULL
 #' @export
