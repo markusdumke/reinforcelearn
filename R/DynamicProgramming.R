@@ -1,234 +1,248 @@
-#' Policy Evaluation (Dynamic Programming)
+#' Dynamic Programming
 #'
-#' Evaluate a given policy in an environment using dynamic programming 
-#' using  the Bellmann expectation equation as an update rule
-#' \deqn{v(s) <- \sum \pi(a|s) (R + \gamma \sum Pss' v(s')])}
+#' These functions solve a Markov Decision Process using a model of the environment.
+#' \code{evaluatePolicy} evaluates a given policy, 
+#' \code{iteratePolicy} and \code{iterateValue} can be used to find the optimal policy.
 #' 
-#' @details The algorithm runs until the improvement in the value 
+#' \code{evaluatePolicy} runs until the improvement in the state value 
+#' function in two subsequent steps is smaller than the given precision in all states or if the 
+#' specified number of iterations is exhausted.
+#' 
+#' Both \code{iteratePolicy} and \code{iterateValue} alternate between evaluating a policy and 
+#' improving the current policy by acting greedily with respect to the current policy's value function.
+#' The difference between these two algorithms is that 
+#' \code{iteratePolicy} evaluates the policy until some stop criterion is met, 
+#' while \code{iterateValue} evaluates each policy only one step and
+#' then immediately improves upon the current policy.
+#' 
+#' When the \code{policy} argument is \code{NULL} the initial policy will be a uniform random policy.
+#' 
+#' \code{iteratePolicy} stops if the policy does not change in two subsequent iterations or if the 
+#' specified number of iterations is exhausted. For the policy evaluation step in policy iteration 
+#' the same stop criteria mentioned above are applied.
+#' 
+#' \code{iterateValue} runs until the improvement in the value 
 #' function in two subsequent steps
 #' is smaller than the given precision in all states or if the 
 #' specified number of iterations is exhausted.
 #' 
-#' @inheritParams documentParams
+#' @rdname dp
+#' @inheritParams qSigma
+#' @param policy [\code{matrix(n.states x n.actions)}] \cr 
+#'   A policy specified as a probability matrix (states x actions).
+#' @param v [\code{numeric(n.states)}] \cr 
+#'   Initial state value function. Terminal states must have a value of 0!
+#' @param q [\code{matrix(n.states x n.actions)}] \cr 
+#'   Initial action value function. Terminal states must have a value of 0!
+#' @param precision [\code{numeric(1)}] \cr 
+#'   Algorithm stops when improvement is
+#'   smaller than precision.
+#' @param n.iter [\code{integer(1)}] \cr 
+#'   Number of iterations. If supplied the \code{precision} argument will be ignored.
 #'
-#' @return [\code{numeric}]\cr Returns the state value function v.
+#' @return [\code{list(3)}] \cr
+#' Returns the state value function [\code{numeric}], the 
+#' action value function [\code{matrix}]
+#' and the policy [\code{matrix}].
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
-#' # Define uniform random policy, take each action with equal probability
+#' # Set up gridworld problem
 #' grid = makeEnvironment(transition.array = gridworld$transitions, 
 #'   reward.matrix = gridworld$rewards)
+#'   
+#' # Define uniform random policy, take each action with equal probability
 #' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
 #'   ncol = grid$n.actions)
 #' 
-#' # Evaluate given policy for gridworld example
-#' v = evaluatePolicy(grid, random.policy, iter = 100)
-#' v = evaluatePolicy(grid, random.policy, precision = 0.001)
-#' print(round(matrix(v, ncol = 4, byrow = TRUE)))
+#' # Evaluate given policy
+#' res = evaluatePolicy(grid, random.policy, precision = 0.001)
+#' print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 #' 
-evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1, 
-  precision = 0.0001, iter = NULL) {
+evaluatePolicy = function(envir, policy, v = NULL, q = NULL, 
+  discount.factor = 1, precision = 0.0001, n.iter = NULL) {
   
+  checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
-  if (is.null(v)) {
-    v = rep(0, envir$n.states)
-  } else {
-    checkmate::assertNumeric(v, len = envir$n.states)
-  }
-  if (envir$n.actions != ncol(policy)) {
-    stop("The number of columns of the policy must be equal to the number of actions.")
-  }
-  if (envir$n.states != nrow(policy)) {
-    stop("The number of rows of the policy must be equal to the number of states.")
-  }
+  checkmate::assertMatrix(policy, nrows = envir$n.states, 
+    ncols = envir$n.actions, any.missing = FALSE)
   if (any(rowSums(policy) != 1)) {
     stop("The probabilities of each row of the policy must sum to 1.")
   }
   checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
   checkmate::assertNumber(precision, lower = 0)
-  checkmate::assertInt(iter, null.ok = TRUE)
+  checkmate::assertInt(n.iter, null.ok = TRUE)
+  checkmate::assertNumeric(v, len = envir$n.states, null.ok = TRUE)
+  checkmate::assertMatrix(q, nrows = envir$n.states, 
+    ncols = envir$n.actions, null.ok = TRUE)
   
-  non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
-  P = envir$transition.array
-  improvement = TRUE
-  j = 0
-  Q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
-  while (improvement == TRUE) {
-    if (!is.null(iter)) {
-      j = j + 1
-      if (j > iter) break
-    }
-    for (i in seq_len(envir$n.actions)) {
-      Q[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
-        (envir$reward.matrix[non.terminal.states + 1, i] + 
-            discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
-            v[non.terminal.states + 1])
-    }
-    v.new = rowSums(Q)
-    improvement = any(abs(v - v.new) > precision)
-    v = v.new
-  }
-  v
-}
-# vectorized, but slower version
-# evaluatePolicy = function(envir, policy, v = NULL, discount.factor = 1, precision = 0.0001) {
-#   
-#   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
-#   if (is.null(v)) {
-#     v = rep(0, envir$n.states)
-#   } else {
-#     checkmate::assertVector(v, len = envir$n.states)
-#   }
-#   v.new = v
-#   P = matrix(envir$transition.array, nrow = envir$n.states, ncol = envir$n.actions * envir$n.states)
-#   R = envir$reward.matrix
-#   improvement = TRUE
-#   
-#   while (improvement == TRUE) {
-#     v2 = Matrix::bdiag(v, v, v, v)
-#     d = matrix(policy * (R + (P %*% v2)), nrow = envir$n.states, ncol = envir$n.actions)
-#     v.new = rowSums(d)
-#     improvement = any(abs(v - v.new) > precision)
-#     v = v.new
-#   }
-#   v
-# }
-
-#---------------------------------------------------------------------
-
-#' Policy Iteration (Dynamic Programming)
-#' 
-#' Find optimal policy by dynamic programming. Iterate between evaluating a 
-#' given policy and improving the policy by a greedy update. 
-#' Converges to the optimal policy.
-#' 
-#' @details The algorithm runs until the policy does not change 
-#' in two subsequent steps or if the 
-#' specified number of iterations is exhausted.
-#'
-#' @inheritParams documentParams
-#'
-#' @return [\code{list(2)}] \cr
-#' Returns the optimal state value function [\code{numeric}] 
-#' and the optimal policy [\code{matrix}] (number of states x number of actions)
-#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
-#' @export
-#' @seealso \code{\link{iterateValue}}
-#' @examples
-#' grid = makeEnvironment(transition.array = gridworld$transitions, 
-#'   reward.matrix = gridworld$rewards)
-#' res = iteratePolicy(grid)
-#' 
-iteratePolicy = function(envir, initial.policy = NULL, 
-  discount.factor = 1, precision = 0.0001, iter = NULL) {
-  
-  checkmate::assertClass(envir, "R6")
-  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
-  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
-  checkmate::assertNumber(precision, lower = 0)
-  checkmate::assertInt(iter, null.ok = TRUE)
-  
-  if (is.null(initial.policy)) {
-    initial.policy = matrix(1 / envir$n.actions, nrow = envir$n.states, 
-      ncol = envir$n.actions)
-  } else {
-    if (envir$n.actions != ncol(initial.policy)) {
-      stop("The number of columns of the policy must be equal to the number of actions.")
-    }
-    if (envir$n.states != nrow(initial.policy)) {
-      stop("The number of rows of the policy must be equal to the number of states.")
-    }
-    if (any(rowSums(initial.policy) != 1)) {
-      stop("The probabilities of each row of the policy must sum to 1.")
-    }
-  }
-  
-  non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
-  policy = initial.policy
-  Q = policy
-  v = rep(0, envir$n.states)
-  j = 0
-  
-  while (TRUE) {
-    if (!is.null(iter)) {
-      j = j + 1
-      if (j > iter) break
-    }
-    v = evaluatePolicy(envir, policy, v, discount.factor, precision)
-    policy.old = policy
-    for (i in seq_len(envir$n.actions)) {
-      Q[non.terminal.states + 1, i] = envir$reward.matrix[non.terminal.states + 1, i] + 
-        discount.factor * envir$transition.array[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
-        v[non.terminal.states + 1]
-    }
-    policy = improvePolicy(Q)
-    if (identical(policy.old, policy)) break
-  }
-  
-  list(v = v, policy = policy)
-}
-
-#---------------------------------------------------------------------
-
-#' Value Iteration (Dynamic Programming)
-#'
-#' Find optimal policy by dynamic programming. Iterate between evaluating a
-#' given policy (only one step), then improving the policy by a greedy update.
-#' Converges to the optimal policy.
-#' 
-#' @details The algorithm runs until the improvement in the value 
-#' function in two subsequent steps
-#' is smaller than the given precision in all states or if the 
-#' specified number of iterations is exhausted.
-#'
-#' @inheritParams documentParams
-#'
-#' @return [\code{list(2)}] \cr
-#'   Returns the optimal state value function [\code{numeric}] 
-#'   and the optimal policy [\code{matrix}] (number of states x number of actions)
-#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
-#' @export
-#' @seealso \code{\link{iteratePolicy}}
-#' @examples
-#' grid = makeEnvironment(transition.array = gridworld$transitions, 
-#'   reward.matrix = gridworld$rewards)
-#' res = iterateValue(grid)
-#' 
-iterateValue = function(envir, v = NULL, discount.factor = 1, 
-  precision = 0.0001, iter = NULL) {
-  
-  checkmate::assertClass(envir, "R6")
-  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   if (is.null(v)) {
     v = rep(0, envir$n.states)
   } else {
-    checkmate::assertNumeric(v, len = envir$n.states)
+    if (any(v[envir$terminal.states + 1] != 0)) {
+      stop("State values of terminal states must be 0!")
+    }
   }
-  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
-  checkmate::assertNumber(precision, lower = 0)
-  checkmate::assertInt(iter, null.ok = TRUE)
-  non.terminal.states = setdiff(seq(0, envir$n.states - 1), envir$terminal.states)
+  if (is.null(q)) {
+    q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+  } else {
+    if (any(q[envir$terminal.states + 1, ] != 0)) {
+      stop("Action values of terminal states must be 0!")
+    }
+  }
   P = envir$transition.array
+  R = envir$reward.matrix
   improvement = TRUE
   j = 0
   
-  Q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+  res = evaluatePolicy2(envir, policy, v, q, discount.factor, precision, n.iter, P, R, improvement, j)
+  list(v = res$v, q = res$q, policy = policy)
+}
+
+getActionValue = function(P, R, discount.factor, v) {
+  R + discount.factor * P %*% v
+}
+
+getStateValue = function(policy, q) {
+  rowSums(policy * q)
+}
+
+evaluatePolicy2 = function(envir, policy, v, q, discount.factor, 
+  precision, n.iter, P, R, improvement, j) {
   while (improvement == TRUE) {
-    if (!is.null(iter)) {
+    if (!is.null(n.iter)) {
       j = j + 1
-      if (j > iter) break
+      if (j > n.iter) break
     }
     for (i in seq_len(envir$n.actions)) {
-      Q[non.terminal.states + 1, i] = envir$reward.matrix[non.terminal.states + 1, i] + 
-        discount.factor * P[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
-        v[non.terminal.states + 1]
+      q[, i] = getActionValue(P[, , i], R[, i], discount.factor, v)
     }
-    v.new = apply(Q, 1, max)
+    v.new = getStateValue(policy, q)
     improvement = any(abs(v - v.new) > precision)
     v = v.new
   }
-  policy = returnPolicy(Q, epsilon = 0)
-  list(v = v, policy = policy)
+  list(v = v, q = q)
 }
 
+#---------------------------------------------------------------------
+#' @inheritParams evaluatePolicy
+#' @inheritParams qSigma
+#' @rdname dp
+#' @param n.iter.eval [integer(1)] \cr
+#'   Number of iterations per evaluation step.
+#' @param precision.eval [numeric(1)] \cr
+#'   Policy evaluation stops when improvement is smaller than precision.
+#' @export
+#' @examples
+#' # Find optimal policy using Policy Iteration
+#' res = iteratePolicy(grid)
+#' print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
+#' 
+iteratePolicy = function(envir, policy = NULL, discount.factor = 1, 
+  n.iter = NULL, precision.eval = 0.0001, n.iter.eval = NULL) {
+  
+  checkmate::assertClass(envir, "R6")
+  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+  checkmate::assertMatrix(policy, nrows = envir$n.states, 
+    ncols = envir$n.actions, any.missing = FALSE, null.ok = TRUE)
+  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(precision.eval, lower = 0)
+  checkmate::assertInt(n.iter, null.ok = TRUE)
+  checkmate::assertInt(n.iter.eval, null.ok = TRUE)
+  
+  if (is.null(policy)) {
+    policy = matrix(1 / envir$n.actions, nrow = envir$n.states, ncol = envir$n.actions)
+  }
+  if (any(rowSums(policy) != 1)) {
+    stop("The probabilities of each row of the policy must sum to 1.")
+  }
+  
+  q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+  v = rep(0, envir$n.states)
+  P = envir$transition.array
+  R = envir$reward.matrix
+  improvement = TRUE
+  j = 0
+  
+  while (TRUE) {
+    if (!is.null(n.iter)) {
+      j = j + 1
+      if (j > n.iter) break
+    }
+    res = evaluatePolicy2(envir, policy, v, q, discount.factor, precision.eval, 
+      n.iter.eval, P, R, improvement, j = 0)
+    v = res$v
+    q = res$q
+    policy.old = policy
+    policy = improvePolicy(q)
+    if (identical(policy.old, policy)) break
+  }
+  
+  list(v = v, q = q, policy = policy)
+}
 
+#---------------------------------------------------------------------
+#' @inheritParams evaluatePolicy
+#' @inheritParams iteratePolicy
+#' @rdname dp
+#' @export
+#' @examples
+#' # Find optimal policy using Value Iteration
+#' res = iterateValue(grid)
+#' print(res$policy)
+#' 
+iterateValue = function(envir, v = NULL, q = NULL, discount.factor = 1, 
+  precision = 0.0001, n.iter = NULL) {
+  
+  checkmate::assertClass(envir, "R6")
+  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(precision, lower = 0)
+  checkmate::assertInt(n.iter, null.ok = TRUE)
+  checkmate::assertNumeric(v, len = envir$n.states, null.ok = TRUE)
+  checkmate::assertMatrix(q, nrows = envir$n.states, 
+    ncols = envir$n.actions, null.ok = TRUE)
+  
+  if (is.null(v)) {
+    v = rep(0, envir$n.states)
+  } else {
+    if (any(v[envir$terminal.states + 1] != 0)) {
+      stop("State values of terminal states must be 0!")
+    }
+  }
+  if (is.null(q)) {
+    q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+  } else {
+    if (any(q[envir$terminal.states + 1, ] != 0)) {
+      stop("Action values of terminal states must be 0!")
+    }
+  }
+  
+  P = envir$transition.array
+  R = envir$reward.matrix
+  improvement = TRUE
+  j = 0
+  
+  q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+  while (improvement == TRUE) {
+    if (!is.null(n.iter)) {
+      j = j + 1
+      if (j > n.iter) break
+    }
+    for (i in seq_len(envir$n.actions)) {
+      q[, i] = getActionValue(P[, , i], R[, i], discount.factor, v)
+    }
+    v.new = apply(q, 1, max)
+    improvement = any(abs(v - v.new) > precision)
+    v = v.new
+  }
+  policy = improvePolicy(q)
+  list(v = v, q = q, policy = policy)
+}
+
+improvePolicy = function(Q) {
+  greedy.actions = apply(Q, 1, argmax)
+  policy = matrix(0, nrow = nrow(Q), ncol = ncol(Q))
+  policy[matrix(c(seq_len(nrow(Q)), greedy.actions), ncol = 2)] = 1
+  policy
+}

@@ -18,16 +18,6 @@
 #   list(v = v, Q = Q)
 # }
 
-# Dynamic Programming: Policy Improvement by acting greedily with respect to V
-improvePolicy = function(Q) {
-  # multiply each transition matrix for each action P[, ,  i] 
-  #   with reward plus discounted value of next state
-  greedy.actions = apply(Q, 1, argmax)
-  policy = matrix(0, nrow = nrow(Q), ncol = ncol(Q))
-  policy[matrix(c(seq_len(nrow(Q)), greedy.actions), ncol = 2)] = 1
-  policy
-}
-
 sampleActionBandit = function(Q, epsilon) {
   greedy.action = argmax(Q)
   random.actions = seq(1, length(Q))
@@ -55,35 +45,34 @@ argmax = function(x) {
   nnet::which.is.max(x)
 }
 
-sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = NULL) {
-  
-  rewards = numeric(0)
-  if (!is.null(initial.action)) {
-    actions = initial.action
-  } else {
-    actions = integer(0)
-  }
-  if (!is.null(initial.state)) {
-    states = initial.state
-    envir$state = initial.state
-  } else {
-    envir$reset()
-    states = envir$state
-  }
-  
-  i = 1
-  
-  while (envir$done == FALSE) {
-    actions = append(actions, sample(envir$actions, prob = policy[states[i], ], size = 1))
-    envir$step(actions[i])
-    states = append(states, envir$state)
-    rewards = append(rewards, envir$reward)
-    i = i + 1
-  }
-  list(states = states, actions = c(actions, NA), rewards = c(NA, rewards))
-}
+# sampleEpisode = function(policy, envir, initial.state = NULL, initial.action = NULL) {
+#   rewards = numeric(0)
+#   if (!is.null(initial.action)) {
+#     actions = initial.action
+#   } else {
+#     actions = integer(0)
+#   }
+#   if (!is.null(initial.state)) {
+#     states = initial.state
+#     envir$state = initial.state
+#   } else {
+#     envir$reset()
+#     states = envir$state
+#   }
+#   
+#   i = 1
+#   
+#   while (envir$done == FALSE) {
+#     actions = append(actions, sample(envir$actions, prob = policy[states[i], ], size = 1))
+#     envir$step(actions[i])
+#     states = append(states, envir$state)
+#     rewards = append(rewards, envir$reward)
+#     i = i + 1
+#   }
+#   list(states = states, actions = c(actions, NA), rewards = c(NA, rewards))
+# }
 
-# Estimate return
-estimateReturn = function(rewards, discount.factor) {
-  sum(discount.factor ^ seq(0, length(rewards) - 1) * rewards)
-}
+# # Estimate return
+# estimateReturn = function(rewards, discount.factor) {
+#   sum(discount.factor ^ seq(0, length(rewards) - 1) * rewards)
+# }
