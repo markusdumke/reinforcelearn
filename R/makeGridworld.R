@@ -18,10 +18,11 @@
 #'   Reward for taking a step in the cliff state.
 #' @param wind [\code{integer}] \cr 
 #'   Strength of the upward wind in each cell.
-#' @return [\code{R6 class}] \cr
-#'   Returns the gridworld environment, which is an R6 class. Most importantly it contains as 
-#'   attributes the state transition array and the reward matrix, which can then be passed on to 
-#'   \code{makeEnvironment} to create a full reinforcement learning environment.
+#' @return [\code{list(2)}] \cr
+#'   Returns a list with the state transition array [\code{array(3)}] and reward matrix 
+#'   [\code{matrix}]of the gridworld.
+#'   These can then be passed on to \code{makeEnvironment} to create a full reinforcement 
+#'   learning environment.
 #' @details 
 #' In a gridworld the episodic task is to get from a start state to a goal state. 
 #' The grid cells are the states.
@@ -51,26 +52,28 @@
 #'  o \tab x \tab o \tab o \cr
 #'  o \tab o \tab o \tab C \cr
 #' }
-#' 
+#' @seealso gridworld
+#' @seealso windy.gridworld
+#' @seealso cliff
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
 #' # Gridworld Environment (Sutton & Barto Example 4.1)
-#' grid = makeGridworld()
-#' grid = makeEnvironment(transition.array = grid$transition.array, 
-#'   reward.matrix = grid$reward.matrix)
+#' gridworld = makeGridworld()
+#' env = makeEnvironment(transition.array = gridworld$transitions, 
+#'   reward.matrix = gridworld$rewards)
 #'   
 #' # Windy Gridworld (Sutton & Barto Example 6.5) 
-#' windygrid = makeGridworld(shape = c(7, 10), goal.states = 37, 
+#' windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37, 
 #'   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0))
-#' windygrid = makeEnvironment(transition.array = windygrid$transition.array, 
-#'   reward.matrix = windygrid$reward.matrix, initial.state = 30)
+#' env = makeEnvironment(transition.array = windy.gridworld$transitions, 
+#'   reward.matrix = windy.gridworld$rewards, initial.state = 30)
 #'   
 #' # Cliff Walking (Sutton & Barto Example 6.6)   
 #' cliff = makeGridworld(shape = c(4, 12), goal.states = 47, cliff.states = 37:46, 
 #'   reward.step = - 1, reward.cliff = - 100, cliff.transition.states = 36)
-#' cliff = makeEnvironment(transition.array = cliff$transition.array, 
-#'   reward.matrix = cliff$reward.matrix, initial.state = 36) 
+#' env = makeEnvironment(transition.array = cliff$transitions, 
+#'   reward.matrix = cliff$rewards, initial.state = 36) 
 #'   
 #' @seealso \code{\link{makeEnvironment}}
 #' 
@@ -187,8 +190,9 @@ makeGridworld = function(shape = c(4, 4), goal.states = c(0, 15), cliff.states =
       }
     )
   )
-  gridworld$new(shape, goal.states, cliff.states, reward.step, 
+  g = gridworld$new(shape, goal.states, cliff.states, reward.step, 
         reward.cliff, wind, cliff.transition.states)
+  list(transitions = g$transition.array, rewards = g$reward.matrix)
 }
 
 # writeLines(". . . .\n. . x .\n. . . .\n. . . .") # visualize gridworld
