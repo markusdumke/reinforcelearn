@@ -142,8 +142,8 @@
 #' @importFrom stats predict
 #' @export
 #' @examples 
-#' grid = makeEnvironment(transition.array = windy.gridworld$transitions,
-#'   reward.matrix = windy.gridworld$rewards,
+#' grid = makeEnvironment(transitions = windy.gridworld$transitions,
+#'   rewards = windy.gridworld$rewards,
 #'   initial.state = 30L)
 #'   
 #' qSigma(grid, sigma = 0.5)
