@@ -21,8 +21,7 @@ library(reinforcelearn)
 Reinforcement Learning with the package `reinforcelearn` is as easy as
 ```r
 # Create gridworld environment
-env = makeEnvironment(transitions = gridworld$transitions, 
-  rewards = gridworld$rewards)
+env = makeEnvironment(transitions = gridworld$transitions, rewards = gridworld$rewards)
 
 # Solve environment using Value Iteration
 iterateValue(env)
@@ -48,8 +47,7 @@ MountainCar$close()
 
 # You can also create an environment from a MDP
 grid = makeEnvironment(transitions = windy.gridworld$transitions,
-  rewards = windy.gridworld$rewards,
-  initial.state = 30)
+  rewards = windy.gridworld$rewards, initial.state = 30)
 ```
 
 Environments created with `makeEnvironment` always have an initialization function to create a new instance of the environment, a reset function, which returns an initial state observation and a step function, which takes a step in the environment given an action returning the next state observation, reward and if the episode is finished.
