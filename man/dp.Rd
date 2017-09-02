@@ -6,14 +6,14 @@
 \alias{iterateValue}
 \title{Dynamic Programming}
 \usage{
-evaluatePolicy(envir, policy, v = NULL, q = NULL, discount.factor = 1,
+evaluatePolicy(envir, policy, v = NULL, q = NULL, discount = 1,
   precision = 1e-04, n.iter = NULL)
 
-iteratePolicy(envir, policy = NULL, discount.factor = 1, n.iter = NULL,
+iteratePolicy(envir, policy = NULL, discount = 1, n.iter = NULL,
   precision.eval = 1e-04, n.iter.eval = NULL)
 
-iterateValue(envir, v = NULL, q = NULL, discount.factor = 1,
-  precision = 1e-04, n.iter = NULL)
+iterateValue(envir, v = NULL, q = NULL, discount = 1, precision = 1e-04,
+  n.iter = NULL)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr 
@@ -29,7 +29,7 @@ Initial state value function. Terminal states must have a value of 0!}
 \item{q}{[\code{matrix(n.states x n.actions)}] \cr 
 Initial action value function. Terminal states must have a value of 0!}
 
-\item{discount.factor}{[\code{numeric(1) in [0, 1]}] \cr 
+\item{discount}{[\code{numeric(1) in [0, 1]}] \cr 
 Discount factor.}
 
 \item{precision}{[\code{numeric(1)}] \cr 

@@ -60,7 +60,7 @@
 #' print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 #' 
 evaluatePolicy = function(envir, policy, v = NULL, q = NULL, 
-  discount.factor = 1, precision = 0.0001, n.iter = NULL) {
+  discount = 1, precision = 0.0001, n.iter = NULL) {
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
@@ -69,7 +69,7 @@ evaluatePolicy = function(envir, policy, v = NULL, q = NULL,
   if (any(rowSums(policy) != 1)) {
     stop("The probabilities of each row of the policy must sum to 1.")
   }
-  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(discount, lower = 0, upper = 1)
   checkmate::assertNumber(precision, lower = 0)
   checkmate::assertInt(n.iter, null.ok = TRUE)
   checkmate::assertNumeric(v, len = envir$n.states, null.ok = TRUE)
@@ -95,29 +95,27 @@ evaluatePolicy = function(envir, policy, v = NULL, q = NULL,
   improvement = TRUE
   j = 0
   
-  res = evaluatePolicy2(envir, policy, v, q, discount.factor, precision, n.iter, P, R, improvement, j)
+  res = evaluatePolicy2(envir, policy, v, q, discount, precision, n.iter, P, R, improvement, j)
   list(v = res$v, q = res$q, policy = policy)
 }
 
-getActionValue = function(P, R, discount.factor, v) {
-  R + discount.factor * P %*% v
+getActionValue = function(P, R, discount, v) {
+  R + discount * apply(P, 3, function(x, v) x %*% v, v = v)
 }
 
-getStateValue = function(policy, q) {
-  rowSums(policy * q)
-}
+# getStateValue = function(policy, q) {
+#   rowSums(policy * q)
+# }
 
-evaluatePolicy2 = function(envir, policy, v, q, discount.factor, 
+evaluatePolicy2 = function(envir, policy, v, q, discount, 
   precision, n.iter, P, R, improvement, j) {
   while (improvement == TRUE) {
     if (!is.null(n.iter)) {
       j = j + 1
       if (j > n.iter) break
     }
-    for (i in seq_len(envir$n.actions)) {
-      q[, i] = getActionValue(P[, , i], R[, i], discount.factor, v)
-    }
-    v.new = getStateValue(policy, q)
+    q = getActionValue(P, R, discount, v)
+    v.new = rowSums(policy * q)
     improvement = any(abs(v - v.new) > precision)
     v = v.new
   }
@@ -138,14 +136,14 @@ evaluatePolicy2 = function(envir, policy, v, q, discount.factor,
 #' res = iteratePolicy(grid)
 #' print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 #' 
-iteratePolicy = function(envir, policy = NULL, discount.factor = 1, 
+iteratePolicy = function(envir, policy = NULL, discount = 1, 
   n.iter = NULL, precision.eval = 0.0001, n.iter.eval = NULL) {
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
   checkmate::assertMatrix(policy, nrows = envir$n.states, 
     ncols = envir$n.actions, any.missing = FALSE, null.ok = TRUE)
-  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(discount, lower = 0, upper = 1)
   checkmate::assertNumber(precision.eval, lower = 0)
   checkmate::assertInt(n.iter, null.ok = TRUE)
   checkmate::assertInt(n.iter.eval, null.ok = TRUE)
@@ -169,7 +167,7 @@ iteratePolicy = function(envir, policy = NULL, discount.factor = 1,
       j = j + 1
       if (j > n.iter) break
     }
-    res = evaluatePolicy2(envir, policy, v, q, discount.factor, precision.eval, 
+    res = evaluatePolicy2(envir, policy, v, q, discount, precision.eval, 
       n.iter.eval, P, R, improvement, j = 0)
     v = res$v
     q = res$q
@@ -191,12 +189,12 @@ iteratePolicy = function(envir, policy = NULL, discount.factor = 1,
 #' res = iterateValue(grid)
 #' print(res$policy)
 #' 
-iterateValue = function(envir, v = NULL, q = NULL, discount.factor = 1, 
+iterateValue = function(envir, v = NULL, q = NULL, discount = 1, 
   precision = 0.0001, n.iter = NULL) {
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
-  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(discount, lower = 0, upper = 1)
   checkmate::assertNumber(precision, lower = 0)
   checkmate::assertInt(n.iter, null.ok = TRUE)
   checkmate::assertNumeric(v, len = envir$n.states, null.ok = TRUE)
@@ -229,9 +227,7 @@ iterateValue = function(envir, v = NULL, q = NULL, discount.factor = 1,
       j = j + 1
       if (j > n.iter) break
     }
-    for (i in seq_len(envir$n.actions)) {
-      q[, i] = getActionValue(P[, , i], R[, i], discount.factor, v)
-    }
+    q = getActionValue(P, R, discount, v)
     v.new = apply(q, 1, max)
     improvement = any(abs(v - v.new) > precision)
     v = v.new
