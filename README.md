@@ -77,4 +77,4 @@ Also have a look at the vignettes for further examples.
 
 ---
 
-Logo is modification of https://www.r-project.org/logo/.
+Logo is a modification of https://www.r-project.org/logo/.
