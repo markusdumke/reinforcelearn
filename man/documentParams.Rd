@@ -4,8 +4,8 @@
 \alias{documentParams}
 \title{Documentation of all parameters}
 \usage{
-documentParams(policy, initial.policy, envir, discount.factor, precision,
-  lambda, epsilon, epsilon.decay, epsilon.decay.after, seed, method, n.steps,
+documentParams(policy, initial.policy, envir, discount, precision, lambda,
+  epsilon, epsilon.decay, epsilon.decay.after, seed, method, n.steps,
   n.episodes, initial.value, initial.visits, C, action.selection, learning.rate,
   preprocessState, predict, predict2, copy, train, ..., experience.replay,
   replay.memory, replay.memory.size, initial.replay.memory.size, batch.size,
@@ -23,7 +23,7 @@ A policy specified as a probability matrix (states x actions)}
 The reinforcement learning environment
 created by \code{\link{makeEnvironment}}.}
 
-\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+\item{discount}{[\code{numeric(1) in [0,1]}] \cr 
 Discounting future rewards.}
 
 \item{precision}{[\code{numeric(1)}] \cr 
@@ -118,12 +118,12 @@ drawn from the replay memory. Must be smaller than size of the
 replay memory!}
 
 \item{alpha}{[\code{numeric(1) >= 0}] \cr 
-If alpha = 0 sampling 
+If \code{alpha = 0} sampling 
 from replay memory will be uniform, otherwise observations with
 high td error will be proportionally prioritized.}
 
 \item{theta}{[\code{numeric(1) >= 0}] \cr 
-Theta is a small positive 
+\code{theta} is a small positive 
 constant that prevents the edge-case of transitions not being 
 revisited once their error is zero.}
 

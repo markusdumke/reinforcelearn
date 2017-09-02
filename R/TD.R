@@ -31,12 +31,12 @@
 #' v = td(grid, random.policy, lambda = 0, n.steps = 1000)
 #' print(round(matrix(v, ncol = 4, byrow = TRUE)))
 td = function(envir, policy, lambda = 0, n.steps = 100, 
-  discount.factor = 1, learning.rate = 0.1) {
+  discount = 1, learning.rate = 0.1) {
   
   # input checking
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
-  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(discount, lower = 0, upper = 1)
   checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
   checkmate::assertNumber(lambda, lower = 0, upper = 1)
   checkmate::assertInt(n.steps, lower = 1)
@@ -54,7 +54,7 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
   
   n.states = envir$n.states
   v = rep(0, n.states)
-  eligibility = rep(0, n.states) # keep an eligibility value for each state
+  eligibility = rep(0, n.states)
   envir$reset()
   state = envir$state
   
@@ -70,8 +70,8 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
     indicator = rep(0, n.states)
     indicator[state + 1] = 1
     
-    eligibility = discount.factor * lambda * eligibility + indicator
-    td.target = envir$reward + discount.factor * v[envir$state + 1]
+    eligibility = discount * lambda * eligibility + indicator
+    td.target = envir$reward + discount * v[envir$state + 1]
     td.error = td.target - v[state + 1]
     v = v + learning.rate * td.error * eligibility
     state = envir$state
@@ -89,8 +89,8 @@ td = function(envir, policy, lambda = 0, n.steps = 100,
 
 # # rewards reward vector
 # # v value function from state (S_t+n)
-# compute_nstep_return = function(rewards, discount.factor, v) {
+# compute_nstep_return = function(rewards, discount, v) {
 #   
-#   sum(discount.factor ^ seq(0, length(rewards)) * c(rewards, v))
+#   sum(discount ^ seq(0, length(rewards)) * c(rewards, v))
 # }
 # 

@@ -1,14 +1,14 @@
 # internal helper functions
 
 # Dynamic Programming: Evaluate a policy
-# evaluatePolicy2 = function(envir, policy, v, non.terminal.states, discount.factor, precision) {
+# evaluatePolicy2 = function(envir, policy, v, non.terminal.states, discount, precision) {
 #   improvement = TRUE
 #   Q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
 #   while (improvement == TRUE) {
 #     for (i in seq_len(envir$n.actions)) {
 #       Q[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
 #         (envir$reward.matrix[non.terminal.states + 1, i] + 
-#         discount.factor * envir$transition.array[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
+#         discount * envir$transition.array[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
 #             v[non.terminal.states + 1])
 #     }
 #     v.new = rowSums(Q)
@@ -73,6 +73,6 @@ argmax = function(x) {
 # }
 
 # # Estimate return
-# estimateReturn = function(rewards, discount.factor) {
-#   sum(discount.factor ^ seq(0, length(rewards) - 1) * rewards)
+# estimateReturn = function(rewards, discount) {
+#   sum(discount ^ seq(0, length(rewards) - 1) * rewards)
 # }

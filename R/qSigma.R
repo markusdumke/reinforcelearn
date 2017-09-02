@@ -1,4 +1,4 @@
-#' Q Learning
+#' Q sigma / Q-Learning / Sarsa
 #' 
 #' Value-based reinforcement learning control algorithms.
 #' 
@@ -54,7 +54,7 @@
 #'   The reinforcement learning environment
 #'   created by \code{\link{makeEnvironment}}.
 #' @param value.function [\code{character(1)}] \cr 
-#'   How to represent the value function? Currently are \code{"table"} 
+#'   How to represent the value function? Currently \code{"table"} 
 #'   and \code{"neural.network"} are supported.
 #' @param sigma [\code{numeric(1) in [0, 1]}] \cr 
 #'   Parameter of the Q(sigma) algorithm. It controls if the temporal-difference target 
@@ -93,7 +93,7 @@
 #'   Initial value for the value function. Only used with a tabular value function. 
 #'   Set this to the maximal possible reward to encourage
 #'   exploration (optimistic initialization).
-#' @param discount.factor [\code{numeric(1) in [0, 1]}] \cr 
+#' @param discount [\code{numeric(1) in [0, 1]}] \cr 
 #'   Discount factor.
 #' @param on.policy [\code{logical(1)}] \cr 
 #'   Should the temporal-difference target be computed on-policy 
@@ -179,7 +179,7 @@
 #' }
 #' 
 qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, lambda = 0, 
-  learning.rate = 0.1, epsilon = 0.1, discount.factor = 1, on.policy = TRUE, 
+  learning.rate = 0.1, epsilon = 0.1, discount = 1, on.policy = TRUE, 
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1, 
   batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate", 
   update.target.after = 1, preprocessState = NULL, model = NULL, 
@@ -190,7 +190,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$action.space == "Discrete")
-  checkmate::assertNumber(discount.factor, lower = 0, upper = 1)
+  checkmate::assertNumber(discount, lower = 0, upper = 1)
   checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
   checkmate::assertNumber(epsilon, lower = 0, upper = 1)
   checkmate::assertNumber(alpha, lower = 0, upper = 1)
@@ -300,17 +300,17 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
       batch = sampleBatch(replay.memory, batch.size, indexes)
       if (double.learning) {
         res = trainModel(value.function, batch, preprocessState, Q1, Q2, model, model_, 
-          epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size,
+          epsilon.target, discount, sigma, learning.rate, epsilon, batch.size,
           priority, theta, indexes, E, replay.memory.size)
       } else {
         res = trainModel(value.function, batch, preprocessState, Q1, Q1, model, model, 
-          epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size,
+          epsilon.target, discount, sigma, learning.rate, epsilon, batch.size,
           priority, theta, indexes, E, replay.memory.size)
       }
       Q1 = res$Q
       priority = res$priority
       if (value.function == "table" & replay.memory.size == 1) {
-        E = reduceEligibility(E, lambda, discount.factor)
+        E = reduceEligibility(E, lambda, discount)
       }
       if (double.learning & (envir$n.steps %% update.target.after == 0)) {
         Q2 = updateTargetModel(value.function, Q1, Q2, model, model_)
@@ -401,8 +401,8 @@ increaseEligibility = function(eligibility, E, state, action, learning.rate) {
   E
 }
 
-reduceEligibility = function(E, lambda, discount.factor) {
-  E = lambda * discount.factor * E
+reduceEligibility = function(E, lambda, discount) {
+  E = lambda * discount * E
   E
 }
 
@@ -423,10 +423,10 @@ sampleBatch = function(replay.memory, batch.size, indexes) {
 }
 
 trainModel = function(value.function, batch, preprocessState, Q1, Q2, model, model_, 
-  epsilon.target, discount.factor, sigma, learning.rate, epsilon, batch.size, 
+  epsilon.target, discount, sigma, learning.rate, epsilon, batch.size, 
   priority, theta, indexes, E, replay.memory.size) {
   td.target = computeTDTarget(value.function, batch, preprocessState, Q1, Q2, model, model_, 
-    epsilon.target, discount.factor, sigma, epsilon, batch.size)
+    epsilon.target, discount, sigma, epsilon, batch.size)
   td.error = computeTDError(value.function, batch, td.target, preprocessState, Q1, model)
   Q = updateQ(value.function, preprocessState, Q1, model, batch, learning.rate, 
     td.target, td.error, E, replay.memory.size)
@@ -435,7 +435,7 @@ trainModel = function(value.function, batch, preprocessState, Q1, Q2, model, mod
 }
 
 computeTDTarget = function(value.function, batch, preprocessState, Q1, Q2, 
-  model, model_, epsilon.target, discount.factor, sigma, epsilon, batch.size) {
+  model, model_, epsilon.target, discount, sigma, epsilon, batch.size) {
   next.states = t(sapply(batch$next.states, preprocessState))
   Q.next.state = predictQ(value.function, next.states, Q1, model)
   Q.next.state.target = predictQ(value.function, next.states, Q2, model_)
@@ -449,7 +449,7 @@ computeTDTarget = function(value.function, batch, preprocessState, Q1, Q2,
     actions + 1), ncol = 2)]
   policy = t(apply(Q.next.state, 1, returnPolicy, epsilon = epsilon.target))
   exp.sarsa.target = rowSums(policy * Q.next.state.target)
-  td.target = batch$rewards + discount.factor * (sigma * sarsa.target +
+  td.target = batch$rewards + discount * (sigma * sarsa.target +
       (1 - sigma) * exp.sarsa.target)
   td.target
 }

@@ -5,10 +5,10 @@
 \alias{qlearning}
 \alias{sarsa}
 \alias{expectedSarsa}
-\title{Q Learning}
+\title{Q sigma / Q-Learning / Sarsa}
 \usage{
 qSigma(envir, value.function = "table", n.episodes = 100, sigma = 1,
-  lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount.factor = 1,
+  lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount = 1,
   on.policy = TRUE, double.learning = FALSE, replay.memory = NULL,
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   eligibility = "accumulate", update.target.after = 1,
@@ -17,7 +17,7 @@ qSigma(envir, value.function = "table", n.episodes = 100, sigma = 1,
   updateLearningRate = NULL, updateTheta = NULL, initial.value = 0)
 
 qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
-  learning.rate = 0.1, epsilon = 0.1, discount.factor = 1,
+  learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
   update.target.after = 1, preprocessState = NULL, model = NULL,
@@ -26,7 +26,7 @@ qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
   initial.value = 0)
 
 sarsa(envir, value.function = "table", n.episodes = 100, lambda = 0,
-  learning.rate = 0.1, epsilon = 0.1, discount.factor = 1,
+  learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
   update.target.after = 1, preprocessState = NULL, model = NULL,
@@ -35,7 +35,7 @@ sarsa(envir, value.function = "table", n.episodes = 100, lambda = 0,
   initial.value = 0)
 
 expectedSarsa(envir, value.function = "table", n.episodes = 100,
-  lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount.factor = 1,
+  lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
   update.target.after = 1, preprocessState = NULL, model = NULL,
@@ -49,7 +49,7 @@ The reinforcement learning environment
 created by \code{\link{makeEnvironment}}.}
 
 \item{value.function}{[\code{character(1)}] \cr 
-How to represent the value function? Currently are \code{"table"} 
+How to represent the value function? Currently \code{"table"} 
 and \code{"neural.network"} are supported.}
 
 \item{n.episodes}{[\code{integer(1)}] \cr 
@@ -71,7 +71,7 @@ Learning rate used for gradient descent.}
 \item{epsilon}{[\code{numeric(1) in [0, 1]}] \cr 
 Ratio of random exploration in epsilon-greedy action selection.}
 
-\item{discount.factor}{[\code{numeric(1) in [0, 1]}] \cr 
+\item{discount}{[\code{numeric(1) in [0, 1]}] \cr 
 Discount factor.}
 
 \item{on.policy}{[\code{logical(1)}] \cr 

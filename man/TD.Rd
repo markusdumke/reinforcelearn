@@ -4,7 +4,7 @@
 \alias{td}
 \title{Temporal difference learning}
 \usage{
-td(envir, policy, lambda = 0, n.steps = 100, discount.factor = 1,
+td(envir, policy, lambda = 0, n.steps = 100, discount = 1,
   learning.rate = 0.1)
 }
 \arguments{
@@ -24,7 +24,7 @@ every-visit Monte Carlo.}
 \item{n.steps}{[\code{integer(1)}] \cr 
 Number of evaluations (steps in the environment)}
 
-\item{discount.factor}{[\code{numeric(1) in [0,1]}] \cr 
+\item{discount}{[\code{numeric(1) in [0,1]}] \cr 
 Discounting future rewards.}
 
 \item{learning.rate}{[\code{numeric(1) in [0,1]}] \cr 
