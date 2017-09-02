@@ -21,8 +21,8 @@ library(reinforcelearn)
 Reinforcement Learning with the package `reinforcelearn` is as easy as
 ```r
 # Create gridworld environment
-env = makeEnvironment(transition.array = gridworld$transitions, 
-  reward.matrix = gridworld$rewards)
+env = makeEnvironment(transitions = gridworld$transitions, 
+  rewards = gridworld$rewards)
 
 # Solve environment using Value Iteration
 iterateValue(env)
@@ -47,8 +47,8 @@ for (i in 1:200) {
 MountainCar$close()
 
 # You can also create an environment from a MDP
-grid = makeEnvironment(transition.array = windy.gridworld$transitions,
-  reward.matrix = windy.gridworld$rewards,
+grid = makeEnvironment(transitions = windy.gridworld$transitions,
+  rewards = windy.gridworld$rewards,
   initial.state = 30)
 ```
 

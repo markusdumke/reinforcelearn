@@ -81,8 +81,8 @@ specified number of iterations is exhausted.
 }
 \examples{
 # Set up gridworld problem
-grid = makeEnvironment(transition.array = gridworld$transitions, 
-  reward.matrix = gridworld$rewards)
+grid = makeEnvironment(transitions = gridworld$transitions, 
+  rewards = gridworld$rewards)
   
 # Define uniform random policy, take each action with equal probability
 random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 

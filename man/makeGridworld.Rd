@@ -75,20 +75,20 @@ So a board position could look like this (G: goal state, x: current state, C: cl
 \examples{
 # Gridworld Environment (Sutton & Barto Example 4.1)
 gridworld = makeGridworld()
-env = makeEnvironment(transition.array = gridworld$transitions, 
-  reward.matrix = gridworld$rewards)
+env = makeEnvironment(transitions = gridworld$transitions, 
+  rewards = gridworld$rewards)
   
 # Windy Gridworld (Sutton & Barto Example 6.5) 
 windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37, 
   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0))
-env = makeEnvironment(transition.array = windy.gridworld$transitions, 
-  reward.matrix = windy.gridworld$rewards, initial.state = 30)
+env = makeEnvironment(transitions = windy.gridworld$transitions, 
+  rewards = windy.gridworld$rewards, initial.state = 30)
   
 # Cliff Walking (Sutton & Barto Example 6.6)   
 cliff = makeGridworld(shape = c(4, 12), goal.states = 47, cliff.states = 37:46, 
   reward.step = - 1, reward.cliff = - 100, cliff.transition.states = 36)
-env = makeEnvironment(transition.array = cliff$transitions, 
-  reward.matrix = cliff$rewards, initial.state = 36) 
+env = makeEnvironment(transitions = cliff$transitions, 
+  rewards = cliff$rewards, initial.state = 36) 
   
 }
 \references{

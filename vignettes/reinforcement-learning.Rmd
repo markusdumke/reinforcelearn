@@ -10,81 +10,84 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette explains the basic functionality of the `reinforcelearn` package. The package can be installed via
+This vignette explains the basic functionality of the `reinforcelearn` package. 
+
+## What is Reinforcement Learning
+
+Reinforcement Learning is a field of Machine Learning adressing the problem of optimal decision making. The problem could be anything from mastering a complex game to controlling the behaviour of a robot.
+
+RL problems can be formulated as an interaction between an agent and an environment over time. At each time step the agent can choose one action from a set of possible actions and gets rewarded by the environment with a numeric value. The goal is to maximize the sum of these rewards over time. The state of the environment tells something about the problem, e.g. the position of all pawns on a chess board, and can be used from the agent as a basis for the action selection.
+
+## Installation
+
+To install the package, please run
 
 ```{r, eval = FALSE}
 install.packages("devtools")
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
-## What is Reinforcement Learning
-
-Reinforcement Learning is a field of Machine Learning adressing the problem of optimal decision making. The problem could be anything from mastering a complex game to controlling the behaviour of a robot.
-
-RL problems can be formulated as an interaction between an agent and an environment over time. At each time step the agent can choose one action from a set of possible actions and gets rewarded by the environment with a numeric value. The goal is to maximize the sum of rewards over time. The state of the environment tells something about the problem, e.g. the position of all pawns on a chess board, and can be used from the agent as a basis for the action selection.
-
-## Set up an environment
-
-First we need to set up a reinforcement learning environment. Therefore we need to specify the transition and reward dynamics of the problem. The state transition array is a three-dimensional array specifying all transition probabilities between the states for each action. The reward matrix specifies the rewards obtained for each state-action combination. We can then simply pass these on to the `makeEnvironment` function.
+Then we can load the package
 
 ```{r}
 library(reinforcelearn)
 ```
 
+## Set up an environment
+
+First we need to specify the problem, i.e. set up a reinforcement learning environment. Many problems can be formulated as a Markov Decision Process. Therefore we need to specify the transition and reward dynamics of the problem. The state transition array is a three-dimensional array specifying all transition probabilities between the states for each action. The reward matrix specifies the rewards obtained for each state-action combination. We can then simply pass these on to the `makeEnvironment` function.
+
 ```{r}
 transitions = gridworld$transitions
 rewards = gridworld$rewards
-env = makeEnvironment(transition.array = transitions, 
-  reward.matrix = rewards)
+env = makeEnvironment(transitions = transitions, 
+  rewards = rewards)
 ```
 
 Another possibility is to use one of the existing OpenAI Gym environments: [https://gym.openai.com/docs](https://gym.openai.com/docs)
 
-Using one of these environments is then as simple as
+If you have the prerequisites Python and Gym installed, using one of these environments is then as simple as
 
 ```{r, eval = FALSE}
-mcar = makeEnvironment("MountainCar-v0")
+MountainCar = makeEnvironment("MountainCar-v0")
 ```
 
-Note that you need to have the prerequisites Python and Gym installed.
-
-The environment created is now an R6 class with a set of attributes and methods. There are attrbutes describing the properties of the state and action space, e.g.
+The environment created is now an R6 class with a set of attributes and methods. There are attributes describing the properties of the state and action space, e.g.
 
 ```{r, eval = FALSE}
-mcar$action.space # Discrete
-mcar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
+MountainCar$action.space # Discrete
+MountainCar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
 ```
 
 The `reset`, `step` and `close` method can be used to sample experience. Here is an example running a random agent for 200 steps on the MountainCar task.
 
 ```{r, eval = FALSE}
-mcar$reset()
+MountainCar$reset()
 for (i in 1:200) {
-  action = sample(mcar$actions, 1)
-  mcar$step(action)
+  action = sample(MountainCar$actions, 1)
+  MountainCar$step(action)
 }
-mcar$close()
+MountainCar$close()
 ```
 
 ## Solve an environment
 
-Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (called policy) with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
+Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (the policy) in this environment, with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
 
 ```{r}
+# Solve the gridworld task using Value Iteration.
 res = iterateValue(env)
 ```
 
+The algorithms return the state or action value function, sometimes also the policy and some statistics about learning behaviour, e.g. the number of steps per episode.
+
 ## Reinforcement Learning with function approximation
 
-For many tasks the value function cannot be represented by a table, especially if state or action space are continuous. Therefore a function approximator like a neural network is needed. In the `reinforcelearn` package the algorithms can be very flexibly used with function approximation.
-
-```{r, eval = FALSE}
-
-```
+For many tasks the value function cannot be represented by a table, especially if state or action space are large or even continuous. Therefore a function approximator like a neural network is needed. In the `reinforcelearn` package the algorithms can be very flexibly used with function approximation.
   
-## More Reinforcement Learning in R:
+## More about Reinforcement Learning in R:
 
-Learn more about reinforcement learning in R: [reinforcelearn](https://github.com/markdumke/reinforcelearn)
+[reinforcelearn](https://github.com/markdumke/reinforcelearn)
 
 ## Bibliography
 

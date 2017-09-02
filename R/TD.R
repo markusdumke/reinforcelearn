@@ -20,8 +20,8 @@
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @examples 
 #' # Define environment, here simple gridworld
-#' grid = makeEnvironment(transition.array = gridworld$transitions, 
-#'   reward.matrix = gridworld$rewards)
+#' grid = makeEnvironment(transitions = gridworld$transitions, 
+#'   rewards = gridworld$rewards)
 #'   
 #' # Define random policy
 #' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 

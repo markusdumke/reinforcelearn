@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-07-26" />
+<meta name="date" content="2017-09-02" />
 
 <title>Reinforcement Learning</title>
 
@@ -119,54 +119,60 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Reinforcement Learning</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-07-26</em></h4>
+<h4 class="date"><em>2017-09-02</em></h4>
 
 </div>
 
 
-<p>This vignette explains the basic functionality of the <code>reinforcelearn</code> package. The package can be installed via</p>
-<pre class="r"><code>install.packages(&quot;devtools&quot;)
-devtools::install_github(&quot;markdumke/reinforcelearn&quot;)</code></pre>
+<p>This vignette explains the basic functionality of the <code>reinforcelearn</code> package.</p>
 <div id="what-is-reinforcement-learning" class="section level2">
 <h2>What is Reinforcement Learning</h2>
 <p>Reinforcement Learning is a field of Machine Learning adressing the problem of optimal decision making. The problem could be anything from mastering a complex game to controlling the behaviour of a robot.</p>
-<p>RL problems can be formulated as an interaction between an agent and an environment over time. At each time step the agent can choose one action from a set of possible actions and gets rewarded by the environment with a numeric value. The goal is to maximize the sum of rewards over time. The state of the environment tells something about the problem, e.g. the position of all pawns on a chess board, and can be used from the agent as a basis for the action selection.</p>
+<p>RL problems can be formulated as an interaction between an agent and an environment over time. At each time step the agent can choose one action from a set of possible actions and gets rewarded by the environment with a numeric value. The goal is to maximize the sum of these rewards over time. The state of the environment tells something about the problem, e.g. the position of all pawns on a chess board, and can be used from the agent as a basis for the action selection.</p>
+</div>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>To install the package, please run</p>
+<pre class="r"><code>install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;markdumke/reinforcelearn&quot;)</code></pre>
+<p>Then we can load the package</p>
+<pre class="r"><code>library(reinforcelearn)</code></pre>
 </div>
 <div id="set-up-an-environment" class="section level2">
 <h2>Set up an environment</h2>
-<p>First we need to set up a reinforcement learning environment. Therefore we need to specify the transition and reward dynamics of the problem. The state transition array is a three-dimensional array specifying all transition probabilities between the states for each action. The reward matrix specifies the rewards obtained for each state-action combination. We can then simply pass these on to the <code>makeEnvironment</code> function.</p>
-<pre class="r"><code>library(reinforcelearn)</code></pre>
+<p>First we need to specify the problem, i.e. set up a reinforcement learning environment. Many problems can be formulated as a Markov Decision Process. Therefore we need to specify the transition and reward dynamics of the problem. The state transition array is a three-dimensional array specifying all transition probabilities between the states for each action. The reward matrix specifies the rewards obtained for each state-action combination. We can then simply pass these on to the <code>makeEnvironment</code> function.</p>
 <pre class="r"><code>transitions = gridworld$transitions
 rewards = gridworld$rewards
-env = makeEnvironment(transition.array = transitions, 
-  reward.matrix = rewards)</code></pre>
+env = makeEnvironment(transitions = transitions, 
+  rewards = rewards)</code></pre>
 <p>Another possibility is to use one of the existing OpenAI Gym environments: <a href="https://gym.openai.com/docs" class="uri">https://gym.openai.com/docs</a></p>
-<p>Using one of these environments is then as simple as</p>
-<pre class="r"><code>mcar = makeEnvironment(&quot;MountainCar-v0&quot;)</code></pre>
-<p>Note that you need to have the prerequisites Python and Gym installed.</p>
-<p>The environment created is now an R6 class with a set of attributes and methods. There are attrbutes describing the properties of the state and action space, e.g.</p>
-<pre class="r"><code>mcar$action.space # Discrete
-mcar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]</code></pre>
+<p>If you have the prerequisites Python and Gym installed, using one of these environments is then as simple as</p>
+<pre class="r"><code>MountainCar = makeEnvironment(&quot;MountainCar-v0&quot;)</code></pre>
+<p>The environment created is now an R6 class with a set of attributes and methods. There are attributes describing the properties of the state and action space, e.g.</p>
+<pre class="r"><code>MountainCar$action.space # Discrete
+MountainCar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]</code></pre>
 <p>The <code>reset</code>, <code>step</code> and <code>close</code> method can be used to sample experience. Here is an example running a random agent for 200 steps on the MountainCar task.</p>
-<pre class="r"><code>mcar$reset()
+<pre class="r"><code>MountainCar$reset()
 for (i in 1:200) {
-  action = sample(mcar$actions, 1)
-  mcar$step(action)
+  action = sample(MountainCar$actions, 1)
+  MountainCar$step(action)
 }
-mcar$close()</code></pre>
+MountainCar$close()</code></pre>
 </div>
 <div id="solve-an-environment" class="section level2">
 <h2>Solve an environment</h2>
-<p>Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (called policy) with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.</p>
-<pre class="r"><code>res = iterateValue(env)</code></pre>
+<p>Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (the policy) in this environment, with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.</p>
+<pre class="r"><code># Solve the gridworld task using Value Iteration.
+res = iterateValue(env)</code></pre>
+<p>The algorithms return the state or action value function, sometimes also the policy and some statistics about learning behaviour, e.g. the number of steps per episode.</p>
 </div>
 <div id="reinforcement-learning-with-function-approximation" class="section level2">
 <h2>Reinforcement Learning with function approximation</h2>
-<p>For many tasks the value function cannot be represented by a table, especially if state or action space are continuous. Therefore a function approximator like a neural network is needed. In the <code>reinforcelearn</code> package the algorithms can be very flexibly used with function approximation.</p>
+<p>For many tasks the value function cannot be represented by a table, especially if state or action space are large or even continuous. Therefore a function approximator like a neural network is needed. In the <code>reinforcelearn</code> package the algorithms can be very flexibly used with function approximation.</p>
 </div>
-<div id="more-reinforcement-learning-in-r" class="section level2">
-<h2>More Reinforcement Learning in R:</h2>
-<p>Learn more about reinforcement learning in R: <a href="https://github.com/markdumke/reinforcelearn">reinforcelearn</a></p>
+<div id="more-about-reinforcement-learning-in-r" class="section level2">
+<h2>More about Reinforcement Learning in R:</h2>
+<p><a href="https://github.com/markdumke/reinforcelearn">reinforcelearn</a></p>
 </div>
 <div id="bibliography" class="section level2">
 <h2>Bibliography</h2>

@@ -11,10 +11,10 @@
 #' @param gym.envir.name [\code{character(1)}] \cr
 #'   Name of Gym environment, e.g. "CartPole-v0", have a look at 
 #'   \url{https://gym.openai.com/envs}.
-#' @param transition.array [\code{array (n.states x n.states x n.actions)}] \cr
+#' @param transitions [\code{array (n.states x n.states x n.actions)}] \cr
 #'   Transition array: For each action specifying the probabilities for 
 #'   transitions between states.
-#' @param reward.matrix [\code{matrix (n.states x n.actions)}] \cr 
+#' @param rewards [\code{matrix (n.states x n.actions)}] \cr 
 #'   Reward matrix: The reward for taking action a in state s.
 #' @param initial.state [\code{integer}] \cr
 #'   The starting state. If a vector is given a starting state will be
@@ -63,21 +63,21 @@
 #' }
 #' 
 #' # Create an environment from a transition array and reward matrix (here a simple gridworld).
-#' grid = makeEnvironment(transition.array = gridworld$transitions,
-#'   reward.matrix = gridworld$rewards)
+#' grid = makeEnvironment(transitions = gridworld$transitions,
+#'   rewards = gridworld$rewards)
 #'   
 #' # Create the Windy Gridworld environment from transition array and reward matrix.
-#' grid = makeEnvironment(transition.array = windy.gridworld$transitions,
-#'   reward.matrix = windy.gridworld$rewards,
+#' grid = makeEnvironment(transitions = windy.gridworld$transitions,
+#'   rewards = windy.gridworld$rewards,
 #'   initial.state = 30)
 #'   
 #' # Create the Cliff Walking environment from transition array and reward matrix.
-#' grid = makeEnvironment(transition.array = cliff$transitions,
-#'   reward.matrix = cliff$rewards,
+#' grid = makeEnvironment(transitions = cliff$transitions,
+#'   rewards = cliff$rewards,
 #'   initial.state = 36)
 #'   
 makeEnvironment = function(gym.envir.name = NULL,  
-  transition.array = NULL, reward.matrix = NULL, initial.state = NULL, 
+  transitions = NULL, rewards = NULL, initial.state = NULL, 
   render = TRUE) {
   envir = R6::R6Class("envir",
     public = list(
@@ -94,17 +94,17 @@ makeEnvironment = function(gym.envir.name = NULL,
       previous.state = NULL,
       render = NULL,
       reward = NULL,
-      reward.matrix = NULL,
+      rewards = NULL,
       state = NULL,
       state.shape = NULL,
       state.space = NULL,
       state.space.bounds = NULL,
       states = NULL,
       terminal.states = NULL,
-      transition.array = NULL, 
+      transitions = NULL, 
       
-      initialize = function(gym.envir.name, transition.array, 
-        reward.matrix, initial.state, render) {
+      initialize = function(gym.envir.name, transitions, 
+        rewards, initial.state, render) {
         if (!is.null(gym.envir.name)) {
           if (!requireNamespace("gym", quietly = TRUE)) {
             stop("Please install the gym package to use gym environments. Also make sure you have the prerequisites installed: https://github.com/openai/gym-http-api",
@@ -156,19 +156,19 @@ makeEnvironment = function(gym.envir.name = NULL,
             }
           }
         } else {
-          checkmate::assertMatrix(reward.matrix, any.missing = FALSE)
-          checkmate::assertArray(transition.array, any.missing = FALSE, d = 3)
-          MDPtoolbox::mdp_check(transition.array, reward.matrix)
+          checkmate::assertMatrix(rewards, any.missing = FALSE)
+          checkmate::assertArray(transitions, any.missing = FALSE, d = 3)
+          MDPtoolbox::mdp_check(transitions, rewards)
           self$gym = FALSE
           self$state.space = "Discrete"
           self$action.space = "Discrete"
-          self$actions = seq_len(ncol(reward.matrix)) - 1L
-          self$n.states = nrow(reward.matrix)
-          self$n.actions = ncol(reward.matrix)
+          self$actions = seq_len(ncol(rewards)) - 1L
+          self$n.states = nrow(rewards)
+          self$n.actions = ncol(rewards)
           self$states = seq_len(self$n.states) - 1L
-          self$transition.array = transition.array
-          self$reward.matrix = reward.matrix
-          terminal.states = apply(transition.array, 3, function(x) diag(x))
+          self$transitions = transitions
+          self$rewards = rewards
+          terminal.states = apply(transitions, 3, function(x) diag(x))
           self$terminal.states = which(apply(terminal.states, 1, function(x) all(x == 1))) - 1L
           
           if (is.null(initial.state)) {
@@ -189,9 +189,9 @@ makeEnvironment = function(gym.envir.name = NULL,
           self$reward = res$reward
           self$done = res$done
         } else {
-          self$reward = self$reward.matrix[self$state + 1, action + 1]
+          self$reward = self$rewards[self$state + 1, action + 1]
           self$state = sample(self$states, size = 1, 
-            prob = self$transition.array[self$state + 1, , action + 1])
+            prob = self$transitions[self$state + 1, , action + 1])
           if (self$state %in% self$terminal.states) {
             self$done = TRUE
           }
@@ -229,8 +229,8 @@ makeEnvironment = function(gym.envir.name = NULL,
     command = "python"
     system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
   }
-  envir$new(gym.envir.name, transition.array, 
-    reward.matrix, initial.state, render)
+  envir$new(gym.envir.name, transitions, 
+    rewards, initial.state, render)
 }
 
 globalVariables("self")

@@ -60,20 +60,20 @@
 #' @examples
 #' # Gridworld Environment (Sutton & Barto Example 4.1)
 #' gridworld = makeGridworld()
-#' env = makeEnvironment(transition.array = gridworld$transitions, 
-#'   reward.matrix = gridworld$rewards)
+#' env = makeEnvironment(transitions = gridworld$transitions, 
+#'   rewards = gridworld$rewards)
 #'   
 #' # Windy Gridworld (Sutton & Barto Example 6.5) 
 #' windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37, 
 #'   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0))
-#' env = makeEnvironment(transition.array = windy.gridworld$transitions, 
-#'   reward.matrix = windy.gridworld$rewards, initial.state = 30)
+#' env = makeEnvironment(transitions = windy.gridworld$transitions, 
+#'   rewards = windy.gridworld$rewards, initial.state = 30)
 #'   
 #' # Cliff Walking (Sutton & Barto Example 6.6)   
 #' cliff = makeGridworld(shape = c(4, 12), goal.states = 47, cliff.states = 37:46, 
 #'   reward.step = - 1, reward.cliff = - 100, cliff.transition.states = 36)
-#' env = makeEnvironment(transition.array = cliff$transitions, 
-#'   reward.matrix = cliff$rewards, initial.state = 36) 
+#' env = makeEnvironment(transitions = cliff$transitions, 
+#'   rewards = cliff$rewards, initial.state = 36) 
 #'   
 #' @seealso \code{\link{makeEnvironment}}
 #' 
@@ -90,8 +90,8 @@ makeGridworld = function(shape = c(4, 4), goal.states = c(0, 15), cliff.states =
       shape = NULL,
       terminal.states = NULL,
       non.terminal.states = NULL,
-      transition.array = NULL, 
-      reward.matrix = NULL,
+      transitions = NULL, 
+      rewards = NULL,
       cliff.states = NULL,
       goal.states = NULL,
       wind = NULL,
@@ -143,7 +143,7 @@ makeGridworld = function(shape = c(4, 4), goal.states = c(0, 15), cliff.states =
       },
       
       makeTransitionArray = function() {
-        self$transition.array = array(matrix(0, nrow = self$n.states, 
+        self$transitions = array(matrix(0, nrow = self$n.states, 
           ncol = self$n.states),
           dim = c(self$n.states, self$n.states, self$n.actions))
         for(state in setdiff(self$non.terminal.states, self$cliff.states)) {
@@ -168,31 +168,31 @@ makeGridworld = function(shape = c(4, 4), goal.states = c(0, 15), cliff.states =
             while (new.state < 0) {
               new.state = new.state + self$shape[2]
             }
-            self$transition.array[state + 1, new.state + 1, action + 1] = 1
+            self$transitions[state + 1, new.state + 1, action + 1] = 1
           }
         }
         for (state in self$goal.states) {
           new.state = state
-          self$transition.array[state + 1, new.state + 1, ] = 1
+          self$transitions[state + 1, new.state + 1, ] = 1
         }
         for (state in self$cliff.states) {
-          self$transition.array[state + 1, self$cliff.transition.states + 1, ] = 
+          self$transitions[state + 1, self$cliff.transition.states + 1, ] = 
             1 / length(self$cliff.transition.states)
         }
         invisible(self)
       },
       
       makeRewardMatrix = function(reward.step, reward.cliff) {
-        self$reward.matrix = matrix(reward.step, nrow = self$n.states, ncol = self$n.actions)
-        self$reward.matrix[self$cliff.states + 1, ] = reward.cliff
-        self$reward.matrix[self$goal.states + 1, ] = 0
+        self$rewards = matrix(reward.step, nrow = self$n.states, ncol = self$n.actions)
+        self$rewards[self$cliff.states + 1, ] = reward.cliff
+        self$rewards[self$goal.states + 1, ] = 0
         invisible(self)
       }
     )
   )
   g = gridworld$new(shape, goal.states, cliff.states, reward.step, 
         reward.cliff, wind, cliff.transition.states)
-  list(transitions = g$transition.array, rewards = g$reward.matrix)
+  list(transitions = g$transitions, rewards = g$rewards)
 }
 
 # writeLines(". . . .\n. . x .\n. . . .\n. . . .") # visualize gridworld

@@ -8,27 +8,25 @@ library(reinforcelearn)
 ## ------------------------------------------------------------------------
 transitions = gridworld$transitions
 rewards = gridworld$rewards
-env = makeEnvironment(transition.array = transitions, 
-  reward.matrix = rewards)
+env = makeEnvironment(transitions = transitions, 
+  rewards = rewards)
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  mcar = makeEnvironment("MountainCar-v0")
+#  MountainCar = makeEnvironment("MountainCar-v0")
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  mcar$action.space # Discrete
-#  mcar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
+#  MountainCar$action.space # Discrete
+#  MountainCar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  mcar$reset()
+#  MountainCar$reset()
 #  for (i in 1:200) {
-#    action = sample(mcar$actions, 1)
-#    mcar$step(action)
+#    action = sample(MountainCar$actions, 1)
+#    MountainCar$step(action)
 #  }
-#  mcar$close()
+#  MountainCar$close()
 
 ## ------------------------------------------------------------------------
+# Solve the gridworld task using Value Iteration.
 res = iterateValue(env)
-
-## ---- eval = FALSE-------------------------------------------------------
-#  
 

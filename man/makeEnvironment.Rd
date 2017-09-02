@@ -4,19 +4,19 @@
 \alias{makeEnvironment}
 \title{Make Reinforcement Learning Environment}
 \usage{
-makeEnvironment(gym.envir.name = NULL, transition.array = NULL,
-  reward.matrix = NULL, initial.state = NULL, render = TRUE)
+makeEnvironment(gym.envir.name = NULL, transitions = NULL, rewards = NULL,
+  initial.state = NULL, render = TRUE)
 }
 \arguments{
 \item{gym.envir.name}{[\code{character(1)}] \cr
 Name of Gym environment, e.g. "CartPole-v0", have a look at 
 \url{https://gym.openai.com/envs}.}
 
-\item{transition.array}{[\code{array (n.states x n.states x n.actions)}] \cr
+\item{transitions}{[\code{array (n.states x n.states x n.actions)}] \cr
 Transition array: For each action specifying the probabilities for 
 transitions between states.}
 
-\item{reward.matrix}{[\code{matrix (n.states x n.actions)}] \cr 
+\item{rewards}{[\code{matrix (n.states x n.actions)}] \cr 
 Reward matrix: The reward for taking action a in state s.}
 
 \item{initial.state}{[\code{integer}] \cr
@@ -79,17 +79,17 @@ MountainCar$state.space.bounds
 }
 
 # Create an environment from a transition array and reward matrix (here a simple gridworld).
-grid = makeEnvironment(transition.array = gridworld$transitions,
-  reward.matrix = gridworld$rewards)
+grid = makeEnvironment(transitions = gridworld$transitions,
+  rewards = gridworld$rewards)
   
 # Create the Windy Gridworld environment from transition array and reward matrix.
-grid = makeEnvironment(transition.array = windy.gridworld$transitions,
-  reward.matrix = windy.gridworld$rewards,
+grid = makeEnvironment(transitions = windy.gridworld$transitions,
+  rewards = windy.gridworld$rewards,
   initial.state = 30)
   
 # Create the Cliff Walking environment from transition array and reward matrix.
-grid = makeEnvironment(transition.array = cliff$transitions,
-  reward.matrix = cliff$rewards,
+grid = makeEnvironment(transitions = cliff$transitions,
+  rewards = cliff$rewards,
   initial.state = 36)
   
 }

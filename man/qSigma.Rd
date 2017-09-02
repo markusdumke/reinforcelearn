@@ -208,8 +208,8 @@ The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{lambda} an
 value of the hyperparamter. These updates will be applied after each episode.
 }
 \examples{
-grid = makeEnvironment(transition.array = windy.gridworld$transitions,
-  reward.matrix = windy.gridworld$rewards,
+grid = makeEnvironment(transitions = windy.gridworld$transitions,
+  rewards = windy.gridworld$rewards,
   initial.state = 30L)
   
 qSigma(grid, sigma = 0.5)

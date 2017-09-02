@@ -48,8 +48,8 @@
 #' @export
 #' @examples
 #' # Set up gridworld problem
-#' grid = makeEnvironment(transition.array = gridworld$transitions, 
-#'   reward.matrix = gridworld$rewards)
+#' grid = makeEnvironment(transitions = gridworld$transitions, 
+#'   rewards = gridworld$rewards)
 #'   
 #' # Define uniform random policy, take each action with equal probability
 #' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
@@ -90,8 +90,8 @@ evaluatePolicy = function(envir, policy, v = NULL, q = NULL,
       stop("Action values of terminal states must be 0!")
     }
   }
-  P = envir$transition.array
-  R = envir$reward.matrix
+  P = envir$transitions
+  R = envir$rewards
   improvement = TRUE
   j = 0
   
@@ -157,8 +157,8 @@ iteratePolicy = function(envir, policy = NULL, discount = 1,
   
   q = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
   v = rep(0, envir$n.states)
-  P = envir$transition.array
-  R = envir$reward.matrix
+  P = envir$transitions
+  R = envir$rewards
   improvement = TRUE
   j = 0
   
@@ -216,8 +216,8 @@ iterateValue = function(envir, v = NULL, q = NULL, discount = 1,
     }
   }
   
-  P = envir$transition.array
-  R = envir$reward.matrix
+  P = envir$transitions
+  R = envir$rewards
   improvement = TRUE
   j = 0
   

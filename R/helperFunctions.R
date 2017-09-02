@@ -7,8 +7,8 @@
 #   while (improvement == TRUE) {
 #     for (i in seq_len(envir$n.actions)) {
 #       Q[non.terminal.states + 1, i] = policy[non.terminal.states + 1, i] * 
-#         (envir$reward.matrix[non.terminal.states + 1, i] + 
-#         discount * envir$transition.array[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
+#         (envir$rewards[non.terminal.states + 1, i] + 
+#         discount * envir$transitions[non.terminal.states + 1, non.terminal.states + 1, i] %*% 
 #             v[non.terminal.states + 1])
 #     }
 #     v.new = rowSums(Q)
