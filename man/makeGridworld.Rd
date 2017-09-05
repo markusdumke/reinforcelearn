@@ -6,7 +6,8 @@
 \usage{
 makeGridworld(shape = c(4, 4), goal.states = c(0, 15),
   cliff.states = NULL, reward.step = -1, reward.cliff = -100,
-  wind = rep(0, shape[2]), cliff.transition.states = NULL)
+  diagonal.moves = FALSE, wind = rep(0, shape[2]),
+  cliff.transition.states = NULL, stochasticity = 0)
 }
 \arguments{
 \item{shape}{[\code{integer(2)}] \cr 
@@ -24,12 +25,18 @@ Reward for taking a step.}
 \item{reward.cliff}{[\code{integer(1)}] \cr 
 Reward for taking a step in the cliff state.}
 
+\item{diagonal.moves}{[\code{logical(1)}] \cr
+Should diagonal moves be allowed?}
+
 \item{wind}{[\code{integer}] \cr 
 Strength of the upward wind in each cell.}
 
 \item{cliff.transition.states}{[\code{integer}] \cr 
 States to which the environment transitions if stepping into the cliff. 
 If it is a vector, all states will have equal probability.}
+
+\item{stochasticity}{[\code{numeric(1)}] \cr
+Probability of random transition to any of the neighboring states when taking any action.}
 }
 \value{
 [\code{list(2)}] \cr
