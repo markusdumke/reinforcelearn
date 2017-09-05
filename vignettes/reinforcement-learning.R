@@ -6,10 +6,8 @@
 library(reinforcelearn)
 
 ## ------------------------------------------------------------------------
-transitions = gridworld$transitions
-rewards = gridworld$rewards
-env = makeEnvironment(transitions = transitions, 
-  rewards = rewards)
+env = makeEnvironment(transitions = gridworld$transitions, 
+  rewards = gridworld$rewards)
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  MountainCar = makeEnvironment("MountainCar-v0")
