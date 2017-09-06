@@ -79,150 +79,7 @@
 makeEnvironment = function(gym.envir.name = NULL,  
   transitions = NULL, rewards = NULL, initial.state = NULL, 
   render = TRUE) {
-  envir = R6::R6Class("envir",
-    public = list(
-      action.shape = NULL,
-      action.space = NULL,
-      action.space.bounds = NULL,
-      actions = NULL,
-      done = FALSE,
-      gym = NULL,
-      initial.state = NULL,
-      n.actions = NULL,
-      n.states = NULL,
-      n.steps = NULL,
-      previous.state = NULL,
-      render = NULL,
-      reward = NULL,
-      rewards = NULL,
-      state = NULL,
-      state.shape = NULL,
-      state.space = NULL,
-      state.space.bounds = NULL,
-      states = NULL,
-      terminal.states = NULL,
-      transitions = NULL, 
-      
-      initialize = function(gym.envir.name, transitions, 
-        rewards, initial.state, render) {
-        if (!is.null(gym.envir.name)) {
-          if (!requireNamespace("gym", quietly = TRUE)) {
-            stop("Please install the gym package to use gym environments. Also make sure you have the prerequisites installed: https://github.com/openai/gym-http-api",
-              call. = FALSE)
-          }
-          checkmate::assertCharacter(gym.envir.name)
-          checkmate::assertFlag(render)
-          self$gym = TRUE
-          self$render = render
-          remote.base = "http://127.0.0.1:5000"
-          client = gym::create_GymClient(remote.base)
-          private$client = client
-          instance.id = gym::env_create(client, gym.envir.name)
-          private$instance.id = instance.id
-          
-          outdir = "/tmp/random-agent-results"
-          gym::env_monitor_start(client, instance.id, outdir, force = TRUE, resume = FALSE)
-          action.space.info = gym::env_action_space_info(client, instance.id)
-          self$action.space = action.space.info$name
-          
-          if (action.space.info$name == "Discrete") {
-            self$n.actions = action.space.info$n
-            self$actions = seq(0L, self$n.actions - 1L)
-          }
-          
-          if (action.space.info$name == "Box") {
-            self$action.shape = action.space.info$shape[[1]]
-            self$action.space.bounds = list()
-            for (i in seq_len(self$action.shape)) {
-              self$action.space.bounds = append(self$action.space.bounds, 
-                list(c(action.space.info$low[[i]], action.space.info$high[[i]])))
-            }
-          }
-          
-          state.space.info = gym::env_observation_space_info(client, instance.id)
-          self$state.space = state.space.info$name
-          
-          if (state.space.info$name == "Discrete") {
-            self$n.states = state.space.info$n
-            self$states = seq(0L, self$n.states - 1L)
-          }
-          
-          if (state.space.info$name == "Box") {
-            self$state.shape = state.space.info$shape[[1]]
-            self$state.space.bounds = list()
-            for (i in seq_len(self$state.shape)) {
-              self$state.space.bounds = append(self$state.space.bounds, 
-                list(c(state.space.info$low[[i]], state.space.info$high[[i]])))
-            }
-          }
-        } else {
-          checkmate::assertMatrix(rewards, any.missing = FALSE)
-          checkmate::assertArray(transitions, any.missing = FALSE, d = 3)
-          MDPtoolbox::mdp_check(transitions, rewards)
-          self$gym = FALSE
-          self$state.space = "Discrete"
-          self$action.space = "Discrete"
-          self$actions = seq_len(ncol(rewards)) - 1L
-          self$n.states = nrow(rewards)
-          self$n.actions = ncol(rewards)
-          self$states = seq_len(self$n.states) - 1L
-          self$transitions = transitions
-          self$rewards = rewards
-          terminal.states = apply(transitions, 3, function(x) diag(x))
-          self$terminal.states = which(apply(terminal.states, 1, function(x) all(x == 1))) - 1L
-          
-          if (is.null(initial.state)) {
-            self$initial.state = self$states[self$states != self$terminal.states]
-          } else {
-            checkmate::assertIntegerish(initial.state)
-            self$initial.state = initial.state
-          }
-        }
-      },
-      
-      step = function(action, render = self$render) {
-        self$n.steps = self$n.steps + 1L
-        self$previous.state = self$state
-        if (self$gym == TRUE) {
-          res = gym::env_step(private$client, private$instance.id, action, render)
-          self$state = res$observation
-          self$reward = res$reward
-          self$done = res$done
-        } else {
-          self$reward = self$rewards[self$state + 1, action + 1]
-          self$state = sample(self$states, size = 1, 
-            prob = self$transitions[self$state + 1, , action + 1])
-          if (self$state %in% self$terminal.states) {
-            self$done = TRUE
-          }
-        }
-        invisible(self)
-      },
-      
-      reset = function() {
-        self$n.steps = 0
-        if (self$gym == TRUE) {
-          self$state = gym::env_reset(private$client, private$instance.id)
-        } else {
-          self$state = ifelse(length(self$initial.state) > 1L, 
-            sample(self$initial.state, size = 1), self$initial.state)
-        }
-        self$done = FALSE
-        invisible(self)
-      },
-      
-      close = function() {
-        if (self$gym == TRUE) {
-          gym::env_close(private$client, private$instance.id)
-        }
-        invisible(self)
-      }
-    ),
-    private = list(
-      client = NULL,
-      instance.id = NULL
-    )
-  )
+  
   if (!is.null(gym.envir.name)) {
     package.path = system.file(package = "reinforcelearn")
     path2pythonfile = paste0(package.path, "/gym_http_server.py")
@@ -232,6 +89,151 @@ makeEnvironment = function(gym.envir.name = NULL,
   envir$new(gym.envir.name, transitions, 
     rewards, initial.state, render)
 }
+
+envir = R6::R6Class("envir",
+  public = list(
+    action.shape = NULL,
+    action.space = NULL,
+    action.space.bounds = NULL,
+    actions = NULL,
+    done = FALSE,
+    gym = NULL,
+    initial.state = NULL,
+    n.actions = NULL,
+    n.states = NULL,
+    n.steps = NULL,
+    previous.state = NULL,
+    render = NULL,
+    reward = NULL,
+    rewards = NULL,
+    state = NULL,
+    state.shape = NULL,
+    state.space = NULL,
+    state.space.bounds = NULL,
+    states = NULL,
+    terminal.states = NULL,
+    transitions = NULL, 
+    
+    initialize = function(gym.envir.name, transitions, 
+      rewards, initial.state, render) {
+      if (!is.null(gym.envir.name)) {
+        if (!requireNamespace("gym", quietly = TRUE)) {
+          stop("Please install the gym package to use gym environments. Also make sure you have the prerequisites installed: https://github.com/openai/gym-http-api",
+            call. = FALSE)
+        }
+        checkmate::assertCharacter(gym.envir.name)
+        checkmate::assertFlag(render)
+        self$gym = TRUE
+        self$render = render
+        remote.base = "http://127.0.0.1:5000"
+        client = gym::create_GymClient(remote.base)
+        private$client = client
+        instance.id = gym::env_create(client, gym.envir.name)
+        private$instance.id = instance.id
+        
+        outdir = "/tmp/random-agent-results"
+        gym::env_monitor_start(client, instance.id, outdir, force = TRUE, resume = FALSE)
+        action.space.info = gym::env_action_space_info(client, instance.id)
+        self$action.space = action.space.info$name
+        
+        if (action.space.info$name == "Discrete") {
+          self$n.actions = action.space.info$n
+          self$actions = seq(0L, self$n.actions - 1L)
+        }
+        
+        if (action.space.info$name == "Box") {
+          self$action.shape = action.space.info$shape[[1]]
+          self$action.space.bounds = list()
+          for (i in seq_len(self$action.shape)) {
+            self$action.space.bounds = append(self$action.space.bounds, 
+              list(c(action.space.info$low[[i]], action.space.info$high[[i]])))
+          }
+        }
+        
+        state.space.info = gym::env_observation_space_info(client, instance.id)
+        self$state.space = state.space.info$name
+        
+        if (state.space.info$name == "Discrete") {
+          self$n.states = state.space.info$n
+          self$states = seq(0L, self$n.states - 1L)
+        }
+        
+        if (state.space.info$name == "Box") {
+          self$state.shape = state.space.info$shape[[1]]
+          self$state.space.bounds = list()
+          for (i in seq_len(self$state.shape)) {
+            self$state.space.bounds = append(self$state.space.bounds, 
+              list(c(state.space.info$low[[i]], state.space.info$high[[i]])))
+          }
+        }
+      } else {
+        checkmate::assertMatrix(rewards, any.missing = FALSE)
+        checkmate::assertArray(transitions, any.missing = FALSE, d = 3)
+        MDPtoolbox::mdp_check(transitions, rewards)
+        self$gym = FALSE
+        self$state.space = "Discrete"
+        self$action.space = "Discrete"
+        self$actions = seq_len(ncol(rewards)) - 1L
+        self$n.states = nrow(rewards)
+        self$n.actions = ncol(rewards)
+        self$states = seq_len(self$n.states) - 1L
+        self$transitions = transitions
+        self$rewards = rewards
+        terminal.states = apply(transitions, 3, function(x) diag(x))
+        self$terminal.states = which(apply(terminal.states, 1, function(x) all(x == 1))) - 1L
+        
+        if (is.null(initial.state)) {
+          self$initial.state = self$states[self$states != self$terminal.states]
+        } else {
+          checkmate::assertIntegerish(initial.state)
+          self$initial.state = initial.state
+        }
+      }
+    },
+    
+    step = function(action, render = self$render) {
+      self$n.steps = self$n.steps + 1L
+      self$previous.state = self$state
+      if (self$gym == TRUE) {
+        res = gym::env_step(private$client, private$instance.id, action, render)
+        self$state = res$observation
+        self$reward = res$reward
+        self$done = res$done
+      } else {
+        self$reward = self$rewards[self$state + 1, action + 1]
+        self$state = sample(self$states, size = 1, 
+          prob = self$transitions[self$state + 1, , action + 1])
+        if (self$state %in% self$terminal.states) {
+          self$done = TRUE
+        }
+      }
+      invisible(self)
+    },
+    
+    reset = function() {
+      self$n.steps = 0
+      if (self$gym == TRUE) {
+        self$state = gym::env_reset(private$client, private$instance.id)
+      } else {
+        self$state = ifelse(length(self$initial.state) > 1L, 
+          sample(self$initial.state, size = 1), self$initial.state)
+      }
+      self$done = FALSE
+      invisible(self)
+    },
+    
+    close = function() {
+      if (self$gym == TRUE) {
+        gym::env_close(private$client, private$instance.id)
+      }
+      invisible(self)
+    }
+  ),
+  private = list(
+    client = NULL,
+    instance.id = NULL
+  )
+)
 
 globalVariables("self")
 globalVariables("private")
