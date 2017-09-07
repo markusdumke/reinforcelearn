@@ -218,6 +218,7 @@ envir = R6::R6Class("envir",
         self$state = ifelse(length(self$initial.state) > 1L, 
           sample(self$initial.state, size = 1), self$initial.state)
       }
+      self$previous.state = NULL
       self$done = FALSE
       invisible(self)
     },
