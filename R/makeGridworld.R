@@ -1,7 +1,6 @@
 #' Make Gridworld
 #' 
-#' \code{makeGridworld} is used to create gridworld environments, 
-#' which can be used as reinforcement learning problems.
+#' \code{makeGridworld} creates gridworlds, which can be used as reinforcement learning problems.
 #'
 #' @param shape [\code{integer(2)}] \cr 
 #'   Shape of the gridworld (number of rows x number of columns).
@@ -25,29 +24,34 @@
 #' @return [\code{list(2)}] \cr
 #'   Returns a list with the state transition array [\code{array(3)}] and reward matrix 
 #'   [\code{matrix}] of the gridworld.
-#'   These can then be passed on to \code{makeEnvironment} to create a full reinforcement 
+#'   These can then be passed on to \code{\link{makeEnvironment}} to create a full reinforcement 
 #'   learning environment.
 #' @details 
-#' In a gridworld the episodic task is to get from a start state to a goal state. 
-#' The grid cells are the states.
+#' A gridworld is an episodic navigation task, the goal is to get from start state to goal state. 
 #' 
-#' Possible actions include going left (action 0), right (action 1), up (action 2) or down (action 3). 
-#' If an action would take you off the grid, you remain in the previous state. For each step you
-#' get a reward of \code{reward.step}, until you reach a goal state, then the episode is done.
+#' Possible actions include going left, right, up or down. If \code{diagonal.moves = TRUE} diagonal 
+#' moves are also possible, leftup, leftdown, rightup and rightdown.
 #'  
 #' When stepping into a cliff state you get a reward of \code{reward.cliff}, 
-#' usually a high negative reward and transition to a state \code{cliff.transition.states}. 
+#' usually a high negative reward and transition to a state specified by \code{cliff.transition.states}. 
 #' 
 #' In each column a deterministic wind specified via \code{wind} pushes you up a specific number of 
 #' grid cells (for the next action).
 #' 
-#' The states are enumerated row-wise  and numeration starts with 0. 
+#' A stochastic gridworld is a gridworld where with probability \code{stochasticity} the next state
+#' is chosen at random from all neighbor states independent of the actual action.
+#' 
+#' If an action would take you off the grid, the new state is the nearest cell inside the grid. 
+#' For each step you get a reward of \code{reward.step}, until you reach a goal state, 
+#' then the episode is done.
+#' 
+#' States are enumerated row-wise and numeration starts with 1. 
 #' Here is an example 4x4 grid:
 #' \tabular{rrrr}{
-#'  0 \tab 1 \tab 2 \tab 3 \cr
-#'  4 \tab 5 \tab 6 \tab 7 \cr
-#'  8 \tab 9 \tab 10 \tab 11 \cr
-#'  12 \tab 13 \tab 14 \tab 15 \cr
+#'  1 \tab 2 \tab 3 \tab 4 \cr
+#'  5 \tab 6 \tab 7 \tab 8 \cr
+#'  9 \tab 10 \tab 11 \tab 12 \cr
+#'  13 \tab 14 \tab 15 \tab 16 \cr
 #' }
 #' So a board position could look like this (G: goal state, x: current state, C: cliff state):
 #' \tabular{rrrr}{
@@ -56,9 +60,11 @@
 #'  o \tab x \tab o \tab o \cr
 #'  o \tab o \tab o \tab C \cr
 #' }
-#' @seealso gridworld
-#' @seealso windy.gridworld
-#' @seealso cliff
+#' 
+#' A few gridworlds are already included in the package and can be loaded by typing 
+#' \code{\link{gridworld}}, \code{\link{windy.gridworld}} and \code{\link{cliff}}.
+#' @importFrom stats aggregate
+#' @seealso \code{\link{makeEnvironment}}
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @export
 #' @examples
@@ -68,199 +74,161 @@
 #'   rewards = gridworld$rewards)
 #'   
 #' # Windy Gridworld (Sutton & Barto Example 6.5) 
-#' windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37, 
+#' windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 38, 
 #'   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0))
 #' env = makeEnvironment(transitions = windy.gridworld$transitions, 
-#'   rewards = windy.gridworld$rewards, initial.state = 30)
+#'   rewards = windy.gridworld$rewards, initial.state = 31 - 1)
 #'   
 #' # Cliff Walking (Sutton & Barto Example 6.6)   
-#' cliff = makeGridworld(shape = c(4, 12), goal.states = 47, cliff.states = 37:46, 
-#'   reward.step = - 1, reward.cliff = - 100, cliff.transition.states = 36)
+#' cliff = makeGridworld(shape = c(4, 12), goal.states = 48, cliff.states = 38:47, 
+#'   reward.step = - 1, reward.cliff = - 100, cliff.transition.states = 37)
 #' env = makeEnvironment(transitions = cliff$transitions, 
-#'   rewards = cliff$rewards, initial.state = 36) 
-#'   
-#' @seealso \code{\link{makeEnvironment}}
+#'   rewards = cliff$rewards, initial.state = 37 - 1) 
 #' 
-makeGridworld = function(shape = c(4, 4), goal.states = c(0, 15), cliff.states = NULL,
+makeGridworld = function(shape = c(4, 4), goal.states = c(1, 16), cliff.states = NULL,
   reward.step = - 1, reward.cliff = - 100, diagonal.moves = FALSE, wind = rep(0, shape[2]), 
   cliff.transition.states = NULL, stochasticity = 0) {
   
-  g = gridworld$new(shape, goal.states, cliff.states, reward.step, 
-    reward.cliff, diagonal.moves, wind, cliff.transition.states, stochasticity)
-  list(transitions = g$transitions, rewards = g$rewards)
+  checkmate::assertIntegerish(shape, len = 2)
+  checkmate::assertIntegerish(goal.states)
+  if (any(goal.states > prod(shape)) | any(cliff.states > prod(shape)) | 
+      any(cliff.transition.states > prod(shape))) {
+    stop("All states must be inside the grid! States are numerated row-wise starting with 1, check Details!")
+  }
+  checkmate::assertIntegerish(cliff.states, null.ok = TRUE)
+  checkmate::assertIntegerish(wind, len = shape[2])
+  checkmate::assertIntegerish(cliff.transition.states, null.ok = TRUE)
+  if (!is.null(cliff.states) & is.null(cliff.transition.states)) {
+    stop("Please specify the cliff.transition.states!")
+  }
+  stopifnot(length(wind) == shape[2])
+  checkmate::assertNumber(reward.step)
+  checkmate::assertNumber(reward.cliff)
+  checkmate::assertFlag(diagonal.moves)
+  checkmate::assertNumber(stochasticity, lower = 0, upper = 1)
+  
+  n.states = prod(shape)
+  states = seq_len(n.states)
+  n.col = shape[2]
+  if (diagonal.moves) {
+    n.actions = 8
+  } else {
+    n.actions = 4
+  }
+  
+  rewards = makeRewardMatrix(reward.step, reward.cliff, n.states, n.actions,
+    cliff.states, goal.states)
+  
+  transitions = array(matrix(0, nrow = n.states, ncol = n.states),
+    dim = c(n.states, n.states, 8))
+  
+  border.states = list(left = seq(1, n.states - n.col + 1, n.col), 
+    right = seq(n.col, n.states, n.col),
+    up = seq(1, n.col),
+    down = seq(n.states - n.col + 1, n.states))
+  
+  non.terminal.states = setdiff(states, c(goal.states, cliff.states))
+  n.states = length(non.terminal.states)
+  actions = list("left", "right", "up", "down", "leftup", "leftdown", "rightup", "rightdown")
+  actions = lapply(actions, function(x) {class(x) = x; x})
+  
+  new.states = vapply(actions, go, states = non.terminal.states, border.states = border.states, 
+    n.col = n.col, FUN.VALUE = numeric(n.states))
+  
+  m.stoch = matrix(0, nrow = n.states * 8, ncol = 3)
+  m.stoch[, 1] = rep(non.terminal.states, 8)
+  m.stoch[, 2] = c(new.states)
+  m.stoch[, 3] = stochasticity / 8
+  
+  if (!is.null(cliff.states)) {
+    cliff.pairs = as.matrix(expand.grid(cliff.states, cliff.transition.states))
+    cliff.prob = 1 / length(cliff.transition.states)
+    m.cliff = cbind(cliff.pairs, cliff.prob)
+  } else {
+    m.cliff = NULL
+  }
+  
+  m.goal = matrix(c(goal.states, goal.states, rep(1, length(goal.states))), ncol = 3)
+  m = rbind(m.cliff, m.goal, m.stoch)
+  m = m[rep(seq_len(nrow(m)), each = 8), ]
+  m = cbind(m, action = rep(1:8, nrow(m) / 8))
+  
+  new.states = c(apply(new.states, 2, applyWind, states = non.terminal.states, n.col = n.col, wind = wind))
+  new.states = getIntoBounds(new.states, n.col = n.col)
+  
+  m2 = matrix(c(rep(non.terminal.states, 8), new.states, rep(1 - stochasticity, length(new.states)), 
+    rep(1:8, each = length(non.terminal.states))), ncol = 4)
+  m = rbind(m, m2)
+  colnames(m) = c("row", "col", "prob", "action")
+  
+  m = as.matrix(aggregate(prob ~ row + col + action, data = as.data.frame(m), FUN = "sum"))
+  transitions[m[, c("row", "col", "action")]] = m[, "prob"]
+  transitions = transitions[, , seq_len(n.actions)]
+  
+  list(transitions = transitions, rewards = rewards)
 }
 
-gridworld = R6::R6Class("gridworld",
-  public = list(
-    state.space = NULL,
-    states = NULL,
-    n.states = NULL,
-    action.space = NULL,
-    actions = NULL,
-    n.actions = NULL,
-    shape = NULL,
-    terminal.states = NULL,
-    non.terminal.states = NULL,
-    transitions = NULL, 
-    rewards = NULL,
-    cliff.states = NULL,
-    goal.states = NULL,
-    wind = NULL,
-    cliff.transition.states = NULL,
-    stochasticity = NULL,
-    diagonal.moves = NULL,
-    
-    initialize = function(shape, goal.states, cliff.states, reward.step, 
-      reward.cliff, diagonal.moves, wind, cliff.transition.states, stochasticity) {
-      if (any(goal.states > prod(shape) | cliff.states > prod(shape) | cliff.transition.states > prod(shape))) {
-        stop("All states must be inside the grid! States are numerated starting with 0, check Details!")
-      }
-      checkmate::assertIntegerish(shape, len = 2)
-      checkmate::assertIntegerish(goal.states)
-      checkmate::assertIntegerish(cliff.states, null.ok = TRUE)
-      checkmate::assertIntegerish(wind, len = shape[2])
-      checkmate::assertIntegerish(cliff.transition.states, null.ok = TRUE)
-      stopifnot(length(wind) == shape[2])
-      checkmate::assertNumber(reward.step)
-      checkmate::assertNumber(reward.cliff)
-      checkmate::assertFlag(diagonal.moves)
-      checkmate::assertNumber(stochasticity, lower = 0, upper = 1)
-      self$state.space = "Discrete"
-      self$action.space = "Discrete"
-      self$shape = shape
-      self$wind = wind
-      self$terminal.states = goal.states
-      self$cliff.states = cliff.states
-      self$goal.states = goal.states
-      self$cliff.transition.states = cliff.transition.states
-      if (diagonal.moves) {
-        self$actions = 0:7
-      } else {
-        self$actions = 0:3
-      }
-      self$n.states = prod(shape)
-      self$n.actions = length(self$actions)
-      self$states = seq_len(self$n.states) - 1
-      self$non.terminal.states = setdiff(self$states, self$terminal.states)
-      self$stochasticity = stochasticity
-      self$diagonal.moves = diagonal.moves
-      
-      self$computeBorderStates()
-      self$makeTransitionArray()
-      self$makeRewardMatrix(reward.step, reward.cliff)
-    },
-    
-    border.states.left = NULL,
-    border.states.right = NULL,
-    border.states.up = NULL,
-    border.states.down = NULL,
-    
-    computeBorderStates = function() {
-      self$border.states.left = seq(0, self$n.states - self$shape[2], self$shape[2])
-      self$border.states.right = seq(self$shape[2] - 1, self$n.states - 1, self$shape[2])
-      self$border.states.up = seq(0, self$shape[2] - 1)
-      self$border.states.down = seq(self$n.states - self$shape[2], self$n.states - 1)
-      invisible(self)
-    },
-    
-    goLeft = function(state) {
-      state - 1
-    },
-    
-    goRight = function(state) {
-      state + 1
-    },
-    
-    goUp = function(state) {
-      state - self$shape[2]
-    },
-    
-    goDown = function(state) {
-      state + self$shape[2]
-    },
-    
-    isBorderState = function(state, border.states) {
-      state %in% border.states
-    },
-    
-    makeTransitionArray = function() {
-      self$transitions = array(matrix(0, nrow = self$n.states, ncol = self$n.states),
-        dim = c(self$n.states, self$n.states, self$n.actions))
-      
-      for(state in setdiff(self$non.terminal.states, self$cliff.states)) {
-        
-        left.state = ifelse(self$isBorderState(state, self$border.states.left), 
-          state, self$goLeft(state))
-        right.state = ifelse(self$isBorderState(state, self$border.states.right), 
-          state, self$goRight(state))
-        up.state = ifelse(self$isBorderState(state, self$border.states.up), state, 
-          self$goUp(state))
-        down.state = ifelse(self$isBorderState(state, self$border.states.down), state, 
-          self$goDown(state))
-        left.up.state = ifelse(self$isBorderState(state, c(self$border.states.left, 
-          self$border.states.up)), state, self$goLeft(self$goUp(state)))
-        left.down.state = ifelse(self$isBorderState(state, c(self$border.states.left, 
-          self$border.states.down)), state, self$goLeft(self$goDown(state)))
-        right.up.state = ifelse(self$isBorderState(state, c(self$border.states.right, 
-          self$border.states.up)), state, self$goRight(self$goUp(state)))
-        right.down.state = ifelse(self$isBorderState(state, c(self$border.states.right, 
-          self$border.states.down)), state, self$goRight(self$goDown(state)))
-        
-        neighbor.states = c(left.state, right.state, up.state, down.state, 
-          left.up.state, left.down.state, right.up.state, right.down.state)
-        neighbor.states.unique = unique(neighbor.states)
-        stochasticity.neighbors = self$stochasticity / 8 * table(neighbor.states)
-        self$transitions[state + 1, neighbor.states.unique + 1, ] = stochasticity.neighbors
-        
-        if (state %in% self$cliff.states) {
-          self$transitions[state + 1, self$cliff.transition.states + 1, ] = 
-            1 / length(self$cliff.transition.states)
-        } else {
-          
-          if (self$diagonal.moves) {
-            new.state = neighbor.states
-          } else {
-            new.state = c(left.state, right.state, up.state, down.state)
-          }
-          
-          column = state
-          new.states = self$applyWind(column, new.state)
-          new.states = sapply(new.states, self$getIntoBounds)
-          for (i in seq_len(self$n.actions)) {
-            self$transitions[state + 1, new.states[i] + 1, i] = self$transitions[state + 1, 
-              new.states[i] + 1, i] + 1 - self$stochasticity
-          }
-        }
-      }
-      for (state in self$goal.states) {
-        new.state = state
-        self$transitions[state + 1, new.state + 1, ] = 1
-      }
-      invisible(self)
-    },
-    
-    applyWind = function(column, new.state) {
-      while (column > (self$shape[2] - 1)) {
-        column = column - self$shape[2]
-      }
-      new.state = new.state - self$wind[column + 1] * self$shape[2]
-      new.state
-    },
-    
-    getIntoBounds = function(new.state) {
-      while (new.state < 0) {
-        new.state = new.state + self$shape[2]
-      }
-      new.state
-    },
-    
-    makeRewardMatrix = function(reward.step, reward.cliff) {
-      self$rewards = matrix(reward.step, nrow = self$n.states, ncol = self$n.actions)
-      self$rewards[self$cliff.states + 1, ] = reward.cliff
-      self$rewards[self$goal.states + 1, ] = 0
-      invisible(self)
-    }
-  )
-)
+makeRewardMatrix = function(reward.step, reward.cliff, n.states, n.actions,
+  cliff.states, goal.states) {
+  rewards = matrix(reward.step, nrow = n.states, ncol = n.actions)
+  rewards[cliff.states, ] = reward.cliff
+  rewards[goal.states, ] = 0
+  rewards
+}
 
-# writeLines(". . . .\n. . x .\n. . . .\n. . . .") # visualize gridworld
+go = function(x, ...) {
+  UseMethod("go", x)
+}
+
+#' @export
+go.left = function(x, states, border.states, ...) {
+  ifelse(states %in% border.states[["left"]], states, states - 1)
+}
+
+#' @export
+go.right = function(x, states, border.states, ...) {
+  ifelse(states %in% border.states[["right"]], states, states + 1)
+}
+
+#' @export
+go.up = function(x, states, border.states, n.col) {
+  ifelse(states %in% border.states[["up"]], states, states - n.col)
+}
+
+#' @export
+go.down = function(x, states, border.states, n.col) {
+  ifelse(states %in% border.states[["down"]], states, states + n.col)
+}
+
+#' @export
+go.leftup = function(x, states, border.states, n.col) {
+  go.left(x, go.up(x, states, border.states, n.col), border.states)
+}
+
+#' @export
+go.leftdown = function(x, states, border.states, n.col) {
+  go.left(x, go.down(x, states, border.states, n.col), border.states)
+}
+
+#' @export
+go.rightup = function(x, states, border.states, n.col) {
+  go.right(x, go.up(x, states, border.states, n.col), border.states)
+}
+
+#' @export
+go.rightdown = function(x, states, border.states, n.col) {
+  go.right(x, go.down(x, states, border.states, n.col), border.states)
+}
+
+applyWind = function(states, new.states, wind, n.col) {
+  column = states %% n.col
+  column[column == 0] = n.col
+  new.states - wind[column] * n.col
+}
+
+getIntoBounds = function(new.states, n.col) {
+  while (any(new.states <= 0)) {
+    new.states[new.states <= 0] = new.states[new.states <= 0] + n.col
+  }
+  new.states
+}

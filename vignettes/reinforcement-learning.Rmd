@@ -38,8 +38,7 @@ library(reinforcelearn)
 First we need to specify the problem, i.e. set up a reinforcement learning environment. Many problems can be formulated as a Markov Decision Process. Therefore we need to specify the transition and reward dynamics of the problem. The state transition array is a three-dimensional array specifying all transition probabilities between the states for each action. The reward matrix specifies the rewards obtained for each state-action combination. We can then simply pass these on to the `makeEnvironment` function.
 
 ```{r}
-env = makeEnvironment(transitions = gridworld$transitions, 
-  rewards = gridworld$rewards)
+env = makeEnvironment(transitions = gridworld$transitions, rewards = gridworld$rewards)
 ```
 
 Another possibility is to use one of the existing OpenAI Gym environments: [https://gym.openai.com/docs](https://gym.openai.com/docs)
