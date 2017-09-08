@@ -4,7 +4,6 @@
 \alias{qSigma}
 \alias{qlearning}
 \alias{sarsa}
-\alias{expectedSarsa}
 \title{Q sigma / Q-Learning / Sarsa}
 \usage{
 qSigma(envir, value.function = "table", n.episodes = 100, sigma = 1,
@@ -27,15 +26,6 @@ qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
 
 sarsa(envir, value.function = "table", n.episodes = 100, lambda = 0,
   learning.rate = 0.1, epsilon = 0.1, discount = 1,
-  double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
-  batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
-  update.target.after = 1, preprocessState = NULL, model = NULL,
-  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
-  updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
-  initial.value = 0)
-
-expectedSarsa(envir, value.function = "table", n.episodes = 100,
-  lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
   update.target.after = 1, preprocessState = NULL, model = NULL,
@@ -172,7 +162,7 @@ When \code{on.policy == TRUE} the policy used to compute the expected sarsa is t
 policy used for action selection, when \code{on.policy == FALSE} a greedy target policy will be 
 used as in Q-Learning. See De Asis et al. (2017) for more details.
 
-The functions \code{qlearning}, \code{sarsa} and \code{expectedSarsa} are there for convenience. 
+The functions \code{qlearning} and \code{sarsa} are there for convenience. 
 They all call the \code{qSigma} function with a special set of parameters.
 
 When \code{value.function == "table"} the action value function will be represented using a table, 
@@ -215,7 +205,6 @@ grid = makeEnvironment(transitions = windy.gridworld$transitions,
 qSigma(grid, sigma = 0.5)
 qlearning(grid)
 sarsa(grid)
-expectedSarsa(grid)
 
 # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 decayEpsilon = function(epsilon, i) {

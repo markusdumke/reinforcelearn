@@ -29,7 +29,6 @@ Model-free Reinforcement Learning
 \item \link{qSigma}
 \item \link{sarsa}
 \item \link{qlearning}
-\item \link{expectedSarsa}
 }
 }
 

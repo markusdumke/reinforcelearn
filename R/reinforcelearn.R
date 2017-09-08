@@ -17,7 +17,6 @@
 #' * [qSigma]
 #' * [sarsa]
 #' * [qlearning]
-#' * [expectedSarsa]
 #' 
 #' @section Example Environments:
 #' * [gridworld]

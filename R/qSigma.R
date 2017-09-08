@@ -15,7 +15,7 @@
 #' policy used for action selection, when \code{on.policy == FALSE} a greedy target policy will be 
 #' used as in Q-Learning. See De Asis et al. (2017) for more details. 
 #' 
-#' The functions \code{qlearning}, \code{sarsa} and \code{expectedSarsa} are there for convenience. 
+#' The functions \code{qlearning} and \code{sarsa} are there for convenience. 
 #' They all call the \code{qSigma} function with a special set of parameters.
 #' 
 #' When \code{value.function == "table"} the action value function will be represented using a table, 
@@ -149,7 +149,6 @@
 #' qSigma(grid, sigma = 0.5)
 #' qlearning(grid)
 #' sarsa(grid)
-#' expectedSarsa(grid)
 #' 
 #' # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 #' decayEpsilon = function(epsilon, i) {
