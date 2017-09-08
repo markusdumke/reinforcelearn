@@ -4,7 +4,7 @@
 
 -----------------
 
-R Package for Reinforcement Learning. Work in progress!
+R Package for Reinforcement Learning. Work in progress! 
 
 ### Installation
 
@@ -50,7 +50,7 @@ grid = makeEnvironment(transitions = windy.gridworld$transitions,
   rewards = windy.gridworld$rewards, initial.state = 30)
 ```
 
-Environments created with `makeEnvironment` always have an initialization function to create a new instance of the environment, a reset function, which returns an initial state observation and a step function, which takes a step in the environment given an action returning the next state observation, reward and if the episode is finished.
+Environments created with `makeEnvironment` always have a reset function, which returns an initial state observation and a step function, which takes an action as input and returns the next state observation, reward and if the episode is finished.
 
 ### Run a reinforcement learning algorithm
 
