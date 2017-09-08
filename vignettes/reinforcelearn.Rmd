@@ -1,7 +1,5 @@
 ---
-title: "Reinforcement Learning"
-author: "Markus Dumke"
-date: "`r Sys.Date()`"
+title: "Introduction to reinforcelearn"
 output:rmarkdown::html_vignette:
 fig_caption: yes
 vignette: >
@@ -10,13 +8,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette explains the basic functionality of the `reinforcelearn` package. 
-
-## What is Reinforcement Learning
-
 Reinforcement Learning is a field of Machine Learning adressing the problem of optimal decision making. The problem could be anything from mastering a complex game to controlling the behaviour of a robot.
 
 RL problems can be formulated as an interaction between an agent and an environment over time. At each time step the agent can choose one action from a set of possible actions and gets rewarded by the environment with a numeric value. The goal is to maximize the sum of these rewards over time. The state of the environment tells something about the problem, e.g. the position of all pawns on a chess board, and can be used from the agent as a basis for the action selection.
+
+---
 
 ## Installation
 
@@ -32,6 +28,8 @@ Then we can load the package
 ```{r}
 library(reinforcelearn)
 ```
+
+---
 
 ## Set up an environment
 
@@ -67,6 +65,8 @@ for (i in 1:200) {
 MountainCar$close()
 ```
 
+---
+
 ## Solve an environment
 
 Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (the policy) in this environment, with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
@@ -78,14 +78,12 @@ res = iterateValue(env)
 
 The algorithms return the state or action value function, sometimes also the policy and some statistics about learning behaviour, e.g. the number of steps per episode.
 
+---
+
 ## Reinforcement Learning with function approximation
 
 For many tasks the value function cannot be represented by a table, especially if state or action space are large or even continuous. Therefore a function approximator like a neural network is needed. In the `reinforcelearn` package the algorithms can be very flexibly used with function approximation.
   
-## More about Reinforcement Learning in R:
+---
 
-[reinforcelearn](https://github.com/markdumke/reinforcelearn)
-
-## Bibliography
-
-Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
+More about Reinforcement Learning in R: [reinforcelearn](https://github.com/markdumke/reinforcelearn)

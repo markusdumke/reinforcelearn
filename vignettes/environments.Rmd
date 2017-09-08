@@ -1,0 +1,174 @@
+---
+title: "Creating Environments"
+output:rmarkdown::html_vignette:
+fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Reinforcement Learning is formulated as an interaction of an agent and an environment. The `reinforcelearn` package offers different possibilities to create an environment, which can be solved with one of the algorithms.
+
+---
+
+## What is an environment in reinforcelearn?
+
+Environments in `reinforcelearn` are `R6` classes with certain methods and attributes. The environment can then be passed on to the algorithms using the `envir` argument.
+
+These attributes of the `R6` class are essential for the interaction between environment and agent:
+
+- `state`: The current state observation of the environment. Depending on the problem this can be anything, e.g. a scalar integer, a matrix or a list.
+
+- `reward`: The current reward of the environment. It is always a scalar numeric value.
+
+- `done`: A logical flag specifying whether an episode is finished.
+
+Then these methods are necessary:
+
+- `reset()`: Returns an initial state observation, i.e. the `state` attribute is initialized, and sets the `done` flag to `FALSE`. It is usually called at the beginning of an episode. 
+
+- `step(action)`: The basic interaction function between agent and environment. `step` is always called with an action as a first argument. It then takes the action and alters the `state` and `reward` attributes of the `R6` class. If the episode is done, e.g. a terminal state reached, the `done` flag is set to `TRUE`.
+
+---
+
+The `makeEnvironment` function provides the easiest way to create an environment. It takes care of the creation of an `R6` class with the described attributes and methods.
+
+### Markov Decision Process
+
+When the problem can be formulated as a Markov Decision Process (MDP) all you need to pass on to `makeEnvironment` is the state transition array $P^a_{ss'}$ and reward matrix $R_s^a$ of the MDP. The state transition array is a 3-dimensional array with dimensions [number of states x number of states x number of actions], so for each action there is one state transition matrix. The reward matrix has the dimensions [number of states x number of actions], each entry specifying the reward, which is obtained from taking an action in a state. So rewards must be deterministic.
+
+We can create a simple gridworld environment running
+
+```{r}
+library(reinforcelearn)
+
+transitions = gridworld$transitions
+rewards = gridworld$rewards
+env = makeEnvironment(transitions = transitions, rewards = rewards)
+```
+
+The call to `makeEnvironment` extracts information about the state and action space, which can be acessed as attributes of the class.
+
+```{r}
+env$action.space
+env$n.states
+```
+
+---
+
+### OpenAI Gym Environments
+
+Another possibility is to use an already existing environment from OpenAI Gym.
+OpenAI Gym is a toolkit for developing and comparing reinforcement learning algorithms.  It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. Using `makeEnvironment` it is simple to use one of those Gym environments. You just need to pass on the name or id of the environment, e.g. `"CartPole-v0"` as a character string to the first argument of `makeEnvironment`.
+
+```{r, eval = FALSE}
+CartPole = makeEnvironment("CartPole-v0")
+```
+
+Note that you need to have all prerequisites installed, e.g. Python, the Python package `gym`, see [https://github.com/openai/gym-http-api](https://github.com/openai/gym-http-api) for a detailed description of what to install.
+
+The `render` argument specifies whether to render the environment. If `render = TRUE` a Python window will open showing a graphical interface of the environment while agent and environment interact. 
+
+The `reset`, `step` and `close` method can be used to sample experience. Here is an example running a random agent for 200 steps on the CartPole task.
+
+```{r, eval = FALSE}
+CartPole$reset()
+for (i in 1:200) {
+  action = sample(CartPole$actions, 1)
+  CartPole$step(action)
+}
+CartPole$close()
+```
+
+---
+
+### Create your own environment
+
+Some reinforcement learning problems cannot be formulated in the above way. Then it is necessary to create the environment yourself and pass it on to the algorithms. Make sure, that the environment is an `R6 class` with the attributes and methods described before, otherwise it won't work.
+
+Depending on the algorithm different of these attributes and methods may be necessary, e.g. `terminal.states`, `rewards` and `transitions` for model-based dynamic programming or `step()`, `reset()`, `state`, `reward` and `done`, if using a model-free algorithm.
+Many of the functions also need `previous.state`, `n.steps`, `n.actions`, `actions`, `action.space`, `state.space`, `n.states` and `states`.
+
+Here is an example creating the Mountain Car environment (Sutton & Barto, 1998).
+
+```{r}
+MountainCar = R6::R6Class("MountainCar", 
+  public = list(
+    action.space = "Discrete",
+    actions = c(0, 1, 2),
+    n.actions = 3,
+    state.space = "Box",
+    state.space.bounds = list(c(-1.2, 0.6), c(-0.07, 0.07)),
+    done = FALSE,
+    n.steps = 0,
+    state = NULL,
+    previous.state = NULL,
+    reward = NULL,
+    velocity = NULL,
+    position = NULL,
+    
+    reset = function() {
+      self$n.steps = 0
+      self$previous.state = NULL
+      self$done = FALSE
+      self$position = runif(1, - 0.6, - 0.4)
+      self$velocity = 0
+      self$state = matrix(c(self$position, self$velocity), ncol = 2)
+      invisible(self)
+    },
+    
+    step = function(action) {
+      self$previous.state = self$state
+      self$n.steps = self$n.steps + 1
+      
+      self$velocity = self$velocity + 0.001 * (action - 1) - 
+        0.0025 * cos(3 * self$position)
+      if (self$velocity < self$state.space.bounds[[2]][1]) {
+        self$velocity = self$state.space.bounds[[2]][1]
+      }
+      if (self$velocity > self$state.space.bounds[[2]][2]) {
+        self$velocity = self$state.space.bounds[[2]][2]
+      }
+      self$position = self$position + self$velocity
+      if (self$position < self$state.space.bounds[[1]][1]) {
+        self$position = self$state.space.bounds[[1]][1]
+        self$velocity = 0
+      }
+      
+      self$state = matrix(c(self$position, self$velocity), ncol = 2)
+      self$reward = - 1
+      if (self$position >= 0.5) {
+        self$done = TRUE
+        self$reward = 0
+      }
+      invisible(self)
+    },
+    
+    close = function() {
+      invisible(self)
+    }
+  )
+)
+```
+
+Then we can use this to generate samples.
+
+```{r}
+m = MountainCar$new()
+set.seed(123456)
+m$reset()
+while(!m$done) {
+  action = sample(m$actions, 1)
+  m$step(action)
+}
+print(paste("Episode finished after", m$n.steps, "steps."))
+```
+
+---
+
+More about Reinforcement Learning in R: [reinforcelearn](https://github.com/markdumke/reinforcelearn)
