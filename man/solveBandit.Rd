@@ -4,66 +4,62 @@
 \alias{solveBandit}
 \title{Solve multi-armed bandit}
 \usage{
-solveBandit(step, n.actions, n.episodes = 100L,
-  action.selection = c("epsilon-greedy", "greedy", "UCB", "gradient-bandit"),
-  epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100L,
-  alpha = 0.1, initial.value = 0, initial.visits = 0L, C = 2)
+solveBandit(step, n.actions, n.episodes = 100,
+  action.selection = c("egreedy", "greedy", "UCB", "gradientbandit"),
+  epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100,
+  alpha = 0.1, initial.value = 0, initial.visits = 0, C = 2)
 }
 \arguments{
-\item{step}{[\code{function}] \cr 
-A function, which takes an action (a scalar 
-integer) as first argument and returns a numeric scalar reward.}
+\item{step}{[\code{function}] \cr
+A function, which takes an action (\code{integer(1)}) as first argument
+and returns a numeric scalar reward.}
 
-\item{n.actions}{[\code{integer(1)}] \cr 
+\item{n.actions}{[\code{integer(1)}] \cr
 Number of actions.}
 
-\item{n.episodes}{[\code{integer(1)}] \cr 
+\item{n.episodes}{[\code{integer(1)}] \cr
 Number of episodes.}
 
-\item{action.selection}{[\code{character(1)}] \cr 
-Which method to use for 
-action selection, e.g. "epsilon-greedy", "greedy" or "UCB"}
+\item{action.selection}{[\code{character(1)}] \cr
+Which method to use for action selection, one of \code{"epsilon-greedy"},
+\code{"greedy"}, \code{"UCB"} or \code{"gradient_bandit"}.}
 
-\item{epsilon}{[\code{numeric(1) in [0,1]}] \cr 
-Ratio of random exploration in 
-epsilon-greedy action selection}
+\item{epsilon}{[\code{numeric(1) in [0,1]}] \cr
+Ratio of random exploration in epsilon-greedy action selection.}
 
-\item{epsilon.decay}{[\code{numeric(1) in [0,1]}] \cr 
+\item{epsilon.decay}{[\code{numeric(1) in [0,1]}] \cr
 Decay epsilon by this factor.}
 
 \item{epsilon.decay.after}{[\code{integer(1)}] \cr
 Number of episodes after which to decay epsilon.}
 
-\item{alpha}{[\code{numeric(1)}] \cr 
-Parameter of gradient bandit algorithm, higher alpha 
-value gives more weight to recent rewards 
-(useful for non-stationary environments)}
+\item{alpha}{[\code{numeric(1)}] \cr
+Parameter of gradient bandit algorithm, higher alpha value gives more weight to
+recent rewards (useful for non-stationary environments). Not implemented!}
 
-\item{initial.value}{[\code{numeric(1)}] \cr 
-Initial values for the action 
-values Q, set this to the maximal possible reward to encourage
-exploration (optimistic initialization)}
+\item{initial.value}{[\code{numeric(1)}] \cr
+Initial values for the action values Q, set this to the maximal possible
+reward to encourage exploration (optimistic initialization).}
 
-\item{initial.visits}{[\code{integer(1)}] \cr 
-Set this to a high number to encourage exploration 
+\item{initial.visits}{[\code{integer(1)}] \cr
+Set this to a high number to encourage exploration
 (together with a high \code{initial.value}).}
 
-\item{C}{[\code{numeric(1)}] \cr 
-Controls the degree of exploration. High C
-values lead to more exploration}
+\item{C}{[\code{numeric(1)}] \cr
+Controls the degree of exploration. High C values lead to more exploration.}
 }
 \value{
 [\code{numeric}] \cr
-Returns the action values for the arms of the bandit, 
-for gradient-bandit action selection the probabilities for 
-each action will be returned.
+Returns the action values for the arms of the bandit or,
+for gradient-bandit action selection, the probabilities for
+each action.
 }
 \description{
-Multi-armed bandits are a simplified reinforcement learning problem, 
-each arm of the bandit pays off a reward and the goal is to maximize 
-this reward, i.e. to choose the best arm. The arms of the bandit 
-can be seen as actions, after each action the episode ends (there 
-are no states). To find the best action, the algorithm is faced with 
+Multi-armed bandits are a simplified reinforcement learning problem,
+each arm of the bandit pays off a reward and the goal is to maximize
+this reward, i.e. to choose the best arm. The arms of the bandit
+can be seen as actions, after each action the episode ends (there
+are no states). To find the best action, the algorithm is faced with
 a tradeoff between exploration and exploitation.
 }
 \examples{
@@ -71,33 +67,33 @@ set.seed(123)
 
 # Define reward function
 step = function(action) {
-  if (action == 0) {
+  if (action == 1) {
     reward = rnorm(1, mean = 1, sd = 1)
   }
-  if (action == 1) {
+  if (action == 2) {
     reward = rnorm(1, mean = 2, sd = 4)
   }
-  if (action == 2) {
+  if (action == 3) {
     reward = runif(1, min = 0, max = 5)
   }
-  if (action == 3) {
+  if (action == 4) {
     reward = rexp(1, rate = 0.25)
   }
   reward
 }
 
-solveBandit(step, n.actions = 4, n.episodes = 1000, 
+solveBandit(step, n.actions = 4, n.episodes = 1000,
   action.selection = "greedy")
-solveBandit(step, n.actions = 4, n.episodes = 1000, 
-  action.selection = "epsilon-greedy", epsilon = 0.5)
-solveBandit(step, n.actions = 4, n.episodes = 1000, 
-  action.selection = "greedy", 
+solveBandit(step, n.actions = 4, n.episodes = 1000,
+  action.selection = "egreedy", epsilon = 0.5)
+solveBandit(step, n.actions = 4, n.episodes = 1000,
+  action.selection = "greedy",
   initial.value = 5, initial.visits = 100)
-solveBandit(step, n.actions = 4, n.episodes = 1000, 
+solveBandit(step, n.actions = 4, n.episodes = 1000,
   action.selection = "UCB", C = 2)
 # true values: 1, 2, 2.5, 4
 
 # Gradient bandit algorithm
-solveBandit(step, n.actions = 4, n.episodes = 10000, 
-  action.selection = "gradient-bandit", alpha = 0.1)
+solveBandit(step, n.actions = 4, n.episodes = 10000,
+  action.selection = "gradientbandit", alpha = 0.1)
 }

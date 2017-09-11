@@ -12,10 +12,13 @@
 #' credit for a reward and therefore are updated more strongly than states 
 #' observed infrequently and longer time ago.
 #'
-#' @inheritParams documentParams
-#'
+#' @inheritParams qSigma
+#' @param policy [\code{matrix}] \cr 
+#'   A policy specified as a probability matrix (states x actions).
+#' @param n.steps [\code{integer(1)}] \cr 
+#'   Number of evaluations (steps in the environment).
 #' @return [\code{numeric}] \cr
-#'   Returns the state value function v
+#'   Returns the state value function v.
 #' @export
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @examples 

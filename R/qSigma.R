@@ -16,7 +16,7 @@
 #' used as in Q-Learning. See De Asis et al. (2017) for more details. 
 #' 
 #' The functions \code{qlearning} and \code{sarsa} are there for convenience. 
-#' They all call the \code{qSigma} function with a special set of parameters.
+#' They call the \code{qSigma} function with a special set of parameters.
 #' 
 #' When \code{value.function == "table"} the action value function will be represented using a table, 
 #' a linear combination of features and a neural network can also be used. For a neural network you 
@@ -95,10 +95,11 @@
 #'   exploration (optimistic initialization).
 #' @param discount [\code{numeric(1) in [0, 1]}] \cr 
 #'   Discount factor.
-#' @param on.policy [\code{logical(1)}] \cr 
+#' @param target.policy [\code{character(1)}] \cr 
 #'   Should the temporal-difference target be computed on-policy 
-#'   using the epsilon-greedy behavior policy or off-policy using a greedy policy in the 
-#'   expected sarsa part of the update.
+#'   using the epsilon-greedy behavior policy (\code{target.policy = "e-greedy"}) 
+#'   or off-policy using a greedy policy in the 
+#'   expected sarsa part of the update (\code{target.policy = "greedy"})?
 #' @param double.learning [\code{logical(1)}] \cr 
 #'   Should double learning be used?
 #' @param replay.memory [\code{list}] \cr 
@@ -160,25 +161,26 @@
 #' 
 #' qSigma(grid,  epsilon = 0.5, updateEpsilon = decayEpsilon)
 #' 
-#' \dontrun{
-#' library(keras)
-#' model = keras_model_sequential()
-#' model %>% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
-#'   
+#' # With linear function approximation
 #' makeOneHot = function(state) {
 #'   one.hot = matrix(rep(0L, 70L), nrow = 1)
 #'   one.hot[1L, state + 1L] = 1L
 #'   one.hot
 #' }
+#' 
+#' # qSigma(grid, value.function = "linear", preprocessState = makeOneHot)
+#' 
+#' \dontrun{
+#' # Neural network as function approximator
+#' library(keras)
+#' model = keras_model_sequential()
+#' model %>% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
 #'   
 #' qSigma(grid, value.function = "neural.network", model = model, preprocessState = makeOneHot)
-#' qSigma(grid, value.function = "neural.network", model = model, preprocessState = makeOneHot, 
-#'   double.learning = TRUE, update.target.after = 100,
-#'   replay.memory.size = 1000, batch.size = 32)
 #' }
 #' 
 qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, lambda = 0, 
-  learning.rate = 0.1, epsilon = 0.1, discount = 1, on.policy = TRUE, 
+  learning.rate = 0.1, epsilon = 0.1, discount = 1, target.policy = "e-greedy", 
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1, 
   batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate", 
   update.target.after = 1, preprocessState = NULL, model = NULL, 
@@ -206,8 +208,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   }
   checkmate::assertChoice(value.function, c("table", "neural.network", "linear"))
   checkmate::assertChoice(eligibility, c("accumulate", "replace", "dutch"))
-  # checkmate::assertFlag(experience.replay)
-  checkmate::assertFlag(on.policy)
+  checkmate::assertChoice(target.policy, c("greedy", "e-greedy"))
   checkmate::assertFlag(double.learning)
   checkmate::assertList(replay.memory, types = "list", len = replay.memory.size, null.ok = TRUE)
   checkmate::assertList(replay.memory[[1]], len = 4, null.ok = TRUE,
@@ -250,7 +251,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
     preprocessState = doNothing
   }
   
-  if (on.policy) {
+  if (target.policy == "e-greedy") {
     epsilon.target = epsilon
   } else {
     epsilon.target = 0
@@ -261,10 +262,17 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
     if (double.learning) {
       Q2 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
     }
-  } else {
+  } else if (value.function == "neural.network") {
     keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = learning.rate))
     if (double.learning) {
       model_ = model
+    }
+  } else if (value.function == "linear") {
+    envir$reset()
+    n.weights = length(preprocessState(envir$state))
+    Q1 = rep(initial.value, n.weights)
+    if (double.learning) {
+      Q2 = rep(initial.value, n.weights)
     }
   }
   
@@ -323,7 +331,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
         alpha = updateAlpha(alpha, i)
         theta = updateTheta(theta, i)
         learning.rate = updateLearningRate(learning.rate, i)
-        if (on.policy) {
+        if (target.policy == "e-greedy") {
           epsilon.target = epsilon
         }
         break
@@ -370,6 +378,8 @@ predictQ = function(value.function, state, Q, model) {
     Q[state + 1, , drop = FALSE]
   } else if (value.function == "neural.network") {
     predict(model, state)
+  } else { # linear
+    Q %*% state
   }
 }
 
@@ -492,6 +502,11 @@ updatePriority = function(priority, td.error, theta, indexes) {
   priority
 }
 
+# Argmax (ties broken randomly)
+# x numeric matrix or numeric vector
+argmax = function(x) {
+  nnet::which.is.max(x)
+}
 
 # decayParam = function(param, time, when) {
 #   if (time %% when == 0) {

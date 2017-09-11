@@ -10,7 +10,7 @@ qlearning = function(envir, value.function = "table", n.episodes = 100, lambda =
   updateLearningRate = NULL, updateTheta = NULL, initial.value = 0) {
   
   qSigma(envir, value.function = "table", n.episodes, sigma = 0, lambda, 
-    learning.rate, epsilon, discount, on.policy = FALSE,
+    learning.rate, epsilon, discount, target.policy = "greedy",
     double.learning, replay.memory, replay.memory.size, 
     batch.size, alpha, theta, eligibility, 
     update.target.after, preprocessState, model, 
@@ -30,7 +30,7 @@ sarsa = function(envir, value.function = "table", n.episodes = 100, lambda = 0,
   updateLearningRate = NULL, updateTheta = NULL, initial.value = 0) {
   
   qSigma(envir, value.function = "table", n.episodes, sigma = 1, lambda, 
-    learning.rate, epsilon, discount, on.policy = TRUE,
+    learning.rate, epsilon, discount, target.policy = "e-greedy",
     double.learning, replay.memory, replay.memory.size, 
     batch.size, alpha, theta, eligibility, 
     update.target.after, preprocessState, model, 

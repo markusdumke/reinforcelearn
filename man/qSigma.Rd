@@ -8,12 +8,13 @@
 \usage{
 qSigma(envir, value.function = "table", n.episodes = 100, sigma = 1,
   lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount = 1,
-  on.policy = TRUE, double.learning = FALSE, replay.memory = NULL,
-  replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
-  eligibility = "accumulate", update.target.after = 1,
-  preprocessState = NULL, model = NULL, updateEpsilon = NULL,
-  updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL, updateTheta = NULL, initial.value = 0)
+  target.policy = "e-greedy", double.learning = FALSE,
+  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
+  alpha = 0, theta = 0.01, eligibility = "accumulate",
+  update.target.after = 1, preprocessState = NULL, model = NULL,
+  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
+  updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
+  initial.value = 0)
 
 qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
   learning.rate = 0.1, epsilon = 0.1, discount = 1,
@@ -64,10 +65,11 @@ Ratio of random exploration in epsilon-greedy action selection.}
 \item{discount}{[\code{numeric(1) in [0, 1]}] \cr 
 Discount factor.}
 
-\item{on.policy}{[\code{logical(1)}] \cr 
+\item{target.policy}{[\code{character(1)}] \cr 
 Should the temporal-difference target be computed on-policy 
-using the epsilon-greedy behavior policy or off-policy using a greedy policy in the 
-expected sarsa part of the update.}
+using the epsilon-greedy behavior policy (\code{target.policy = "e-greedy"}) 
+or off-policy using a greedy policy in the 
+expected sarsa part of the update (\code{target.policy = "greedy"})?}
 
 \item{double.learning}{[\code{logical(1)}] \cr 
 Should double learning be used?}
@@ -163,7 +165,7 @@ policy used for action selection, when \code{on.policy == FALSE} a greedy target
 used as in Q-Learning. See De Asis et al. (2017) for more details.
 
 The functions \code{qlearning} and \code{sarsa} are there for convenience. 
-They all call the \code{qSigma} function with a special set of parameters.
+They call the \code{qSigma} function with a special set of parameters.
 
 When \code{value.function == "table"} the action value function will be represented using a table, 
 a linear combination of features and a neural network can also be used. For a neural network you 
@@ -216,21 +218,22 @@ decayEpsilon = function(epsilon, i) {
 
 qSigma(grid,  epsilon = 0.5, updateEpsilon = decayEpsilon)
 
-\dontrun{
-library(keras)
-model = keras_model_sequential()
-model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
-  
+# With linear function approximation
 makeOneHot = function(state) {
   one.hot = matrix(rep(0L, 70L), nrow = 1)
   one.hot[1L, state + 1L] = 1L
   one.hot
 }
+
+# qSigma(grid, value.function = "linear", preprocessState = makeOneHot)
+
+\dontrun{
+# Neural network as function approximator
+library(keras)
+model = keras_model_sequential()
+model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
   
 qSigma(grid, value.function = "neural.network", model = model, preprocessState = makeOneHot)
-qSigma(grid, value.function = "neural.network", model = model, preprocessState = makeOneHot, 
-  double.learning = TRUE, update.target.after = 100,
-  replay.memory.size = 1000, batch.size = 32)
 }
 
 }

@@ -13,26 +13,24 @@ The reinforcement learning environment
 created by \code{\link{makeEnvironment}}.}
 
 \item{policy}{[\code{matrix}] \cr 
-A policy specified as a probability matrix (states x actions)}
+A policy specified as a probability matrix (states x actions).}
 
 \item{lambda}{[\code{numeric(1) in [0, 1]}] \cr 
-Then \code{lambda = 0} only current state is updated 
-(this is equivalent to TD(0)), for \code{lambda = 1} 
-all states visited are updated, this is roughly equivalent to 
-every-visit Monte Carlo.}
+The \code{lambda} parameter combines different n-step returns using eligibility traces. 
+Only used if the replay memory is of size 1, i.e. no experience replay is used.}
 
 \item{n.steps}{[\code{integer(1)}] \cr 
-Number of evaluations (steps in the environment)}
+Number of evaluations (steps in the environment).}
 
-\item{discount}{[\code{numeric(1) in [0,1]}] \cr 
-Discounting future rewards.}
+\item{discount}{[\code{numeric(1) in [0, 1]}] \cr 
+Discount factor.}
 
-\item{learning.rate}{[\code{numeric(1) in [0,1]}] \cr 
-Learning rate (step size).}
+\item{learning.rate}{[\code{R6 class}] \cr 
+Learning rate used for gradient descent.}
 }
 \value{
 [\code{numeric}] \cr
-  Returns the state value function v
+  Returns the state value function v.
 }
 \description{
 Temporal difference (TD) learning is a method to estimate the state value 
