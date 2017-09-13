@@ -4,22 +4,21 @@
 \alias{qSigma}
 \alias{qlearning}
 \alias{sarsa}
-\title{Q sigma / Q-Learning / Sarsa}
+\title{Q(sigma) / Q-Learning / Sarsa}
 \usage{
 qSigma(envir, value.function = "table", n.episodes = 100, sigma = 1,
   lambda = 0, learning.rate = 0.1, epsilon = 0.1, discount = 1,
   target.policy = "e-greedy", double.learning = FALSE,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, eligibility = "accumulate",
-  update.target.after = 1, preprocessState = NULL, model = NULL,
-  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
-  updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
-  initial.value = 0)
+  alpha = 0, theta = 0.01, beta = 0, update.target.after = 1,
+  preprocessState = NULL, model = NULL, updateEpsilon = NULL,
+  updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
+  updateLearningRate = NULL, updateTheta = NULL, initial.value = 0)
 
 qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
   learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
-  batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
+  batch.size = 1, alpha = 0, theta = 0.01, beta = 0,
   update.target.after = 1, preprocessState = NULL, model = NULL,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
   updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
@@ -28,7 +27,7 @@ qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
 sarsa(envir, value.function = "table", n.episodes = 100, lambda = 0,
   learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
-  batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate",
+  batch.size = 1, alpha = 0, theta = 0.01, beta = 0,
   update.target.after = 1, preprocessState = NULL, model = NULL,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
   updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
@@ -95,10 +94,11 @@ high temporal-difference error will be proportionally prioritized.}
 \code{theta} is a small positive constant that prevents the edge-case of transitions not being 
 revisited once their error is zero.}
 
-\item{eligibility}{[\code{character(1)}] \cr 
-Type of eligibility trace, could be \code{"replace"} for replacing traces, 
-\code{"accumulate"} for accumulating traces or \code{"dutch"} for dutch traces. 
-Only used if the replay memory is of size 1, i.e. no experience replay is used.}
+\item{beta}{[\code{numeric(1)}] \cr 
+Type of eligibility trace, use \code{beta = 1} for replacing traces, 
+\code{beta = 0} for accumulating traces or intermediate values for a mixture between both. 
+Only used if the replay memory is of size 1, i.e. no experience replay is used. 
+Currently only supported for tabular value functions.}
 
 \item{update.target.after}{[\code{integer(1)}] \cr 
 When using double learning the target network / table will be updated after 
@@ -160,8 +160,8 @@ of generalized policy iteration. They all learn online using temporal-difference
 Q(sigma) subsumes the well known Q-Learning, Sarsa and Expected Sarsa algorithms as special cases.
 The default call \code{qsigma()} is exactly equivalent to Sarsa(0). A weighted mean between sarsa
 and expected sarsa updates can be used by varying the parameter \code{sigma}. 
-When \code{on.policy == TRUE} the policy used to compute the expected sarsa is the epsilon-greedy
-policy used for action selection, when \code{on.policy == FALSE} a greedy target policy will be 
+When \code{target.policy == "e-greedy"} the policy used to compute the expected sarsa is the epsilon-greedy
+policy used for action selection, when \code{target.policy == "greedy"} a greedy target policy will be 
 used as in Q-Learning. See De Asis et al. (2017) for more details.
 
 The functions \code{qlearning} and \code{sarsa} are there for convenience. 

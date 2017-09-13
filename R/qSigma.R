@@ -1,4 +1,4 @@
-#' Q sigma / Q-Learning / Sarsa
+#' Q(sigma) / Q-Learning / Sarsa
 #' 
 #' Value-based reinforcement learning control algorithms.
 #' 
@@ -11,8 +11,8 @@
 #' Q(sigma) subsumes the well known Q-Learning, Sarsa and Expected Sarsa algorithms as special cases.
 #' The default call \code{qsigma()} is exactly equivalent to Sarsa(0). A weighted mean between sarsa
 #' and expected sarsa updates can be used by varying the parameter \code{sigma}. 
-#' When \code{on.policy == TRUE} the policy used to compute the expected sarsa is the epsilon-greedy
-#' policy used for action selection, when \code{on.policy == FALSE} a greedy target policy will be 
+#' When \code{target.policy == "e-greedy"} the policy used to compute the expected sarsa is the epsilon-greedy
+#' policy used for action selection, when \code{target.policy == "greedy"} a greedy target policy will be 
 #' used as in Q-Learning. See De Asis et al. (2017) for more details. 
 #' 
 #' The functions \code{qlearning} and \code{sarsa} are there for convenience. 
@@ -127,10 +127,11 @@
 #' @param update.target.after [\code{integer(1)}] \cr 
 #'   When using double learning the target network / table will be updated after 
 #'   \code{update.target.after} steps.
-#' @param eligibility [\code{character(1)}] \cr 
-#'   Type of eligibility trace, could be \code{"replace"} for replacing traces, 
-#'   \code{"accumulate"} for accumulating traces or \code{"dutch"} for dutch traces. 
-#'   Only used if the replay memory is of size 1, i.e. no experience replay is used.
+#' @param beta [\code{numeric(1)}] \cr 
+#'   Type of eligibility trace, use \code{beta = 1} for replacing traces, 
+#'   \code{beta = 0} for accumulating traces or intermediate values for a mixture between both. 
+#'   Only used if the replay memory is of size 1, i.e. no experience replay is used. 
+#'   Currently only supported for tabular value functions.
 #' @rdname qSigma
 #' @return [\code{list(2)}] \cr
 #'   Returns the action value function or model parameters [\code{matrix}] and the 
@@ -182,7 +183,7 @@
 qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, lambda = 0, 
   learning.rate = 0.1, epsilon = 0.1, discount = 1, target.policy = "e-greedy", 
   double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1, 
-  batch.size = 1, alpha = 0, theta = 0.01, eligibility = "accumulate", 
+  batch.size = 1, alpha = 0, theta = 0.01, beta = 0, 
   update.target.after = 1, preprocessState = NULL, model = NULL, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
   updateLearningRate = NULL, updateTheta = NULL, initial.value = 0) {
@@ -199,6 +200,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   checkmate::assertNumber(initial.value)
   checkmate::assertNumber(lambda, lower = 0, upper = 1)
   checkmate::assertNumber(sigma, lower = 0, upper = 1)
+  checkmate::assertNumber(beta, lower = 0, upper = 1)
   checkmate::assertInt(n.episodes, lower = 1)
   checkmate::assertInt(replay.memory.size, lower = 1)
   checkmate::assertInt(batch.size, lower = 1)
@@ -207,7 +209,6 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
     stop("Batch size must be smaller than replay memory size!")
   }
   checkmate::assertChoice(value.function, c("table", "neural.network", "linear"))
-  checkmate::assertChoice(eligibility, c("accumulate", "replace", "dutch"))
   checkmate::assertChoice(target.policy, c("greedy", "e-greedy"))
   checkmate::assertFlag(double.learning)
   checkmate::assertList(replay.memory, types = "list", len = replay.memory.size, null.ok = TRUE)
@@ -297,7 +298,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
       priority[replay.steps] = max(priority)
       data = interactWithEnvironment(value.function, envir, preprocessState, Q1, model, epsilon) # use Q1 + Q2
       if (value.function == "table" & replay.memory.size == 1) {
-        E = increaseEligibility(eligibility, E, data$state, data$action, learning.rate)
+        E = increaseEligibility(E, data$state, data$action, beta)
       } else {
         E = 1
       }
@@ -317,7 +318,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
       Q1 = res$Q
       priority = res$priority
       if (value.function == "table" & replay.memory.size == 1) {
-        E = reduceEligibility(E, lambda, discount)
+        E = reduceEligibility(E, lambda, discount, sigma, policy = NULL, next.action = NULL)
       }
       if (double.learning & (envir$n.steps %% update.target.after == 0)) {
         Q2 = updateTargetModel(value.function, Q1, Q2, model, model_)
@@ -397,21 +398,14 @@ sampleAction = function(policy, size) {
   action
 }
 
-increaseEligibility = function(eligibility, E, state, action, learning.rate) {
-  if (eligibility == "accumulate") {
-    E[state + 1, action + 1] = E[state + 1, action + 1] + 1
-  } else if (eligibility == "replace") {
-    E[state + 1, ] = 0
-    E[state + 1, action + 1] = 1
-  } else {
-    E[state + 1, ] = 0
-    E[state + 1, action + 1] = (1 - learning.rate) * E[state + 1, action + 1] + 1
-  }
+increaseEligibility = function(E, state, action, beta) {
+  E[state + 1, action + 1] = (1 - beta) * E[state + 1, action + 1] + 1
   E
 }
 
-reduceEligibility = function(E, lambda, discount) {
-  E = lambda * discount * E
+# fixme: does not work right now
+reduceEligibility = function(E, lambda, discount, sigma, policy, next.action) {
+  E = discount * lambda * E # * (sigma + policy[next.action + 1] * (1 - sigma))
   E
 }
 
