@@ -188,8 +188,6 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
   updateLearningRate = NULL, updateTheta = NULL, initial.value = 0) {
   
-  # Fixme: implement this as class methods, add documentation and tests
-  
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$action.space == "Discrete")
   checkmate::assertNumber(discount, lower = 0, upper = 1)
@@ -224,10 +222,6 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   # fixme neural network update learning.rate
   # Fixme: perform a check on model and preprocessState
   # Fixme: seed for python neural network?
-  
-  doNothing = function(x, y) {
-    x
-  }
   
   if (is.null(updateEpsilon)) {
     updateEpsilon = doNothing
@@ -305,7 +299,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
       replay.memory = add2ReplayMemory(replay.memory, data, index = replay.steps)
       probability = priority ^ alpha / sum(priority ^ alpha)
       indexes = sample(seq_along(replay.memory), size = batch.size, prob = probability)
-      batch = sampleBatch(replay.memory, batch.size, indexes)
+      batch = sampleBatch(replay.memory, batch.size, indexes, value.function, Q1, model, preprocessState, epsilon)
       if (double.learning) {
         res = trainModel(value.function, batch, preprocessState, Q1, Q2, model, model_, 
           epsilon.target, discount, sigma, learning.rate, epsilon, batch.size,
@@ -361,7 +355,6 @@ initializeReplayMemory = function(envir, len) {
 interactWithEnvironment = function(value.function, envir, preprocessState, Q, model, epsilon) {
   action = getAction(value.function, envir$state, preprocessState, Q, model, epsilon)
   envir$step(action)
-  # next.action = getAction(envir$state, Q)
   list(state = envir$previous.state, action = action,
     reward = envir$reward, next.state = envir$state) #, next.action = next.action)
 }
@@ -414,15 +407,18 @@ add2ReplayMemory = function(replay.memory, data, index) {
   replay.memory
 }
 
-sampleBatch = function(replay.memory, batch.size, indexes) {
+sampleBatch = function(replay.memory, batch.size, indexes, 
+  value.function, Q, model, preprocessState, epsilon) {
   batch = replay.memory[indexes]
   states = lapply(batch, "[[", "state")
   next.states = lapply(batch, "[[", "next.state")
-  actions = vapply(batch, "[[", "action", FUN.VALUE = double(1))
+  actions = vapply(batch, "[[", "action", FUN.VALUE = integer(1))
   rewards = vapply(batch, "[[", "reward", FUN.VALUE = double(1))
-  # next.actions = vapply(batch, "[[", "next.action", FUN.VALUE = double(1))
-  list(states = states, actions = actions,
-    rewards = rewards, next.states = next.states) #, next.actions = next.actions)
+  next.actions = vapply(next.states, getAction, FUN.VALUE = integer(1), 
+    value.function = value.function, preprocessState = preprocessState, 
+    Q = Q, model = model, epsilon = epsilon)
+  list(states = states, actions = actions, rewards = rewards, 
+    next.states = next.states, next.actions = next.actions)
 }
 
 trainModel = function(value.function, batch, preprocessState, Q1, Q2, model, model_, 
@@ -442,14 +438,9 @@ computeTDTarget = function(value.function, batch, preprocessState, Q1, Q2,
   next.states = t(sapply(batch$next.states, preprocessState))
   Q.next.state = predictQ(value.function, next.states, Q1, model)
   Q.next.state.target = predictQ(value.function, next.states, Q2, model_)
-  # next.actions = batch$next.actions
-  policy = t(apply(Q.next.state, 1, returnPolicy, epsilon = epsilon))
-  actions = rep(NA, batch.size)
-  for (i in seq_len(batch.size)) {
-    actions[i] = sampleAction(policy[i, , drop = FALSE], size = 1)
-  }
+  next.actions = batch$next.actions
   sarsa.target = Q.next.state.target[matrix(c(seq_len(nrow(Q.next.state.target)),
-    actions + 1), ncol = 2)]
+    next.actions + 1), ncol = 2)]
   policy = t(apply(Q.next.state, 1, returnPolicy, epsilon = epsilon.target))
   exp.sarsa.target = rowSums(policy * Q.next.state.target)
   td.target = batch$rewards + discount * (sigma * sarsa.target +
@@ -508,3 +499,7 @@ argmax = function(x) {
 #   }
 #   param
 # }
+
+doNothing = function(x, y) {
+  x
+}
