@@ -80,6 +80,8 @@ makeEnvironment = function(gym.envir.name = NULL,
   transitions = NULL, rewards = NULL, initial.state = NULL, 
   render = TRUE) {
   
+  checkmate::assertCharacter(gym.envir.name, max.len = 1, null.ok = TRUE)
+  
   if (!is.null(gym.envir.name)) {
     package.path = system.file(package = "reinforcelearn")
     path2pythonfile = paste0(package.path, "/gym_http_server.py")
