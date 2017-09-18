@@ -218,70 +218,21 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   checkmate::assertFunction(updateLambda,  nargs = 2, null.ok = TRUE)
   checkmate::assertFunction(updateAlpha,  nargs = 2, null.ok = TRUE)
   checkmate::assertFunction(updateTheta,  nargs = 2, null.ok = TRUE)
-  checkmate::assertFunction(updateLearningRate,  nargs = 2, null.ok = TRUE) 
-  # fixme neural network update learning.rate
-  # Fixme: perform a check on model and preprocessState
-  # Fixme: seed for python neural network?
+  checkmate::assertFunction(updateLearningRate,  nargs = 2, null.ok = TRUE)
   
-  if (is.null(updateEpsilon)) {
-    updateEpsilon = doNothing
-  }
-  if (is.null(updateLambda)) {
-    updateLambda = doNothing
-  }
-  if (is.null(updateAlpha)) {
-    updateAlpha = doNothing
-  }
-  if (is.null(updateTheta)) {
-    updateTheta = doNothing
-  }
-  if (is.null(updateSigma)) {
-    updateSigma = doNothing
-  }
-  if (is.null(updateLearningRate)) {
-    updateLearningRate = doNothing
-  }
+  agent = agent2$new(envir, value.function, n.episodes, sigma, lambda, 
+    learning.rate, epsilon, discount, target.policy, 
+    double.learning, replay.memory, replay.memory.size, 
+    batch.size, alpha, theta, beta, 
+    update.target.after, preprocessState, model, 
+    updateEpsilon, updateSigma, updateLambda, updateAlpha, 
+    updateLearningRate, updateTheta, initial.value)
   
-  if (is.null(preprocessState)) {
-    preprocessState = doNothing
-  }
-  
-  if (target.policy == "e-greedy") {
-    epsilon.target = epsilon
-  } else {
-    epsilon.target = 0
-  }
-  
-  if (value.function == "table") {
-    Q1 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
-    if (double.learning) {
-      Q2 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
-    }
-  } else if (value.function == "neural.network") {
-    keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = learning.rate))
-    if (double.learning) {
-      model_ = model
-    }
-  } else if (value.function == "linear") {
-    envir$reset()
-    n.weights = length(preprocessState(envir$state))
-    Q1 = rep(initial.value, n.weights)
-    if (double.learning) {
-      Q2 = rep(initial.value, n.weights)
-    }
-  }
-  
-  if (is.null(replay.memory)) {
-    replay.memory = initializeReplayMemory(envir, replay.memory.size)
-  }
-  priority = rep(1, times = replay.memory.size)
   replay.steps = 0
   episode.steps = rep(0, n.episodes)
   
   for (i in seq_len(n.episodes)) {
-    if (value.function == "table") {
-      E = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
-    }
+    agent$resetEligibility()
     envir$reset()
     
     while(envir$done == FALSE) {
@@ -289,217 +240,350 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
       if (replay.steps > replay.memory.size) {
         replay.steps = 1
       }
-      priority[replay.steps] = max(priority)
-      data = interactWithEnvironment(value.function, envir, preprocessState, Q1, model, epsilon) # use Q1 + Q2
-      if (value.function == "table" & replay.memory.size == 1) {
-        E = increaseEligibility(E, data$state, data$action, beta)
-      } else {
-        E = 1
-      }
-      replay.memory = add2ReplayMemory(replay.memory, data, index = replay.steps)
-      probability = priority ^ alpha / sum(priority ^ alpha)
-      indexes = sample(seq_along(replay.memory), size = batch.size, prob = probability)
-      batch = sampleBatch(replay.memory, batch.size, indexes, value.function, Q1, model, preprocessState, epsilon)
-      if (double.learning) {
-        res = trainModel(value.function, batch, preprocessState, Q1, Q2, model, model_, 
-          epsilon.target, discount, sigma, learning.rate, epsilon, batch.size,
-          priority, theta, indexes, E, replay.memory.size)
-      } else {
-        res = trainModel(value.function, batch, preprocessState, Q1, Q1, model, model, 
-          epsilon.target, discount, sigma, learning.rate, epsilon, batch.size,
-          priority, theta, indexes, E, replay.memory.size)
-      }
-      Q1 = res$Q
-      priority = res$priority
-      if (value.function == "table" & replay.memory.size == 1) {
-        E = reduceEligibility(E, lambda, discount, sigma, policy = NULL, next.action = NULL)
-      }
+      agent$priority[replay.steps] = max(agent$priority)
+      agent$interactWithEnvironment(envir)
+      agent$add2ReplayMemory(index = replay.steps)
+      
+      agent$sampleBatch()
+      
+      agent$increaseEligibility(agent$data$state, agent$data$action) # make this work for function approximation
+      agent$train()
+      agent$reduceEligibility()
+      
       if (double.learning & (envir$n.steps %% update.target.after == 0)) {
-        Q2 = updateTargetModel(value.function, Q1, Q2, model, model_)
+        agent$updateTargetModel()
       }
+      
       if (envir$done) {
         episode.steps[i] = envir$n.steps
         print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-        epsilon = updateEpsilon(epsilon, i)
-        sigma = updateSigma(sigma, i)
-        lambda = updateLambda(lambda, i)
-        alpha = updateAlpha(alpha, i)
-        theta = updateTheta(theta, i)
-        learning.rate = updateLearningRate(learning.rate, i)
-        if (target.policy == "e-greedy") {
-          epsilon.target = epsilon
-        }
+        agent$updateParams()
         break
       }
     }
   }
-  list(Q1 = Q1, episode.steps = episode.steps)
+  list(Q1 = agent$Q1, Q2 = agent$Q2, episode.steps = episode.steps)
 }
 
-initializeReplayMemory = function(envir, len) {
-  replay.memory = vector("list", length = len)
-  envir$reset()
-  action = sample(envir$actions, 1)
-  for (i in seq_len(len)) {
-    envir$step(action)
-    replay.memory[[i]] = list(state = envir$previous.state, action = action,
-      reward = envir$reward, next.state = envir$state) #, next.action = next.action)
-    action = sample(envir$actions, 1)
-    if (envir$done) {
+# =================================================
+# =================================================
+
+agent2 = R6::R6Class("agent", 
+  public = list(
+    Q1 = NULL,
+    Q2 = NULL,
+    replay.memory = NULL,
+    data = NULL,
+    batch = NULL,
+    priority = NULL,
+    indices =  NULL,
+    E = 1,
+    policy = NULL,
+    Q.predict = NULL,
+    Q.target = NULL,
+    td.target = NULL,
+    td.error = NULL,
+    
+    action = NULL,
+    next.action = NULL,
+    
+    epsilon = NULL,
+    epsilon.target = NULL,
+    sigma = NULL,
+    lambda = NULL,
+    theta = NULL,
+    learning.rate = NULL,
+    alpha = NULL,
+    beta = NULL,
+    discount = NULL,
+    target.policy = NULL,
+    batch.size = NULL,
+    replay.memory.size = NULL,
+    
+    predictQ = NULL,
+    resetEligibility = NULL,
+    increaseEligibility = NULL,
+    reduceEligibility = NULL,
+    preprocessState = identity,
+    # train = NULL,
+    updateTargetModel = NULL,
+    updateQ = NULL,
+    getNextQ = NULL,
+    
+    updateEpsilon = function() {},
+    updateSigma = function() {},
+    updateLambda = function() {},
+    updateAlpha = function() {},
+    updateLearningRate = function() {},
+    updateTheta = function() {},
+    
+    # initial weights, Q argument?
+    # initialize table, neural.network, linear functions
+    initialize = function(envir, value.function, n.episodes, sigma, lambda, 
+      learning.rate, epsilon, discount, target.policy, 
+      double.learning, replay.memory, replay.memory.size, 
+      batch.size, alpha, theta, beta, 
+      update.target.after, preprocessState, model, 
+      updateEpsilon, updateSigma, updateLambda, updateAlpha, 
+      updateLearningRate, updateTheta, initial.value) {
+      
+      self$epsilon = epsilon
+      self$lambda = lambda
+      self$sigma = sigma
+      self$theta = theta
+      self$alpha = alpha
+      self$beta = beta
+      self$learning.rate = learning.rate
+      self$discount = discount
+      self$target.policy = target.policy
+      self$batch.size = batch.size
+      self$replay.memory.size = replay.memory.size
+      
+      if (!is.null(updateEpsilon)) {
+        self$updateEpsilon = updateEpsilon
+      }
+      if (!is.null(updateLambda)) {
+        self$updateLambda = updateLambda
+      }
+      if (!is.null(updateAlpha)) {
+        self$updateAlpha = updateAlpha
+      }
+      if (!is.null(updateTheta)) {
+        self$updateTheta = updateTheta
+      }
+      if (!is.null(updateSigma)) {
+        self$updateSigma = updateSigma
+      }
+      if (!is.null(updateLearningRate)) {
+        self$updateLearningRate = updateLearningRate
+      }
+      
+      if (value.function == "table") {
+        self$Q1 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
+        
+        if (double.learning) {
+          self$Q2 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
+        }
+        
+        self$predictQ = function(Q, state) {
+          Q[state + 1, , drop = FALSE]
+        }
+        
+        self$resetEligibility = function() {
+          self$E = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+        }
+        
+        self$increaseEligibility = function(state, action) {
+          self$E[state + 1, action + 1] = (1 - self$beta) * self$E[state + 1, action + 1] + 1
+        }
+        
+        self$reduceEligibility = function(policy, next.action) {
+          self$E = self$discount * self$lambda * self$E * 
+            (self$sigma + self$policy[self$next.action + 1] * (1 - self$sigma))
+        }
+        
+        self$updateTargetModel = function() {
+          self$Q2 = self$Q1
+        }
+        
+        if (self$replay.memory.size == 1) {
+          self$updateQ = function() {
+            self$Q1 = self$Q1 + self$learning.rate * self$td.error * self$E
+          }
+        } else {
+          self$updateQ = function() {
+            actions = self$batch$actions
+            states = self$batch$states # t(sapply(batch$states, preprocessState))
+            self$Q1[matrix(c(states + 1, actions + 1), ncol = 2)] = self$Q1[matrix(c(states + 1, actions + 1), ncol = 2)] +
+              self$learning.rate * self$td.error * self$E
+          }
+        }
+        
+        ################################################
+      } else if (value.function == "neural.network") {
+        self$Q1 = model
+        keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = learning.rate))
+        if (double.learning) {
+          self$Q2 = model
+        }
+        
+        self$predictQ = function(Q, state) {
+          predict(Q, state)
+        }
+        
+        self$resetEligibility = function() {}
+        self$increaseEligibility = function() {}
+        self$reduceEligibility = function() {}
+        
+        self$updateTargetModel = function() {
+          keras::set_weights(self$Q2, keras::get_weights(self$Q1))
+        }
+        
+        self$updateQ = function() {
+          states = self$batch$states
+          actions = self$batch$actions
+          Q.state = predictQ(self$Q1, states)
+          y = Q.state
+          y[matrix(c(seq_len(nrow(y)), actions + 1), ncol = 2)] = self$td.target
+          keras::fit(self$Q1, states, y, verbose = 0)
+        }
+        
+        
+        ################################################
+      } else if (value.function == "linear") {
+        envir$reset()
+        n.weights = length(preprocessState(envir$state))
+        self$Q1 = rep(initial.value, n.weights)
+        if (double.learning) {
+          self$Q2 = rep(initial.value, n.weights)
+        }
+        
+        self$predictQ = function(Q, state) {
+          Q %*% state
+        }
+        
+        self$resetEligibility = function() {}
+        self$increaseEligibility = function() {}
+        self$reduceEligibility = function() {}
+        
+        self$updateTargetModel = function() {
+          self$Q2 = self$Q1
+        }
+      }
+      
+      if (is.null(replay.memory)) {
+        self$initializeReplayMemory(envir, replay.memory.size)
+      } else {
+        self$replay.memory = replay.memory
+      }
+      
+      self$priority = rep(1, times = replay.memory.size)
+      
+      if (target.policy == "e-greedy") {
+        self$epsilon.target = epsilon
+      } else {
+        self$epsilon.target = 0
+      }
+      
+      if (double.learning) {
+        self$getNextQ = function() {
+          self$Q.predict = self$predictQ(self$Q1, unlist(self$batch$next.states))
+          self$Q.target = self$predictQ(self$Q2, unlist(self$batch$next.states))
+        }
+      } else {
+        self$getNextQ = function() {
+          self$Q.predict = self$predictQ(self$Q1, unlist(self$batch$next.states)) # unlist does this work always?
+          self$Q.target = self$Q.predict
+        }
+      }
+    },
+    
+    initializeReplayMemory = function(envir, len) {
+      self$replay.memory = vector("list", length = len)
       envir$reset()
+      action = sample(envir$actions, 1)
+      for (i in seq_len(len)) {
+        envir$step(action)
+        self$replay.memory[[i]] = list(state = self$preprocessState(envir$previous.state), action = action,
+          reward = envir$reward, next.state = self$preprocessState(envir$state))
+        action = sample(envir$actions, 1)
+        if (envir$done) {
+          envir$reset()
+        }
+      }
+    },
+    
+    interactWithEnvironment = function(envir) { # save preprocessed state in replay memory?
+      s = self$preprocessState(envir$state)
+      self$action = self$getAction(s)
+      envir$step(self$action)
+      self$data = list(state = s, action = self$action,
+        reward = envir$reward, next.state = self$preprocessState(envir$state))
+    },
+    
+    getAction = function(state) {
+      Q.state = self$predictQ(self$Q1, state)
+      self$returnPolicy(Q.state, self$epsilon)
+      action = self$sampleAction()
+      action
+    },
+    
+    returnPolicy = function(Q, epsilon) {
+      greedy.action = which.max(Q)
+      n.actions = length(Q)
+      self$policy = matrix(0, nrow = 1, ncol = n.actions)
+      self$policy[, greedy.action] = 1 - epsilon
+      self$policy = self$policy + epsilon / n.actions
+    },
+    
+    sampleAction = function() {
+      action = sample(seq_len(ncol(self$policy)), prob = self$policy, size = 1, replace = TRUE) - 1L
+      action
+    },
+    
+    add2ReplayMemory = function(index) {
+      self$replay.memory[[index]] = self$data
+    },
+    
+    getIndices = function() {
+      probability = self$priority ^ self$alpha / sum(self$priority ^ self$alpha)
+      self$indices = sample(seq_along(self$replay.memory), size = self$batch.size, prob = probability)
+    },
+    
+    sampleBatch = function() {
+      self$getIndices()
+      batch = self$replay.memory[self$indices]
+      states = lapply(batch, "[[", "state")
+      next.states = lapply(batch, "[[", "next.state")
+      actions = vapply(batch, "[[", "action", FUN.VALUE = integer(1))
+      rewards = vapply(batch, "[[", "reward", FUN.VALUE = double(1))
+      next.actions = vapply(next.states, self$getAction, FUN.VALUE = integer(1)) # put this in compute td error?
+      self$next.action = next.actions
+      self$batch = list(states = states, actions = actions, rewards = rewards, 
+        next.states = next.states, next.actions = next.actions)
+    }, 
+    
+    updateParams = function() {
+      self$updateEpsilon()
+      self$updateSigma()
+      self$updateLambda()
+      self$updateAlpha()
+      self$updateTheta() # arguments episode_number
+      if (self$target.policy == "e-greedy") {
+        self$epsilon.target = self$epsilon
+      }
+    },
+    
+    updatePriority = function() {
+      self$priority[self$indices] = abs(self$td.error) + self$theta
+    },
+    
+    train = function(Q1, Q2) {
+      self$computeTDTarget()
+      self$computeTDError() # only necessary if linear, table
+      self$updateQ()
+      self$updatePriority()
+    },
+    
+    computeTDTarget = function(Q1, Q2) {
+      self$getNextQ()
+      # sample next action here
+      next.actions = self$batch$next.actions # another list?
+      sarsa.target = self$Q.target[matrix(c(seq_len(nrow(self$Q.target)),
+        next.actions + 1), ncol = 2)]
+      policy = t(apply(self$Q.predict, 1, self$returnPolicy, epsilon = self$epsilon.target))
+      exp.sarsa.target = rowSums(policy * self$Q.target)
+      self$td.target = self$batch$rewards + self$discount * (self$sigma * sarsa.target +
+          (1 - self$sigma) * exp.sarsa.target)
+    },
+    
+    computeTDError = function() {
+      states = unlist(self$batch$states) # t(sapply(batch$states, self$preprocessState))
+      Q.state = self$predictQ(self$Q1, states)
+      self$td.error = self$td.target - Q.state[matrix(c(seq_len(nrow(Q.state)), self$batch$actions + 1), ncol = 2)]
     }
-  }
-  replay.memory
-}
+  )
+)
 
-interactWithEnvironment = function(value.function, envir, preprocessState, Q, model, epsilon) {
-  action = getAction(value.function, envir$state, preprocessState, Q, model, epsilon)
-  envir$step(action)
-  list(state = envir$previous.state, action = action,
-    reward = envir$reward, next.state = envir$state) #, next.action = next.action)
-}
-
-getAction = function(value.function, state, preprocessState, Q, model, epsilon) {
-  state.prep = preprocessState(state)
-  Q.state = predictQ(value.function, state.prep, Q, model)
-  policy = returnPolicy(Q.state, epsilon)
-  action = sampleAction(policy, 1)
-  action
-}
-
-predictQ = function(value.function, state, Q, model) {
-  if (value.function == "table") {
-    Q[state + 1, , drop = FALSE]
-  } else if (value.function == "neural.network") {
-    predict(model, state)
-  } else { # linear
-    Q %*% state
-  }
-}
-
-returnPolicy = function(Q, epsilon) {
-  greedy.action = which.max(Q)
-  n.actions = length(Q)
-  policy = matrix(0, nrow = 1, ncol = n.actions)
-  policy[, greedy.action] = 1 - epsilon
-  policy = policy + epsilon / n.actions
-  policy
-}
-
-sampleAction = function(policy, size) {
-  action = sample(seq_len(ncol(policy)), prob = policy, size = size, replace = TRUE) - 1L
-  action
-}
-
-increaseEligibility = function(E, state, action, beta) {
-  E[state + 1, action + 1] = (1 - beta) * E[state + 1, action + 1] + 1
-  E
-}
-
-# fixme: does not work right now
-reduceEligibility = function(E, lambda, discount, sigma, policy, next.action) {
-  E = discount * lambda * E # * (sigma + policy[next.action + 1] * (1 - sigma))
-  E
-}
-
-add2ReplayMemory = function(replay.memory, data, index) {
-  replay.memory[[index]] = data
-  replay.memory
-}
-
-sampleBatch = function(replay.memory, batch.size, indexes, 
-  value.function, Q, model, preprocessState, epsilon) {
-  batch = replay.memory[indexes]
-  states = lapply(batch, "[[", "state")
-  next.states = lapply(batch, "[[", "next.state")
-  actions = vapply(batch, "[[", "action", FUN.VALUE = integer(1))
-  rewards = vapply(batch, "[[", "reward", FUN.VALUE = double(1))
-  next.actions = vapply(next.states, getAction, FUN.VALUE = integer(1), 
-    value.function = value.function, preprocessState = preprocessState, 
-    Q = Q, model = model, epsilon = epsilon)
-  list(states = states, actions = actions, rewards = rewards, 
-    next.states = next.states, next.actions = next.actions)
-}
-
-trainModel = function(value.function, batch, preprocessState, Q1, Q2, model, model_, 
-  epsilon.target, discount, sigma, learning.rate, epsilon, batch.size, 
-  priority, theta, indexes, E, replay.memory.size) {
-  td.target = computeTDTarget(value.function, batch, preprocessState, Q1, Q2, model, model_, 
-    epsilon.target, discount, sigma, epsilon, batch.size)
-  td.error = computeTDError(value.function, batch, td.target, preprocessState, Q1, model)
-  Q = updateQ(value.function, preprocessState, Q1, model, batch, learning.rate, 
-    td.target, td.error, E, replay.memory.size)
-  priority = updatePriority(priority, td.error, theta, indexes)
-  list(Q = Q, priority = priority)
-}
-
-computeTDTarget = function(value.function, batch, preprocessState, Q1, Q2, 
-  model, model_, epsilon.target, discount, sigma, epsilon, batch.size) {
-  next.states = t(sapply(batch$next.states, preprocessState))
-  Q.next.state = predictQ(value.function, next.states, Q1, model)
-  Q.next.state.target = predictQ(value.function, next.states, Q2, model_)
-  next.actions = batch$next.actions
-  sarsa.target = Q.next.state.target[matrix(c(seq_len(nrow(Q.next.state.target)),
-    next.actions + 1), ncol = 2)]
-  policy = t(apply(Q.next.state, 1, returnPolicy, epsilon = epsilon.target))
-  exp.sarsa.target = rowSums(policy * Q.next.state.target)
-  td.target = batch$rewards + discount * (sigma * sarsa.target +
-      (1 - sigma) * exp.sarsa.target)
-  td.target
-}
-
-computeTDError = function(value.function, batch, td.target, preprocessState, Q1, model) {
-  states = t(sapply(batch$states, preprocessState))
-  Q.state = predictQ(value.function, states, Q1, model)
-  td.error = td.target - Q.state[matrix(c(seq_len(nrow(Q.state)), batch$actions + 1), ncol = 2)]
-  td.error
-}
-
-updateQ = function(value.function, preprocessState, Q1, model, batch, learning.rate, td.target, td.error, E, replay.memory.size) {
-  states = t(sapply(batch$states, preprocessState))
-  Q.state = predictQ(value.function, states, Q1, model)
-  actions = batch$actions
-  if (value.function == "table") {
-    if (replay.memory.size == 1) {
-      Q1 = Q1 + learning.rate * td.error * E
-    } else {
-      Q1[matrix(c(states + 1, actions + 1), ncol = 2)] = Q1[matrix(c(states + 1, actions + 1), ncol = 2)] +
-        learning.rate * td.error * E
-    }
-    return(Q1)
-  } else if (value.function == "neural.network") {
-    y = Q.state
-    y[matrix(c(seq_len(nrow(y)), actions + 1), ncol = 2)] = td.target
-    keras::fit(model, states, y, verbose = 0)
-  }
-}
-
-updateTargetModel = function(value.function, Q1, Q2, model, model_) {
-  if (value.function == "table") {
-    return(Q1)
-  } else if (value.function == "neural.network") {
-    keras::set_weights(model_, keras::get_weights(model))
-  }
-}
-
-updatePriority = function(priority, td.error, theta, indexes) {
-  priority[indexes] = abs(td.error) + theta
-  priority
-}
-
-# Argmax (ties broken randomly)
-# x numeric matrix or numeric vector
-argmax = function(x) {
-  nnet::which.is.max(x)
-}
-
-# decayParam = function(param, time, when) {
-#   if (time %% when == 0) {
-#     param = param * decay.factor
-#   }
-#   param
-# }
-
-doNothing = function(x, y) {
-  x
-}
+# Fixme: Error cannot use updateEpsilon: Error in self$updateEpsilon = updateEpsilon : 
+# cannot change value of locked binding for 'updateEpsilon'
