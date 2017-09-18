@@ -242,3 +242,7 @@ improvePolicy = function(Q) {
   policy[matrix(c(seq_len(nrow(Q)), greedy.actions), ncol = 2)] = 1
   policy
 }
+
+argmax = function(x) {
+  nnet::which.is.max(x)
+}
