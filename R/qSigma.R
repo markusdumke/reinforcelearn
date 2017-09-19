@@ -246,7 +246,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
       
       agent$sampleBatch()
       
-      agent$increaseEligibility(agent$data$state, agent$data$action) # make this work for function approximation
+      agent$increaseEligibility() # make this work for function approximation
       agent$train()
       agent$reduceEligibility()
       
@@ -301,9 +301,9 @@ agent2 = R6::R6Class("agent",
     replay.memory.size = NULL,
     
     predictQ = NULL,
-    resetEligibility = NULL,
-    increaseEligibility = NULL,
-    reduceEligibility = NULL,
+    resetEligibility = function() {},
+    increaseEligibility = function() {},
+    reduceEligibility = function() {},
     preprocessState = identity,
     # train = NULL,
     updateTargetModel = NULL,
@@ -359,96 +359,11 @@ agent2 = R6::R6Class("agent",
       }
       
       if (value.function == "table") {
-        self$Q1 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
-        
-        if (double.learning) {
-          self$Q2 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
-        }
-        
-        self$predictQ = function(Q, state) {
-          Q[state + 1, , drop = FALSE]
-        }
-        
-        self$resetEligibility = function() {
-          self$E = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
-        }
-        
-        self$increaseEligibility = function(state, action) {
-          self$E[state + 1, action + 1] = (1 - self$beta) * self$E[state + 1, action + 1] + 1
-        }
-        
-        self$reduceEligibility = function(policy, next.action) {
-          self$E = self$discount * self$lambda * self$E * 
-            (self$sigma + self$policy[self$next.action + 1] * (1 - self$sigma))
-        }
-        
-        self$updateTargetModel = function() {
-          self$Q2 = self$Q1
-        }
-        
-        if (self$replay.memory.size == 1) {
-          self$updateQ = function() {
-            self$Q1 = self$Q1 + self$learning.rate * self$td.error * self$E
-          }
-        } else {
-          self$updateQ = function() {
-            actions = self$batch$actions
-            states = self$batch$states # t(sapply(batch$states, preprocessState))
-            self$Q1[matrix(c(states + 1, actions + 1), ncol = 2)] = self$Q1[matrix(c(states + 1, actions + 1), ncol = 2)] +
-              self$learning.rate * self$td.error * self$E
-          }
-        }
-        
-        ################################################
+        self$initializeTable(initial.value)
       } else if (value.function == "neural.network") {
-        self$Q1 = model
-        keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = learning.rate))
-        if (double.learning) {
-          self$Q2 = model
-        }
-        
-        self$predictQ = function(Q, state) {
-          predict(Q, state)
-        }
-        
-        self$resetEligibility = function() {}
-        self$increaseEligibility = function() {}
-        self$reduceEligibility = function() {}
-        
-        self$updateTargetModel = function() {
-          keras::set_weights(self$Q2, keras::get_weights(self$Q1))
-        }
-        
-        self$updateQ = function() {
-          states = self$batch$states
-          actions = self$batch$actions
-          Q.state = predictQ(self$Q1, states)
-          y = Q.state
-          y[matrix(c(seq_len(nrow(y)), actions + 1), ncol = 2)] = self$td.target
-          keras::fit(self$Q1, states, y, verbose = 0)
-        }
-        
-        
-        ################################################
+        self$initializeNeuralNetwork(model)
       } else if (value.function == "linear") {
-        envir$reset()
-        n.weights = length(preprocessState(envir$state))
-        self$Q1 = rep(initial.value, n.weights)
-        if (double.learning) {
-          self$Q2 = rep(initial.value, n.weights)
-        }
-        
-        self$predictQ = function(Q, state) {
-          Q %*% state
-        }
-        
-        self$resetEligibility = function() {}
-        self$increaseEligibility = function() {}
-        self$reduceEligibility = function() {}
-        
-        self$updateTargetModel = function() {
-          self$Q2 = self$Q1
-        }
+        self$initializeLinear(envir, initial.value)
       }
       
       if (is.null(replay.memory)) {
@@ -475,6 +390,98 @@ agent2 = R6::R6Class("agent",
           self$Q.predict = self$predictQ(self$Q1, unlist(self$batch$next.states)) # unlist does this work always?
           self$Q.target = self$Q.predict
         }
+      }
+    },
+    
+    initializeTable = function(initial.value) {
+      self$Q1 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
+      
+      if (double.learning) {
+        self$Q2 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
+      }
+      
+      self$predictQ = function(Q, state) {
+        Q[state + 1, , drop = FALSE]
+      }
+      
+      self$updateTargetModel = function() {
+        self$Q2 = self$Q1
+      }
+      
+      if (self$replay.memory.size == 1) {
+        self$updateQ = function() {
+          self$Q1 = self$Q1 + self$learning.rate * self$td.error * self$E
+        }
+        self$resetEligibility = function() {
+          self$E = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+        }
+        
+        self$increaseEligibility = function() {
+          self$E[self$data$state + 1, self$data$action + 1] = (1 - self$beta) * 
+            self$E[self$data$state + 1, self$data$action + 1] + 1
+        }
+        
+        self$reduceEligibility = function(policy, next.action) {
+          self$E = self$discount * self$lambda * self$E * 
+            (self$sigma + self$policy[self$next.action + 1] * (1 - self$sigma))
+        }
+      } else {
+        self$updateQ = function() {
+          actions = self$batch$actions
+          states = unlist(self$batch$states) # t(sapply(batch$states, preprocessState))
+          self$Q1[matrix(c(states + 1, actions + 1), ncol = 2)] = self$Q1[matrix(c(states + 1, actions + 1), ncol = 2)] +
+            self$learning.rate * self$td.error
+        }
+      }
+    },
+    
+    initializeNeuralNetwork = function(model) {
+      self$Q1 = model
+      keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = self$learning.rate))
+      if (double.learning) {
+        self$Q2 = model
+      }
+      
+      self$predictQ = function(Q, state) {
+        predict(Q, state)
+      }
+      
+      # self$resetEligibility = function() {}
+      # self$increaseEligibility = function() {}
+      # self$reduceEligibility = function() {}
+      
+      self$updateTargetModel = function() {
+        keras::set_weights(self$Q2, keras::get_weights(self$Q1))
+      }
+      
+      self$updateQ = function() {
+        states = self$batch$states
+        actions = self$batch$actions
+        Q.state = predictQ(self$Q1, states)
+        y = Q.state
+        y[matrix(c(seq_len(nrow(y)), actions + 1), ncol = 2)] = self$td.target
+        keras::fit(self$Q1, states, y, verbose = 0)
+      }
+    },
+    
+    initializeLinear = function(envir, initial.value) {
+      envir$reset()
+      n.weights = length(preprocessState(envir$state))
+      self$Q1 = rep(initial.value, n.weights)
+      if (double.learning) {
+        self$Q2 = rep(initial.value, n.weights)
+      }
+      
+      self$predictQ = function(Q, state) {
+        Q %*% state
+      }
+      
+      # self$resetEligibility = function() {}
+      # self$increaseEligibility = function() {}
+      # self$reduceEligibility = function() {}
+      
+      self$updateTargetModel = function() {
+        self$Q2 = self$Q1
       }
     },
     
