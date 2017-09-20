@@ -46,9 +46,10 @@
 #' Q2 for action evaluation. After a number of steps the weights of Q2 are replaced by the weights 
 #' of Q1. See Hasselt et al. (2015) for details.
 #' 
-#' The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{lambda} and
+#' The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{alpha}, \code{lambda} and
 #' \code{learning.rate} can be changed over time. Therefore pass on functions that return a new 
-#' value of the hyperparamter. These updates will be applied after each episode.
+#' value of the hyperparameter. These updates will be applied after each episode. First argument of 
+#' the function must be the parameter itself, the second argument is the current episode number.
 #' 
 #' @param envir [\code{R6 class}] \cr 
 #'   The reinforcement learning environment
@@ -90,9 +91,7 @@
 #'   A function that updates theta. It takes two arguments, \code{theta} and the current number 
 #'   of episodes which are finished, and returns the new \code{theta} value.
 #' @param initial.value [\code{numeric(1)}] \cr 
-#'   Initial value for the value function. Only used with a tabular value function. 
-#'   Set this to the maximal possible reward to encourage
-#'   exploration (optimistic initialization).
+#'   Initial value function matrix or weight vector. If \code{NULL} weights will be initialized to 0.
 #' @param discount [\code{numeric(1) in [0, 1]}] \cr 
 #'   Discount factor.
 #' @param target.policy [\code{character(1)}] \cr 
@@ -186,16 +185,23 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   batch.size = 1, alpha = 0, theta = 0.01, beta = 0, 
   update.target.after = 1, preprocessState = NULL, model = NULL, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, updateTheta = NULL, initial.value = 0) {
+  updateLearningRate = NULL, updateTheta = NULL, initial.value = NULL) {
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$action.space == "Discrete")
+  checkmate::assertChoice(value.function, c("table", "neural.network", "linear"))
   checkmate::assertNumber(discount, lower = 0, upper = 1)
   checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
   checkmate::assertNumber(epsilon, lower = 0, upper = 1)
   checkmate::assertNumber(alpha, lower = 0, upper = 1)
   checkmate::assertNumber(theta, lower = 0, upper = 1)
-  checkmate::assertNumber(initial.value)
+  if (value.function == "table") {
+    checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 
+      nrow = envir$n.states, ncol = envir$n.actions)
+  }
+  if (value.function == "linear") {
+    checkmate::assertVector(initial.value, null.ok = TRUE, any.missing = FALSE)
+  }
   checkmate::assertNumber(lambda, lower = 0, upper = 1)
   checkmate::assertNumber(sigma, lower = 0, upper = 1)
   checkmate::assertNumber(beta, lower = 0, upper = 1)
@@ -206,7 +212,6 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
   if (replay.memory.size < batch.size) {
     stop("Batch size must be smaller than replay memory size!")
   }
-  checkmate::assertChoice(value.function, c("table", "neural.network", "linear"))
   checkmate::assertChoice(target.policy, c("greedy", "e-greedy"))
   checkmate::assertFlag(double.learning)
   checkmate::assertList(replay.memory, types = "list", len = replay.memory.size, null.ok = TRUE)
@@ -257,7 +262,7 @@ qSigma = function(envir, value.function = "table", n.episodes = 100, sigma = 1, 
       if (envir$done) {
         episode.steps[i] = envir$n.steps
         print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-        agent$updateParams()
+        agent$updateParams(i)
         break
       }
     }
@@ -299,26 +304,24 @@ agent2 = R6::R6Class("agent",
     target.policy = NULL,
     batch.size = NULL,
     replay.memory.size = NULL,
+    double.learning = NULL,
     
     predictQ = NULL,
-    resetEligibility = function() {},
-    increaseEligibility = function() {},
-    reduceEligibility = function() {},
-    preprocessState = identity,
-    # train = NULL,
+    resetEligibility = NULL,
+    increaseEligibility = NULL,
+    reduceEligibility = NULL,
+    preprocessState = NULL,
     updateTargetModel = NULL,
     updateQ = NULL,
     getNextQ = NULL,
     
-    updateEpsilon = function() {},
-    updateSigma = function() {},
-    updateLambda = function() {},
-    updateAlpha = function() {},
-    updateLearningRate = function() {},
-    updateTheta = function() {},
+    updateEpsilon = NULL,
+    updateSigma = NULL,
+    updateLambda = NULL,
+    updateAlpha = NULL,
+    updateLearningRate = NULL,
+    updateTheta = NULL,
     
-    # initial weights, Q argument?
-    # initialize table, neural.network, linear functions
     initialize = function(envir, value.function, n.episodes, sigma, lambda, 
       learning.rate, epsilon, discount, target.policy, 
       double.learning, replay.memory, replay.memory.size, 
@@ -338,28 +341,46 @@ agent2 = R6::R6Class("agent",
       self$target.policy = target.policy
       self$batch.size = batch.size
       self$replay.memory.size = replay.memory.size
+      self$double.learning = double.learning
       
       if (!is.null(updateEpsilon)) {
         self$updateEpsilon = updateEpsilon
+      } else {
+        self$updateEpsilon = function(...) {self$epsilon}
       }
       if (!is.null(updateLambda)) {
         self$updateLambda = updateLambda
+      } else {
+        self$updateLambda = function(...) {self$lambda}
       }
       if (!is.null(updateAlpha)) {
         self$updateAlpha = updateAlpha
+      } else {
+        self$updateAlpha = function(...) {self$alpha}
       }
       if (!is.null(updateTheta)) {
         self$updateTheta = updateTheta
+      } else {
+        self$updateTheta = function(...) {self$theta}
       }
       if (!is.null(updateSigma)) {
         self$updateSigma = updateSigma
+      } else {
+        self$updateSigma = function(...) {self$sigma}
       }
       if (!is.null(updateLearningRate)) {
         self$updateLearningRate = updateLearningRate
+      } else {
+        self$updateLearningRate = function(...) {self$learning.rate}
+      }
+      if (!is.null(preprocessState)) {
+        self$preprocessState = preprocessState
+      } else {
+        self$preprocessState = identity
       }
       
       if (value.function == "table") {
-        self$initializeTable(initial.value)
+        self$initializeTable(envir, initial.value)
       } else if (value.function == "neural.network") {
         self$initializeNeuralNetwork(model)
       } else if (value.function == "linear") {
@@ -393,11 +414,14 @@ agent2 = R6::R6Class("agent",
       }
     },
     
-    initializeTable = function(initial.value) {
-      self$Q1 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
-      
-      if (double.learning) {
-        self$Q2 = matrix(initial.value, nrow = envir$n.states, ncol = envir$n.actions)
+    initializeTable = function(envir, initial.value) {
+      if (!is.null(initial.value)) {
+        self$Q1 = initial.value
+      } else {
+        self$Q1 = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+      }
+      if (self$double.learning) {
+        self$Q2 = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
       }
       
       self$predictQ = function(Q, state) {
@@ -438,7 +462,7 @@ agent2 = R6::R6Class("agent",
     initializeNeuralNetwork = function(model) {
       self$Q1 = model
       keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = self$learning.rate))
-      if (double.learning) {
+      if (self$double.learning) {
         self$Q2 = model
       }
       
@@ -465,11 +489,15 @@ agent2 = R6::R6Class("agent",
     },
     
     initializeLinear = function(envir, initial.value) {
-      envir$reset()
-      n.weights = length(preprocessState(envir$state))
-      self$Q1 = rep(initial.value, n.weights)
+      if (!is.null(initial.value)) {
+        self$Q1 = rep(initial.value, n.weights)
+      } else {
+        envir$reset()
+        n.weights = length(preprocessState(envir$state))
+        self$Q1 = rep(0, n.weights)
+      }
       if (double.learning) {
-        self$Q2 = rep(initial.value, n.weights)
+        self$Q2 = rep(0, n.weights)
       }
       
       self$predictQ = function(Q, state) {
@@ -550,12 +578,13 @@ agent2 = R6::R6Class("agent",
         next.states = next.states, next.actions = next.actions)
     }, 
     
-    updateParams = function() {
-      self$updateEpsilon()
-      self$updateSigma()
-      self$updateLambda()
-      self$updateAlpha()
-      self$updateTheta() # arguments episode_number
+    updateParams = function(i) {
+      self$epsilon = self$updateEpsilon(self$epsilon, i)
+      self$updateSigma(self$sigma, i)
+      self$updateLambda(self$lambda, i)
+      self$updateAlpha(self$alpha, i)
+      self$updateTheta(self$theta, i)
+      self$updateLearningRate(self$learning.rate, i)
       if (self$target.policy == "e-greedy") {
         self$epsilon.target = self$epsilon
       }

@@ -13,7 +13,7 @@ qSigma(envir, value.function = "table", n.episodes = 100, sigma = 1,
   alpha = 0, theta = 0.01, beta = 0, update.target.after = 1,
   preprocessState = NULL, model = NULL, updateEpsilon = NULL,
   updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL, updateTheta = NULL, initial.value = 0)
+  updateLearningRate = NULL, updateTheta = NULL, initial.value = NULL)
 
 qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
   learning.rate = 0.1, epsilon = 0.1, discount = 1,
@@ -22,7 +22,7 @@ qlearning(envir, value.function = "table", n.episodes = 100, lambda = 0,
   update.target.after = 1, preprocessState = NULL, model = NULL,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
   updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
-  initial.value = 0)
+  initial.value = NULL)
 
 sarsa(envir, value.function = "table", n.episodes = 100, lambda = 0,
   learning.rate = 0.1, epsilon = 0.1, discount = 1,
@@ -31,7 +31,7 @@ sarsa(envir, value.function = "table", n.episodes = 100, lambda = 0,
   update.target.after = 1, preprocessState = NULL, model = NULL,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
   updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
-  initial.value = 0)
+  initial.value = NULL)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr 
@@ -138,9 +138,7 @@ A function that updates theta. It takes two arguments, \code{theta} and the curr
 of episodes which are finished, and returns the new \code{theta} value.}
 
 \item{initial.value}{[\code{numeric(1)}] \cr 
-Initial value for the value function. Only used with a tabular value function. 
-Set this to the maximal possible reward to encourage
-exploration (optimistic initialization).}
+Initial value function matrix or weight vector. If \code{NULL} weights will be initialized to 0.}
 }
 \value{
 [\code{list(2)}] \cr
@@ -195,9 +193,10 @@ Then two Q value functions are used, Q1 for action selection and
 Q2 for action evaluation. After a number of steps the weights of Q2 are replaced by the weights 
 of Q1. See Hasselt et al. (2015) for details.
 
-The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{lambda} and
+The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{alpha}, \code{lambda} and
 \code{learning.rate} can be changed over time. Therefore pass on functions that return a new 
-value of the hyperparamter. These updates will be applied after each episode.
+value of the hyperparameter. These updates will be applied after each episode. First argument of 
+the function must be the parameter itself, the second argument is the current episode number.
 }
 \examples{
 grid = makeEnvironment(transitions = windy.gridworld$transitions,

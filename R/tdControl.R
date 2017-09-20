@@ -7,9 +7,9 @@ qlearning = function(envir, value.function = "table", n.episodes = 100, lambda =
   batch.size = 1, alpha = 0, theta = 0.01, beta = 0, 
   update.target.after = 1, preprocessState = NULL, model = NULL, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, updateTheta = NULL, initial.value = 0) {
+  updateLearningRate = NULL, updateTheta = NULL, initial.value = NULL) {
   
-  qSigma(envir, value.function = "table", n.episodes, sigma = 0, lambda, 
+  qSigma(envir, value.function, n.episodes, sigma = 0, lambda, 
     learning.rate, epsilon, discount, target.policy = "greedy",
     double.learning, replay.memory, replay.memory.size, 
     batch.size, alpha, theta, beta, 
@@ -27,9 +27,9 @@ sarsa = function(envir, value.function = "table", n.episodes = 100, lambda = 0,
   batch.size = 1, alpha = 0, theta = 0.01, beta = 0, 
   update.target.after = 1, preprocessState = NULL, model = NULL, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, updateTheta = NULL, initial.value = 0) {
+  updateLearningRate = NULL, updateTheta = NULL, initial.value = NULL) {
   
-  qSigma(envir, value.function = "table", n.episodes, sigma = 1, lambda, 
+  qSigma(envir, value.function, n.episodes, sigma = 1, lambda, 
     learning.rate, epsilon, discount, target.policy = "e-greedy",
     double.learning, replay.memory, replay.memory.size, 
     batch.size, alpha, theta, beta, 
@@ -37,3 +37,5 @@ sarsa = function(envir, value.function = "table", n.episodes = 100, lambda = 0,
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
     updateLearningRate, updateTheta, initial.value)
 }
+
+# add expected sarsa
