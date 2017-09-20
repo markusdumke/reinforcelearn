@@ -57,9 +57,9 @@ Environments created with `makeEnvironment` always have a reset function, which 
 After you created an environment you can use various reinforcement learning algorithms. For example, for a tabular environment like  gridworld you can use tabular Q-Learning to solve it and find the optimal action value function Q*. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon, the ratio of random actions sampled by an epsilon-greedy behaviour policy.
 
 ```r
-res = qlearning(grid, n.episodes = 800)
+res = qlearning(grid, n.episodes = 200)
 # reshape action value function Q
-print(matrix(apply(res$Q, 1, max), ncol = 10, byrow = TRUE))
+print(matrix(apply(res$Q1, 1, max), ncol = 10, byrow = TRUE))
 ```
 
 We can then get the optimal policy by taking the argmax over the action value function Q.
