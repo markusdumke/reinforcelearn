@@ -13,17 +13,20 @@
 #'   \url{https://gym.openai.com/envs}.
 #' @param transitions [\code{array (n.states x n.states x n.actions)}] \cr
 #'   Transition array: For each action specifying the probabilities for 
-#'   transitions between states.
+#'   transitions between states. Only used for MDPs.
 #' @param rewards [\code{matrix (n.states x n.actions)}] \cr 
-#'   Reward matrix: The reward for taking action a in state s.
+#'   Reward matrix: The reward for taking action a in state s. Only used for MDPs.
 #' @param initial.state [\code{integer}] \cr
 #'   The starting state if \code{reset} argument is \code{NULL} else this argument is unused.
 #'   If a vector is given a starting state will be
 #'   randomly sampled from this vector when \code{reset} is called. 
 #'   Note that states are numerated starting with 
-#'   0. If \code{initial.state = NULL} all states are possible initial states.
+#'   0. If \code{initial.state = NULL} all states are possible initial states. Only used for MDPs.
 #' @param reset [\code{function}] \cr 
 #'   Function that returns an initial state observation, takes no arguments. Only used for MDPs.
+#' @param sampleReward [\code{function}] \cr 
+#'   Function that returns the next reward given the current state and action. 
+#'   Otherwise the reward will be sampled from the reward matrix of the MDP. Only used for MDPs.
 #' @param render [\code{logical(1)}] \cr 
 #'   Whether to render the environment. If \code{TRUE} a python window 
 #'   with a graphical interface opens when steps are sampled in the 
@@ -89,7 +92,7 @@
 #'   initial.state = 36)
 #'   
 makeEnvironment = function(gym.envir.name = NULL,  transitions = NULL, 
-  rewards = NULL, initial.state = NULL, reset = NULL, render = TRUE) {
+  rewards = NULL, initial.state = NULL, reset = NULL, sampleReward = NULL, render = TRUE) {
   
   checkmate::assertCharacter(gym.envir.name, max.len = 1, null.ok = TRUE)
   
@@ -100,7 +103,7 @@ makeEnvironment = function(gym.envir.name = NULL,  transitions = NULL,
     system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
   }
   envir$new(gym.envir.name, transitions, 
-    rewards, initial.state, reset, render)
+    rewards, initial.state, reset, sampleReward, render)
 }
 
 envir = R6::R6Class("envir",
@@ -129,14 +132,15 @@ envir = R6::R6Class("envir",
     reset = NULL,
     step = NULL,
     close = NULL,
+    getReward = NULL,
     
     initialize = function(gym.envir.name, transitions, 
-      rewards, initial.state, reset, render) {
+      rewards, initial.state, reset, sampleReward, render) {
       
       if (!is.null(gym.envir.name)) {
         self$initializeGym(gym.envir.name, render)
       } else {
-        self$initializeMDP(transitions, rewards, initial.state, reset)
+        self$initializeMDP(transitions, rewards, initial.state, reset, sampleReward)
       }
     },
     
@@ -215,8 +219,12 @@ envir = R6::R6Class("envir",
       }
     },
     
-    initializeMDP = function(transitions, rewards, initial.state, reset) {
-      checkmate::assertMatrix(rewards, any.missing = FALSE)
+    initializeMDP = function(transitions, rewards, initial.state, reset, sampleReward) {
+      if (!is.null(rewards)) {
+        checkmate::assertMatrix(rewards, any.missing = FALSE)
+      } else {
+        checkmate::assertFunction(sampleReward, nargs = 2)
+      }
       checkmate::assertArray(transitions, any.missing = FALSE, d = 3)
       MDPtoolbox::mdp_check(transitions, rewards)
       self$state.space = "Discrete"
@@ -237,10 +245,18 @@ envir = R6::R6Class("envir",
         self$initial.state = initial.state
       }
       
+      if (is.null(sampleReward)) {
+        self$getReward = function(state, action) {
+          self$rewards[state + 1, action + 1]
+        }
+      } else {
+        self$getReward = sampleReward
+      }
+      
       self$step = function(action) {
         self$n.steps = self$n.steps + 1
         self$previous.state = self$state
-        self$reward = self$rewards[self$state + 1, action + 1]
+        self$reward = self$getReward(self$state, action)
         self$state = sample(self$states, size = 1, 
           prob = self$transitions[self$state + 1, , action + 1])
         if (self$state %in% self$terminal.states) {
@@ -250,7 +266,6 @@ envir = R6::R6Class("envir",
       }
       
       if (is.null(reset)) {
-        checkmate::assertFunction(reset, nargs = 0)
         self$reset = function() {
           self$n.steps = 0
           self$state = ifelse(length(self$initial.state) > 1, 
@@ -260,6 +275,7 @@ envir = R6::R6Class("envir",
           invisible(self)
         }
       } else {
+        checkmate::assertFunction(reset, nargs = 0)
         self$reset = function() {
           self$n.steps = 0
           self$state = reset()

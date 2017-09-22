@@ -5,7 +5,8 @@
 \title{Make Reinforcement Learning Environment}
 \usage{
 makeEnvironment(gym.envir.name = NULL, transitions = NULL, rewards = NULL,
-  initial.state = NULL, reset = NULL, render = TRUE)
+  initial.state = NULL, reset = NULL, sampleReward = NULL,
+  render = TRUE)
 }
 \arguments{
 \item{gym.envir.name}{[\code{character(1)}] \cr
@@ -14,20 +15,24 @@ Name of Gym environment, e.g. "CartPole-v0", have a look at
 
 \item{transitions}{[\code{array (n.states x n.states x n.actions)}] \cr
 Transition array: For each action specifying the probabilities for 
-transitions between states.}
+transitions between states. Only used for MDPs.}
 
 \item{rewards}{[\code{matrix (n.states x n.actions)}] \cr 
-Reward matrix: The reward for taking action a in state s.}
+Reward matrix: The reward for taking action a in state s. Only used for MDPs.}
 
 \item{initial.state}{[\code{integer}] \cr
 The starting state if \code{reset} argument is \code{NULL} else this argument is unused.
 If a vector is given a starting state will be
 randomly sampled from this vector when \code{reset} is called. 
 Note that states are numerated starting with 
-0. If \code{initial.state = NULL} all states are possible initial states.}
+0. If \code{initial.state = NULL} all states are possible initial states. Only used for MDPs.}
 
 \item{reset}{[\code{function}] \cr 
 Function that returns an initial state observation, takes no arguments. Only used for MDPs.}
+
+\item{sampleReward}{[\code{function}] \cr 
+Function that returns the next reward given the current state and action. 
+Otherwise the reward will be sampled from the reward matrix of the MDP. Only used for MDPs.}
 
 \item{render}{[\code{logical(1)}] \cr 
 Whether to render the environment. If \code{TRUE} a python window 
