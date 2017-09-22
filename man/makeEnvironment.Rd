@@ -5,7 +5,7 @@
 \title{Make Reinforcement Learning Environment}
 \usage{
 makeEnvironment(gym.envir.name = NULL, transitions = NULL, rewards = NULL,
-  initial.state = NULL, render = TRUE)
+  initial.state = NULL, reset = NULL, render = TRUE)
 }
 \arguments{
 \item{gym.envir.name}{[\code{character(1)}] \cr
@@ -20,10 +20,14 @@ transitions between states.}
 Reward matrix: The reward for taking action a in state s.}
 
 \item{initial.state}{[\code{integer}] \cr
-The starting state. If a vector is given a starting state will be
+The starting state if \code{reset} argument is \code{NULL} else this argument is unused.
+If a vector is given a starting state will be
 randomly sampled from this vector when \code{reset} is called. 
 Note that states are numerated starting with 
-0. If \code{NULL} all states are possible initial states.}
+0. If \code{initial.state = NULL} all states are possible initial states.}
+
+\item{reset}{[\code{function}] \cr 
+Function that returns an initial state observation, takes no arguments. Only used for MDPs.}
 
 \item{render}{[\code{logical(1)}] \cr 
 Whether to render the environment. If \code{TRUE} a python window 
@@ -81,6 +85,15 @@ MountainCar$state.space.bounds
 # Create an environment from a transition array and reward matrix (here a simple gridworld).
 grid = makeEnvironment(transitions = gridworld$transitions,
   rewards = gridworld$rewards)
+  
+# Specify a custom probability distribution for the starting state.
+resetGrid = function() {
+  p = c(0, 0.2, 0, 0.15, 0.15, 0, 0, 0, 0, 0.3, 0.2, 0, 0, 0, 0, 0)
+  sample(0:15, prob = p, size = 1)
+}
+
+grid = makeEnvironment(transitions = gridworld$transitions,
+  rewards = gridworld$rewards, reset = resetGrid)
   
 # Create the Windy Gridworld environment from transition array and reward matrix.
 grid = makeEnvironment(transitions = windy.gridworld$transitions,
