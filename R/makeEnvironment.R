@@ -229,10 +229,10 @@ envir = R6::R6Class("envir",
       MDPtoolbox::mdp_check(transitions, rewards)
       self$state.space = "Discrete"
       self$action.space = "Discrete"
-      self$actions = seq_len(ncol(rewards)) - 1
+      self$actions = seq_len(ncol(rewards)) - 1L
       self$n.states = nrow(rewards)
       self$n.actions = ncol(rewards)
-      self$states = seq_len(self$n.states) - 1
+      self$states = seq_len(self$n.states) - 1L
       self$transitions = transitions
       self$rewards = rewards
       terminal.states = apply(transitions, 3, function(x) diag(x))
@@ -254,7 +254,7 @@ envir = R6::R6Class("envir",
       }
       
       self$step = function(action) {
-        self$n.steps = self$n.steps + 1
+        self$n.steps = self$n.steps + 1L
         self$previous.state = self$state
         self$reward = self$getReward(self$state, action)
         self$state = sample(self$states, size = 1, 
@@ -277,7 +277,7 @@ envir = R6::R6Class("envir",
       } else {
         checkmate::assertFunction(reset, nargs = 0)
         self$reset = function() {
-          self$n.steps = 0
+          self$n.steps = 0L
           self$state = reset()
           self$previous.state = NULL
           self$done = FALSE
