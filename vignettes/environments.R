@@ -9,7 +9,29 @@ rewards = gridworld$rewards
 env = makeEnvironment(transitions = transitions, rewards = rewards)
 
 ## ------------------------------------------------------------------------
+library(reinforcelearn)
+
+transitions = gridworld$transitions
+sampleReward = function(state, action, n.state) {
+  if (state == 2 & action == 1L) {
+    rexp(1)
+  } else {
+    rnorm(1)
+  }
+}
+env = makeEnvironment(transitions = transitions, sampleReward = sampleReward)
+env$reset()
+env$step(0)
+print(env$reward)
+
+## ------------------------------------------------------------------------
+# Possible actions
+env$actions
+
+# Action space
 env$action.space
+
+# Number of states
 env$n.states
 
 ## ---- eval = FALSE-------------------------------------------------------

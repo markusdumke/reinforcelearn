@@ -14,10 +14,13 @@
 #' @param transitions [\code{array (n.states x n.states x n.actions)}] \cr
 #'   Transition array: For each action specifying the probabilities for 
 #'   transitions between states. Only used for MDPs.
-#' @param rewards [\code{matrix (n.states x n.actions)}] \cr 
-#'   Reward matrix: The reward for taking action a in state s. Only used for MDPs.
+#' @param rewards [\code{matrix (n.states x n.actions)} or \code{array (n.states x n.states x n.actions)}] \cr 
+#'   Reward array: This can be a matrix (n.states x n.actions) or a 3-dimensional array 
+#'   (n.states x n.states x n.actions). The reward will be sampled from the specified array 
+#'   depending on state, action and possibly also the next state. 
+#'   Only used for MDPs.
 #' @param initial.state [\code{integer}] \cr
-#'   The starting state if \code{reset} argument is \code{NULL} else this argument is unused.
+#'   The starting state if \code{reset} is \code{NULL} else this argument is unused.
 #'   If a vector is given a starting state will be
 #'   randomly sampled from this vector when \code{reset} is called. 
 #'   Note that states are numerated starting with 
@@ -25,10 +28,11 @@
 #' @param reset [\code{function}] \cr 
 #'   Function that returns an initial state observation, takes no arguments. Only used for MDPs.
 #' @param sampleReward [\code{function}] \cr 
-#'   Function that returns the next reward given the current state and action. 
-#'   Otherwise the reward will be sampled from the reward matrix of the MDP. Only used for MDPs.
+#'   Function that returns the next reward given the current state, action and next state. 
+#'   Otherwise the reward will be sampled from the reward array of the MDP specified 
+#'   by \code{rewards}. Only used for MDPs.
 #' @param render [\code{logical(1)}] \cr 
-#'   Whether to render the environment. If \code{TRUE} a python window 
+#'   Whether to render the Gym environment. If \code{TRUE} a python window 
 #'   with a graphical interface opens when steps are sampled in the 
 #'   environment for a gym environment.
 #' @importFrom R6 R6Class
@@ -56,6 +60,7 @@
 #' \dontrun{
 #' # Create an OpenAI Gym environment.
 #' # Make sure you have Python and Gym installed.
+#' # Note: If makeEnvironment returns an error, this is a bug, please run the code again!
 #' CartPole = makeEnvironment("CartPole-v0")
 #' CartPole$reset()
 #' CartPole$step(action = 0)
@@ -68,7 +73,7 @@
 #' MountainCar$state.space.bounds
 #' }
 #' 
-#' # Create an environment from a transition array and reward matrix (here a simple gridworld).
+#' # Create an environment from a transition array and reward matrix (here a 4x4 gridworld).
 #' grid = makeEnvironment(transitions = gridworld$transitions,
 #'   rewards = gridworld$rewards)
 #'   
@@ -80,13 +85,30 @@
 #' 
 #' grid = makeEnvironment(transitions = gridworld$transitions,
 #'   rewards = gridworld$rewards, reset = resetGrid)
+#' grid$reset()
+#' print(grid$state)
+#' 
+#' # Specify a custom reward function.
+#' sampleReward = function(state, action, n.state) {
+#'   if (state == 2 & action == 1L) {
+#'     rexp(1)
+#'   } else {
+#'     rnorm(1)
+#'   }
+#' }
+#' 
+#' grid = makeEnvironment(transitions = gridworld$transitions,
+#'   rewards = gridworld$rewards, sampleReward = sampleReward)
+#' grid$reset()
+#' grid$step(2)
+#' print(grid$reward)
 #'   
-#' # Create the Windy Gridworld environment from transition array and reward matrix.
+#' # Create the Windy Gridworld from transition array and reward matrix.
 #' grid = makeEnvironment(transitions = windy.gridworld$transitions,
 #'   rewards = windy.gridworld$rewards,
 #'   initial.state = 30)
 #'   
-#' # Create the Cliff Walking environment from transition array and reward matrix.
+#' # Create the Cliff Walking Gridworld from transition array and reward matrix.
 #' grid = makeEnvironment(transitions = cliff$transitions,
 #'   rewards = cliff$rewards,
 #'   initial.state = 36)
@@ -220,18 +242,19 @@ envir = R6::R6Class("envir",
     },
     
     initializeMDP = function(transitions, rewards, initial.state, reset, sampleReward) {
-      if (!is.null(rewards)) {
-        checkmate::assertMatrix(rewards, any.missing = FALSE)
-      } else {
-        checkmate::assertFunction(sampleReward, nargs = 2)
-      }
       checkmate::assertArray(transitions, any.missing = FALSE, d = 3)
-      MDPtoolbox::mdp_check(transitions, rewards)
+      checkmate::assertArray(rewards, any.missing = FALSE, min.d = 2, max.d = 3, null.ok = TRUE)
+      if (!is.null(rewards)) {
+        MDPtoolbox::mdp_check(transitions, rewards)
+      }
+      checkmate::assertFunction(sampleReward, nargs = 3, null.ok = TRUE)
+      checkmate::assertFunction(reset, nargs = 0, null.ok = TRUE)
+      
       self$state.space = "Discrete"
       self$action.space = "Discrete"
-      self$actions = seq_len(ncol(rewards)) - 1L
-      self$n.states = nrow(rewards)
-      self$n.actions = ncol(rewards)
+      self$n.actions = dim(transitions)[3]
+      self$n.states = dim(transitions)[1]
+      self$actions = seq_len(self$n.actions) - 1L
       self$states = seq_len(self$n.states) - 1L
       self$transitions = transitions
       self$rewards = rewards
@@ -246,9 +269,16 @@ envir = R6::R6Class("envir",
       }
       
       if (is.null(sampleReward)) {
-        self$getReward = function(state, action) {
-          self$rewards[state + 1, action + 1]
+        if (length(dim(rewards)) == 2) {
+          self$getReward = function(state, action, state.n) {
+            self$rewards[state + 1, action + 1]
+          }
+        } else {
+          self$getReward = function(state, action, state.n) {
+            self$rewards[state + 1, state.n + 1, action + 1]
+          }
         }
+        
       } else {
         self$getReward = sampleReward
       }
@@ -256,9 +286,9 @@ envir = R6::R6Class("envir",
       self$step = function(action) {
         self$n.steps = self$n.steps + 1L
         self$previous.state = self$state
-        self$reward = self$getReward(self$state, action)
         self$state = sample(self$states, size = 1, 
           prob = self$transitions[self$state + 1, , action + 1])
+        self$reward = self$getReward(self$previous.state, action, self$state)
         if (self$state %in% self$terminal.states) {
           self$done = TRUE
         }

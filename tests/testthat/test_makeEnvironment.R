@@ -1,0 +1,3 @@
+library(reinforcelearn)
+context("makeEnvironment")
+

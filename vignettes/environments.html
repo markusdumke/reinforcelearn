@@ -120,37 +120,59 @@ $(document).ready(function () {
 </div>
 
 
-<p>Reinforcement Learning is formulated as an interaction of an agent and an environment. The <code>reinforcelearn</code> package offers different possibilities to create an environment, which can be solved with one of the algorithms.</p>
+<p>Reinforcement Learning is formulated as an interaction of an agent and an environment. The <code>reinforcelearn</code> package offers different possibilities to create an environment, which can be solved with one of the provided algorithms.</p>
 <hr />
 <div id="what-is-an-environment-in-reinforcelearn" class="section level2">
 <h2>What is an environment in reinforcelearn?</h2>
-<p>Environments in <code>reinforcelearn</code> are <code>R6</code> classes with certain methods and attributes. The environment can then be passed on to the algorithms using the <code>envir</code> argument.</p>
-<p>These attributes of the <code>R6</code> class are essential for the interaction between environment and agent:</p>
+<p>Environments in <code>reinforcelearn</code> are implemendted as <code>R6</code> classes with certain methods and attributes. The environment can then be passed on to the algorithms using the <code>envir</code> argument.</p>
+<p>There are some attributes of the <code>R6</code> class, which are essential for the interaction between environment and agent:</p>
 <ul>
 <li><p><code>state</code>: The current state observation of the environment. Depending on the problem this can be anything, e.g. a scalar integer, a matrix or a list.</p></li>
 <li><p><code>reward</code>: The current reward of the environment. It is always a scalar numeric value.</p></li>
 <li><p><code>done</code>: A logical flag specifying whether an episode is finished.</p></li>
 </ul>
-<p>Then these methods are necessary:</p>
+<p>The interaction between agent and environment is done via the <code>reset</code> and <code>step</code> methods:</p>
 <ul>
 <li><p><code>reset()</code>: Returns an initial state observation, i.e. the <code>state</code> attribute is initialized, and sets the <code>done</code> flag to <code>FALSE</code>. It is usually called at the beginning of an episode.</p></li>
 <li><p><code>step(action)</code>: The basic interaction function between agent and environment. <code>step</code> is always called with an action as a first argument. It then takes the action and alters the <code>state</code> and <code>reward</code> attributes of the <code>R6</code> class. If the episode is done, e.g. a terminal state reached, the <code>done</code> flag is set to <code>TRUE</code>.</p></li>
 </ul>
 <hr />
-<p>The <code>makeEnvironment</code> function provides the easiest way to create an environment. It takes care of the creation of an <code>R6</code> class with the described attributes and methods.</p>
+<p>The <code>makeEnvironment</code> function provides different ways to create an environment. It takes care of the creation of an <code>R6</code> class with the above mentioned attributes and methods.</p>
 <div id="markov-decision-process" class="section level3">
 <h3>Markov Decision Process</h3>
-<p>When the problem can be formulated as a Markov Decision Process (MDP) all you need to pass on to <code>makeEnvironment</code> is the state transition array <span class="math inline">\(P^a_{ss'}\)</span> and reward matrix <span class="math inline">\(R_s^a\)</span> of the MDP. The state transition array is a 3-dimensional array with dimensions [number of states x number of states x number of actions], so for each action there is one state transition matrix. The reward matrix has the dimensions [number of states x number of actions], each entry specifying the reward, which is obtained from taking an action in a state. So rewards must be deterministic.</p>
-<p>We can create a simple gridworld environment running</p>
+<p>When the problem can be formulated as a Markov Decision Process (MDP), all you need to pass to <code>makeEnvironment</code> is the state transition array <span class="math inline">\(P^a_{ss'}\)</span> and reward matrix <span class="math inline">\(R_s^a\)</span> of the MDP. The state transition array describes the probability of a transition from state <span class="math inline">\(s\)</span> to state <span class="math inline">\(s'\)</span> when taking action <span class="math inline">\(a\)</span>. It is a 3-dimensional array with dimensions [number of states x number of states x number of actions], so for each action there is one state transition matrix. The reward matrix has the dimensions [number of states x number of actions], each entry is the reward obtained from taking action <span class="math inline">\(a\)</span> in a state <span class="math inline">\(s\)</span>.</p>
+<p>We can create a simple (4x4) gridworld environment with the following code.</p>
 <pre class="r"><code>library(reinforcelearn)
 
 transitions = gridworld$transitions
 rewards = gridworld$rewards
 env = makeEnvironment(transitions = transitions, rewards = rewards)</code></pre>
+<p>The function <code>makeGridworld</code> offers different possibilities to create gridworld environments and returns the transition array and reward matrix of the MDP, which can then be passed on to <code>makeEnvironment</code>.</p>
+<p>Instead of specifying a reward matrix you can also pass on a function <code>sampleReward</code>, which takes three arguments, the current state, action and next state and returns a scalar numeric reward. This way the reward of taking an action can be stochastic. Here is a simple example, where the reward is sampled from an exponential or normal distribution depending on state and action.</p>
+<pre class="r"><code>library(reinforcelearn)
+
+transitions = gridworld$transitions
+sampleReward = function(state, action, n.state) {
+  if (state == 2 &amp; action == 1L) {
+    rexp(1)
+  } else {
+    rnorm(1)
+  }
+}
+env = makeEnvironment(transitions = transitions, sampleReward = sampleReward)
+env$reset()
+env$step(0)
+print(env$reward)</code></pre>
+<pre><code>## [1] 0.1860485</code></pre>
 <p>The call to <code>makeEnvironment</code> extracts information about the state and action space, which can be acessed as attributes of the class.</p>
-<pre class="r"><code>env$action.space</code></pre>
+<pre class="r"><code># Possible actions
+env$actions</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code># Action space
+env$action.space</code></pre>
 <pre><code>## [1] &quot;Discrete&quot;</code></pre>
-<pre class="r"><code>env$n.states</code></pre>
+<pre class="r"><code># Number of states
+env$n.states</code></pre>
 <pre><code>## [1] 16</code></pre>
 <hr />
 </div>

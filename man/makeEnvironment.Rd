@@ -17,11 +17,14 @@ Name of Gym environment, e.g. "CartPole-v0", have a look at
 Transition array: For each action specifying the probabilities for 
 transitions between states. Only used for MDPs.}
 
-\item{rewards}{[\code{matrix (n.states x n.actions)}] \cr 
-Reward matrix: The reward for taking action a in state s. Only used for MDPs.}
+\item{rewards}{[\code{matrix (n.states x n.actions)} or \code{array (n.states x n.states x n.actions)}] \cr 
+Reward array: This can be a matrix (n.states x n.actions) or a 3-dimensional array 
+(n.states x n.states x n.actions). The reward will be sampled from the specified array 
+depending on state, action and possibly also the next state. 
+Only used for MDPs.}
 
 \item{initial.state}{[\code{integer}] \cr
-The starting state if \code{reset} argument is \code{NULL} else this argument is unused.
+The starting state if \code{reset} is \code{NULL} else this argument is unused.
 If a vector is given a starting state will be
 randomly sampled from this vector when \code{reset} is called. 
 Note that states are numerated starting with 
@@ -31,11 +34,12 @@ Note that states are numerated starting with
 Function that returns an initial state observation, takes no arguments. Only used for MDPs.}
 
 \item{sampleReward}{[\code{function}] \cr 
-Function that returns the next reward given the current state and action. 
-Otherwise the reward will be sampled from the reward matrix of the MDP. Only used for MDPs.}
+Function that returns the next reward given the current state, action and next state. 
+Otherwise the reward will be sampled from the reward array of the MDP specified 
+by \code{rewards}. Only used for MDPs.}
 
 \item{render}{[\code{logical(1)}] \cr 
-Whether to render the environment. If \code{TRUE} a python window 
+Whether to render the Gym environment. If \code{TRUE} a python window 
 with a graphical interface opens when steps are sampled in the 
 environment for a gym environment.}
 }
@@ -75,6 +79,7 @@ discrete case states and actions are numerated starting from 0.
 \dontrun{
 # Create an OpenAI Gym environment.
 # Make sure you have Python and Gym installed.
+# Note: If makeEnvironment returns an error, this is a bug, please run the code again!
 CartPole = makeEnvironment("CartPole-v0")
 CartPole$reset()
 CartPole$step(action = 0)
@@ -87,7 +92,7 @@ MountainCar$state.space
 MountainCar$state.space.bounds
 }
 
-# Create an environment from a transition array and reward matrix (here a simple gridworld).
+# Create an environment from a transition array and reward matrix (here a 4x4 gridworld).
 grid = makeEnvironment(transitions = gridworld$transitions,
   rewards = gridworld$rewards)
   
@@ -99,13 +104,30 @@ resetGrid = function() {
 
 grid = makeEnvironment(transitions = gridworld$transitions,
   rewards = gridworld$rewards, reset = resetGrid)
+grid$reset()
+print(grid$state)
+
+# Specify a custom reward function.
+sampleReward = function(state, action, n.state) {
+  if (state == 2 & action == 1L) {
+    rexp(1)
+  } else {
+    rnorm(1)
+  }
+}
+
+grid = makeEnvironment(transitions = gridworld$transitions,
+  rewards = gridworld$rewards, sampleReward = sampleReward)
+grid$reset()
+grid$step(2)
+print(grid$reward)
   
-# Create the Windy Gridworld environment from transition array and reward matrix.
+# Create the Windy Gridworld from transition array and reward matrix.
 grid = makeEnvironment(transitions = windy.gridworld$transitions,
   rewards = windy.gridworld$rewards,
   initial.state = 30)
   
-# Create the Cliff Walking environment from transition array and reward matrix.
+# Create the Cliff Walking Gridworld from transition array and reward matrix.
 grid = makeEnvironment(transitions = cliff$transitions,
   rewards = cliff$rewards,
   initial.state = 36)

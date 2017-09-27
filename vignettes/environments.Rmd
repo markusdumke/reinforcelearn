@@ -12,15 +12,15 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Reinforcement Learning is formulated as an interaction of an agent and an environment. The `reinforcelearn` package offers different possibilities to create an environment, which can be solved with one of the algorithms.
+Reinforcement Learning is formulated as an interaction of an agent and an environment. The `reinforcelearn` package offers different possibilities to create an environment, which can be solved with one of the provided algorithms.
 
 ---
 
 ## What is an environment in reinforcelearn?
 
-Environments in `reinforcelearn` are `R6` classes with certain methods and attributes. The environment can then be passed on to the algorithms using the `envir` argument.
+Environments in `reinforcelearn` are implemendted as `R6` classes with certain methods and attributes. The environment can then be passed on to the algorithms using the `envir` argument.
 
-These attributes of the `R6` class are essential for the interaction between environment and agent:
+There are some attributes of the `R6` class, which are essential for the interaction between environment and agent:
 
 - `state`: The current state observation of the environment. Depending on the problem this can be anything, e.g. a scalar integer, a matrix or a list.
 
@@ -28,7 +28,7 @@ These attributes of the `R6` class are essential for the interaction between env
 
 - `done`: A logical flag specifying whether an episode is finished.
 
-Then these methods are necessary:
+The interaction between agent and environment is done via the `reset` and `step` methods:
 
 - `reset()`: Returns an initial state observation, i.e. the `state` attribute is initialized, and sets the `done` flag to `FALSE`. It is usually called at the beginning of an episode. 
 
@@ -36,13 +36,14 @@ Then these methods are necessary:
 
 ---
 
-The `makeEnvironment` function provides the easiest way to create an environment. It takes care of the creation of an `R6` class with the described attributes and methods.
+The `makeEnvironment` function provides different ways to create an environment. It takes care of the creation of an `R6` class with the above mentioned attributes and methods.
 
 ### Markov Decision Process
 
-When the problem can be formulated as a Markov Decision Process (MDP) all you need to pass on to `makeEnvironment` is the state transition array $P^a_{ss'}$ and reward matrix $R_s^a$ of the MDP. The state transition array is a 3-dimensional array with dimensions [number of states x number of states x number of actions], so for each action there is one state transition matrix. The reward matrix has the dimensions [number of states x number of actions], each entry specifying the reward, which is obtained from taking an action in a state. So rewards must be deterministic.
+When the problem can be formulated as a Markov Decision Process (MDP), all you need to pass to `makeEnvironment` is the state transition array $P^a_{ss'}$ and reward matrix $R_s^a$ of the MDP. The state transition array describes the probability of a transition from state $s$ to state $s'$ when taking action $a$.
+It is a 3-dimensional array with dimensions [number of states x number of states x number of actions], so for each action there is one state transition matrix. The reward matrix has the dimensions [number of states x number of actions], each entry is the reward obtained from taking action $a$ in a state $s$.
 
-We can create a simple gridworld environment running
+We can create a simple (4x4) gridworld environment with the following code.
 
 ```{r}
 library(reinforcelearn)
@@ -52,10 +53,37 @@ rewards = gridworld$rewards
 env = makeEnvironment(transitions = transitions, rewards = rewards)
 ```
 
+The function `makeGridworld` offers different possibilities to create gridworld environments and returns the transition array and reward matrix of the MDP, which can then be passed on to `makeEnvironment`.
+
+Instead of specifying a reward matrix you can also pass on a function `sampleReward`, which takes three arguments, the current state, action and next state and returns a scalar numeric reward. This way the reward of taking an action can be stochastic. Here is a simple example, where the reward is sampled from an exponential or normal distribution depending on state and action.
+
+```{r}
+library(reinforcelearn)
+
+transitions = gridworld$transitions
+sampleReward = function(state, action, n.state) {
+  if (state == 2 & action == 1L) {
+    rexp(1)
+  } else {
+    rnorm(1)
+  }
+}
+env = makeEnvironment(transitions = transitions, sampleReward = sampleReward)
+env$reset()
+env$step(0)
+print(env$reward)
+```
+
 The call to `makeEnvironment` extracts information about the state and action space, which can be acessed as attributes of the class.
 
 ```{r}
+# Possible actions
+env$actions
+
+# Action space
 env$action.space
+
+# Number of states
 env$n.states
 ```
 
@@ -100,7 +128,7 @@ Here is an example creating the Mountain Car environment (Sutton & Barto, 1998).
 MountainCar = R6::R6Class("MountainCar", 
   public = list(
     action.space = "Discrete",
-    actions = c(0, 1, 2),
+    actions = 0:2,
     n.actions = 3,
     state.space = "Box",
     state.space.bounds = list(c(-1.2, 0.6), c(-0.07, 0.07)),
