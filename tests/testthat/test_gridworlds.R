@@ -1,7 +1,7 @@
 library(reinforcelearn)
 context("Make Gridworld")
 
-grid = makeGridworld()
+grid = makeGridworld(goal.states = c(1, 16))
 
 test_that("makeGridworld creates basic gridworlds", {
   expect_equal(length(grid), 2)
@@ -13,6 +13,12 @@ test_that("makeGridworld creates basic gridworlds", {
   expect_equal(grid$rewards, gridworld$rewards)
 })
 
+test_that("makeGridworld works if there is only one row or column", {
+  expect_error(makeGridworld(c(1, 2), goal.states = 1), NA)
+  expect_error(makeGridworld(c(2, 1), goal.states = 1), NA)
+  expect_error(makeGridworld(c(1, 1), goal.states = 1), NA)
+})
+
 test_that("input checking in makeGridworld works", {
   expect_error(makeGridworld(shape = c(2, 2), goal.states = 5), 
     "All states must be inside the grid! States are numerated row-wise starting with 1, check Details!")
@@ -20,7 +26,7 @@ test_that("input checking in makeGridworld works", {
     "All states must be inside the grid! States are numerated row-wise starting with 1, check Details!")
   expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, cliff.transition.states = 10), 
     "All states must be inside the grid! States are numerated row-wise starting with 1, check Details!")
-  expect_error(makeGridworld(shape = c(4, 2, 3)))
+  expect_error(makeGridworld(shape = c(4, 2, 3), goal.states = 1))
   expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, wind = 0))
   expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, stochasticity = 1.3))
   expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, cliff.states = 1), 

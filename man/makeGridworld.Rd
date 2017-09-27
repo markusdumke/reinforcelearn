@@ -4,10 +4,10 @@
 \alias{makeGridworld}
 \title{Make Gridworld}
 \usage{
-makeGridworld(shape = c(4, 4), goal.states = c(1, 16),
-  cliff.states = NULL, reward.step = -1, reward.cliff = -100,
-  diagonal.moves = FALSE, wind = rep(0, shape[2]),
-  cliff.transition.states = NULL, stochasticity = 0)
+makeGridworld(shape = c(4, 4), goal.states = NULL, cliff.states = NULL,
+  reward.step = -1, reward.cliff = -100, diagonal.moves = FALSE,
+  wind = rep(0, shape[2]), cliff.transition.states = NULL,
+  stochasticity = 0)
 }
 \arguments{
 \item{shape}{[\code{integer(2)}] \cr 
@@ -88,7 +88,7 @@ A few gridworlds are already included in the package and can be loaded by typing
 }
 \examples{
 # Gridworld Environment (Sutton & Barto Example 4.1)
-gridworld = makeGridworld()
+gridworld = makeGridworld(goal.states = c(1, 16))
 env = makeEnvironment(transitions = gridworld$transitions, 
   rewards = gridworld$rewards)
   

@@ -69,7 +69,7 @@
 #' @export
 #' @examples
 #' # Gridworld Environment (Sutton & Barto Example 4.1)
-#' gridworld = makeGridworld()
+#' gridworld = makeGridworld(goal.states = c(1, 16))
 #' env = makeEnvironment(transitions = gridworld$transitions, 
 #'   rewards = gridworld$rewards)
 #'   
@@ -85,7 +85,7 @@
 #' env = makeEnvironment(transitions = cliff$transitions, 
 #'   rewards = cliff$rewards, initial.state = 37 - 1) 
 #' 
-makeGridworld = function(shape = c(4, 4), goal.states = c(1, 16), cliff.states = NULL,
+makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NULL,
   reward.step = - 1, reward.cliff = - 100, diagonal.moves = FALSE, wind = rep(0, shape[2]), 
   cliff.transition.states = NULL, stochasticity = 0) {
   
@@ -126,7 +126,7 @@ makeGridworld = function(shape = c(4, 4), goal.states = c(1, 16), cliff.states =
     right = seq(n.col, n.states, n.col),
     up = seq(1, n.col),
     down = seq(n.states - n.col + 1, n.states))
-  
+
   non.terminal.states = setdiff(states, c(goal.states, cliff.states))
   n.states = length(non.terminal.states)
   actions = list("left", "right", "up", "down", "leftup", "leftdown", "rightup", "rightdown")
@@ -134,6 +134,10 @@ makeGridworld = function(shape = c(4, 4), goal.states = c(1, 16), cliff.states =
   
   new.states = vapply(actions, go, states = non.terminal.states, border.states = border.states, 
     n.col = n.col, FUN.VALUE = numeric(n.states))
+  
+  if (!is.matrix(new.states)) {
+    new.states = as.matrix(new.states, nrow = 1)
+  }
   
   m.stoch = matrix(0, nrow = n.states * 8, ncol = 3)
   m.stoch[, 1] = rep(non.terminal.states, 8)
