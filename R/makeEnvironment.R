@@ -264,7 +264,7 @@ envir = R6::R6Class("envir",
       if (is.null(initial.state)) {
         self$initial.state = self$states[self$states != self$terminal.states]
       } else {
-        checkmate::assertIntegerish(initial.state)
+        checkmate::assertIntegerish(initial.state, upper = self$n.states - 1)
         self$initial.state = initial.state
       }
       
