@@ -328,7 +328,3 @@ envir = R6::R6Class("envir",
 
 globalVariables("self")
 globalVariables("private")
-
-reset = function() {
-  self$state = 0
-}
