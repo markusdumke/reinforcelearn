@@ -55,7 +55,7 @@
 #'   The reinforcement learning environment
 #'   created by \code{\link{makeEnvironment}}.
 #' @param value.function [\code{character(1)}] \cr
-#'   How to represent the value function? Currently \code{"table"}
+#'   How to represent the value function? Currently \code{"table"}, \code{"linear"}
 #'   and \code{"neural.network"} are supported.
 #' @param sigma [\code{numeric(1) in [0, 1]}] \cr
 #'   Parameter of the Q(sigma) algorithm. It controls if the temporal-difference target

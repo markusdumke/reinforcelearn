@@ -49,7 +49,7 @@ The reinforcement learning environment
 created by \code{\link{makeEnvironment}}.}
 
 \item{value.function}{[\code{character(1)}] \cr
-How to represent the value function? Currently \code{"table"}
+How to represent the value function? Currently \code{"table"}, \code{"linear"}
 and \code{"neural.network"} are supported.}
 
 \item{preprocessState}{[\code{function}] \cr

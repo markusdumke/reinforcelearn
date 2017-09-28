@@ -49,7 +49,7 @@ qSigmaAgent = R6::R6Class(public = list(
   replay.memory = NULL,
   replay.index = 0,
   alpha = NULL,
-
+  
   sampleBatch = NULL,
   getIndices = NULL,
   priority = NULL,
@@ -416,7 +416,7 @@ qSigmaAgent = R6::R6Class(public = list(
       }
     }
     
-    # with eligibility traces, only supported for table
+    # with eligibility traces
     if (eligibility & value.function == "table") {
       
       self$start = function(envir) {
@@ -517,8 +517,67 @@ qSigmaAgent = R6::R6Class(public = list(
           self$updateTargetModel(envir$n.steps, update.target.after)
         }
       }
-      
     }
+    
+    if (value.function == "linear") {
+      envir$reset()
+      n.weights = length(preprocessState(envir$state))
+      self$Q1 = matrix(0, nrow = n.weights, ncol = envir$n.actions)
+      
+      self$predictQ = function(Q, state) {
+        state %*% Q
+      }
+      
+      
+      if (!experience.replay) {
+        self$updateQ = function() {
+          self$Q1[, self$train.data$action + 1] = self$Q1[, self$train.data$action + 1] + 
+            self$td.error * self$train.data$state
+        }
+        
+        if (eligibility) {
+          self$resetEligibility = function(envir) {
+            self$E = matrix(0, nrow = nrow(self$Q1), ncol = envir$n.actions)
+          }
+          
+          self$increaseEligibility = function() {
+            self$E[, self$online.data$action + 1] = (1 - self$beta) * 
+              self$E[, self$online.data$action + 1] + self$online.data$state
+          }
+          
+          self$reduceEligibility = function(policy, next.action) {
+            self$E = self$discount * self$lambda * self$E *
+              (self$sigma + self$policy[self$next.action + 1] * (1 - self$sigma))
+          }
+          
+          self$updateQ = function() {
+            # updates value function also for other actions
+            # CAVEAT: numbers get NaN, instability for high values of lambda
+            self$Q1 = self$Q1 + self$td.error * sweep(self$E, self$train.data$state, MARGIN = 1, "*")
+          }
+          
+          self$train = function() {
+            self$getTrainData()
+            self$increaseEligibility()
+            self$getTdTarget()
+            self$getTdError()
+            self$updateQ()
+            self$reduceEligibility()
+          }
+          
+          self$start = function(envir) {
+            self$resetEligibility(envir)
+            envir$reset()
+          }
+        }
+      } else {
+        self$updateQ = function() {
+          state = matrix(unlist(self$train.data$state), ncol = self$batch.size)
+          self$Q1[, self$train.data$action + 1] = self$Q1[, self$train.data$action + 1] + 
+            self$td.error * state
+        }
+      }
+    } # exp. replay, double learning, eligibility traces
     
     # if update Params
     
