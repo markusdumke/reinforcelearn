@@ -11,7 +11,7 @@ IHT(max.size)
 }
 \arguments{
 \item{iht}{[\code{IHT class}] \cr
-A hash table created with \code{IHT$new()}.}
+A hash table created with \code{IHT}.}
 
 \item{n.tilings}{[\code{integer(1)}] \cr
 Number of tilings.}

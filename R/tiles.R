@@ -3,7 +3,7 @@
 #' Implementation of Sutton's tile coding software version 3.
 #' 
 #' @param iht [\code{IHT class}] \cr
-#'   A hash table created with \code{IHT$new()}.
+#'   A hash table created with \code{IHT}.
 #' @param n.tilings [\code{integer(1)}] \cr
 #'   Number of tilings.
 #' @param state [\code{vector(2)}] \cr
@@ -99,7 +99,7 @@ IHTClass = R6::R6Class("IHT", public = list(
   
   checkFull = function() {
     if (length(self$e) > self$max.size) {
-      stop("IHT full")
+      stop("Tile Coding failed because hash table IHT is full!")
     } 
   },
   
