@@ -48,9 +48,9 @@
 #' 
 tiles = function(iht, n.tilings, state, action = integer(0)) {
   checkmate::assertClass(iht, "IHT")
-  checkmate::assertIntegerish(n.tilings)
+  checkmate::assertInt(n.tilings)
   checkmate::assertVector(state)
-  checkmate::assertIntegerish(action)
+  checkmate::assertIntegerish(action, max.len = 1)
   
   qfloats = floor(state * n.tilings)
   Tiles = rep(0, n.tilings)
@@ -85,14 +85,14 @@ hashcoords = function(coords, iht) {
 IHT = function(max.size) {
   IHTClass$new(max.size)
 }
- 
+
 IHTClass = R6::R6Class("IHT", public = list(
   i = 0,
   max.size = NULL,
   e = NULL,
   
   initialize = function(max.size) {
-    checkmate::assertIntegerish(max.size)
+    checkmate::assertInt(max.size)
     self$max.size = max.size
     self$e = new.env(size = max.size)
   },
@@ -116,3 +116,27 @@ IHTClass = R6::R6Class("IHT", public = list(
   }
 )
 )
+
+#' Make n hot vector.
+#' @param x [\code{integer}] \cr Which features are active?
+#' @param len [\code{integer(1)}] \cr Length of the feature vector.
+#' @param out [\code{character(1)}] \cr Format of the output. Can be a vector or a matrix.
+#' @return [\code{matrix(1, len)}] A one-row matrix with \code{len} columns with every entry 0 
+#'   except the columns specified by \code{x}.
+#' @export
+#' @examples 
+#' makeNHot(c(1, 3), 5)
+#' makeNHot(c(1, 3), 5, out = "vector")
+makeNHot = function(x, len, out = "matrix") {
+  checkmate::assertIntegerish(x, max.len = len)
+  checkmate::assertInt(len)
+  if (out == "matrix") {
+    m = matrix(rep(0, len), nrow = 1)
+    m[1, x] = 1
+  } else {
+    m = rep(0, len)
+    m[x] = 1
+  }
+  m
+}
+
