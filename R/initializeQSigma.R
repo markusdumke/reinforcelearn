@@ -141,8 +141,8 @@ qSigmaAgent = R6::R6Class(public = list(
         if (self$replay.index > replay.memory.size) {
           self$replay.index = 1
         }
-        data = list(state = preprocessState(envir$previous.state), action = action,
-          reward = envir$reward, next.state = preprocessState(envir$state))
+        data = list(state = self$preprocessState(envir$previous.state), action = action,
+          reward = envir$reward, next.state = self$preprocessState(envir$state))
         self$replay.memory[[self$replay.index]] = data
         self$replay.memory
       }
@@ -683,10 +683,67 @@ qSigmaAgent = R6::R6Class(public = list(
       }
     }
     
-    
-    # if update Params
-    
-  }
+    # ---- Neural Network Function Approximation
+    if (value.function == "neural.network") {
+      self$predictQ = function(Q, state) {
+        predict(Q, state)
+      }
+      
+      keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = self$learning.rate))
+      self$Q1 = model
+      
+      if (!experience.replay) {
+        if (!eligibility) {
+          self$runEpisode = function(envir, i) {
+            envir$reset()
+            s = self$preprocessState(envir$state)
+            Q = self$predictQ(self$Q1, s)
+            policy = getPolicy(Q, self$epsilon)
+            a = sampleActionFromPolicy(policy)
+            
+            while(envir$done == FALSE) {
+              envir$step(a)
+              
+              s.n = self$preprocessState(envir$state)
+              Q.n = self$predictQ(self$Q1, s.n)
+              policy = getPolicy(Q.n, self$epsilon)
+              a.n = sampleActionFromPolicy(policy)
+              
+              if (target.policy == "greedy") {
+                policy = getPolicy(Q.n, self$epsilon.target)
+              }
+              
+              sarsa.target = Q.n[a.n + 1]
+              exp.sarsa.target = sum(policy * Q.n)
+              td.target = envir$reward + discount * (self$sigma * sarsa.target + 
+                  (1 - self$sigma) * exp.sarsa.target)
+              x = s
+              y = Q
+              y[a + 1] = td.target
+              keras::fit(self$Q1, x, y, verbose = 0, epochs = 1)
+              
+              s = s.n
+              a = a.n
+              Q = Q.n
+              
+              if (envir$done) {
+                self$episode.steps[i] = envir$n.steps
+                if (printing) {
+                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                }
+                break
+              }
+            }
+          }
+        } 
+      }
+      
+      
+      # if update Params
+      
+      
+      
+    }
 )
 )
 
