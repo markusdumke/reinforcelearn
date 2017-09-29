@@ -128,10 +128,9 @@ qSigmaAgent = R6::R6Class(public = list(
     }
     
     if (experience.replay) {
-      
       # initialize replay memory if no replay memory is supplied
       if (is.null(replay.memory)) {
-        self$replay.memory = initializeReplayMemory(envir, replay.memory.size, preprocessState)
+        self$replay.memory = initializeReplayMemory(envir, replay.memory.size, self$preprocessState)
       } else {
         self$replay.memory = replay.memory
       }
@@ -408,7 +407,52 @@ qSigmaAgent = R6::R6Class(public = list(
       }
       
       if (experience.replay) {
-        
+        if (!double.learning) {
+          self$runEpisode = function(envir, i) {
+            envir$reset()
+            
+            while(envir$done == FALSE) {
+              s = self$preprocessState(envir$state)
+              Q = self$predictQ(self$Q1, s)
+              policy = getPolicy(Q, self$epsilon)
+              a = sampleActionFromPolicy(policy)
+              envir$step(a)
+              
+              self$replay.memory = self$add2ReplayMemory(envir, a)
+              
+              batch = self$sampleBatch()
+              states = unlist(batch$state)
+              next.states = unlist(batch$next.state)
+              Q.old = self$Q1[states + 1, , drop = FALSE]
+              Q.n = self$Q1[next.states + 1, , drop = FALSE]
+              policy = t(apply(Q.n, 1, getPolicy, epsilon = self$epsilon))
+              a.n = apply(policy, 1, sampleActionFromPolicy)
+              sarsa.target = Q.n[matrix(c(seq_along(a.n), a.n + 1), ncol = 2)]
+              if (target.policy == "greedy") {
+                policy = t(apply(Q.n, 1, getPolicy, epsilon = self$epsilon.target))
+              }
+              exp.sarsa.target = rowSums(policy * Q.n)
+              td.target = batch$reward + discount * (self$sigma * sarsa.target + 
+                  (1 - self$sigma) * exp.sarsa.target)
+              td.error = td.target - Q.old[matrix(c(seq_along(batch$action), batch$action + 1), ncol = 2)]
+              
+              self$Q1[matrix(c(states + 1, batch$action + 1), ncol = 2)] = 
+                self$Q1[matrix(c(states + 1, batch$action + 1), ncol = 2)] + self$learning.rate * td.error
+              
+              self$priority = self$updatePriority(td.error, theta)
+              
+              if (envir$done) {
+                self$episode.steps[i] = envir$n.steps
+                if (printing) {
+                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                }
+                break
+              }
+            }
+          }
+        } else {
+          
+        }
       }
       
     }
