@@ -87,11 +87,14 @@
 #' @param updateAlpha [\code{function]}] \cr
 #'   A function that updates \code{alpha}. It takes two arguments, \code{alpha} and the current number
 #'   of episodes which are finished, and returns the new \code{alpha} value.
-#' @param updateTheta [\code{function]}] \cr
-#'   A function that updates \code{theta}. It takes two arguments, \code{theta} and the current number
-#'   of episodes which are finished, and returns the new \code{theta} value.
 #' @param initial.value [\code{numeric}] \cr
-#'   Initial value function matrix or weight vector. If \code{NULL} weights will be initialized to 0.
+#'   Initial value function matrix or weight matrix. If \code{NULL} weights will be initialized to 0. 
+#'   Only used for tabular or linear function approximation.
+#' @param n.states [\code{integer(1)}] \cr
+#'   Number of states fot tabular value function. Only needed if the state space is originally continuous, but
+#'   will be transformed by \code{preprocessState}, so that a single integer value is returned. 
+#'   Else the number of states is accessed from the \code{envir} argument.
+#'   continuous state space and returns
 #' @param discount [\code{numeric(1) in [0, 1]}] \cr
 #'   Discount factor.
 #' @param target.policy [\code{character(1)}] \cr
@@ -209,21 +212,21 @@
 #' }
 #'
 qSigma = function(envir, value.function = "table", preprocessState = NULL,
-  model = NULL, initial.value = NULL, n.episodes = 100, sigma = 1,
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, sigma = 1,
   target.policy = "e-greedy", lambda = 0, beta = 0, learning.rate = 0.1,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL, updateTheta = NULL, printing = TRUE) {
+  updateLearningRate = NULL, printing = TRUE) {
 
   # argument checking
   checkArgs(envir, value.function, preprocessState,
-    model, initial.value, n.episodes, sigma,
+    model, initial.value, n.states, n.episodes, sigma,
     target.policy, lambda, beta, learning.rate,
     epsilon, discount, double.learning, update.target.after,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
-    updateLearningRate, updateTheta, printing)
+    updateLearningRate, printing)
 
   # here the learning algorithm will be initialized depending on the function arguments
   agent = qSigmaAgent$new(envir, value.function, preprocessState,
@@ -232,7 +235,7 @@ qSigma = function(envir, value.function = "table", preprocessState = NULL,
     epsilon, discount, double.learning, update.target.after,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
-    updateLearningRate, updateTheta, printing)
+    updateLearningRate, printing)
 
   for (i in seq_len(n.episodes)) {
     agent$runEpisode(envir, i)
@@ -244,12 +247,12 @@ qSigma = function(envir, value.function = "table", preprocessState = NULL,
 #=================================================================
 # Check function arguments of qSigma
 checkArgs = function(envir, value.function, preprocessState, 
-  model, initial.value, n.episodes, sigma, 
+  model, initial.value, n.states, n.episodes, sigma, 
   target.policy, lambda, beta, learning.rate, 
   epsilon, discount, double.learning, update.target.after, 
   replay.memory, replay.memory.size, batch.size, alpha, theta, 
   updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-  updateLearningRate, updateTheta, printing) {
+  updateLearningRate, printing) {
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$action.space == "Discrete")
@@ -263,12 +266,18 @@ checkArgs = function(envir, value.function, preprocessState,
     checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 
       nrows = envir$n.states, ncols = envir$n.actions)
   }
-  # if (value.function == "linear") {
-  #   # checkmate::assertVector(initial.value, null.ok = TRUE, any.missing = FALSE)
-  # }
+  if (value.function == "linear") {
+    envir$reset()
+    n.weights = length(preprocessState(envir$state))
+    checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 
+      nrows = n.weights, ncols = envir$n.actions)
+  }
+  checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 
+    nrows = envir$n.states, ncols = envir$n.actions)
   checkmate::assertNumber(lambda, lower = 0, upper = 1)
   checkmate::assertNumber(sigma, lower = 0, upper = 1)
   checkmate::assertNumber(beta, lower = 0, upper = 1)
+  checkmate::assertInt(n.states, null.ok = TRUE)
   checkmate::assertInt(n.episodes, lower = 1)
   checkmate::assertInt(replay.memory.size, lower = 1)
   checkmate::assertInt(batch.size, lower = 1)
@@ -294,6 +303,5 @@ checkArgs = function(envir, value.function, preprocessState,
   checkmate::assertFunction(updateSigma,  nargs = 2, null.ok = TRUE)
   checkmate::assertFunction(updateLambda,  nargs = 2, null.ok = TRUE)
   checkmate::assertFunction(updateAlpha,  nargs = 2, null.ok = TRUE)
-  checkmate::assertFunction(updateTheta,  nargs = 2, null.ok = TRUE)
   checkmate::assertFunction(updateLearningRate,  nargs = 2, null.ok = TRUE)
 }

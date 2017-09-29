@@ -72,7 +72,7 @@ qSigmaAgent = R6::R6Class(public = list(
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-    updateLearningRate, updateTheta, printing) {
+    updateLearningRate, printing) {
     
     # Algorithm depends on the following arguments:
     #-----------------------
@@ -183,6 +183,19 @@ qSigmaAgent = R6::R6Class(public = list(
         return(list(state = states, action = actions, reward = rewards,
           next.state = next.states))
       }
+      
+      if (value.function == "table") {
+        self$sampleBatch = function() {
+          self$indices = self$getIndices(replay.memory.size, batch.size)
+          batch = self$replay.memory[self$indices]
+          states = vapply(batch, "[[", "state", FUN.VALUE = double(1))
+          next.states = vapply(batch, "[[", "next.state", FUN.VALUE = double(1))
+          actions = vapply(batch, "[[", "action", FUN.VALUE = integer(1))
+          rewards = vapply(batch, "[[", "reward", FUN.VALUE = double(1))
+          return(list(state = states, action = actions, reward = rewards,
+            next.state = next.states))
+        }
+      }
     }
     
     # ---- Tabular Value Function
@@ -194,7 +207,11 @@ qSigmaAgent = R6::R6Class(public = list(
         n.states = envir$n.states
       }
       
-      self$Q1 = matrix(0, nrow = n.states, ncol = envir$n.actions)
+      if (is.null(initial.value)) {
+        self$Q1 = matrix(0, nrow = n.states, ncol = envir$n.actions)
+      } else {
+        self$Q1 = initial.value
+      }
       
       self$predictQ = function(Q, state) {
         Q[state + 1, , drop = FALSE]
@@ -291,7 +308,11 @@ qSigmaAgent = R6::R6Class(public = list(
       }
       
       if (double.learning) {
-        self$Q2 = matrix(0, nrow = n.states, ncol = envir$n.actions)
+        if (is.null(initial.value)) {
+          self$Q2 = matrix(0, nrow = n.states, ncol = envir$n.actions)
+        } else {
+          self$Q2 = initial.value
+        }
         
         if (!eligibility) {
           self$runEpisode = function(envir, i) {
@@ -421,8 +442,8 @@ qSigmaAgent = R6::R6Class(public = list(
               self$replay.memory = self$add2ReplayMemory(envir, a)
               
               batch = self$sampleBatch()
-              states = unlist(batch$state)
-              next.states = unlist(batch$next.state)
+              states = batch$state
+              next.states = batch$next.state
               Q.old = self$Q1[states + 1, , drop = FALSE]
               Q.n = self$Q1[next.states + 1, , drop = FALSE]
               policy = t(apply(Q.n, 1, getPolicy, epsilon = self$epsilon))
@@ -461,8 +482,11 @@ qSigmaAgent = R6::R6Class(public = list(
     if (value.function == "linear") {
       envir$reset()
       n.weights = length(preprocessState(envir$state))
-      self$Q1 = matrix(0, #runif(n.weights * envir$n.actions),
-        nrow = n.weights, ncol = envir$n.actions)
+      if (is.null(initial.value)) {
+        self$Q1 = matrix(0, nrow = n.weights, ncol = envir$n.actions)
+      } else {
+        self$Q1 = initial.value
+      }
       
       self$predictQ = function(Q, state) {
         state %*% Q
@@ -560,7 +584,12 @@ qSigmaAgent = R6::R6Class(public = list(
       }
       
       if (double.learning) {
-        self$Q2 = matrix(0, nrow = n.weights, ncol = envir$n.actions)
+        if (is.null(initial.value)) {
+          self$Q2 = matrix(0, nrow = n.weights, ncol = envir$n.actions)
+        } else {
+          self$Q2 = initial.value
+        }
+        
         if (!eligibility) {
           self$runEpisode = function(envir, i) {
             envir$reset()
@@ -783,8 +812,8 @@ qSigmaAgent = R6::R6Class(public = list(
       }
     }
   }
-    
-    # if update Params
+  
+  # if update Params
 )
 )
 

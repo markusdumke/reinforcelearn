@@ -8,34 +8,34 @@
 \title{Q(sigma) / Q-Learning / Sarsa}
 \usage{
 qSigma(envir, value.function = "table", preprocessState = NULL,
-  model = NULL, initial.value = NULL, n.episodes = 100, sigma = 1,
-  target.policy = "e-greedy", lambda = 0, beta = 0, learning.rate = 0.1,
-  epsilon = 0.1, discount = 1, double.learning = FALSE,
-  update.target.after = 1, replay.memory = NULL, replay.memory.size = 1,
-  batch.size = 1, alpha = 0, theta = 0.01, updateEpsilon = NULL,
-  updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL, updateTheta = NULL, printing = TRUE)
-
-qlearning(envir, value.function = "table", preprocessState = NULL,
-  model = NULL, initial.value = NULL, n.episodes = 100, lambda = 0,
-  beta = 0, learning.rate = 0.1, epsilon = 0.1, discount = 1,
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
+  sigma = 1, target.policy = "e-greedy", lambda = 0, beta = 0,
+  learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, update.target.after = 1, replay.memory = NULL,
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
-  updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
+  updateAlpha = NULL, updateLearningRate = NULL, printing = TRUE)
+
+qlearning(envir, value.function = "table", preprocessState = NULL,
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
+  lambda = 0, beta = 0, learning.rate = 0.1, epsilon = 0.1,
+  discount = 1, double.learning = FALSE, update.target.after = 1,
+  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
+  alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
+  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL,
   printing = TRUE)
 
 sarsa(envir, value.function = "table", preprocessState = NULL,
-  model = NULL, initial.value = NULL, n.episodes = 100, lambda = 0,
-  beta = 0, learning.rate = 0.1, epsilon = 0.1, discount = 1,
-  double.learning = FALSE, update.target.after = 1, replay.memory = NULL,
-  replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
-  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
-  updateAlpha = NULL, updateLearningRate = NULL, updateTheta = NULL,
-  printing = TRUE)
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
+  lambda = 0, beta = 0, learning.rate = 0.1, epsilon = 0.1,
+  discount = 1, double.learning = FALSE, update.target.after = 1,
+  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
+  alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
+  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL,
+  updateTheta = NULL, printing = TRUE)
 
 expectedSarsa(envir, value.function = "table", preprocessState = NULL,
-  model = NULL, initial.value = NULL, n.episodes = 100,
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   target.policy = "e-greedy", lambda = 0, beta = 0, learning.rate = 0.1,
   epsilon = 0.1, discount = 1, double.learning = FALSE,
   update.target.after = 1, replay.memory = NULL, replay.memory.size = 1,
@@ -61,7 +61,14 @@ A neural network model specified using the \code{keras} package.
 See Details for more information.}
 
 \item{initial.value}{[\code{numeric}] \cr
-Initial value function matrix or weight vector. If \code{NULL} weights will be initialized to 0.}
+Initial value function matrix or weight matrix. If \code{NULL} weights will be initialized to 0. 
+Only used for tabular or linear function approximation.}
+
+\item{n.states}{[\code{integer(1)}] \cr
+Number of states fot tabular value function. Only needed if the state space is originally continuous, but
+will be transformed by \code{preprocessState}, so that a single integer value is returned. 
+Else the number of states is accessed from the \code{envir} argument.
+continuous state space and returns}
 
 \item{n.episodes}{[\code{integer(1)}] \cr
 Number of episodes.}
@@ -145,10 +152,6 @@ of episodes which are finished, and returns the new \code{alpha} value.}
 A function that updates the learning rate. It takes two arguments, \code{learning.rate}
 and the current number of episodes which are finished, and returns the new
 \code{learning.rate} value.}
-
-\item{updateTheta}{[\code{function]}] \cr
-A function that updates \code{theta}. It takes two arguments, \code{theta} and the current number
-of episodes which are finished, and returns the new \code{theta} value.}
 
 \item{printing}{[\code{logical(1)}] \cr
 Should the number of steps per episode be printed out during the learning process.}

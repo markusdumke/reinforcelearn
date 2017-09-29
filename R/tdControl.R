@@ -2,27 +2,27 @@
 #' @inheritParams qSigma
 #' @rdname qSigma
 qlearning = function(envir, value.function = "table", preprocessState = NULL, 
-  model = NULL, initial.value = NULL, n.episodes = 100,
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   lambda = 0, beta = 0, learning.rate = 0.1, 
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, updateTheta = NULL, printing = TRUE) {
+  updateLearningRate = NULL, printing = TRUE) {
   
   qSigma(envir, value.function, preprocessState, 
-    model, initial.value, n.episodes, sigma = 0, 
+    model, initial.value, n.states, n.episodes, sigma = 0, 
     target.policy = "greedy", lambda, beta, learning.rate, 
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-    updateLearningRate, updateTheta, printing)
+    updateLearningRate, printing)
 }
 
 #' @export
 #' @inheritParams qSigma
 #' @rdname qSigma
 sarsa = function(envir, value.function = "table", preprocessState = NULL, 
-  model = NULL, initial.value = NULL, n.episodes = 100, 
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, 
   lambda = 0, beta = 0, learning.rate = 0.1, 
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
@@ -30,19 +30,19 @@ sarsa = function(envir, value.function = "table", preprocessState = NULL,
   updateLearningRate = NULL, updateTheta = NULL, printing = TRUE) {
   
   qSigma(envir, value.function, preprocessState, 
-    model, initial.value, n.episodes, sigma = 1, 
+    model, initial.value, n.states, n.episodes, sigma = 1, 
     target.policy = "e-greedy", lambda, beta, learning.rate, 
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-    updateLearningRate, updateTheta, printing)
+    updateLearningRate, printing)
 }
 
 #' @export
 #' @inheritParams qSigma
 #' @rdname qSigma
 expectedSarsa = function(envir, value.function = "table", preprocessState = NULL, 
-  model = NULL, initial.value = NULL, n.episodes = 100, target.policy = "e-greedy",
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, target.policy = "e-greedy",
   lambda = 0, beta = 0, learning.rate = 0.1, 
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
@@ -50,11 +50,11 @@ expectedSarsa = function(envir, value.function = "table", preprocessState = NULL
   updateLearningRate = NULL, updateTheta = NULL, printing = TRUE) {
   
   qSigma(envir, value.function, preprocessState, 
-    model, initial.value, n.episodes, sigma = 0, target.policy,
+    model, initial.value, n.states, n.episodes, sigma = 0, target.policy,
     lambda, beta, learning.rate, 
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-    updateLearningRate, updateTheta, printing)
+    updateLearningRate, printing)
 }
 
