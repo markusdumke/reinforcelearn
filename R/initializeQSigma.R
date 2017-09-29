@@ -472,7 +472,64 @@ qSigmaAgent = R6::R6Class(public = list(
             }
           }
         } else {
-          
+          self$runEpisode = function(envir, i) {
+            envir$reset()
+            
+            while(envir$done == FALSE) {
+              s = self$preprocessState(envir$state)
+              Q = self$predictQ(self$Q1 + self$Q2, s)
+              policy = getPolicy(Q, self$epsilon)
+              a = sampleActionFromPolicy(policy)
+              envir$step(a)
+              
+              self$replay.memory = self$add2ReplayMemory(envir, a)
+              
+              batch = self$sampleBatch()
+              states = batch$state
+              next.states = batch$next.state
+             
+              update.which.Q = sample(1:2, 1)
+              if (update.which.Q == 1) {
+                Q.A = self$Q1[next.states + 1, , drop = FALSE]
+                Q.B = self$Q2[next.states + 1, , drop = FALSE]
+              } else {
+                Q.A = self$Q2[next.states + 1, , drop = FALSE]
+                Q.B = self$Q1[next.states + 1, , drop = FALSE]
+              }
+              
+              Q.new = (self$Q1 + self$Q2)[next.states + 1, , drop = FALSE]
+              policy = t(apply(Q.new, 1, getPolicy, epsilon = self$epsilon))  
+              a.n = apply(policy, 1, sampleActionFromPolicy)
+              
+              sarsa.target = Q.B[matrix(c(seq_along(a.n), a.n + 1), ncol = 2)]
+              policy = t(apply(Q.A, 1, getPolicy, epsilon = self$epsilon.target))
+              exp.sarsa.target = rowSums(policy * Q.B)
+              td.target = batch$reward + discount * (sigma * sarsa.target + 
+                  (1 - sigma) * exp.sarsa.target)
+              
+              if (update.which.Q == 1) {
+                Q = self$Q1[states + 1, , drop = FALSE]
+                td.error = td.target - Q[a + 1]
+                self$Q1[matrix(c(states + 1, batch$action + 1), ncol = 2)] = 
+                  self$Q1[matrix(c(states + 1, batch$action + 1), ncol = 2)] + self$learning.rate * td.error
+              } else {
+                Q = self$Q2[states + 1, , drop = FALSE]
+                td.error = td.target - Q[a + 1]
+                self$Q2[matrix(c(states + 1, batch$action + 1), ncol = 2)] = 
+                  self$Q2[matrix(c(states + 1, batch$action + 1), ncol = 2)] + self$learning.rate * td.error
+              }
+              
+              self$priority = self$updatePriority(td.error, theta)
+              
+              if (envir$done) {
+                self$episode.steps[i] = envir$n.steps
+                if (printing) {
+                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                }
+                break
+              }
+            }
+          }
         }
       }
       
@@ -813,7 +870,11 @@ qSigmaAgent = R6::R6Class(public = list(
     }
   }
   
-  # if update Params
+  # fixme: add updateparams
+  # linear fun approx.: no list in replay memory
+  # add episode return / reward sum
+  # replace apply / vapply in linear fun approx. with matrix multiplication?
+  # after initialization print out model and return this as a list at the end
 )
 )
 
