@@ -219,90 +219,64 @@ qSigmaAgent = R6::R6Class(public = list(
     #   }
     # }
     # 
-    # if (experience.replay) {
-    #   self$batch.size = batch.size
-    #   
-    #   # get training data from replay memory
-    #   self$getTrainData = function() {
-    #     self$replay.index =  self$replay.index + 1
-    #     if (self$replay.index > replay.memory.size) {
-    #       self$replay.index = 1
-    #     }
-    #     self$add2ReplayMemory(self$replay.index)
-    #     self$train.data = self$sampleBatch()
-    #   }
-    #   
-    #   # add current data to replay memory, replacing oldest entry
-    #   self$add2ReplayMemory = function(index) {
-    #     self$replay.memory[[index]] = self$online.data
-    #   }
-    #   
-    #   # fill replay memory initially with experience from random uniform policy
-    #   initializeReplayMemory = function(envir, len) {
-    #     self$replay.memory = vector("list", length = len)
-    #     envir$reset()
-    #     action = sample(envir$actions, 1)
-    #     for (i in seq_len(len)) {
-    #       envir$step(action)
-    #       self$online.data = self$getOnlineData(envir, action)
-    #       self$add2ReplayMemory(i)
-    #       action = sample(envir$actions, 1)
-    #       if (envir$done) {
-    #         envir$reset()
-    #       }
-    #     }
-    #   }
-    #   
-    #   # initialize replay memory if no replay memory is supplied
-    #   if (is.null(replay.memory)) {
-    #     initializeReplayMemory(envir, replay.memory.size)
-    #   } else {
-    #     self$replay.memory = replay.memory
-    #   }
-    #   
-    #   # uniform sampling from replay memory (unprioritized replay)
-    #   self$getIndices = function(batch.size) {
-    #     indices = sample(seq_along(self$replay.memory), size = batch.size)
-    #     indices
-    #   }
-    #   
-    #   # sampling with prioritized experience replay (proportional to td error)
-    #   if (prioritized.exp.replay) {
-    #     
-    #     self$priority = rep(1, times = replay.memory.size)
-    #     
-    #     self$getIndices = function(batch.size) {
-    #       probability = self$priority ^ self$alpha / sum(self$priority ^ self$alpha)
-    #       self$indices = sample(seq_along(self$replay.memory), size = batch.size, prob = probability)
-    #       self$indices
-    #     }
-    #     
-    #     # update priority for sampled batch to be proportional to td error
-    #     self$updatePriority = function() {
-    #       self$priority[self$indices] = abs(self$td.error) + self$theta
-    #     }
-    #     
-    #     # adjust train function to update priority
-    #     self$train = function() {
-    #       self$getTrainData()
-    #       self$getTdTarget()
-    #       self$fit()
-    #       self$updatePriority()
-    #     }
-    #   }
-    #   
-    #   # sample batch from replay memory
-    #   self$sampleBatch = function() {
-    #     self$indices = self$getIndices(self$batch.size)
-    #     batch = self$replay.memory[self$indices]
-    #     states = lapply(batch, "[[", "state")
-    #     next.states = lapply(batch, "[[", "next.state")
-    #     actions = vapply(batch, "[[", "action", FUN.VALUE = integer(1))
-    #     rewards = vapply(batch, "[[", "reward", FUN.VALUE = double(1))
-    #     return(list(state = states, action = actions, reward = rewards,
-    #       next.state = next.states))
-    #   }
-    # }
+    if (experience.replay) {
+      
+      # initialize replay memory if no replay memory is supplied
+      if (is.null(replay.memory)) {
+        self$replay.memory = initializeReplayMemory(envir, replay.memory.size, preprocessState)
+      } else {
+        self$replay.memory = replay.memory
+      }
+      
+      self$add2ReplayMemory = function(envir, action) {
+        self$replay.index =  self$replay.index + 1
+        if (self$replay.index > replay.memory.size) {
+          self$replay.index = 1
+        }
+        data = list(state = preprocessState(envir$previous.state), action = action,
+          reward = envir$reward, next.state = preprocessState(envir$state))
+        self$replay.memory[[self$replay.index]] = data
+        self$replay.memory
+      }
+      
+      # uniform sampling from replay memory (unprioritized replay)
+      self$getIndices = function(replay.memory.size, batch.size) {
+        indices = sample(seq_len(replay.memory.size), size = batch.size)
+        indices
+      }
+      
+      # sampling with prioritized experience replay (proportional to td error)
+      if (prioritized.exp.replay) {
+        self$priority = rep(1, times = replay.memory.size)
+        
+        self$getIndices = function(replay.memory.size, batch.size) {
+          probability = self$priority ^ self$alpha / sum(self$priority ^ self$alpha)
+          indices = sample(seq_len(replay.memory.size), size = batch.size, prob = probability)
+          indices
+        }
+        
+        # update priority for sampled batch to be proportional to td error
+        self$updatePriority = function(td.error, theta) {
+          self$priority[self$indices] = abs(td.error) + theta
+          self$priority
+        }
+      } else {
+        self$updatePriority = function(td.error, theta) {}
+      }
+      
+      
+      # sample batch from replay memory
+      self$sampleBatch = function() {
+        self$indices = self$getIndices(replay.memory.size, batch.size)
+        batch = self$replay.memory[self$indices]
+        states = lapply(batch, "[[", "state")
+        next.states = lapply(batch, "[[", "next.state")
+        actions = vapply(batch, "[[", "action", FUN.VALUE = integer(1))
+        rewards = vapply(batch, "[[", "reward", FUN.VALUE = double(1))
+        return(list(state = states, action = actions, reward = rewards,
+          next.state = next.states))
+      }
+    }
     # 
     # # depending on the value of sigma: compute sarsa target and / or expected sarsa target
     # self$getTdTarget = function() {
@@ -620,7 +594,7 @@ qSigmaAgent = R6::R6Class(public = list(
             
             while(envir$done == FALSE) {
               envir$step(a)
-        
+              
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
               policy = getPolicy(Q.n, self$epsilon)
@@ -639,7 +613,7 @@ qSigmaAgent = R6::R6Class(public = list(
               exp.sarsa.target = sum(policy * Q.B)
               td.target = envir$reward + discount * (sigma * sarsa.target + 
                   (1 - sigma) * exp.sarsa.target)
-
+              
               if (update.which.Q == 1) {
                 Q = self$predictQ(self$Q1, s)
                 td.error = td.target - Q[a + 1]
@@ -723,7 +697,59 @@ qSigmaAgent = R6::R6Class(public = list(
         }
       }
       
-    } # exp. replay, double learning, binary features
+      if (experience.replay) {
+        if (!double.learning) {
+          self$runEpisode = function(envir, i) {
+            envir$reset()
+            
+            while(envir$done == FALSE) {
+              s = self$preprocessState(envir$state)
+              Q = self$predictQ(self$Q1, s)
+              policy = getPolicy(Q, self$epsilon)
+              a = sampleActionFromPolicy(policy)
+              envir$step(a)
+              
+              self$replay.memory = self$add2ReplayMemory(envir, a)
+              
+              batch = self$sampleBatch()
+              
+              Q.old = t(vapply(batch$state, self$predictQ, Q = self$Q1, 
+                FUN.VALUE = numeric(envir$n.actions)))
+              Q.n = t(vapply(batch$next.state, self$predictQ, Q = self$Q1, 
+                FUN.VALUE = numeric(envir$n.actions)))
+              
+              policy = t(apply(Q.n, 1, getPolicy, epsilon = self$epsilon))
+              a.n = apply(policy, 1, sampleActionFromPolicy)
+              sarsa.target = Q.n[matrix(c(seq_along(a.n), a.n + 1), ncol = 2)]
+              
+              if (target.policy == "greedy") {
+                policy = t(apply(Q.n, 1, getPolicy, epsilon = self$epsilon.target))
+              }
+              exp.sarsa.target = rowSums(policy * Q.n)
+              td.target = batch$reward + discount * (self$sigma * sarsa.target + 
+                  (1 - self$sigma) * exp.sarsa.target)
+              td.error = td.target - Q.old[matrix(c(seq_along(batch$action), batch$action + 1), ncol = 2)]
+              
+              states = Reduce(rbind, batch$state)
+              self$Q1[, batch$action + 1] = self$Q1[, batch$action + 1] + self$learning.rate * td.error * t(states)
+              
+              self$priority = self$updatePriority(td.error, theta)
+              
+              if (envir$done) {
+                self$episode.steps[i] = envir$n.steps
+                if (printing) {
+                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                }
+                break
+              }
+            }
+          }
+        } else {
+          
+        }
+      }
+    }
+    
     
     # if update Params
     
@@ -737,10 +763,29 @@ getPolicy = function(Q, epsilon) {
   n.actions = length(Q)
   policy = matrix(0, nrow = 1, ncol = n.actions)
   policy[, greedy.action] = 1 - epsilon
-  return(policy + epsilon / n.actions)
+  policy = policy + epsilon / n.actions
+  policy
 }
 
 # sample action from policy
 sampleActionFromPolicy = function(policy) {
-  return(sample(seq_len(ncol(policy)), prob = policy, size = 1, replace = TRUE) - 1L)
+  action = sample(seq_along(policy), prob = policy, size = 1, replace = TRUE) - 1L
+  action
+}
+
+initializeReplayMemory = function(envir, len, preprocessState) {
+  replay.memory = vector("list", length = len)
+  envir$reset()
+  action = sample(envir$actions, 1)
+  for (i in seq_len(len)) {
+    envir$step(action)
+    data = list(state = preprocessState(envir$previous.state), action = action,
+      reward = envir$reward, next.state = preprocessState(envir$state))
+    replay.memory[[i]] = data
+    action = sample(envir$actions, 1)
+    if (envir$done) {
+      envir$reset()
+    }
+  }
+  replay.memory
 }
