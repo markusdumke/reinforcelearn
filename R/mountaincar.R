@@ -1,6 +1,6 @@
 #' Mountain Car
 #' 
-#' @references Sutton and Barto (1998)
+#' @references Sutton and Barto (2017): Reinforcement Learning: An Introduction
 #' @export
 #' @examples 
 #' m = MountainCar()

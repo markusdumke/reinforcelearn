@@ -63,5 +63,5 @@ tiles(iht, n.tilings = 8, state = c(- 37.2, 7))
 
 }
 \references{
-Sutton and Barto (Book draft 2017)
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 }

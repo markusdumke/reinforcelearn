@@ -146,6 +146,7 @@
 #' @importFrom stats predict
 #' @export
 #' @examples
+#' # Solve Windy Gridworld
 #' grid = makeEnvironment(transitions = windy.gridworld$transitions,
 #'   rewards = windy.gridworld$rewards,
 #'   initial.state = 30L)
@@ -164,18 +165,42 @@
 #'
 #' qSigma(grid,  epsilon = 0.5, updateEpsilon = decayEpsilon)
 #'
-#' # Preprocessing function: Returns one-hot vector for current state
+#' # Solve the Mountain Car problem using linear function approximation
+#' m = MountainCar()
+#' 
+#' # Define preprocessing function (we use grid tiling)
+#' n.tilings = 8
+#' max.size = 4096
+#' iht = IHT(max.size)
+#' 
+#' position.max = m$state.space.bounds[[1]][2]
+#' position.min = m$state.space.bounds[[1]][1]
+#' velocity.max = m$state.space.bounds[[2]][2]
+#' velocity.min = m$state.space.bounds[[2]][1]
+#' position.scale = n.tilings / (position.max - position.min)
+#' velocity.scale = n.tilings / (velocity.max - velocity.min)
+#' 
+#' preprocessState = function(state) {
+#'   # scale state observation
+#'   state = matrix(c(position.scale * state[1], velocity.scale * state[2]), ncol = 2)
+#'   # get active tiles
+#'   active.tiles = tiles(iht, 8, state)
+#'   # return n hot vector with 1 at the position of each active tile
+#'   makeNHot(active.tiles, max.size)
+#' }
+#' 
+#' set.seed(123)
+#' qSigma(m, value.function = "linear", preprocessState = preprocessState)
+#' 
+#' \dontrun{
+#' # Use a neural network as function approximator
 #' makeOneHot = function(state) {
 #'   one.hot = matrix(rep(0, 70), nrow = 1)
 #'   one.hot[1, state + 1] = 1
 #'   one.hot
 #' }
-#'
-#' # Linear function approximation
-#' # qSigma(grid, value.function = "linear", preprocessState = makeOneHot)
-#'
-#' \dontrun{
-#' # Neural network as function approximator
+#' 
+#' # Define keras model
 #' library(keras)
 #' model = keras_model_sequential()
 #' model %>% layer_dense(units = 4, activation = 'linear', input_shape = c(70))

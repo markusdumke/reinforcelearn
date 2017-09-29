@@ -8,24 +8,24 @@ td(envir, policy, lambda = 0, n.steps = 100, discount = 1,
   learning.rate = 0.1)
 }
 \arguments{
-\item{envir}{[\code{R6 class}] \cr 
+\item{envir}{[\code{R6 class}] \cr
 The reinforcement learning environment
 created by \code{\link{makeEnvironment}}.}
 
 \item{policy}{[\code{matrix}] \cr 
 A policy specified as a probability matrix (states x actions).}
 
-\item{lambda}{[\code{numeric(1) in [0, 1]}] \cr 
-The \code{lambda} parameter combines different n-step returns using eligibility traces. 
+\item{lambda}{[\code{numeric(1) in [0, 1]}] \cr
+The \code{lambda} parameter combines different n-step returns using eligibility traces.
 Only used if the replay memory is of size 1, i.e. no experience replay is used.}
 
 \item{n.steps}{[\code{integer(1)}] \cr 
 Number of evaluations (steps in the environment).}
 
-\item{discount}{[\code{numeric(1) in [0, 1]}] \cr 
+\item{discount}{[\code{numeric(1) in [0, 1]}] \cr
 Discount factor.}
 
-\item{learning.rate}{[\code{R6 class}] \cr 
+\item{learning.rate}{[\code{numeric(1)}] \cr
 Learning rate used for gradient descent.}
 }
 \value{

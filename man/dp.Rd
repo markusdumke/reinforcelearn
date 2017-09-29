@@ -16,7 +16,7 @@ iterateValue(envir, v = NULL, q = NULL, discount = 1, precision = 1e-04,
   n.iter = NULL)
 }
 \arguments{
-\item{envir}{[\code{R6 class}] \cr 
+\item{envir}{[\code{R6 class}] \cr
 The reinforcement learning environment
 created by \code{\link{makeEnvironment}}.}
 
@@ -29,7 +29,7 @@ Initial state value function. Terminal states must have a value of 0!}
 \item{q}{[\code{matrix(n.states x n.actions)}] \cr 
 Initial action value function. Terminal states must have a value of 0!}
 
-\item{discount}{[\code{numeric(1) in [0, 1]}] \cr 
+\item{discount}{[\code{numeric(1) in [0, 1]}] \cr
 Discount factor.}
 
 \item{precision}{[\code{numeric(1)}] \cr 

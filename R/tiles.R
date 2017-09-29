@@ -33,7 +33,7 @@
 #' Make sure that the size of the hash table is large enough, else an error will be triggered, 
 #' when trying to assign a value to a full hash table.
 #' 
-#' @references Sutton and Barto (Book draft 2017)
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
 #' @rdname tilecoding
 #' @export
 #' @examples

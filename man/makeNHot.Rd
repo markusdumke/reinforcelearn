@@ -2,7 +2,7 @@
 % Please edit documentation in R/tiles.R
 \name{makeNHot}
 \alias{makeNHot}
-\title{Make n hot vector}
+\title{Make n hot vector.}
 \usage{
 makeNHot(x, len, out = "matrix")
 }
@@ -18,7 +18,7 @@ makeNHot(x, len, out = "matrix")
   except the columns specified by \code{x}.
 }
 \description{
-Make n hot vector
+Make n hot vector.
 }
 \examples{
 makeNHot(c(1, 3), 5)
