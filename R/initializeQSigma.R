@@ -737,13 +737,10 @@ qSigmaAgent = R6::R6Class(public = list(
           }
         } 
       }
-      
-      
-      # if update Params
-      
-      
-      
     }
+  }
+    
+    # if update Params
 )
 )
 
