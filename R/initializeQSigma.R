@@ -608,9 +608,63 @@ qSigmaAgent = R6::R6Class(public = list(
         }
       }
       
-      # if (double.learning) {
-      #   self$Q2 = matrix(0, nrow = n.weights, ncol = envir$n.actions)
-      # }
+      if (double.learning) {
+        if (!eligibility) {
+          self$Q2 = matrix(0, nrow = n.weights, ncol = envir$n.actions)
+          
+          self$runEpisode = function(envir, i) {
+            envir$reset()
+            s = self$preprocessState(envir$state)
+            Q = self$predictQ(self$Q1 + self$Q2, s)
+            policy = getPolicy(Q, self$epsilon)
+            a = sampleActionFromPolicy(policy)
+            
+            while(envir$done == FALSE) {
+              envir$step(a)
+        
+              s.n = self$preprocessState(envir$state)
+              Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
+              policy = getPolicy(Q.n, self$epsilon)
+              a.n = sampleActionFromPolicy(policy)
+              
+              update.which.Q = sample(1:2, 1)
+              if (update.which.Q == 1) {
+                Q.A = self$predictQ(self$Q1, s.n)
+                Q.B = self$predictQ(self$Q2, s.n)
+              } else {
+                Q.A = self$predictQ(self$Q2, s.n)
+                Q.B = self$predictQ(self$Q1, s.n)
+              }
+              policy = getPolicy(Q.A, self$epsilon.target)  
+              sarsa.target = Q.B[a.n + 1]
+              exp.sarsa.target = sum(policy * Q.B)
+              td.target = envir$reward + discount * (sigma * sarsa.target + 
+                  (1 - sigma) * exp.sarsa.target)
+
+              if (update.which.Q == 1) {
+                Q = self$predictQ(self$Q1, s)
+                td.error = td.target - Q[a + 1]
+                self$Q1[, a + 1] = self$Q1[, a + 1] + self$learning.rate * td.error * s
+              } else {
+                Q = self$predictQ(self$Q2, s)
+                td.error = td.target - Q[a + 1]
+                self$Q2[, a + 1] = self$Q2[, a + 1] + self$learning.rate * td.error * s
+              }
+              
+              s = s.n
+              a = a.n
+              
+              if (envir$done) {
+                self$episode.steps[i] = envir$n.steps
+                if (printing) {
+                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                }
+                break
+              }
+            }
+          }
+        }
+      }
       
     } # exp. replay, double learning, binary features
     
