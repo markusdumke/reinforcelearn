@@ -260,6 +260,10 @@ envir = R6::R6Class("envir",
       self$rewards = rewards
       terminal.states = apply(transitions, 3, function(x) diag(x))
       self$terminal.states = which(apply(terminal.states, 1, function(x) all(x == 1))) - 1
+      if (length(self$terminal.states) == 0) {
+        warning("There are no terminal states in the MDP!")
+        self$terminal.states = - 1
+      }
       
       if (is.null(initial.state)) {
         self$initial.state = self$states[self$states != self$terminal.states]
