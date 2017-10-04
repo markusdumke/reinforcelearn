@@ -48,15 +48,14 @@
 #' @export
 #' @examples
 #' # Set up gridworld problem
-#' grid = makeEnvironment(transitions = gridworld$transitions, 
-#'   rewards = gridworld$rewards)
+#' env = gridworld()
 #'   
 #' # Define uniform random policy, take each action with equal probability
-#' random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
-#'   ncol = grid$n.actions)
+#' random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
+#'   ncol = env$n.actions)
 #' 
 #' # Evaluate given policy
-#' res = evaluatePolicy(grid, random.policy, precision = 0.001)
+#' res = evaluatePolicy(env, random.policy, precision = 0.001)
 #' print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 #' 
 evaluatePolicy = function(envir, policy, v = NULL, q = NULL, 
@@ -133,7 +132,7 @@ evaluatePolicy2 = function(envir, policy, v, q, discount,
 #' @export
 #' @examples
 #' # Find optimal policy using Policy Iteration
-#' res = iteratePolicy(grid)
+#' res = iteratePolicy(env)
 #' print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 #' 
 iteratePolicy = function(envir, policy = NULL, discount = 1, 
@@ -186,7 +185,7 @@ iteratePolicy = function(envir, policy = NULL, discount = 1,
 #' @export
 #' @examples
 #' # Find optimal policy using Value Iteration
-#' res = iterateValue(grid)
+#' res = iterateValue(env)
 #' print(res$policy)
 #' 
 iterateValue = function(envir, v = NULL, q = NULL, discount = 1, 

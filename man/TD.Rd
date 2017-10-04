@@ -48,15 +48,14 @@ observed infrequently and longer time ago.
 }
 \examples{
 # Define environment, here simple gridworld
-grid = makeEnvironment(transitions = gridworld$transitions, 
-  rewards = gridworld$rewards)
+env = gridworld()
   
 # Define random policy
-random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states, 
-  ncol = grid$n.actions)
+random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
+  ncol = env$n.actions)
 
 # Estimate state value function with temporal-difference learning (TD(0))
-v = td(grid, random.policy, lambda = 0, n.steps = 1000)
+v = td(env, random.policy, lambda = 0, n.steps = 1000)
 print(round(matrix(v, ncol = 4, byrow = TRUE)))
 }
 \references{

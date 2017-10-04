@@ -4,9 +4,7 @@ context("QSigma")
 # test in the following if no error occurs
 # Fixme: we need more detailed tests here
 
-grid = makeEnvironment(transitions = windy.gridworld$transitions,
-  rewards = windy.gridworld$rewards,
-  initial.state = 30L)
+grid = windyGridworld()
 
 n = 2
 test_that("tabular qsigma works", {

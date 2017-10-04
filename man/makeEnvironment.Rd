@@ -92,20 +92,21 @@ MountainCar$state.space
 MountainCar$state.space.bounds
 }
 
-# Create an environment from a transition array and reward matrix (here a 4x4 gridworld).
-grid = makeEnvironment(transitions = gridworld$transitions,
-  rewards = gridworld$rewards)
-  
-# Specify a custom probability distribution for the starting state.
-resetGrid = function() {
-  p = c(0, 0.2, 0, 0.15, 0.15, 0, 0, 0, 0, 0.3, 0.2, 0, 0, 0, 0, 0)
-  sample(0:15, prob = p, size = 1)
-}
+# Create an environment from a transition array and reward matrix.
+P = array(0, c(2,2,2))
+P[, , 1] = matrix(c(0.5, 0.5, 0.8, 0.2), 2, 2, byrow = TRUE)
+P[, , 2] = matrix(c(0, 1, 0.1, 0.9), 2, 2, byrow = TRUE)
+R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
+env = makeEnvironment(transitions = P, rewards = R)
 
-grid = makeEnvironment(transitions = gridworld$transitions,
-  rewards = gridworld$rewards, reset = resetGrid)
-grid$reset()
-print(grid$state)
+# Specify a custom probability distribution for the starting state.
+reset = function() {
+  p = c(0.2, 0.8)
+  sample(0:1, prob = p, size = 1)
+}
+env = makeEnvironment(transitions = P, rewards = R, reset = reset)
+env$reset()
+print(env$state)
 
 # Specify a custom reward function.
 sampleReward = function(state, action, n.state) {
@@ -115,23 +116,14 @@ sampleReward = function(state, action, n.state) {
     rnorm(1)
   }
 }
+env = makeEnvironment(transitions = P, rewards = R, sampleReward = sampleReward)
+env$reset()
+env$step(1)
+print(env$reward)
 
-grid = makeEnvironment(transitions = gridworld$transitions,
-  rewards = gridworld$rewards, sampleReward = sampleReward)
-grid$reset()
-grid$step(2)
-print(grid$reward)
-  
-# Create the Windy Gridworld from transition array and reward matrix.
-grid = makeEnvironment(transitions = windy.gridworld$transitions,
-  rewards = windy.gridworld$rewards,
-  initial.state = 30)
-  
-# Create the Cliff Walking Gridworld from transition array and reward matrix.
-grid = makeEnvironment(transitions = cliff$transitions,
-  rewards = cliff$rewards,
-  initial.state = 36)
-  
+# Gridworld Environment
+grid = gridworld()
+
 }
 \seealso{
 \url{https://github.com/openai/gym-http-api}

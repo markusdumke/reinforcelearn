@@ -7,11 +7,23 @@
 \title{Reinforcement Learning in R.}
 \description{
 Implementations of reinforcement learning algorithms.
-Create an environment using \link{makeEnvironment}.
 }
+\section{Environments}{
+
+\itemize{
+\item \link{makeEnvironment}
+\item \link{makeGridworld}
+\item \link{gridworld}
+\item \link{windyGridworld}
+\item \link{cliff}
+}
+}
+
 \section{Bandits}{
 
-\link{solveBandit}
+\itemize{
+\item \link{solveBandit}
+}
 }
 
 \section{Algorithms}{
@@ -28,16 +40,8 @@ Model-free Reinforcement Learning
 \item \link{td}
 \item \link{qSigma}
 \item \link{sarsa}
+\item \link{expectedSarsa}
 \item \link{qlearning}
-}
-}
-
-\section{Example Environments}{
-
-\itemize{
-\item \link{gridworld}
-\item \link{windy.gridworld}
-\item \link{cliff}
 }
 }
 

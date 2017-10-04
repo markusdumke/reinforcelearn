@@ -32,7 +32,7 @@ sarsa(envir, value.function = "table", preprocessState = NULL,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
   alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
   updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL,
-  updateTheta = NULL, printing = TRUE)
+  printing = TRUE)
 
 expectedSarsa(envir, value.function = "table", preprocessState = NULL,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
@@ -41,7 +41,7 @@ expectedSarsa(envir, value.function = "table", preprocessState = NULL,
   update.target.after = 1, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, updateEpsilon = NULL,
   updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL, updateTheta = NULL, printing = TRUE)
+  updateLearningRate = NULL, printing = TRUE)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
@@ -217,13 +217,11 @@ the function must be the parameter itself, the second argument is the current ep
 }
 \examples{
 # Solve Windy Gridworld
-grid = makeEnvironment(transitions = windy.gridworld$transitions,
-  rewards = windy.gridworld$rewards,
-  initial.state = 30L)
+env = windyGridworld()
 
-qSigma(grid, sigma = 0.5)
-qlearning(grid)
-sarsa(grid)
+qSigma(env, sigma = 0.5)
+qlearning(env)
+sarsa(env)
 
 # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 decayEpsilon = function(epsilon, i) {
@@ -233,7 +231,7 @@ decayEpsilon = function(epsilon, i) {
   epsilon
 }
 
-qSigma(grid,  epsilon = 0.5, updateEpsilon = decayEpsilon)
+qSigma(env,  epsilon = 0.5, updateEpsilon = decayEpsilon)
 
 # Solve the Mountain Car problem using linear function approximation
 m = MountainCar()
@@ -275,7 +273,7 @@ library(keras)
 model = keras_model_sequential()
 model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
 
-qSigma(grid, value.function = "neural.network", model = model, preprocessState = makeOneHot)
+qSigma(env, value.function = "neural.network", model = model, preprocessState = makeOneHot)
 }
 
 }

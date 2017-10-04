@@ -1,10 +1,17 @@
 #' Reinforcement Learning in R.
 #' 
 #' Implementations of reinforcement learning algorithms.
-#' Create an environment using [makeEnvironment].
+#' 
 #' @md
+#' @section Environments:
+#' * [makeEnvironment]
+#' * [makeGridworld]
+#' * [gridworld]
+#' * [windyGridworld]
+#' * [cliff]
+#' 
 #' @section Bandits:
-#' [solveBandit]
+#' * [solveBandit]
 #' 
 #' @section Algorithms:
 #' Dynamic Programming: 
@@ -16,12 +23,8 @@
 #' * [td]
 #' * [qSigma]
 #' * [sarsa]
+#' * [expectedSarsa]
 #' * [qlearning]
-#' 
-#' @section Example Environments:
-#' * [gridworld]
-#' * [windy.gridworld]
-#' * [cliff]
 #' 
 #' @name reinforcelearn
 #' @docType package

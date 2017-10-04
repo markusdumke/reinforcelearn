@@ -27,7 +27,7 @@ sarsa = function(envir, value.function = "table", preprocessState = NULL,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, updateTheta = NULL, printing = TRUE) {
+  updateLearningRate = NULL, printing = TRUE) {
   
   qSigma(envir, value.function, preprocessState, 
     model, initial.value, n.states, n.episodes, sigma = 1, 
@@ -47,7 +47,7 @@ expectedSarsa = function(envir, value.function = "table", preprocessState = NULL
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, updateTheta = NULL, printing = TRUE) {
+  updateLearningRate = NULL, printing = TRUE) {
   
   qSigma(envir, value.function, preprocessState, 
     model, initial.value, n.states, n.episodes, sigma = 0, target.policy,

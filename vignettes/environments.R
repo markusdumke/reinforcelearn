@@ -4,14 +4,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ## ------------------------------------------------------------------------
 library(reinforcelearn)
 
-transitions = gridworld$transitions
-rewards = gridworld$rewards
-env = makeEnvironment(transitions = transitions, rewards = rewards)
+P = array(0, c(2,2,2))
+P[, , 1] = matrix(c(0.5, 0.5, 0.8, 0.2), 2, 2, byrow = TRUE)
+P[, , 2] = matrix(c(0, 1, 0.1, 0.9), 2, 2, byrow = TRUE)
+R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
+env = makeEnvironment(transitions = P, rewards = R)
 
 ## ------------------------------------------------------------------------
-library(reinforcelearn)
-
-transitions = gridworld$transitions
 sampleReward = function(state, action, n.state) {
   if (state == 2 & action == 1L) {
     rexp(1)
@@ -19,7 +18,7 @@ sampleReward = function(state, action, n.state) {
     rnorm(1)
   }
 }
-env = makeEnvironment(transitions = transitions, sampleReward = sampleReward)
+env = makeEnvironment(transitions = P, sampleReward = sampleReward)
 env$reset()
 env$step(0)
 print(env$reward)
@@ -49,7 +48,7 @@ env$n.states
 MountainCar = R6::R6Class("MountainCar", 
   public = list(
     action.space = "Discrete",
-    actions = c(0, 1, 2),
+    actions = 0:2,
     n.actions = 3,
     state.space = "Box",
     state.space.bounds = list(c(-1.2, 0.6), c(-0.07, 0.07)),

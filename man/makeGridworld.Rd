@@ -7,7 +7,7 @@
 makeGridworld(shape = c(4, 4), goal.states = NULL, cliff.states = NULL,
   reward.step = -1, reward.cliff = -100, diagonal.moves = FALSE,
   wind = rep(0, shape[2]), cliff.transition.states = NULL,
-  stochasticity = 0)
+  stochasticity = 0, ...)
 }
 \arguments{
 \item{shape}{[\code{integer(2)}] \cr 
@@ -37,16 +37,16 @@ If it is a vector, all states will have equal probability.}
 
 \item{stochasticity}{[\code{numeric(1)}] \cr
 Probability of random transition to any of the neighboring states when taking any action.}
+
+\item{...}{Arguments passed on to \code{\link{makeEnvironment}}}
 }
 \value{
-[\code{list(2)}] \cr
-  Returns a list with the state transition array [\code{array(3)}] and reward matrix 
-  [\code{matrix}] of the gridworld.
-  These can then be passed on to \code{\link{makeEnvironment}} to create a full reinforcement 
-  learning environment.
+[\code{R6 Class}] \cr
+  \code{makeGridworld} computes the state transition array and reward matrix and passes these arguments 
+  on to \code{\link{makeEnvironment}}. The output is an R6 class, the reinforcement learning environment.
 }
 \description{
-\code{makeGridworld} creates gridworlds, which can be used as reinforcement learning problems.
+\code{makeGridworld} creates gridworld environments.
 }
 \details{
 A gridworld is an episodic navigation task, the goal is to get from start state to goal state. 
@@ -67,13 +67,13 @@ If an action would take you off the grid, the new state is the nearest cell insi
 For each step you get a reward of \code{reward.step}, until you reach a goal state, 
 then the episode is done.
 
-States are enumerated row-wise and numeration starts with 1. 
+States are enumerated row-wise and numeration starts with 0. 
 Here is an example 4x4 grid:
 \tabular{rrrr}{
- 1 \tab 2 \tab 3 \tab 4 \cr
- 5 \tab 6 \tab 7 \tab 8 \cr
- 9 \tab 10 \tab 11 \tab 12 \cr
- 13 \tab 14 \tab 15 \tab 16 \cr
+ 0 \tab 1 \tab 2 \tab 3 \cr
+ 4 \tab 5 \tab 6 \tab 7 \cr
+ 8 \tab 9 \tab 10 \tab 11 \cr
+ 12 \tab 13 \tab 14 \tab 15 \cr
 }
 So a board position could look like this (G: goal state, x: current state, C: cliff state):
 \tabular{rrrr}{
@@ -84,25 +84,20 @@ So a board position could look like this (G: goal state, x: current state, C: cl
 }
 
 A few gridworlds are already included in the package and can be loaded by typing 
-\code{\link{gridworld}}, \code{\link{windy.gridworld}} and \code{\link{cliff}}.
+\code{\link{gridworld}}, \code{\link{windyGridworld}} and \code{\link{cliff}}.
 }
 \examples{
 # Gridworld Environment (Sutton & Barto Example 4.1)
-gridworld = makeGridworld(goal.states = c(1, 16))
-env = makeEnvironment(transitions = gridworld$transitions, 
-  rewards = gridworld$rewards)
+gridworld = makeGridworld(goal.states = c(0, 15))
   
 # Windy Gridworld (Sutton & Barto Example 6.5) 
-windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 38, 
-  reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0))
-env = makeEnvironment(transitions = windy.gridworld$transitions, 
-  rewards = windy.gridworld$rewards, initial.state = 31 - 1)
+windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37, 
+  reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
   
 # Cliff Walking (Sutton & Barto Example 6.6)   
-cliff = makeGridworld(shape = c(4, 12), goal.states = 48, cliff.states = 38:47, 
-  reward.step = - 1, reward.cliff = - 100, cliff.transition.states = 37)
-env = makeEnvironment(transitions = cliff$transitions, 
-  rewards = cliff$rewards, initial.state = 37 - 1) 
+cliff = makeGridworld(shape = c(4, 12), goal.states = 47, 
+  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100, 
+  cliff.transition.states = 36, initial.state = 36)
 
 }
 \references{

@@ -6,7 +6,13 @@
 library(reinforcelearn)
 
 ## ------------------------------------------------------------------------
-env = makeEnvironment(transitions = gridworld$transitions, rewards = gridworld$rewards)
+library(reinforcelearn)
+
+P = array(0, c(2,2,2))
+P[, , 1] = matrix(c(0.5, 0.5, 0.8, 0.2), 2, 2, byrow = TRUE)
+P[, , 2] = matrix(c(0, 1, 0.1, 0.9), 2, 2, byrow = TRUE)
+R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
+env = makeEnvironment(transitions = P, rewards = R)
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  MountainCar = makeEnvironment("MountainCar-v0")
@@ -24,6 +30,7 @@ env = makeEnvironment(transitions = gridworld$transitions, rewards = gridworld$r
 #  MountainCar$close()
 
 ## ------------------------------------------------------------------------
-# Solve the gridworld task using Value Iteration.
-res = iterateValue(env)
+# Solve the windy gridworld task using Sarsa.
+env = windyGridworld()
+res = sarsa(env)
 

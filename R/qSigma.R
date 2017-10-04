@@ -150,13 +150,11 @@
 #' @export
 #' @examples
 #' # Solve Windy Gridworld
-#' grid = makeEnvironment(transitions = windy.gridworld$transitions,
-#'   rewards = windy.gridworld$rewards,
-#'   initial.state = 30L)
+#' env = windyGridworld()
 #'
-#' qSigma(grid, sigma = 0.5)
-#' qlearning(grid)
-#' sarsa(grid)
+#' qSigma(env, sigma = 0.5)
+#' qlearning(env)
+#' sarsa(env)
 #'
 #' # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 #' decayEpsilon = function(epsilon, i) {
@@ -166,7 +164,7 @@
 #'   epsilon
 #' }
 #'
-#' qSigma(grid,  epsilon = 0.5, updateEpsilon = decayEpsilon)
+#' qSigma(env,  epsilon = 0.5, updateEpsilon = decayEpsilon)
 #'
 #' # Solve the Mountain Car problem using linear function approximation
 #' m = MountainCar()
@@ -208,7 +206,7 @@
 #' model = keras_model_sequential()
 #' model %>% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
 #'
-#' qSigma(grid, value.function = "neural.network", model = model, preprocessState = makeOneHot)
+#' qSigma(env, value.function = "neural.network", model = model, preprocessState = makeOneHot)
 #' }
 #'
 qSigma = function(envir, value.function = "table", preprocessState = NULL,
