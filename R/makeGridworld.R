@@ -85,6 +85,9 @@ makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NUL
   cliff.transition.states = NULL, stochasticity = 0, ...) {
   
   checkmate::assertIntegerish(shape, len = 2)
+  if (prod(shape) <= 1) {
+    stop("A gridworld with only one state is not allowed!")
+  }
   checkmate::assertIntegerish(goal.states)
   goal.states = goal.states + 1
   checkmate::assertIntegerish(cliff.states, null.ok = TRUE)
@@ -97,7 +100,7 @@ makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NUL
   }
   if (any(goal.states > prod(shape)) | any(cliff.states > prod(shape)) | 
       any(cliff.transition.states > prod(shape))) {
-    stop("All states must be inside the grid! States are numerated row-wise starting with 1, check Details!")
+    stop("All states must be inside the grid! States are numerated row-wise starting with 0, check Details!")
   }
   if (!is.null(cliff.states) & is.null(cliff.transition.states)) {
     stop("Please specify the cliff.transition.states!")

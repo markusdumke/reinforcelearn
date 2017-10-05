@@ -33,8 +33,7 @@ resetGrid = function() {
   p = c(1, 0)
   sample(0:1, prob = p, size = 1)
 }
-m2 = makeEnvironment(transitions = gridworld$transitions,
-  rewards = gridworld$rewards, reset = resetGrid)
+m2 = makeGridworld(c(1, 2), 1, reset = resetGrid)
 m2$reset()
 
 test_that("reset works", {
