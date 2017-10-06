@@ -119,10 +119,20 @@ actorCritic = function(envir, n.episodes = 100, discount = 1, alpha = 0.01, beta
 }
 
 
-# env = makeGridworld(shape = c(4, 12), goal.states = 47,
-#   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
-#   cliff.transition.done = TRUE, initial.state = 36)
-# 
+
+# Variant of cliff walking
+rewardFun = function(state, action, n.state) {
+  if (n.state %in% 37:46) {
+    return(- 100)
+  } else {
+    return(- 1)
+  }
+}
+env = makeGridworld(shape = c(4, 12), goal.states = 47,
+  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
+  cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
+
+
 # actorCritic(env, n.episodes = 500, discount = 1)
 # reinforceBase(env, n.episodes = 500, discount = 1)
 
