@@ -14,7 +14,7 @@
 #' print(m)
 #' 
 #' # Mountain Car with continuous action space
-#' m = MountainCar(action.space == "Continuous")
+#' m = MountainCar(action.space = "Continuous")
 #' m$reset()
 #' m$step(0.27541)
 #' print(m)
