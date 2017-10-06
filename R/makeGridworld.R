@@ -137,9 +137,9 @@ makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NUL
   actions = list("left", "right", "up", "down", "leftup", "leftdown", "rightup", "rightdown")
   actions = lapply(actions, function(x) {class(x) = x; x})
   
+  m.cliff = NULL
   if (cliff.transition.done) {
     goal.states = c(goal.states, cliff.states)
-    m.cliff = NULL
   } else {
     if (!is.null(cliff.states)) {
       if (!is.null(cliff.transition.states)) {
@@ -148,7 +148,6 @@ makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NUL
         m.cliff = cbind(cliff.pairs, cliff.prob)
       } else {
         non.terminal.states = c(non.terminal.states, cliff.states)
-        m.cliff = NULL
       }
     }
   }

@@ -1,10 +1,12 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning in R
-Version: 0.0.0.9108
+Version: 0.0.0.9109
 Author: Markus Dumke
 Maintainer: Markus Dumke <markusdumke@gmail.com>
-Description: Reinforcement learning algorithms which can be used with function approximation.
+Description: Reinforcement learning environments and algorithms from the field of dynamic programming, 
+monte carlo and temporal-difference learning, including Q-Learning and Sarsa, and 
+policy gradient methods, e.g. actor critic. The algorithms can be used with function approximation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

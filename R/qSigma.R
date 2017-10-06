@@ -18,7 +18,7 @@
 #' The functions \code{qlearning} and \code{sarsa} are there for convenience.
 #' They call the \code{qSigma} function with a special set of parameters.
 #'
-#' When \code{value.function == "table"} the action value function will be represented using a table,
+#' When \code{fun.approx == "table"} the action value function will be represented using a table,
 #' a linear combination of features and a neural network can also be used. For a neural network you
 #' need to pass on a keras model via the \code{model} argument. This way it is possible to
 #' construct a Deep Q-Network (DQN).
@@ -54,7 +54,7 @@
 #' @param envir [\code{R6 class}] \cr
 #'   The reinforcement learning environment
 #'   created by \code{\link{makeEnvironment}}.
-#' @param value.function [\code{character(1)}] \cr
+#' @param fun.approx [\code{character(1)}] \cr
 #'   How to represent the value function? Currently \code{"table"}, \code{"linear"}
 #'   and \code{"neural.network"} are supported.
 #' @param sigma [\code{numeric(1) in [0, 1]}] \cr
@@ -154,7 +154,6 @@
 #'
 #' qSigma(env, sigma = 0.5)
 #' qlearning(env)
-#' sarsa(env)
 #'
 #' # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 #' decayEpsilon = function(epsilon, i) {
@@ -164,7 +163,7 @@
 #'   epsilon
 #' }
 #'
-#' qSigma(env,  epsilon = 0.5, updateEpsilon = decayEpsilon)
+#' expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon)
 #'
 #' # Solve the Mountain Car problem using linear function approximation
 #' m = MountainCar()
@@ -181,17 +180,15 @@
 #' position.scale = n.tilings / (position.max - position.min)
 #' velocity.scale = n.tilings / (velocity.max - velocity.min)
 #' 
+#' # Scale state first, then get active tiles and return n hot vector
 #' preprocessState = function(state) {
-#'   # scale state observation
-#'   state = matrix(c(position.scale * state[1], velocity.scale * state[2]), ncol = 2)
-#'   # get active tiles
+#'   state = c(position.scale * state[1], velocity.scale * state[2])
 #'   active.tiles = tiles(iht, 8, state)
-#'   # return n hot vector with 1 at the position of each active tile
-#'   makeNHot(active.tiles, max.size)
+#'   makeNHot(active.tiles, max.size, out = "vector")
 #' }
 #' 
 #' set.seed(123)
-#' qSigma(m, value.function = "linear", preprocessState = preprocessState)
+#' sarsa(m, fun.approx = "linear", preprocessState = preprocessState)
 #' 
 #' \dontrun{
 #' # Use a neural network as function approximator
@@ -206,10 +203,10 @@
 #' model = keras_model_sequential()
 #' model %>% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
 #'
-#' qSigma(env, value.function = "neural.network", model = model, preprocessState = makeOneHot)
+#' qSigma(env, fun.approx = "neural.network", model = model, preprocessState = makeOneHot)
 #' }
 #'
-qSigma = function(envir, value.function = "table", preprocessState = NULL,
+qSigma = function(envir, fun.approx = "table", preprocessState = NULL,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, sigma = 1,
   target.policy = "e-greedy", lambda = 0, beta = 0, learning.rate = 0.1,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
@@ -218,7 +215,7 @@ qSigma = function(envir, value.function = "table", preprocessState = NULL,
   updateLearningRate = NULL, printing = TRUE) {
 
   # argument checking
-  checkArgs(envir, value.function, preprocessState,
+  checkArgs(envir, fun.approx, preprocessState,
     model, initial.value, n.states, n.episodes, sigma,
     target.policy, lambda, beta, learning.rate,
     epsilon, discount, double.learning, update.target.after,
@@ -227,7 +224,7 @@ qSigma = function(envir, value.function = "table", preprocessState = NULL,
     updateLearningRate, printing)
 
   # here the learning algorithm will be initialized depending on the function arguments
-  agent = qSigmaAgent$new(envir, value.function, preprocessState,
+  agent = qSigmaAgent$new(envir, fun.approx, preprocessState,
     model, initial.value, n.episodes, sigma,
     target.policy, lambda, beta, learning.rate,
     epsilon, discount, double.learning, update.target.after,
@@ -244,7 +241,7 @@ qSigma = function(envir, value.function = "table", preprocessState = NULL,
 
 #=================================================================
 # Check function arguments of qSigma
-checkArgs = function(envir, value.function, preprocessState, 
+checkArgs = function(envir, fun.approx, preprocessState, 
   model, initial.value, n.states, n.episodes, sigma, 
   target.policy, lambda, beta, learning.rate, 
   epsilon, discount, double.learning, update.target.after, 
@@ -254,17 +251,17 @@ checkArgs = function(envir, value.function, preprocessState,
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$action.space == "Discrete")
-  checkmate::assertChoice(value.function, c("table", "neural.network", "linear"))
+  checkmate::assertChoice(fun.approx, c("table", "neural.network", "linear"))
   checkmate::assertNumber(discount, lower = 0, upper = 1)
   checkmate::assertNumber(learning.rate, lower = 0, upper = 1)
   checkmate::assertNumber(epsilon, lower = 0, upper = 1)
   checkmate::assertNumber(alpha, lower = 0, upper = 1)
   checkmate::assertNumber(theta, lower = 0, upper = 1)
-  if (value.function == "table") {
+  if (fun.approx == "table") {
     checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 
       nrows = envir$n.states, ncols = envir$n.actions)
   }
-  if (value.function == "linear") {
+  if (fun.approx == "linear") {
     envir$reset()
     n.weights = length(preprocessState(envir$state))
     checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 

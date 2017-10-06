@@ -27,8 +27,6 @@ test_that("input checking in makeGridworld works", {
   expect_error(makeGridworld(shape = c(4, 2, 3), goal.states = 1))
   expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, wind = 0))
   expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, stochasticity = 1.3))
-  expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, cliff.states = 1), 
-    "Please specify the cliff.transition.states!")
 })
 
 wind = makeGridworld(shape = c(2, 2), goal.states = 3, wind = c(1, 0))

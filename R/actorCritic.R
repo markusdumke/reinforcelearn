@@ -16,8 +16,35 @@
 #' 
 #' tdActorCritic(env, n.episodes = 300)
 #' 
+#' # Solve the Mountain Car problem using linear function approximation
+#' m = MountainCar()
+#' 
+#' # Define preprocessing function (we use grid tiling)
+#' n.tilings = 8
+#' max.size = 4096
+#' iht = IHT(max.size)
+#' 
+#' position.max = m$state.space.bounds[[1]][2]
+#' position.min = m$state.space.bounds[[1]][1]
+#' velocity.max = m$state.space.bounds[[2]][2]
+#' velocity.min = m$state.space.bounds[[2]][1]
+#' position.scale = n.tilings / (position.max - position.min)
+#' velocity.scale = n.tilings / (velocity.max - velocity.min)
+#' 
+#' # Scale state first, then get active tiles and return n hot vector
+#' preprocessState = function(state) {
+#'   state = c(position.scale * state[1], velocity.scale * state[2])
+#'   active.tiles = tiles(iht, 8, state)
+#'   makeNHot(active.tiles, max.size, out = "vector")
+#' }
+#' 
+#' tdActorCritic(m, fun.approx = "linear", preprocessState = preprocessState)
+#' 
 tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", preprocessState = identity,
   n.episodes = 100, discount = 1, alpha = 0.01, beta = 0.1, lambda = 0) {
+  
+  steps = rep(0, n.episodes)
+  returns = rep(0, n.episodes)
   
   if (fun.approx == "table" & policy == "softmax") {
     policy = matrix(1 / envir$n.actions, nrow = envir$n.states, ncol = envir$n.actions)
@@ -26,7 +53,7 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
     
     for (i in seq_len(n.episodes)) {
       envir$reset()
-      e.policy = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
+      e.actor = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
       e.critic = rep(0, envir$n.states)
       j = 1
       while(envir$done == FALSE) {
@@ -34,6 +61,7 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
         a = sampleActionFromPolicy(policy[s + 1, ])
         envir$step(a)
         r = envir$reward
+        returns[i] = returns[i] + discount^(envir$n.steps - 1) * r
         s.n = preprocessState(envir$state)
         
         delta = r + discount * v[s.n + 1] - v[s + 1]
@@ -41,24 +69,25 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
           delta = r - v[s + 1]
         }
         e.critic[s + 1] = e.critic[s + 1] + j
-        e.policy[s + 1, ] = e.policy[s + 1, ] + j * (makeNHot(a + 1, envir$n.actions) - policy[s + 1, ])
+        e.actor[s + 1, ] = e.actor[s + 1, ] + j * (makeNHot(a + 1, envir$n.actions) - policy[s + 1, ])
         
         v = v + beta * delta * e.critic
-        h = h + alpha * j * delta * e.policy
+        h = h + alpha * j * delta * e.actor
         
         e.critic = discount * lambda * e.critic
-        e.policy = discount * lambda * e.policy
+        e.actor = discount * lambda * e.actor
         
         policy = softmax(h)
         j = discount * j
         
         if (envir$done) {
           print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+          steps[i] = envir$n.steps
           break
         }
       }
     }
-    return(list(policy = policy, v = v))
+    return(list(policy = policy, v = v, steps = steps, returns = returns))
   }
   
   if (fun.approx == "linear" & policy == "softmax") {
@@ -97,8 +126,10 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
           delta = r - v
         }
         e.critic = e.critic + j * s
+        s2 = matrix(0, nrow = length(s), ncol = envir$n.actions)
+        s2[, action + 1] = s
         for (k in seq_len(envir$n.actions)) {
-          e.actor[, k] = e.actor[, k] + j * (s - policy[k])
+          e.actor[, k] = e.actor[, k] + j * (s2[, k] - policy[k] * s)
         }
         
         w = w + beta * delta * e.critic

@@ -7,34 +7,33 @@
 \alias{expectedSarsa}
 \title{Q(sigma) / Q-Learning / Sarsa}
 \usage{
-qSigma(envir, value.function = "table", preprocessState = NULL,
+qSigma(envir, fun.approx = "table", preprocessState = NULL, model = NULL,
+  initial.value = NULL, n.states = NULL, n.episodes = 100, sigma = 1,
+  target.policy = "e-greedy", lambda = 0, beta = 0, learning.rate = 0.1,
+  epsilon = 0.1, discount = 1, double.learning = FALSE,
+  update.target.after = 1, replay.memory = NULL, replay.memory.size = 1,
+  batch.size = 1, alpha = 0, theta = 0.01, updateEpsilon = NULL,
+  updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
+  updateLearningRate = NULL, printing = TRUE)
+
+qlearning(envir, fun.approx = "table", preprocessState = NULL,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
-  sigma = 1, target.policy = "e-greedy", lambda = 0, beta = 0,
-  learning.rate = 0.1, epsilon = 0.1, discount = 1,
+  lambda = 0, beta = 0, learning.rate = 0.1, epsilon = 0.1,
+  discount = 1, double.learning = FALSE, update.target.after = 1,
+  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
+  alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
+  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL,
+  printing = TRUE)
+
+sarsa(envir, fun.approx = "table", preprocessState = NULL, model = NULL,
+  initial.value = NULL, n.states = NULL, n.episodes = 100, lambda = 0,
+  beta = 0, learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, update.target.after = 1, replay.memory = NULL,
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
   updateAlpha = NULL, updateLearningRate = NULL, printing = TRUE)
 
-qlearning(envir, value.function = "table", preprocessState = NULL,
-  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
-  lambda = 0, beta = 0, learning.rate = 0.1, epsilon = 0.1,
-  discount = 1, double.learning = FALSE, update.target.after = 1,
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
-  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL,
-  printing = TRUE)
-
-sarsa(envir, value.function = "table", preprocessState = NULL,
-  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
-  lambda = 0, beta = 0, learning.rate = 0.1, epsilon = 0.1,
-  discount = 1, double.learning = FALSE, update.target.after = 1,
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
-  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL,
-  printing = TRUE)
-
-expectedSarsa(envir, value.function = "table", preprocessState = NULL,
+expectedSarsa(envir, fun.approx = "table", preprocessState = NULL,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   target.policy = "e-greedy", lambda = 0, beta = 0, learning.rate = 0.1,
   epsilon = 0.1, discount = 1, double.learning = FALSE,
@@ -48,7 +47,7 @@ expectedSarsa(envir, value.function = "table", preprocessState = NULL,
 The reinforcement learning environment
 created by \code{\link{makeEnvironment}}.}
 
-\item{value.function}{[\code{character(1)}] \cr
+\item{fun.approx}{[\code{character(1)}] \cr
 How to represent the value function? Currently \code{"table"}, \code{"linear"}
 and \code{"neural.network"} are supported.}
 
@@ -182,7 +181,7 @@ used as in Q-Learning. See De Asis et al. (2017) for more details.
 The functions \code{qlearning} and \code{sarsa} are there for convenience.
 They call the \code{qSigma} function with a special set of parameters.
 
-When \code{value.function == "table"} the action value function will be represented using a table,
+When \code{fun.approx == "table"} the action value function will be represented using a table,
 a linear combination of features and a neural network can also be used. For a neural network you
 need to pass on a keras model via the \code{model} argument. This way it is possible to
 construct a Deep Q-Network (DQN).
@@ -221,7 +220,6 @@ env = windyGridworld()
 
 qSigma(env, sigma = 0.5)
 qlearning(env)
-sarsa(env)
 
 # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 decayEpsilon = function(epsilon, i) {
@@ -231,7 +229,7 @@ decayEpsilon = function(epsilon, i) {
   epsilon
 }
 
-qSigma(env,  epsilon = 0.5, updateEpsilon = decayEpsilon)
+expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon)
 
 # Solve the Mountain Car problem using linear function approximation
 m = MountainCar()
@@ -248,17 +246,15 @@ velocity.min = m$state.space.bounds[[2]][1]
 position.scale = n.tilings / (position.max - position.min)
 velocity.scale = n.tilings / (velocity.max - velocity.min)
 
+# Scale state first, then get active tiles and return n hot vector
 preprocessState = function(state) {
-  # scale state observation
-  state = matrix(c(position.scale * state[1], velocity.scale * state[2]), ncol = 2)
-  # get active tiles
+  state = c(position.scale * state[1], velocity.scale * state[2])
   active.tiles = tiles(iht, 8, state)
-  # return n hot vector with 1 at the position of each active tile
-  makeNHot(active.tiles, max.size)
+  makeNHot(active.tiles, max.size, out = "vector")
 }
 
 set.seed(123)
-qSigma(m, value.function = "linear", preprocessState = preprocessState)
+sarsa(m, fun.approx = "linear", preprocessState = preprocessState)
 
 \dontrun{
 # Use a neural network as function approximator
@@ -273,7 +269,7 @@ library(keras)
 model = keras_model_sequential()
 model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
 
-qSigma(env, value.function = "neural.network", model = model, preprocessState = makeOneHot)
+qSigma(env, fun.approx = "neural.network", model = model, preprocessState = makeOneHot)
 }
 
 }

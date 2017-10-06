@@ -66,7 +66,7 @@ qSigmaAgent = R6::R6Class(public = list(
   lambda = NULL,
   beta = NULL,
   
-  initialize = function(envir, value.function, preprocessState, 
+  initialize = function(envir, fun.approx, preprocessState, 
     model, initial.value, n.episodes, sigma, 
     target.policy, lambda, beta, learning.rate, 
     epsilon, discount, double.learning, update.target.after, 
@@ -184,7 +184,7 @@ qSigmaAgent = R6::R6Class(public = list(
           next.state = next.states))
       }
       
-      if (value.function == "table") {
+      if (fun.approx == "table") {
         self$sampleBatch = function() {
           self$indices = self$getIndices(replay.memory.size, batch.size)
           batch = self$replay.memory[self$indices]
@@ -199,7 +199,7 @@ qSigmaAgent = R6::R6Class(public = list(
     }
     
     # ---- Tabular Value Function
-    if (value.function == "table") {
+    if (fun.approx == "table") {
       
       if (!is.null(preprocessState)) {
         n.states = n.states
@@ -536,7 +536,7 @@ qSigmaAgent = R6::R6Class(public = list(
     }
     
     # ---- Linear Function Approximation
-    if (value.function == "linear") {
+    if (fun.approx == "linear") {
       envir$reset()
       n.weights = length(preprocessState(envir$state))
       if (is.null(initial.value)) {
@@ -814,7 +814,7 @@ qSigmaAgent = R6::R6Class(public = list(
     }
     
     # ---- Neural Network Function Approximation
-    if (value.function == "neural.network") {
+    if (fun.approx == "neural.network") {
       self$predictQ = function(Q, state) {
         predict(Q, state)
       }

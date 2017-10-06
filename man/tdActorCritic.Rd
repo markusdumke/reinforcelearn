@@ -27,4 +27,28 @@ env = makeGridworld(shape = c(4, 12), goal.states = 47,
 
 tdActorCritic(env, n.episodes = 300)
 
+# Solve the Mountain Car problem using linear function approximation
+m = MountainCar()
+
+# Define preprocessing function (we use grid tiling)
+n.tilings = 8
+max.size = 4096
+iht = IHT(max.size)
+
+position.max = m$state.space.bounds[[1]][2]
+position.min = m$state.space.bounds[[1]][1]
+velocity.max = m$state.space.bounds[[2]][2]
+velocity.min = m$state.space.bounds[[2]][1]
+position.scale = n.tilings / (position.max - position.min)
+velocity.scale = n.tilings / (velocity.max - velocity.min)
+
+# Scale state first, then get active tiles and return n hot vector
+preprocessState = function(state) {
+  state = c(position.scale * state[1], velocity.scale * state[2])
+  active.tiles = tiles(iht, 8, state)
+  makeNHot(active.tiles, max.size, out = "vector")
+}
+
+tdActorCritic(m, fun.approx = "linear", preprocessState = preprocessState)
+
 }
