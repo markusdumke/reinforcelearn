@@ -4,15 +4,29 @@
 \alias{MountainCar}
 \title{Mountain Car}
 \usage{
-MountainCar()
+MountainCar(action.space = "Discrete")
+}
+\arguments{
+\item{action.space}{[\code{character(1)}] \cr
+Can be \code{"Discrete"} or \code{"Continuous"}. 
+The classical Mountain Car task has three discrete actions, 
+the continuous version one action in a box from -1 to 1.}
 }
 \description{
 Mountain Car
 }
 \examples{
+# Classic Mountain Car task
 m = MountainCar()
 m$reset()
 m$step(1)
+print(m)
+
+# Mountain Car with continuous action space
+m = MountainCar(action.space == "Continuous")
+m$reset()
+m$step(0.27541)
+print(m)
 
 }
 \references{
