@@ -16,7 +16,7 @@
 #' 
 #' tdActorCritic(env, n.episodes = 300)
 #' 
-#' # Solve the Mountain Car problem using linear function approximation
+#' # Mountain Car
 #' m = MountainCar()
 #' 
 #' # Define preprocessing function (we use grid tiling)
@@ -38,7 +38,16 @@
 #'   makeNHot(active.tiles, max.size, out = "vector")
 #' }
 #' 
+#' # Linear function approximation and softmax policy
 #' tdActorCritic(m, fun.approx = "linear", preprocessState = preprocessState)
+#' 
+#' #----------------
+#' # Mountain Car with continuous action space
+#' m2 = MountainCar(action.space = "Continuous")
+#' 
+#' # Linear function approximation and gaussian policy
+#' tdActorCritic(m, fun.approx = "linear", policy = "gaussian", 
+#'   preprocessState = preprocessState)
 #' 
 tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", preprocessState = identity,
   n.episodes = 100, discount = 1, alpha = 0.01, beta = 0.1, lambda = 0) {
@@ -117,6 +126,7 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
         action = sampleActionFromPolicy(policy)
         envir$step(action)
         r = envir$reward
+        returns[i] = returns[i] + discount^(envir$n.steps - 1) * r
         s.n = preprocessState(envir$state)
         v = predictV(s)
         v.n = predictV(s.n)
@@ -142,11 +152,71 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
         
         if (envir$done) {
           print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+          steps[i] = envir$n.steps
           break
         }
       }
     }
-    return(list(policy = theta, v = w))
+    return(list(policy = theta, v = w, steps = steps, returns = returns))
+  }
+  
+  if (fun.approx == "linear" & policy == "gaussian") {
+    envir$reset()
+    n.weights = length(preprocessState(envir$state))
+    theta.mu = rep(0, n.weights)
+    theta.sigma = rep(0, n.weights)
+    w = rep(0, n.weights)
+    mu = 0
+    sigma = 1
+    
+    predictV = function(s) {
+      c(s %*% w)
+    }
+    
+    for (i in seq_len(n.episodes)) {
+      envir$reset()
+      e.actor.mu = rep(0, n.weights)
+      e.actor.sigma = rep(0, n.weights)
+      e.critic = rep(0, n.weights)
+      j = 1
+      while(envir$done == FALSE) {
+        s = preprocessState(envir$state)
+        mu = c(theta.mu %*% s)
+        sigma = exp(c(theta.sigma %*% s))
+        action = rnorm(1, mean = mu, sd = sigma)
+        envir$step(action)
+        r = envir$reward
+        returns[i] = returns[i] + discount^(envir$n.steps - 1) * r
+        s.n = preprocessState(envir$state)
+        v = predictV(s)
+        v.n = predictV(s.n)
+        
+        delta = r + discount * v.n - v
+        if (envir$done) {
+          delta = r - v
+        }
+        e.critic = e.critic + j * s
+        e.actor.mu = e.actor.mu + j * ((action - mu) * s / sigma^2)
+        e.actor.sigma = e.actor.sigma + j * (- s + (action - mu)^2 / sigma^2 * s)
+        
+        w = w + beta * delta * e.critic
+        theta.mu = theta.mu + alpha * j * delta * e.actor.mu
+        theta.sigma = theta.sigma + alpha * j * delta * e.actor.sigma
+        
+        e.critic = discount * lambda * e.critic
+        e.actor.mu = discount * lambda * e.actor.mu
+        e.actor.sigma = discount * lambda * e.actor.sigma
+        
+        j = discount * j
+        
+        if (envir$done) {
+          print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+          steps[i] = envir$n.steps
+          break
+        }
+      }
+    }
+    return(list(policy = list(theta.mu, theta.sigma), v = w, steps = steps, returns = returns))
   }
 }
 

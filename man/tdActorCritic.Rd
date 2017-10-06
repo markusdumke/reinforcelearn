@@ -27,7 +27,7 @@ env = makeGridworld(shape = c(4, 12), goal.states = 47,
 
 tdActorCritic(env, n.episodes = 300)
 
-# Solve the Mountain Car problem using linear function approximation
+# Mountain Car
 m = MountainCar()
 
 # Define preprocessing function (we use grid tiling)
@@ -49,6 +49,15 @@ preprocessState = function(state) {
   makeNHot(active.tiles, max.size, out = "vector")
 }
 
+# Linear function approximation and softmax policy
 tdActorCritic(m, fun.approx = "linear", preprocessState = preprocessState)
+
+#----------------
+# Mountain Car with continuous action space
+m2 = MountainCar(action.space = "Continuous")
+
+# Linear function approximation and gaussian policy
+tdActorCritic(m, fun.approx = "linear", policy = "gaussian", 
+  preprocessState = preprocessState)
 
 }
