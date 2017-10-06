@@ -12,13 +12,17 @@
 #'   Reward for taking a step.
 #' @param cliff.transition.states [\code{integer}] \cr 
 #'   States to which the environment transitions if stepping into the cliff. 
-#'   If it is a vector, all states will have equal probability.
+#'   If it is a vector, all states will have equal probability. 
+#'   Only used when \code{cliff.transition.done == FALSE}, 
+#'   else specify the \code{initial.state} argument.
 #' @param reward.cliff [\code{integer(1)}] \cr 
 #'   Reward for taking a step in the cliff state.
 #' @param diagonal.moves [\code{logical(1)}] \cr
 #'   Should diagonal moves be allowed?
 #' @param wind [\code{integer}] \cr 
 #'   Strength of the upward wind in each cell.
+#' @param cliff.transition.done [\code{logical(1)}] \cr
+#'   Should the episode end after stepping into the cliff?
 #' @param stochasticity [\code{numeric(1)}] \cr
 #'   Probability of random transition to any of the neighboring states when taking any action.
 #' @param ...
@@ -82,7 +86,7 @@
 #' 
 makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NULL,
   reward.step = - 1, reward.cliff = - 100, diagonal.moves = FALSE, wind = rep(0, shape[2]), 
-  cliff.transition.states = NULL, stochasticity = 0, ...) {
+  cliff.transition.states = NULL, cliff.transition.done = FALSE, stochasticity = 0, ...) {
   
   checkmate::assertIntegerish(shape, len = 2)
   if (prod(shape) <= 1) {
@@ -102,16 +106,11 @@ makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NUL
       any(cliff.transition.states > prod(shape))) {
     stop("All states must be inside the grid! States are numerated row-wise starting with 0, check Details!")
   }
-  if (!is.null(cliff.states) & is.null(cliff.transition.states)) {
-    stop("Please specify the cliff.transition.states!")
-  }
-  if (is.null(cliff.states) & !is.null(cliff.transition.states)) {
-    stop("Please specify the cliff.states!")
-  }
   checkmate::assertIntegerish(wind, len = shape[2])
   checkmate::assertNumber(reward.step)
   checkmate::assertNumber(reward.cliff)
   checkmate::assertFlag(diagonal.moves)
+  checkmate::assertFlag(cliff.transition.done)
   checkmate::assertNumber(stochasticity, lower = 0, upper = 1)
   
   n.states = prod(shape)
@@ -133,12 +132,28 @@ makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NUL
     right = seq(n.col, n.states, n.col),
     up = seq(1, n.col),
     down = seq(n.states - n.col + 1, n.states))
-
+  
   non.terminal.states = setdiff(states, c(goal.states, cliff.states))
-  n.states = length(non.terminal.states)
   actions = list("left", "right", "up", "down", "leftup", "leftdown", "rightup", "rightdown")
   actions = lapply(actions, function(x) {class(x) = x; x})
   
+  if (cliff.transition.done) {
+    goal.states = c(goal.states, cliff.states)
+    m.cliff = NULL
+  } else {
+    if (!is.null(cliff.states)) {
+      if (!is.null(cliff.transition.states)) {
+        cliff.pairs = as.matrix(expand.grid(cliff.states, cliff.transition.states))
+        cliff.prob = 1 / length(cliff.transition.states)
+        m.cliff = cbind(cliff.pairs, cliff.prob)
+      } else {
+        non.terminal.states = c(non.terminal.states, cliff.states)
+        m.cliff = NULL
+      }
+    }
+  }
+  
+  n.states = length(non.terminal.states)
   new.states = vapply(actions, go, states = non.terminal.states, border.states = border.states, 
     n.col = n.col, FUN.VALUE = numeric(n.states))
   
@@ -150,14 +165,6 @@ makeGridworld = function(shape = c(4, 4), goal.states = NULL, cliff.states = NUL
   m.stoch[, 1] = rep(non.terminal.states, 8)
   m.stoch[, 2] = c(new.states)
   m.stoch[, 3] = stochasticity / 8
-  
-  if (!is.null(cliff.states)) {
-    cliff.pairs = as.matrix(expand.grid(cliff.states, cliff.transition.states))
-    cliff.prob = 1 / length(cliff.transition.states)
-    m.cliff = cbind(cliff.pairs, cliff.prob)
-  } else {
-    m.cliff = NULL
-  }
   
   m.goal = matrix(c(goal.states, goal.states, rep(1, length(goal.states))), ncol = 3)
   m = rbind(m.cliff, m.goal, m.stoch)

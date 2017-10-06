@@ -7,7 +7,7 @@
 makeGridworld(shape = c(4, 4), goal.states = NULL, cliff.states = NULL,
   reward.step = -1, reward.cliff = -100, diagonal.moves = FALSE,
   wind = rep(0, shape[2]), cliff.transition.states = NULL,
-  stochasticity = 0, ...)
+  cliff.transition.done = FALSE, stochasticity = 0, ...)
 }
 \arguments{
 \item{shape}{[\code{integer(2)}] \cr 
@@ -33,7 +33,12 @@ Strength of the upward wind in each cell.}
 
 \item{cliff.transition.states}{[\code{integer}] \cr 
 States to which the environment transitions if stepping into the cliff. 
-If it is a vector, all states will have equal probability.}
+If it is a vector, all states will have equal probability. 
+Only used when \code{cliff.transition.done == FALSE}, 
+else specify the \code{initial.state} argument.}
+
+\item{cliff.transition.done}{[\code{logical(1)}] \cr
+Should the episode end after stepping into the cliff?}
 
 \item{stochasticity}{[\code{numeric(1)}] \cr
 Probability of random transition to any of the neighboring states when taking any action.}
