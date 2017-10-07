@@ -132,8 +132,6 @@
 #' @param beta [\code{numeric(1)}] \cr
 #'   Type of eligibility trace, use \code{beta = 1} for replacing traces,
 #'   \code{beta = 0} for accumulating traces or intermediate values for a mixture between both.
-#'   Only used if the replay memory is of size 1, i.e. no experience replay is used.
-#'   Currently only supported for tabular value functions.
 #' @param printing [\code{logical(1)}] \cr
 #'   Should the number of steps per episode be printed out during the learning process.
 #' @rdname qSigma
