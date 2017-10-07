@@ -101,5 +101,5 @@ print(res$policy)
 
 }
 \references{
-Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction. Chapter 4.
 }
