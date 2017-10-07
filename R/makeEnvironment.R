@@ -256,9 +256,8 @@ envir = R6::R6Class("envir",
         warning("There are no terminal states in the MDP!")
         self$terminal.states = - 1
       }
-      
       if (is.null(initial.state)) {
-        self$initial.state = self$states[self$states != self$terminal.states]
+        self$initial.state = setdiff(self$states, self$terminal.states)
       } else {
         checkmate::assertIntegerish(initial.state, upper = self$n.states - 1)
         self$initial.state = initial.state
