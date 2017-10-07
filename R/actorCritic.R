@@ -1,4 +1,36 @@
-#' TD Actor Critic
+#' Actor Critic
+#' 
+#' Policy-based reinforcement learning control algorithm using both policy (the actor) 
+#' and value function (the critic).
+#' 
+#' When using a gaussian policy mean and variance will be parametrized 
+#' as a linear combination of features mu = x * w_1 and sigma = exp(x * w_2).
+#' 
+#' Eligibility traces are used for both policy parameters and value function parameters. 
+#' 
+#' @inheritParams qSigma
+#' @param fun.approx [\code{character(1)}] \cr
+#'   Type of function approximator used for policy and value function. 
+#'   Currently supported are linear combination of features (\code{"linear"}) and 
+#'   table lookup (\code{"table"}).
+#' @param policy [\code{character(1)}] \cr
+#'   Policy type, supported are \code{"softmax"} for a discrete action space and
+#'   \code{"gaussian"} for a continuous action space using a normal distribution.
+#' @param critic.type [\code{character(1)}] \cr
+#'   Type of the critic. Currently only advantage actor critic is supported.
+#' @param alpha [\code{numeric(1)}] \cr
+#'   Learning rate (step size) for the policy.
+#' @param beta [\code{numeric(1)}] \cr
+#'   Learning rate (step size) for the critic.
+#' 
+#' @return [\code{list}] \cr
+#' Returns a list with policy and value function parameters and 
+#' some statistics about learning behaviour, e.g. the number of 
+#' steps and return per episode.
+#' 
+#' @importFrom stats rnorm
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction. Chapter 13
+#'
 #' @export
 #' @examples 
 #' # Variant of cliff walking
@@ -14,8 +46,9 @@
 #'   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
 #'   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 #' 
-#' tdActorCritic(env, n.episodes = 300)
+#' res = actorCritic(env, n.episodes = 100)
 #' 
+#' #----------------
 #' # Mountain Car
 #' m = MountainCar()
 #' 
@@ -39,18 +72,38 @@
 #' }
 #' 
 #' # Linear function approximation and softmax policy
-#' tdActorCritic(m, fun.approx = "linear", preprocessState = preprocessState)
+#' res = actorCritic(m, fun.approx = "linear", 
+#'   preprocessState = preprocessState, n.episodes = 50)
 #' 
 #' #----------------
 #' # Mountain Car with continuous action space
 #' m2 = MountainCar(action.space = "Continuous")
 #' 
 #' # Linear function approximation and gaussian policy
-#' tdActorCritic(m, fun.approx = "linear", policy = "gaussian", 
-#'   preprocessState = preprocessState)
+#' set.seed(123)
+#' res = actorCritic(m, fun.approx = "linear", policy = "gaussian", 
+#'   preprocessState = preprocessState, n.episodes = 50)
 #' 
-tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", preprocessState = identity,
+actorCritic = function(envir, fun.approx = "table", policy = "softmax", 
+  critic.type = "advantage", preprocessState = identity,
   n.episodes = 100, discount = 1, alpha = 0.01, beta = 0.1, lambda = 0) {
+  
+  checkmate::assertClass(envir, "R6")
+  checkmate::assertFunction(preprocessState)
+  checkmate::assertChoice(critic.type, "advantage")
+  checkmate::assertChoice(fun.approx, c("table", "linear"))
+  checkmate::assertChoice(policy, c("softmax", "gaussian"))
+  checkmate::assertInt(n.episodes, lower = 1)
+  checkmate::assertNumber(discount, lower = 0, upper = 1)
+  checkmate::assertNumber(alpha, lower = 0)
+  checkmate::assertNumber(beta, lower = 0)
+  checkmate::assertNumber(lambda, lower = 0, upper = 1)
+  if (fun.approx == "table" & policy == "gaussian") {
+    warning("Function approximation needs to be linear when using gaussian policy!")
+  }
+  if (policy == "softmax" & envir$action.space != "Discrete") {
+    stop("When using a softmax policy the action space must be 'Discrete'.")
+  }
   
   steps = rep(0, n.episodes)
   returns = rep(0, n.episodes)
@@ -102,8 +155,8 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
   if (fun.approx == "linear" & policy == "softmax") {
     envir$reset()
     n.weights = length(preprocessState(envir$state))
-    theta = matrix(0, nrow = n.weights, ncol = envir$n.actions) # weights actor
-    w = rep(0, n.weights) # different number of weights for actor and critic? # weights critic
+    theta = matrix(0, nrow = n.weights, ncol = envir$n.actions)
+    w = rep(0, n.weights)
     
     predictPolicy = function(s) {
       h = s %*% theta
@@ -160,7 +213,7 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
     return(list(policy = theta, v = w, steps = steps, returns = returns))
   }
   
-  if (fun.approx == "linear" & policy == "gaussian") {
+  if (policy == "gaussian") {
     envir$reset()
     n.weights = length(preprocessState(envir$state))
     theta.mu = rep(0, n.weights)
@@ -216,7 +269,8 @@ tdActorCritic = function(envir, fun.approx = "table", policy = "softmax", prepro
         }
       }
     }
-    return(list(policy = list(theta.mu, theta.sigma), v = w, steps = steps, returns = returns))
+    return(list(policy = list(mu = theta.mu, sigma = theta.sigma), 
+      v = w, steps = steps, returns = returns))
   }
 }
 

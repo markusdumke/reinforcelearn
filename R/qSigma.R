@@ -125,7 +125,7 @@
 #'   See Details for more information.
 #' @param preprocessState [\code{function}] \cr
 #'   A function that takes the state observation returned from the environment as an input and
-#'   preprocesses this in a way the algorithm can work with it. See Details for more information.
+#'   preprocesses this in a way the algorithm can work with it.
 #' @param update.target.after [\code{integer(1)}] \cr
 #'   When using double learning the target network / table will be updated after
 #'   \code{update.target.after} steps.

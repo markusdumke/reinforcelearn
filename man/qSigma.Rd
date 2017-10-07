@@ -53,7 +53,7 @@ and \code{"neural.network"} are supported.}
 
 \item{preprocessState}{[\code{function}] \cr
 A function that takes the state observation returned from the environment as an input and
-preprocesses this in a way the algorithm can work with it. See Details for more information.}
+preprocesses this in a way the algorithm can work with it.}
 
 \item{model}{[\code{keras model}] \cr
 A neural network model specified using the \code{keras} package.
