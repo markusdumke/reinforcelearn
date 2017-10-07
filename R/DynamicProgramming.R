@@ -44,7 +44,7 @@
 #' Returns the state value function [\code{numeric}], the 
 #' action value function [\code{matrix}]
 #' and the policy [\code{matrix}].
-#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
+#' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction. Chapter 4.
 #' @export
 #' @examples
 #' # Set up gridworld problem
