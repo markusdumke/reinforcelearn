@@ -84,8 +84,7 @@ or off-policy using a greedy policy in the
 expected sarsa part of the update (\code{target.policy = "greedy"})?}
 
 \item{lambda}{[\code{numeric(1) in [0, 1]}] \cr
-The \code{lambda} parameter combines different n-step returns using eligibility traces.
-Only used if the replay memory is of size 1, i.e. no experience replay is used.}
+Eligibility trace decay parameter.}
 
 \item{beta}{[\code{numeric(1)}] \cr
 Type of eligibility trace, use \code{beta = 1} for replacing traces,

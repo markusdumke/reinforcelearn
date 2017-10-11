@@ -63,8 +63,7 @@
 #'   (for \code{sigma = 0}). For intermediate values of \code{sigma} a weighted mean
 #'   between the two targets is used.
 #' @param lambda [\code{numeric(1) in [0, 1]}] \cr
-#'   The \code{lambda} parameter combines different n-step returns using eligibility traces.
-#'   Only used if the replay memory is of size 1, i.e. no experience replay is used.
+#'   Eligibility trace decay parameter.
 #' @param n.episodes [\code{integer(1)}] \cr
 #'   Number of episodes.
 #' @param learning.rate [\code{numeric(1)}] \cr
