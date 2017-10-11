@@ -7,7 +7,7 @@ qlearning = function(envir, fun.approx = "table", preprocessState = NULL,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, printing = TRUE) {
+  updateLearningRate = NULL) {
   
   qSigma(envir, fun.approx, preprocessState, 
     model, initial.value, n.states, n.episodes, sigma = 0, 
@@ -15,7 +15,7 @@ qlearning = function(envir, fun.approx = "table", preprocessState = NULL,
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-    updateLearningRate, printing)
+    updateLearningRate)
 }
 
 #' @export
@@ -27,7 +27,7 @@ sarsa = function(envir, fun.approx = "table", preprocessState = NULL,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, printing = TRUE) {
+  updateLearningRate = NULL) {
   
   qSigma(envir, fun.approx, preprocessState, 
     model, initial.value, n.states, n.episodes, sigma = 1, 
@@ -35,7 +35,7 @@ sarsa = function(envir, fun.approx = "table", preprocessState = NULL,
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-    updateLearningRate, printing)
+    updateLearningRate)
 }
 
 #' @export
@@ -47,7 +47,7 @@ expectedSarsa = function(envir, fun.approx = "table", preprocessState = NULL,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL, printing = TRUE) {
+  updateLearningRate = NULL) {
   
   qSigma(envir, fun.approx, preprocessState, 
     model, initial.value, n.states, n.episodes, sigma = 0, target.policy,
@@ -55,6 +55,6 @@ expectedSarsa = function(envir, fun.approx = "table", preprocessState = NULL,
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-    updateLearningRate, printing)
+    updateLearningRate)
 }
 

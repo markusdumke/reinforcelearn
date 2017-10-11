@@ -72,7 +72,7 @@ qSigmaAgent = R6::R6Class(public = list(
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-    updateLearningRate, printing) {
+    updateLearningRate) {
     
     # Algorithm depends on the following arguments:
     #-----------------------
@@ -251,9 +251,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -297,9 +297,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -359,9 +359,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -417,9 +417,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -464,9 +464,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -523,9 +523,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -583,9 +583,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -630,9 +630,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -692,9 +692,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+               
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -750,9 +750,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -800,9 +800,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }
@@ -858,9 +858,9 @@ qSigmaAgent = R6::R6Class(public = list(
               
               if (envir$done) {
                 self$episode.steps[i] = envir$n.steps
-                if (printing) {
-                  print(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
-                }
+                
+                  message(paste("Episode", i, "finished after", envir$n.steps, "time steps."))
+                
                 break
               }
             }

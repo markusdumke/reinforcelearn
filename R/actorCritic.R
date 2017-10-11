@@ -143,7 +143,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         j = discount * j
         
         if (envir$done) {
-          print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+          message(paste("Episode", i, "finished after", envir$n.steps, "steps."))
           steps[i] = envir$n.steps
           break
         }
@@ -204,7 +204,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         j = discount * j
         
         if (envir$done) {
-          print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+          message(paste("Episode", i, "finished after", envir$n.steps, "steps."))
           steps[i] = envir$n.steps
           break
         }
@@ -263,7 +263,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         j = discount * j
         
         if (envir$done) {
-          print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+          message(paste("Episode", i, "finished after", envir$n.steps, "steps."))
           steps[i] = envir$n.steps
           break
         }

@@ -132,8 +132,6 @@
 #' @param beta [\code{numeric(1)}] \cr
 #'   Type of eligibility trace, use \code{beta = 1} for replacing traces,
 #'   \code{beta = 0} for accumulating traces or intermediate values for a mixture between both.
-#' @param printing [\code{logical(1)}] \cr
-#'   Should the number of steps per episode be printed out during the learning process.
 #' @rdname qSigma
 #' @return [\code{list(4)}] \cr
 #'   Returns the action value function or model parameters [\code{matrix}] and the
@@ -210,7 +208,7 @@ qSigma = function(envir, fun.approx = "table", preprocessState = NULL,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL, printing = TRUE) {
+  updateLearningRate = NULL) {
 
   # argument checking
   checkArgs(envir, fun.approx, preprocessState,
@@ -219,7 +217,7 @@ qSigma = function(envir, fun.approx = "table", preprocessState = NULL,
     epsilon, discount, double.learning, update.target.after,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
-    updateLearningRate, printing)
+    updateLearningRate)
 
   # here the learning algorithm will be initialized depending on the function arguments
   agent = qSigmaAgent$new(envir, fun.approx, preprocessState,
@@ -228,7 +226,7 @@ qSigma = function(envir, fun.approx = "table", preprocessState = NULL,
     epsilon, discount, double.learning, update.target.after,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
-    updateLearningRate, printing)
+    updateLearningRate)
 
   for (i in seq_len(n.episodes)) {
     agent$runEpisode(envir, i)
@@ -245,7 +243,7 @@ checkArgs = function(envir, fun.approx, preprocessState,
   epsilon, discount, double.learning, update.target.after, 
   replay.memory, replay.memory.size, batch.size, alpha, theta, 
   updateEpsilon, updateSigma, updateLambda, updateAlpha, 
-  updateLearningRate, printing) {
+  updateLearningRate) {
   
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$action.space == "Discrete")

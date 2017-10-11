@@ -14,7 +14,7 @@ qSigma(envir, fun.approx = "table", preprocessState = NULL, model = NULL,
   update.target.after = 1, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, updateEpsilon = NULL,
   updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL, printing = TRUE)
+  updateLearningRate = NULL)
 
 qlearning(envir, fun.approx = "table", preprocessState = NULL,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
@@ -22,8 +22,7 @@ qlearning(envir, fun.approx = "table", preprocessState = NULL,
   discount = 1, double.learning = FALSE, update.target.after = 1,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
   alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
-  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL,
-  printing = TRUE)
+  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL)
 
 sarsa(envir, fun.approx = "table", preprocessState = NULL, model = NULL,
   initial.value = NULL, n.states = NULL, n.episodes = 100, lambda = 0,
@@ -31,7 +30,7 @@ sarsa(envir, fun.approx = "table", preprocessState = NULL, model = NULL,
   double.learning = FALSE, update.target.after = 1, replay.memory = NULL,
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
-  updateAlpha = NULL, updateLearningRate = NULL, printing = TRUE)
+  updateAlpha = NULL, updateLearningRate = NULL)
 
 expectedSarsa(envir, fun.approx = "table", preprocessState = NULL,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
@@ -40,7 +39,7 @@ expectedSarsa(envir, fun.approx = "table", preprocessState = NULL,
   update.target.after = 1, replay.memory = NULL, replay.memory.size = 1,
   batch.size = 1, alpha = 0, theta = 0.01, updateEpsilon = NULL,
   updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL, printing = TRUE)
+  updateLearningRate = NULL)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
@@ -149,9 +148,6 @@ of episodes which are finished, and returns the new \code{alpha} value.}
 A function that updates the learning rate. It takes two arguments, \code{learning.rate}
 and the current number of episodes which are finished, and returns the new
 \code{learning.rate} value.}
-
-\item{printing}{[\code{logical(1)}] \cr
-Should the number of steps per episode be printed out during the learning process.}
 }
 \value{
 [\code{list(4)}] \cr

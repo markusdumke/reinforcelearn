@@ -21,7 +21,7 @@
 #       rewards = append(rewards, envir$reward)
 #       
 #       if (envir$done) {
-#         print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+#         message(paste("Episode", i, "finished after", envir$n.steps, "steps."))
 #         # update policy
 #         for (i in seq_along(states)) {
 #           G = sum(rewards[i:length(states)] * discount^(0:(length(states) - i)))
@@ -30,7 +30,7 @@
 #         }
 #         # softmax policy for discrete actions
 #         policy = exp(h) / rowSums(exp(h))
-#         #print(policy)
+#         #message(policy)
 #         break
 #       }
 #     }
@@ -62,7 +62,7 @@
 #       rewards = append(rewards, envir$reward)
 #       
 #       if (envir$done) {
-#         print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+#         message(paste("Episode", i, "finished after", envir$n.steps, "steps."))
 #         # update policy
 #         for (i in seq_along(states)) {
 #           G = sum(rewards[i:length(states)] * discount^(0:(length(states) - i)))
@@ -108,7 +108,7 @@
 #       policy = exp(h) / rowSums(exp(h))
 #       j = discount * j
 #       if (envir$done) {
-#         print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+#         message(paste("Episode", i, "finished after", envir$n.steps, "steps."))
 #         break
 #       }
 #     }
@@ -151,7 +151,7 @@
 #       policy = exp(h) / rowSums(exp(h))
 #       j = discount * j
 #       if (envir$done) {
-#         print(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+#         message(paste("Episode", i, "finished after", envir$n.steps, "steps."))
 #         break
 #       }
 #     }
