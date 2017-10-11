@@ -8,89 +8,58 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Reinforcement Learning is a field of Machine Learning adressing the problem of optimal decision making. The problem could be anything from mastering a complex game to controlling the behaviour of a robot.
-
-RL problems can be formulated as an interaction between an agent and an environment over time. At each time step the agent can choose one action from a set of possible actions and gets rewarded by the environment with a numeric value. The goal is to maximize the sum of these rewards over time. The state of the environment tells something about the problem, e.g. the position of all pawns on a chess board, and can be used from the agent as a basis for the action selection.
-
----
-
-## Installation
-
-To install the package, please run
-
-```{r, eval = FALSE}
-install.packages("devtools")
-devtools::install_github("markdumke/reinforcelearn")
-```
-
-Then we can load the package
-
-```{r}
-library(reinforcelearn)
-```
+This vignette gives a short introduction how to solve reinforcement learning problems with the `reinforcelearn` package.
 
 ---
 
 ## Set up an environment
 
-First we need to specify the problem, i.e. set up a reinforcement learning environment. Many problems can be formulated as a Markov Decision Process. Therefore we need to specify the transition and reward dynamics of the problem. The state transition array is a three-dimensional array specifying all transition probabilities between the states for each action. The reward matrix specifies the rewards obtained for each state-action combination. We can then simply pass these on to the `makeEnvironment` function.
-
 ```{r}
 library(reinforcelearn)
+```
 
-P = array(0, c(2,2,2))
-P[, , 1] = matrix(c(0.5, 0.5, 0.8, 0.2), 2, 2, byrow = TRUE)
-P[, , 2] = matrix(c(0, 1, 0.1, 0.9), 2, 2, byrow = TRUE)
+First we need to specify the problem, i.e. set up a reinforcement learning environment. Many problems can be formulated as a Markov Decision Process (MDP). To create an environment you need to specify the transition array and reward matrix of the MDP as arguments of the `makeEnvironment` function.
+
+```{r}
+P = array(0, c(2, 2, 2))
+P[, , 1] = matrix(c(0.5, 0.5, 0, 1), 2, 2, byrow = TRUE)
+P[, , 2] = matrix(c(0, 1, 0, 1), 2, 2, byrow = TRUE)
 R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
 env = makeEnvironment(transitions = P, rewards = R)
 ```
 
-Another possibility is to use one of the existing OpenAI Gym environments: [https://gym.openai.com/docs](https://gym.openai.com/docs)
+The function `makeEnvironment` returns an R6 class with a set of attributes and methods. There are attributes describing the properties of the state and action space and methods to interact with the environment.
 
-If you have the prerequisites Python and Gym installed, using one of these environments is then as simple as
+```{r}
+paste("State space:" , env$state.space)
+paste("Number of actions:", env$n.actions)
 
-```{r, eval = FALSE}
-MountainCar = makeEnvironment("MountainCar-v0")
+print("Reset the environment")
+env$reset()
+paste("The state is initially", env$state)
+print("Take action 1")
+env$step(1)
+paste("The state is now", env$state)
+paste("And the reward for action 1 was", env$reward)
 ```
-
-The environment created is now an R6 class with a set of attributes and methods. There are attributes describing the properties of the state and action space, e.g.
-
-```{r, eval = FALSE}
-MountainCar$action.space # Discrete
-MountainCar$state.space.bounds # [-1.2, 0.6], [-0.07, 0.07]
-```
-
-The `reset`, `step` and `close` method can be used to sample experience. Here is an example running a random agent for 200 steps on the MountainCar task.
-
-```{r, eval = FALSE}
-MountainCar$reset()
-for (i in 1:200) {
-  action = sample(MountainCar$actions, 1)
-  MountainCar$step(action)
-}
-MountainCar$close()
-```
+For more details on the creation of environments have a look at the vignette "How to create an environment?".
 
 ---
 
 ## Solve an environment
 
-Once you have created an environment you can then solve the environment, i.e. find the optimal way to behave (the policy) in this environment, with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
+Once you have created an environment you can find the optimal way to behave in this environment with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
 
 ```{r}
-# Solve the windy gridworld task using Sarsa.
-env = windyGridworld()
-res = sarsa(env)
+# Solve the windy gridworld task using Q-Learning
+# env = windyGridworld()
+# res = qlearning(env)
 ```
 
 The algorithms return the state or action value function, sometimes also the policy and some statistics about learning behaviour, e.g. the number of steps per episode.
 
 ---
 
-## Reinforcement Learning with function approximation
+Learn more about reinforcement learning in R by having a look at the other vignettes: "How to create an environment?" and "How to solve an environment?".
 
-For many tasks the value function cannot be represented by a table, especially if state or action space are large or even continuous. Therefore a function approximator like a neural network is needed. In the `reinforcelearn` package the algorithms can be very flexibly used with function approximation.
-  
----
-
-More about Reinforcement Learning in R: [reinforcelearn](https://github.com/markdumke/reinforcelearn)
+Author: Markus Dumke
