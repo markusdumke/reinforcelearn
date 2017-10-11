@@ -9,7 +9,7 @@ qlearning = function(envir, fun.approx = "table", preprocessState = NULL,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
   updateLearningRate = NULL) {
   
-  qSigma(envir, fun.approx, preprocessState, 
+  qSigma(envir, fun.approx, preprocessState,   
     model, initial.value, n.states, n.episodes, sigma = 0, 
     target.policy = "greedy", lambda, beta, learning.rate, 
     epsilon, discount, double.learning, update.target.after, 

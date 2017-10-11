@@ -90,5 +90,5 @@ test_that("improvePolicy returns greedy policy", {
   expect_equal(class(policy), "matrix")
   expect_equal(policy, matrix(c(0, 0, 0, 0, 1), nrow = 1))
   expect_equal(policy2, matrix(c(1, 0), nrow = 1))
-  expect_equal(policy2b, matrix(c(0, 1), nrow = 1))
+  expect_equal(policy2b, matrix(c(1, 0), nrow = 1))
 })

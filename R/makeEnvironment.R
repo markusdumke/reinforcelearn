@@ -36,7 +36,6 @@
 #'   with a graphical interface opens when steps are sampled in the 
 #'   environment for a gym environment.
 #' @importFrom R6 R6Class
-#' @importFrom MDPtoolbox mdp_check 
 #' @seealso \url{https://github.com/openai/gym-http-api}
 #' @return [\code{R6 class}] \cr 
 #'   Reinforcement Learning Environment
@@ -236,9 +235,6 @@ envir = R6::R6Class("envir",
     initializeMDP = function(transitions, rewards, initial.state, reset, sampleReward) {
       checkmate::assertArray(transitions, any.missing = FALSE, d = 3)
       checkmate::assertArray(rewards, any.missing = FALSE, min.d = 2, max.d = 3, null.ok = TRUE)
-      if (!is.null(rewards)) {
-        MDPtoolbox::mdp_check(transitions, rewards)
-      }
       checkmate::assertFunction(sampleReward, nargs = 3, null.ok = TRUE)
       checkmate::assertFunction(reset, nargs = 0, null.ok = TRUE)
       

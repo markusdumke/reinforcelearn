@@ -236,12 +236,8 @@ iterateValue = function(envir, v = NULL, q = NULL, discount = 1,
 }
 
 improvePolicy = function(Q) {
-  greedy.actions = apply(Q, 1, argmax)
+  greedy.actions = apply(Q, 1, which.max)
   policy = matrix(0, nrow = nrow(Q), ncol = ncol(Q))
   policy[matrix(c(seq_len(nrow(Q)), greedy.actions), ncol = 2)] = 1
   policy
-}
-
-argmax = function(x) {
-  nnet::which.is.max(x)
 }
