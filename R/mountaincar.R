@@ -20,8 +20,8 @@
 #' print(m)
 #' 
 MountainCar = function(action.space = "Discrete") {
-  checkmate::assertChoice(action.space, c("Discrete", "Continuous"))
-  if (action.space == "Discrete") {
+  checkmate::assertChoice(action.space, c("Discrete", "Continuous", "discrete", "continuous"))
+  if (action.space %in% c("Discrete", "discrete")) {
     MountainCarDiscrete$new()
   } else {
     MountainCarContinuous$new()
@@ -42,7 +42,7 @@ MountainCarDiscrete = R6::R6Class("MountainCar",
     reward = NULL,
     velocity = NULL,
     position = NULL,
-
+    
     reset = function() {
       self$n.steps = 0
       self$previous.state = NULL
@@ -52,11 +52,11 @@ MountainCarDiscrete = R6::R6Class("MountainCar",
       self$state = matrix(c(self$position, self$velocity), ncol = 2)
       invisible(self)
     },
-
+    
     step = function(action) {
       self$previous.state = self$state
       self$n.steps = self$n.steps + 1
-
+      
       self$velocity = self$velocity + 0.001 * (action - 1) -
         0.0025 * cos(3 * self$position)
       self$velocity = min(max(self$velocity, self$state.space.bounds[[2]][1]), 
@@ -66,7 +66,7 @@ MountainCarDiscrete = R6::R6Class("MountainCar",
         self$position = self$state.space.bounds[[1]][1]
         self$velocity = 0
       }
-
+      
       self$state = matrix(c(self$position, self$velocity), ncol = 2)
       self$reward = - 1
       if (self$position >= 0.5) {
@@ -75,9 +75,13 @@ MountainCarDiscrete = R6::R6Class("MountainCar",
       }
       invisible(self)
     },
-
+    
     close = function() {
       invisible(self)
+    },
+    
+    print = function() {
+      printEnvir(self)
     }
   )
 )
@@ -115,7 +119,7 @@ MountainCarContinuous = R6::R6Class("MountainCarContinuous",
       self$velocity = self$velocity + 0.0015 * force - 0.0025 * cos(3 * self$position)
       self$velocity = min(max(self$velocity, self$state.space.bounds[[2]][1]), 
         self$state.space.bounds[[2]][2])
-
+      
       self$position = self$position + self$velocity
       if (self$position < self$state.space.bounds[[1]][1]) {
         self$position = self$state.space.bounds[[1]][1]
@@ -133,6 +137,10 @@ MountainCarContinuous = R6::R6Class("MountainCarContinuous",
     
     close = function() {
       invisible(self)
+    },
+    
+    print = function() {
+      printEnvir(self)
     }
   )
 )

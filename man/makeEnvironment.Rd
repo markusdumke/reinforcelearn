@@ -84,6 +84,7 @@ CartPole = makeEnvironment("CartPole-v0")
 CartPole$reset()
 CartPole$step(action = 0)
 CartPole$close()
+print(CartPole)
 
 # Create the MountainCar environment which has a continuous state space.
 MountainCar = makeEnvironment("MountainCar-v0")
@@ -94,8 +95,8 @@ MountainCar$state.space.bounds
 
 # Create an environment from a transition array and reward matrix.
 P = array(0, c(2,2,2))
-P[, , 1] = matrix(c(0.5, 0.5, 0.8, 0.2), 2, 2, byrow = TRUE)
-P[, , 2] = matrix(c(0, 1, 0.1, 0.9), 2, 2, byrow = TRUE)
+P[, , 1] = matrix(c(0.5, 0.5, 0, 1), 2, 2, byrow = TRUE)
+P[, , 2] = matrix(c(0, 1, 0, 1), 2, 2, byrow = TRUE)
 R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
 env = makeEnvironment(transitions = P, rewards = R)
 

@@ -64,6 +64,7 @@
 #' CartPole$reset()
 #' CartPole$step(action = 0)
 #' CartPole$close()
+#' print(CartPole)
 #' 
 #' # Create the MountainCar environment which has a continuous state space.
 #' MountainCar = makeEnvironment("MountainCar-v0")
@@ -74,8 +75,8 @@
 #' 
 #' # Create an environment from a transition array and reward matrix.
 #' P = array(0, c(2,2,2))
-#' P[, , 1] = matrix(c(0.5, 0.5, 0.8, 0.2), 2, 2, byrow = TRUE)
-#' P[, , 2] = matrix(c(0, 1, 0.1, 0.9), 2, 2, byrow = TRUE)
+#' P[, , 1] = matrix(c(0.5, 0.5, 0, 1), 2, 2, byrow = TRUE)
+#' P[, , 2] = matrix(c(0, 1, 0, 1), 2, 2, byrow = TRUE)
 #' R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
 #' env = makeEnvironment(transitions = P, rewards = R)
 #' 
@@ -146,8 +147,6 @@ envir = R6::R6Class("envir",
     step = NULL,
     close = NULL,
     getReward = NULL,
-    
-    print = NULL,
     
     initialize = function(gym.envir.name, transitions, 
       rewards, initial.state, reset, sampleReward, render) {
@@ -232,32 +231,6 @@ envir = R6::R6Class("envir",
         gym::env_close(private$client, private$instance.id)
         invisible(self)
       }
-      
-      self$print = function() {
-        cat(paste("OpenAI Gym environment:", gym.envir.name, "\n"))
-        private$printProblem()
-        cat(paste("------------", "\n"))
-        cat(paste("Number of steps:", self$n.steps, "\n"))
-        cat(paste("State:", self$state, "\n"))
-        cat(paste("Reward:", self$reward, "\n"))
-        cat(paste("Done:", self$done, "\n"))
-        invisible(self)
-      }
-      
-      if (self$state.space == "Discrete" & self$action.space == "Discrete") {
-        private$printProblem = function() {
-          cat(paste("State space:", self$state.space, "with", self$n.states, "states", "\n"))
-          cat(paste("Action space:", self$action.space, "with", self$n.actions, "actions","\n"))
-        }
-      } 
-      if (self$state.space == "Box" & self$action.space == "Box") {
-        private$printProblem = function() {
-          cat(paste("State space:", self$state.space, "\n"))
-          cat(paste("State space bounds:", self$state.space.bounds, "\n"))
-          cat(paste("Action space:", self$action.space, "\n"))
-          cat(paste("Action space bounds:", self$state.space.bounds, "\n"))
-        }
-      }
     },
     
     initializeMDP = function(transitions, rewards, initial.state, reset, sampleReward) {
@@ -337,26 +310,34 @@ envir = R6::R6Class("envir",
       self$close = function() {
         invisible(self)
       }
-      
-      self$print = function() {
-        cat(paste("Markov Decision Process:", "\n"))
-        cat(paste("Number of states:", self$n.states, "\n"))
-        cat(paste("Number of actions:", self$n.actions, "\n"))
-        cat(paste("------------", "\n"))
-        cat(paste("Number of steps:", self$n.steps, "\n"))
-        cat(paste("State:", self$state, "\n"))
-        cat(paste("Reward:", self$reward, "\n"))
-        cat(paste("Done:", self$done, "\n"))
-        invisible(self)
-      }
+    },
+    
+    print = function() {
+      printEnvir(self)
     }
   ),
   private = list(
-    printProblem = NULL,
     client = NULL,
     instance.id = NULL
   )
 )
+
+# Copied from R6 class
+# Trim a string to n characters; if it's longer than n, add " ..." to the end
+trim = function(str, n = 60) {
+  if (nchar(str) > n) paste(substr(str, 1, n-4), "...")
+  else str
+}
+
+# Custom printing function for environment
+# x is a list
+printEnvir = function(x) {
+  cat(paste("Number of steps:", x$n.steps, "\n"))
+  cat(paste("State:", trim(paste(as.character(x$state), collapse = " ")), "\n"))
+  cat(paste("Reward:", x$reward, "\n"))
+  cat(paste("Done:", x$done, "\n"))
+  invisible(x)
+}
 
 globalVariables("self")
 globalVariables("private")
