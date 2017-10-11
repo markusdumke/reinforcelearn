@@ -147,6 +147,8 @@ envir = R6::R6Class("envir",
     close = NULL,
     getReward = NULL,
     
+    print = NULL,
+    
     initialize = function(gym.envir.name, transitions, 
       rewards, initial.state, reset, sampleReward, render) {
       
@@ -230,6 +232,32 @@ envir = R6::R6Class("envir",
         gym::env_close(private$client, private$instance.id)
         invisible(self)
       }
+      
+      self$print = function() {
+        cat(paste("OpenAI Gym environment:", gym.envir.name, "\n"))
+        private$printProblem()
+        cat(paste("------------", "\n"))
+        cat(paste("Number of steps:", self$n.steps, "\n"))
+        cat(paste("State:", self$state, "\n"))
+        cat(paste("Reward:", self$reward, "\n"))
+        cat(paste("Done:", self$done, "\n"))
+        invisible(self)
+      }
+      
+      if (self$state.space == "Discrete" & self$action.space == "Discrete") {
+        private$printProblem = function() {
+          cat(paste("State space:", self$state.space, "with", self$n.states, "states", "\n"))
+          cat(paste("Action space:", self$action.space, "with", self$n.actions, "actions","\n"))
+        }
+      } 
+      if (self$state.space == "Box" & self$action.space == "Box") {
+        private$printProblem = function() {
+          cat(paste("State space:", self$state.space, "\n"))
+          cat(paste("State space bounds:", self$state.space.bounds, "\n"))
+          cat(paste("Action space:", self$action.space, "\n"))
+          cat(paste("Action space bounds:", self$state.space.bounds, "\n"))
+        }
+      }
     },
     
     initializeMDP = function(transitions, rewards, initial.state, reset, sampleReward) {
@@ -309,9 +337,22 @@ envir = R6::R6Class("envir",
       self$close = function() {
         invisible(self)
       }
+      
+      self$print = function() {
+        cat(paste("Markov Decision Process:", "\n"))
+        cat(paste("Number of states:", self$n.states, "\n"))
+        cat(paste("Number of actions:", self$n.actions, "\n"))
+        cat(paste("------------", "\n"))
+        cat(paste("Number of steps:", self$n.steps, "\n"))
+        cat(paste("State:", self$state, "\n"))
+        cat(paste("Reward:", self$reward, "\n"))
+        cat(paste("Done:", self$done, "\n"))
+        invisible(self)
+      }
     }
   ),
   private = list(
+    printProblem = NULL,
     client = NULL,
     instance.id = NULL
   )
