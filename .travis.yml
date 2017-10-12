@@ -7,7 +7,6 @@ cache: packages
 warnings_are_errors: true
 
 r:
-- oldrel
 - release
 - devel
 

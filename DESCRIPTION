@@ -4,8 +4,8 @@ Title: Reinforcement Learning in R
 Version: 0.0.0.9111
 Authors@R: person("Markus", "Dumke", email = {"markusdumke@gmail.com"}, role = c("aut", "cre"))
 Description: Reinforcement learning environments and algorithms from the field of dynamic programming, 
-    monte carlo and temporal-difference learning, including Q-Learning, Sarsa and actor critic. 
-    The algorithms can be used with function approximation, eligibility traces, double learning and experience replay.
+ monte carlo and temporal-difference learning, including Q-Learning, Sarsa and actor critic. 
+ The algorithms can be used with function approximation, eligibility traces, double learning and experience replay.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -16,9 +16,10 @@ SystemRequirements: (Python and OpenAI Gym only required if Gym environments are
 Imports:
     checkmate (>= 1.8.4),
     R6 (>= 2.2.2)
-Suggests: 
+Suggests:
     gym (>= 0.1.0),
     knitr,
     rmarkdown,
     testthat,
+    covr
 VignetteBuilder: knitr
