@@ -40,7 +40,7 @@
 #' 
 td = function(envir, policy, fun.approx = "table", preprocessState = identity, 
   initial.value = NULL, n.episodes = NULL, n.steps = NULL, discount = 1, 
-  lambda = 0, beta = 0, learning.rate = 0.1) {
+  lambda = 0, eligibility.type = 0, learning.rate = 0.1) {
   
   checkmate::assertClass(envir, "R6")
   checkmate::assertChoice(fun.approx, c("table", "linear"))
@@ -113,11 +113,11 @@ td = function(envir, policy, fun.approx = "table", preprocessState = identity,
     s.n = preprocessState(envir$state)
     
     if (fun.approx == "table") {
-      eligibility[state + 1] = eligibility[state + 1] * (1 - beta) + 1
+      eligibility[state + 1] = eligibility[state + 1] * (1 - eligibility.type) + 1
       td.target = envir$reward + discount * V[s.n + 1]
       td.error = td.target - V[state + 1]
     } else {
-      eligibility = eligibility * (1 - beta) + state
+      eligibility = eligibility * (1 - eligibility.type) + state
       td.target = envir$reward + discount * V %*% s.n
       td.error = td.target - V %*% state
     }

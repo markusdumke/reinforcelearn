@@ -1,58 +1,66 @@
 #' Make Reinforcement Learning Environment
 #' 
 #' This function creates an environment for reinforcement learning. 
-#' You could either use an existing environment from OpenAI Gym or 
-#' specify the transition array and reward matrix of a 
+#' You could either use an environment from OpenAI Gym or 
+#' specify the transition and reward array of a 
 #' Markov Decision Process.
 #' 
-#' State and action space can be either "Discrete" or "Box". In the 
-#' discrete case states and actions are numerated starting from 0.
+#' This function returns an R6 class with a \code{reset} and \code{step} method. 
+#' Everytime when you start an episode call the \code{reset} method first. 
+#' Use then the \code{step} method to interact with the environment. 
+#' Note that the methods do not return anything, but change the attributes of the R6 class, 
+#' most importantly the \code{state}, \code{reward} and \code{done} attribute.
+#' 
+#' Note that all states and actions are numerated starting with 0!
+#' 
+#' For OpenAI gym environments have a look at \url{https://gym.openai.com/envs} 
+#' and at the description of what requirements to install 
+#' at \url{https://github.com/openai/gym-http-api}.
 #'
+#' For a detailed explanation have a look at the vignette "How to create an environment?".
+#' 
 #' @param gym.envir.name [\code{character(1)}] \cr
-#'   Name of Gym environment, e.g. "CartPole-v0", have a look at 
+#'   Name of OpenAI Gym environment, e.g. "CartPole-v0", have a look at 
 #'   \url{https://gym.openai.com/envs}.
 #' @param transitions [\code{array (n.states x n.states x n.actions)}] \cr
-#'   Transition array: For each action specifying the probabilities for 
-#'   transitions between states. Only used for MDPs.
+#'   Transition array of Markov Decision Process: For each action specifying the probabilities for 
+#'   transitions between states.
 #' @param rewards [\code{matrix (n.states x n.actions)} or \code{array (n.states x n.states x n.actions)}] \cr 
 #'   Reward array: This can be a matrix (n.states x n.actions) or a 3-dimensional array 
 #'   (n.states x n.states x n.actions). The reward will be sampled from the specified array 
 #'   depending on state, action and possibly also the next state. 
-#'   Only used for MDPs.
 #' @param initial.state [\code{integer}] \cr
 #'   The starting state if \code{reset} is \code{NULL} else this argument is unused.
 #'   If a vector is given a starting state will be
 #'   randomly sampled from this vector when \code{reset} is called. 
 #'   Note that states are numerated starting with 
-#'   0. If \code{initial.state = NULL} all states are possible initial states. Only used for MDPs.
+#'   0. If \code{initial.state = NULL} all states are possible initial states.
 #' @param reset [\code{function}] \cr 
-#'   Function that returns an initial state observation, takes no arguments. Only used for MDPs.
+#'   Function that returns an initial state observation, takes no arguments.
 #' @param sampleReward [\code{function}] \cr 
 #'   Function that returns the next reward given the current state, action and next state. 
 #'   Otherwise the reward will be sampled from the reward array of the MDP specified 
-#'   by \code{rewards}. Only used for MDPs.
+#'   by \code{rewards}.
 #' @param render [\code{logical(1)}] \cr 
-#'   Whether to render the Gym environment. If \code{TRUE} a python window 
-#'   with a graphical interface opens when steps are sampled in the 
-#'   environment for a gym environment.
-#' @importFrom R6 R6Class
-#' @seealso \url{https://github.com/openai/gym-http-api}
+#'   Whether to render the OpenAI Gym environment. If \code{TRUE} a python window 
+#'   with a graphical interface opens whenever the step method is called.
+#' @seealso Create gridworlds with \code{\link{makeGridworld}}. 
+#' For the mountain car environment have a look at \code{\link{MountainCar}}.
 #' @return [\code{R6 class}] \cr 
-#'   Reinforcement Learning Environment
+#'   Reinforcement Learning Environment.
 #' @section Methods: \describe{
-#' \item{\code{envir$initialize()}}{Creates a new environment.} 
-#' \item{\code{envir$step(action, render)}}{
-#'   Takes a step in the environment given an action,
+#' \item{\code{envir$step(action)}}{
+#'   Takes a step in the environment. Given an action the method
 #'   returns the next state, reward and if the episode has finished. 
 #'   If a transition array and reward matrix are given, the next step 
-#'   will be sampled from the MDP, else the step 
-#'   \code{\link[gym]{env_step}} function will be called.
-#'   If \code{render = TRUE} a Gym environment will be rendered.} 
-#' \item{\code{envir$reset()}}{Resets the
-#'   \code{done} flag of the environment and returns an initial state.
-#'    Useful when starting a new episode.}
-#' \item{\code{envir$close()}}{Close the python window for a gym 
-#'   environment.}   
+#'   will be sampled from the MDP, else \code{\link[gym]{env_step}} will be called.
+#'  } 
+#' \item{\code{envir$reset()}}{
+#'   Resets the \code{done} flag of the environment and returns an initial state.
+#'   Useful when starting a new episode.
+#' }
+#' \item{\code{envir$close()}}{
+#'   Close the python window for an OpenAI Gym environment.}   
 #' }
 #' @export
 #' @examples
@@ -60,7 +68,7 @@
 #' # Create an OpenAI Gym environment.
 #' # Make sure you have Python and Gym installed.
 #' # Note: If makeEnvironment returns an error, this is a bug, please run the code again!
-#' CartPole = makeEnvironment("CartPole-v0")
+#' CartPole = makeEnvironment("CartPole-v0", render = FALSE)
 #' CartPole$reset()
 #' CartPole$step(action = 0)
 #' CartPole$close()
@@ -111,11 +119,18 @@ makeEnvironment = function(gym.envir.name = NULL,  transitions = NULL,
   checkmate::assertCharacter(gym.envir.name, max.len = 1, null.ok = TRUE)
   
   if (!is.null(gym.envir.name)) {
-    package.path = system.file(package = "reinforcelearn")
-    path2pythonfile = paste0(package.path, "/gym_http_server.py")
-    command = "python"
-    system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
+    if (!requireNamespace("gym", quietly = TRUE)) {
+      stop("Please install the gym package to use environments from OpenAI Gym. 
+        Also make sure you have the requirements installed: https://github.com/openai/gym-http-api",
+        call. = FALSE)
+    } else {
+      package.path = system.file(package = "reinforcelearn")
+      path2pythonfile = paste0(package.path, "/gym_http_server.py")
+      command = "python"
+      system2(command, args = path2pythonfile, stdout = NULL, wait = FALSE)
+    }
   }
+  
   envir$new(gym.envir.name, transitions, 
     rewards, initial.state, reset, sampleReward, render)
 }
@@ -159,11 +174,6 @@ envir = R6::R6Class("envir",
     },
     
     initializeGym = function(gym.envir.name, render) {
-      if (!requireNamespace("gym", quietly = TRUE)) {
-        stop("Please install the gym package to use gym environments. 
-          Also make sure you have the prerequisites installed: https://github.com/openai/gym-http-api",
-          call. = FALSE)
-      }
       checkmate::assertCharacter(gym.envir.name)
       checkmate::assertFlag(render)
       self$render = render
@@ -300,9 +310,13 @@ envir = R6::R6Class("envir",
         checkmate::assertFunction(reset, nargs = 0)
         self$reset = function() {
           self$n.steps = 0L
-          self$state = reset()
           self$previous.state = NULL
           self$done = FALSE
+          self$state = reset()
+          if (self$state %in% self$terminal.states) {
+            warning("The starting state is a terminal state!")
+            self$done = TRUE
+          }
           invisible(self)
         }
       }

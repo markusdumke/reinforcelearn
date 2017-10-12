@@ -64,11 +64,11 @@ qSigmaAgent = R6::R6Class(public = list(
   resetEligibility = NULL,
   reduceEligibility = NULL,
   lambda = NULL,
-  beta = NULL,
+  eligibility.type = NULL,
   
   initialize = function(envir, fun.approx, preprocessState, 
-    model, initial.value, n.episodes, sigma, 
-    target.policy, lambda, beta, learning.rate, 
+    model, initial.value, n.states, n.episodes, sigma, 
+    target.policy, lambda, eligibility.type, learning.rate, 
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
@@ -90,7 +90,7 @@ qSigmaAgent = R6::R6Class(public = list(
       self$epsilon.target = 0
     }
     self$learning.rate = learning.rate
-    self$beta = beta
+    self$eligibility.type = eligibility.type
     self$sigma = sigma
     self$lambda = lambda
     self$alpha = alpha
@@ -121,11 +121,7 @@ qSigmaAgent = R6::R6Class(public = list(
     }
     
     # state preprocessing
-    if (is.null(preprocessState)) {
-      self$preprocessState = identity
-    } else {
-      self$preprocessState = preprocessState
-    }
+    self$preprocessState = preprocessState
     
     if (experience.replay) {
       # initialize replay memory if no replay memory is supplied
@@ -201,7 +197,7 @@ qSigmaAgent = R6::R6Class(public = list(
     # ---- Tabular Value Function
     if (fun.approx == "table") {
       
-      if (!is.null(preprocessState)) {
+      if (!is.null(n.states)) {
         n.states = n.states
       } else {
         n.states = envir$n.states
@@ -274,7 +270,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q.n, self$epsilon)
               a.n = sampleActionFromPolicy(policy)
               
-              self$E[s + 1, a + 1] = (1 - self$beta) * self$E[s + 1, a + 1] + 1
+              self$E[s + 1, a + 1] = (1 - self$eligibility.type) * self$E[s + 1, a + 1] + 1
               
               if (target.policy == "greedy") {
                 policy = getPolicy(Q.n, self$epsilon.target)
@@ -383,7 +379,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q.n, self$epsilon)
               a.n = sampleActionFromPolicy(policy)
               
-              self$E[s + 1, a + 1] = (1 - self$beta) * self$E[s + 1, a + 1] + 1
+              self$E[s + 1, a + 1] = (1 - self$eligibility.type) * self$E[s + 1, a + 1] + 1
               
               update.which.Q = sample(1:2, 1)
               if (update.which.Q == 1) {
@@ -607,7 +603,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q.n, self$epsilon)
               a.n = sampleActionFromPolicy(policy)
               
-              self$E[, a + 1] = (1 - self$beta) * self$E[, a + 1] + s
+              self$E[, a + 1] = (1 - self$eligibility.type) * self$E[, a + 1] + s
               
               if (target.policy == "greedy") {
                 policy = getPolicy(Q.n, self$epsilon.target)
@@ -716,7 +712,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q.n, self$epsilon)
               a.n = sampleActionFromPolicy(policy)
               
-              self$E[, a + 1] = (1 - self$beta) * self$E[, a + 1] + s
+              self$E[, a + 1] = (1 - self$eligibility.type) * self$E[, a + 1] + s
               
               update.which.Q = sample(1:2, 1)
               if (update.which.Q == 1) {

@@ -51,7 +51,7 @@ test_that("tabular qsigma works with experience replay", {
 
 test_that("tabular qsigma works with prioritized experience replay", {
   expect_error(qSigma(grid, sigma = 0.5, n.episodes = n, replay.memory.size = 10, 
-    batch.size = 5, alpha = 0.7, beta = 0.05), NA)
+    batch.size = 5, alpha = 0.7, eligibility.type = 0.05), NA)
 })
 
 # test neural network

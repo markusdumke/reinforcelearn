@@ -65,7 +65,7 @@
 #' velocity.scale = n.tilings / (velocity.max - velocity.min)
 #' 
 #' # Scale state first, then get active tiles and return n hot vector
-#' preprocessState = function(state) {
+#' gridTiling = function(state) {
 #'   state = c(position.scale * state[1], velocity.scale * state[2])
 #'   active.tiles = tiles(iht, 8, state)
 #'   makeNHot(active.tiles, max.size, out = "vector")
@@ -73,7 +73,7 @@
 #' 
 #' # Linear function approximation and softmax policy
 #' res = actorCritic(m, fun.approx = "linear", 
-#'   preprocessState = preprocessState, n.episodes = 50)
+#'   preprocessState = gridTiling, n.episodes = 50)
 #' 
 #' #----------------
 #' # Mountain Car with continuous action space
@@ -82,7 +82,7 @@
 #' # Linear function approximation and gaussian policy
 #' set.seed(123)
 #' res = actorCritic(m, fun.approx = "linear", policy = "gaussian", 
-#'   preprocessState = preprocessState, n.episodes = 50)
+#'   preprocessState = gridTiling, n.episodes = 50)
 #' 
 actorCritic = function(envir, fun.approx = "table", policy = "softmax", 
   critic.type = "advantage", preprocessState = identity,

@@ -6,7 +6,7 @@
 \alias{reinforcelearn-package}
 \title{Reinforcement Learning in R.}
 \description{
-Implementations of reinforcement learning algorithms.
+Implementations of reinforcement learning algorithms and environments.
 }
 \section{Environments}{
 
@@ -16,6 +16,7 @@ Implementations of reinforcement learning algorithms.
 \item \link{gridworld}
 \item \link{windyGridworld}
 \item \link{cliff}
+\item \link{MountainCar}
 }
 }
 
@@ -42,6 +43,7 @@ Model-free Reinforcement Learning
 \item \link{sarsa}
 \item \link{expectedSarsa}
 \item \link{qlearning}
+\item \link{actorCritic}
 }
 }
 

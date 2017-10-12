@@ -17,8 +17,7 @@ iterateValue(envir, v = NULL, q = NULL, discount = 1, precision = 1e-04,
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
-The reinforcement learning environment
-created by \code{\link{makeEnvironment}}.}
+The reinforcement learning environment created by \code{\link{makeEnvironment}}.}
 
 \item{policy}{[\code{matrix(n.states x n.actions)}] \cr 
 A policy specified as a probability matrix (states x actions).}

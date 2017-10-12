@@ -6,12 +6,11 @@
 \usage{
 td(envir, policy, fun.approx = "table", preprocessState = identity,
   initial.value = NULL, n.episodes = NULL, n.steps = NULL, discount = 1,
-  lambda = 0, beta = 0, learning.rate = 0.1)
+  lambda = 0, eligibility.type = 0, learning.rate = 0.1)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
-The reinforcement learning environment
-created by \code{\link{makeEnvironment}}.}
+The reinforcement learning environment created by \code{\link{makeEnvironment}}.}
 
 \item{policy}{[\code{matrix} | \code{function}] \cr 
 A policy specified as a probability matrix (states x actions) or 
@@ -27,7 +26,8 @@ A function that takes the state observation returned from the environment as an 
 preprocesses this in a way the algorithm can work with it.}
 
 \item{initial.value}{[\code{numeric}] \cr
-Initial value function matrix or weight matrix. If \code{NULL} weights will be initialized to 0. 
+Initial value function matrix or weight matrix. 
+If \code{NULL} weights will be initialized to 0. 
 Only used for tabular or linear function approximation.}
 
 \item{n.episodes}{[\code{integer(1)}] \cr
@@ -42,9 +42,9 @@ Discount factor.}
 \item{lambda}{[\code{numeric(1) in [0, 1]}] \cr
 Eligibility trace decay parameter.}
 
-\item{beta}{[\code{numeric(1)}] \cr
-Type of eligibility trace, use \code{beta = 1} for replacing traces,
-\code{beta = 0} for accumulating traces or intermediate values for a mixture between both.}
+\item{eligibility.type}{[\code{numeric(1)}] \cr
+Type of eligibility trace, use \code{eligibility.type = 1} for replacing traces,
+\code{eligibility.type = 0} for accumulating traces or intermediate values for a mixture between both.}
 
 \item{learning.rate}{[\code{numeric(1)}] \cr
 Learning rate used for gradient descent.}

@@ -1,6 +1,6 @@
 #' Reinforcement Learning in R.
 #' 
-#' Implementations of reinforcement learning algorithms.
+#' Implementations of reinforcement learning algorithms and environments.
 #' 
 #' @md
 #' @section Environments:
@@ -9,6 +9,7 @@
 #' * [gridworld]
 #' * [windyGridworld]
 #' * [cliff]
+#' * [MountainCar]
 #' 
 #' @section Bandits:
 #' * [solveBandit]
@@ -25,6 +26,7 @@
 #' * [sarsa]
 #' * [expectedSarsa]
 #' * [qlearning]
+#' * [actorCritic]
 #' 
 #' @name reinforcelearn
 #' @docType package

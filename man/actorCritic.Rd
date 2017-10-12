@@ -10,8 +10,7 @@ actorCritic(envir, fun.approx = "table", policy = "softmax",
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
-The reinforcement learning environment
-created by \code{\link{makeEnvironment}}.}
+The reinforcement learning environment created by \code{\link{makeEnvironment}}.}
 
 \item{fun.approx}{[\code{character(1)}] \cr
 Type of function approximator used for policy and value function. 
@@ -93,7 +92,7 @@ position.scale = n.tilings / (position.max - position.min)
 velocity.scale = n.tilings / (velocity.max - velocity.min)
 
 # Scale state first, then get active tiles and return n hot vector
-preprocessState = function(state) {
+gridTiling = function(state) {
   state = c(position.scale * state[1], velocity.scale * state[2])
   active.tiles = tiles(iht, 8, state)
   makeNHot(active.tiles, max.size, out = "vector")
@@ -101,7 +100,7 @@ preprocessState = function(state) {
 
 # Linear function approximation and softmax policy
 res = actorCritic(m, fun.approx = "linear", 
-  preprocessState = preprocessState, n.episodes = 50)
+  preprocessState = gridTiling, n.episodes = 50)
 
 #----------------
 # Mountain Car with continuous action space
@@ -110,7 +109,7 @@ m2 = MountainCar(action.space = "Continuous")
 # Linear function approximation and gaussian policy
 set.seed(123)
 res = actorCritic(m, fun.approx = "linear", policy = "gaussian", 
-  preprocessState = preprocessState, n.episodes = 50)
+  preprocessState = gridTiling, n.episodes = 50)
 
 }
 \references{
