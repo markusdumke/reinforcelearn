@@ -3,7 +3,7 @@
 
 ------------------------------------------------------------------------
 
-[![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn)
+[![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn) [![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
 
 ### Installation
 
@@ -27,9 +27,10 @@ env = windyGridworld()
 # Solve environment using Sarsa
 res = sarsa(env, n.episodes = 50)
 print(res$steps)
-#>  [1] 881 789 972 746 423 403 150 286 225 431 132 174 242 213  80 127 104
-#> [18] 268  76  48 276 193 119  62 123 112 124  94 156  25 144  84 344  57
-#> [35]  59  40 133 112  42 216 132  82  49  85  33  49 149  87  33 117
+#>  [1] 1141 1224  927  280  587  112  146  343  226  123  351  128  163  229
+#> [15]  392   41   57  152   96  235   64  126  100  194   33  103  210  144
+#> [29]  122   75  150   81  111  188   55   58   28  104   30   63   30  302
+#> [43]   64   66  126   63   82  174   73   63
 ```
 
 ------------------------------------------------------------------------
@@ -99,21 +100,21 @@ After you created an environment you can use various reinforcement learning algo
 env = windyGridworld()
 res = qlearning(env, n.episodes = 50)
 print(res$steps)
-#>  [1]  893 1946  583   95  515  291  129  376  336  203  111  113  136  205
-#> [15]  143  222  181   80  182  146  174   35   41  145  258   65  213   80
-#> [29]  111   54  285   45   75  182   82   58  125  148   62   39   94   72
-#> [43]   20   95  139   54  124   43   45   41
+#>  [1]  862 1718 1054  313  220  256  106  441  223   46  216  224   75  434
+#> [15]  120   43  109  203  145  231   30  183  187   42   60  111  170  152
+#> [29]   70   32  149  158   52   42  112  224  131   85   56   41   42  141
+#> [43]  132   38  146   23   67   45   40  139
 
 # Show value of each state.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,] -5.5 -5.7 -6.3 -7.1 -7.8 -8.2 -8.0 -7.3 -6.5  -5.6
-#> [2,] -5.3 -5.3 -5.6 -5.9 -5.8 -5.3 -4.4 -4.3 -4.7  -4.7
-#> [3,] -5.0 -4.9 -4.9 -4.9 -4.4 -3.3 -2.5 -2.7 -3.7  -3.8
-#> [4,] -4.8 -4.5 -4.2 -4.1 -3.0 -1.6 -0.6  0.0 -2.6  -2.9
-#> [5,] -4.2 -3.9 -3.6 -3.2 -1.9 -0.7  0.0 -0.4 -1.0  -1.9
-#> [6,] -3.7 -3.4 -3.0 -2.4 -1.1  0.0  0.0  0.0 -0.9  -1.3
-#> [7,] -3.4 -3.0 -2.4 -1.7  0.0  0.0  0.0  0.0 -0.3  -0.8
+#> [1,] -5.6 -5.8 -6.3 -7.1 -7.8 -8.2 -8.0 -7.3 -6.5  -5.6
+#> [2,] -5.3 -5.4 -5.6 -6.0 -5.8 -5.4 -4.4 -4.3 -4.7  -4.7
+#> [3,] -5.0 -5.0 -4.9 -5.1 -4.4 -3.4 -2.5 -2.7 -3.6  -3.8
+#> [4,] -4.8 -4.5 -4.3 -4.0 -3.0 -1.8 -0.8  0.0 -2.6  -2.9
+#> [5,] -4.3 -4.0 -3.6 -3.2 -1.9 -0.9  0.0 -0.5 -1.0  -1.9
+#> [6,] -3.7 -3.4 -3.0 -2.4 -1.2  0.0  0.0 -0.1 -0.9  -1.3
+#> [7,] -3.5 -3.0 -2.4 -1.7  0.0  0.0  0.0  0.0 -0.3  -0.8
 ```
 
 We can then get the optimal policy by taking the argmax over the action value function Q.
@@ -122,13 +123,13 @@ We can then get the optimal policy by taking the argmax over the action value fu
 optimal.policy = max.col(res$Q1) - 1L
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,]    3    0    3    0    0    2    3    1    1     3
-#> [2,]    3    3    0    0    1    3    0    3    3     3
-#> [3,]    3    3    1    3    3    0    1    1    3     3
-#> [4,]    0    3    2    3    3    0    3    3    3     3
-#> [5,]    3    0    2    1    0    3    1    0    0     0
-#> [6,]    3    2    2    1    3    1    2    3    0     2
-#> [7,]    1    1    1    1    3    2    1    1    1     1
+#> [1,]    2    1    0    2    0    1    1    1    1     3
+#> [2,]    3    3    3    0    0    3    0    1    3     3
+#> [3,]    2    0    2    2    3    0    0    3    2     3
+#> [4,]    3    1    3    3    3    3    1    1    0     3
+#> [5,]    3    3    1    0    2    0    0    3    0     0
+#> [6,]    1    3    3    1    2    0    3    0    1     3
+#> [7,]    1    1    1    3    0    0    0    3    1     0
 ```
 
 For more details on algorithms have a look at the vignette: [How to solve an environment?](algorithms.html)
