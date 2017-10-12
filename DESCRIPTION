@@ -9,7 +9,7 @@ Description: Reinforcement learning environments and algorithms from the field o
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.4.1)
+Depends: R (>= 3.0.0)
 RoxygenNote: 6.0.1
 BugReports: https://github.com/markdumke/reinforcelearn/issues
 SystemRequirements: (Python and OpenAI Gym only required if Gym environments are used)
