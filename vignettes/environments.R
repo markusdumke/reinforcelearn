@@ -3,17 +3,59 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## ------------------------------------------------------------------------
 library(reinforcelearn)
+set.seed(1)
 
-P = array(0, c(2,2,2))
+## ------------------------------------------------------------------------
+# State transition array
+P = array(0, c(2, 2, 2))
 P[, , 1] = matrix(c(0.5, 0.5, 0.8, 0.2), 2, 2, byrow = TRUE)
 P[, , 2] = matrix(c(0, 1, 0.1, 0.9), 2, 2, byrow = TRUE)
-R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
+print(P)
+# Reward matrix
+R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)
+print(R)
 env = makeEnvironment(transitions = P, rewards = R)
 
 ## ------------------------------------------------------------------------
+P = array(0, c(2, 2, 2))
+P[, , 1] = matrix(c(0.5, 0.5, 0, 1), 2, 2, byrow = TRUE)
+P[, , 2] = matrix(c(0.1, 0.9, 0, 1), 2, 2, byrow = TRUE)
+print(P)
+
+env = makeEnvironment(transitions = P, rewards = R)
+print(env$terminal.states)
+
+## ------------------------------------------------------------------------
+env = makeEnvironment(transitions = P, rewards = R, initial.state = 0)
+env$reset()
+print(env)
+
+## ------------------------------------------------------------------------
+# Specify a custom probability distribution for the starting state.
+reset = function() {
+  p = c(0.2, 0.8)
+  sample(0:1, prob = p, size = 1)
+}
+env = makeEnvironment(transitions = P, rewards = R, reset = reset)
+env$reset()
+print(env)
+
+## ------------------------------------------------------------------------
+R = array(0, c(2, 2, 2))
+R[, 1, ] = 1
+R[2, 2, 2] = 10
+print(R)
+
+env = makeEnvironment(transitions = P, rewards = R)
+
+env$reset()
+env$step(1)
+print(env)
+
+## ------------------------------------------------------------------------
 sampleReward = function(state, action, n.state) {
-  if (state == 2 & action == 1L) {
-    rexp(1)
+  if (n.state == 0 & action == 1L) {
+    0
   } else {
     rnorm(1)
   }
@@ -21,28 +63,52 @@ sampleReward = function(state, action, n.state) {
 env = makeEnvironment(transitions = P, sampleReward = sampleReward)
 env$reset()
 env$step(0)
-print(env$reward)
+print(env)
+
+## ---- out.width = "300px", fig.align="center", echo = FALSE--------------
+knitr::include_graphics("gridworld.JPG")
 
 ## ------------------------------------------------------------------------
-# Possible actions
-env$actions
+# Gridworld Environment (Sutton & Barto (2017) Example 4.1)
+env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15))
+print(env$states)
+print(env$actions)
 
-# Action space
-env$action.space
+# Same gridworld, but with diagonal moves
+env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), 
+  diagonal.moves = TRUE)
+print(env$actions)
 
-# Number of states
-env$n.states
+## ------------------------------------------------------------------------
+# Cliff Walking (Sutton & Barto (2017) Example 6.6)   
+cliff = makeGridworld(shape = c(4, 12), goal.states = 47, 
+  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100, 
+  cliff.transition.states = 36, initial.state = 36)
+
+## ------------------------------------------------------------------------
+# Gridworld with 10% random transitions
+env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
+
+## ------------------------------------------------------------------------
+# Windy Gridworld (Sutton & Barto (2017) Example 6.5) 
+windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37, 
+  reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  CartPole = makeEnvironment("CartPole-v0")
+#  # Note: There is a bug: The following line might return an error.
+#  # Calling the following line twice should solve this.
+#  env = makeEnvironment("MountainCar-v0", render = TRUE)
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  CartPole$reset()
+#  env$reset()
 #  for (i in 1:200) {
-#    action = sample(CartPole$actions, 1)
-#    CartPole$step(action)
+#    action = sample(env$actions, 1)
+#    env$step(action)
 #  }
-#  CartPole$close()
+#  env$close()
+
+## ---- out.width = "300px", fig.align="center", echo = FALSE--------------
+knitr::include_graphics("mountaincar.JPG")
 
 ## ------------------------------------------------------------------------
 MountainCar = R6::R6Class("MountainCar", 
@@ -112,4 +178,18 @@ while(!m$done) {
   m$step(action)
 }
 print(paste("Episode finished after", m$n.steps, "steps."))
+
+## ------------------------------------------------------------------------
+# Mountain Car with discrete action space
+m = MountainCar()
+m$reset()
+m$step(1)
+print(m)
+
+## ------------------------------------------------------------------------
+# Mountain Car with continuous action space
+m = MountainCar(action.space = "Continuous")
+m$reset()
+m$step(0.27541)
+print(m)
 

@@ -1,0 +1,367 @@
+---
+output:rmarkdown::html_vignette:
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, eval = T, collapse = TRUE, comment = "#>")
+```
+
+## How to solve an environment?
+
+This vignette explains the reinforcement learning algorithms implemented in `reinforcelearn`. 
+For details of how to create an environment have a look at the [How to create an environment?](environments.html) vignette.
+
+```{r}
+library(reinforcelearn)
+```
+
+---
+
+### Q-Learning
+
+The most well-known algorithm for reinforcement learning is probably Q-Learning.
+
+$Q$ is the action value function and specifies how good a state-action pair is. It is a matrix (n.states x n.actions). Interacting with the environment an action is chosen according to an $\epsilon$-greedy behavior policy
+
+$$
+\pi(a | S_t) = \left\{ \begin{array}{ll} 1 - \epsilon + \frac{\epsilon}{m}, & \text{if} \; a = \text{argmax}_a Q(S_t, a)  \\
+                                        \frac{\epsilon}{m}, & \text{else.} \end{array} \right.
+$$
+
+Then the $Q$ value of the state-action pair is updated by
+
+$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right],
+$$
+
+where $\gamma$ is the so called discount factor and $\alpha$ the learning rate.
+
+In `reinforcelearn` there is a `qlearning` function. In the following we will train on a simple navigation task, the windy gridworld. The first argument of all algorithms is the environment (the `envir`) argument. The number of episodes can be specified via `n.episodes`.
+
+```{r}
+# Windy gridworld environment
+env = windyGridworld()
+
+res = qlearning(env, n.episodes = 50)
+# Note: to find the optimal policy we need to run at least 500 episodes.
+```
+
+The `qlearning` function returns the action value function $Q$ (here a matrix) and some statistics about learning behavior, e.g. the number of steps and return per episode.
+
+```{r}
+print(res$steps)
+```
+
+We can then find the optimal policy by acting greedily with respect to the action value function.
+
+```{r}
+# Values of each grid cell
+state.values = matrix(apply(res$Q1, 1, max), ncol = 10, byrow = TRUE)
+print(round(state.values, 1))
+
+# Subtract 1 to be consistent with action numeration in env
+optimal.policy = max.col(res$Q1) - 1
+print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
+```
+
+There are many parameters, which can be specified, e.g. the discount factor $\gamma$ via `discount`, the learning rate $\alpha$ via `learning.rate` and $\epsilon$ via the `epsilon` argument. These parameters can also be updated over time by passing a function `updateEpsilon` etc. The update function takes two arguments, the old value of the parameter and the number of episodes finished. It returns the updated parameter, e.g. a decreased learning rate. After each episode is finished the update functions are called.
+
+```{r}
+res = qlearning(env, epsilon = 0.2, learning.rate = 0.5, discount = 0.99)
+
+# Decay epsilon over time. Every 10 episodes epsilon will be halfed.
+decayEpsilon = function(epsilon, i) {
+  if (i %% 10 == 0) {
+    epsilon = epsilon * 0.5
+  }
+  epsilon
+}
+
+res = qlearning(env, epsilon = 0.5, updateEpsilon = decayEpsilon)
+```
+
+Initially the action value function will be initialized to 0. But you can also specify an initial value function via the `initial.value` argument.
+
+```{r}
+Q = matrix(100, nrow = env$n.states, ncol = env$n.actions)
+res = qlearning(env, n.episodes = 5, initial.value = Q)
+# After only 5 episodes the Q values will still be similar to the initial values.
+print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
+```
+
+### Function Approximation
+
+So far the value function has been represented as a table (number of states x number of actions).
+In many interesting problems there are lots of states and actions or the space is continuous. Then it is inpractical to store a tabular value function and to slow to update state-action pairs individually. The solution is to approximate the value function with a function approximator, e.g. a linear combination of features.
+
+In the following we will have a look at the mountain car problem, where the goal is to drive an underpowered car up a steep hill. The state space is continuous in two dimensions, the position and velocity of the car, each bounded in some interval. There are three different actions: push back (0), do nothing (1) and push forward (2).
+
+```{r}
+env = MountainCar()
+print(env$state.space)
+print(env$state.space.bounds)
+
+env$reset()
+print(env$state)
+```
+
+We will solve this environment using linear function approximation. With linear function approximation the action value function is represented as
+
+$$
+\hat{q}(S_t, A_t, w) = x(S_t)^T w = \sum_{j=1}^{n} x_j(S_t) \, w_j.
+$$
+
+There is a distinct weight vector per action.
+
+But how to get a good feature vector from the state observation? We will use grid tiling to aggregate the state space. Each tiling is a grid which overlays the state space. A state observation then falls into one tile per tiling and we will use as many weights as there are tiles. The feature vector is then just a one-hot vector of all active tiles.
+
+```{r, out.width = "300px", fig.align="center", echo = FALSE}
+knitr::include_graphics("gridtiling.JPG")
+```
+
+We can define a function, which takes the original state observation as an input and returns a preprocessed state observation.
+
+```{r}
+# Define preprocessing function (we use grid tiling)
+n.tilings = 8
+max.size = 4096
+iht = IHT(max.size)
+
+position.max = env$state.space.bounds[[1]][2]
+position.min = env$state.space.bounds[[1]][1]
+velocity.max = env$state.space.bounds[[2]][2]
+velocity.min = env$state.space.bounds[[2]][1]
+position.scale = n.tilings / (position.max - position.min)
+velocity.scale = n.tilings / (velocity.max - velocity.min)
+
+# Scale state first, then get active tiles and return n hot vector
+gridTiling = function(state) {
+  state = c(position.scale * state[1], velocity.scale * state[2])
+  active.tiles = tiles(iht, 8, state)
+  makeNHot(active.tiles, max.size, out = "vector")
+}
+```
+
+We can then pass this function on via the `preprocessState` argument in `qlearning`. Via the `fun.approx` argument we tell the algorithm to use a linear combination of features to approximate the value function. Currently `fun.approx` supports `table` and `linear`.
+
+```{r}
+set.seed(123)
+res = qlearning(env, fun.approx = "linear", preprocessState = gridTiling, n.episodes = 20)
+print(res$steps)
+```
+
+### Sarsa, Expected Sarsa and Q(sigma)
+
+The Sarsa algorithm is similar to Q-Learning but samples the next action instead of taking the max. Therefore the update rule is
+
+$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \right].
+$$
+
+In contrast to Q-Learning Sarsa is an on-policy algorithm because the action values are adjusted using a target value $Q(S_{t+1}, A_{t+1})$ which uses an action $A_{t+1} $sampled from the same $\epsilon$-greedy policy as $A_t$.
+
+In `reinforcelearn` this algorithm is implemented in the `sarsa` function. It takes the same arguments as the `qlearning` function.
+
+```{r}
+env = windyGridworld()
+res = sarsa(env, n.episodes = 50)
+print(res$steps)
+```
+
+Expected Sarsa is a generalization of Q-Learning to arbitrary target policies. While Sarsa samples the next action, Expected Sarsa computes the expectation by multiplying each action value with the probability of choosing this action. The update rule is 
+
+$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a) - Q(S_t, A_t) \right].
+$$
+
+The term $\pi(a|S_{t+1})$ is called the target policy because it is used to compute the target to update the values. If $\pi(a|S_{t+1})$ is the greedy policy Expected Sarsa is exactly Q-Learning. When the target policy uses the same $\epsilon$-greedy policy as to sample $A_t$, then Expected Sarsa is an on-policy algorithm. In R we can use the `target.policy` argument, which can be `"greedy"` or `"e-greedy"` for $\epsilon$-greedy.
+
+```{r}
+# This is equivalent to qlearning(env):
+res = expectedSarsa(env, target.policy = "greedy")
+
+# With an epsilon-greedy target policy:
+res = expectedSarsa(env, target.policy = "e-greedy")
+```
+
+The Q($\sigma$) algorithm generalizes all the algorithms presented so far, i.e. Sarsa, Expected Sarsa and Q-Learning.
+
+The update rule is
+
+$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left(\sigma Q(S_{t+1}, A_{t+1}) + (1 - \sigma) \sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a) \right) - Q(S_t, A_t) \right].
+$$
+
+The parameter $\sigma$ controls a weighting between the Sarsa target $Q(S_{t+1}, A_{t+1})$ and Expected Sarsa target $\sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a)$. Therefore Sarsa is equal to Q(1) and Expected Sarsa to Q(0).
+
+```{r}
+res = qSigma(env, sigma = 0.5)
+
+# This is equivalent to Sarsa:
+res = qSigma(env, sigma = 1)
+
+# This is equivalent to Q-learning:
+res = qSigma(env, sigma = 0, target.policy = "greedy")
+```
+
+### Eligibility Traces
+
+An eligibility trace is a scalar number per state-action pair (or weight when used with function approximation). The idea is to assign the current error back to all previously visited state-action pairs weighted by their eligibility. Recently and frequently visited state-action pairs will have a higher eligibility trace than those visited a long time ago. At the beginning of an episode all eligibility traces are set to 0. During the episode if a state-action pair is visited its eligibility trace is increased by
+
+$$
+E_t(S_t, A_t) = (1 - \beta) \, E_{t-1}(S_t, A_t) + 1,
+$$
+
+or for the weights
+
+$$
+E_t(w) = (1 - \beta) \, E_{t-1}(w) + x(S_t),
+$$
+
+when used with linear function approximation.
+
+Then all action values are updated according to their share on the current error, e.g. for Q-Learning by
+
+$$
+Q(s, a) \leftarrow Q(s, a) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right] \, E_t(s, a) \qquad \forall s \in \mathcal{S}, \forall a \in \mathcal{A},
+$$
+
+and then over time fade away with an exponential decrease
+
+$$
+E_{t+1}(s, a) = \gamma \lambda (\sigma + (1- \sigma) \pi(A_{t+1} | S_{t+1})) \, E_t(s, a) \qquad \forall s \in \mathcal{S}, \forall a \in \mathcal{A}.
+$$
+
+The use of eligibility traces can make reinforcement learning agents learn much faster because all state-action pairs are updated at each time step. 
+
+The factor $\beta$ controls the type of eligibility, for $\beta = 0$ this is the standard accumulating trace, for $\beta = 1$ this is the replacing trace. The factor $\lambda$ is the eligibility decay parameter. The eligibility decrease is weighted with the target's policy probability of the next action for the Expected Sarsa part of the target.
+
+We can specify $\beta$ via the `eligibility.type` argument and $\lambda$ via the `lambda` argument.
+
+```{r}
+res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 50)
+print(res$steps)
+```
+
+### Double Learning
+
+The idea of double learning is to decouple action selection and action evaluation. For example in Q-Learning the update is 
+
+$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right].
+$$
+
+When using double learning we will store two action value functions (or two weight vectors in function approximation), one is used to find the best action
+
+$$
+a_* = \text{argmax}_a Q_A(S_{t+1}, a),
+$$
+
+while the other is then used to evaluate this action
+
+$$
+Q_B(S_{t+1}, a_*).
+$$
+
+Learning with two separate action values is slower, but tend to be more robust.
+
+Actions are sampled due to an $\epsilon$-greedy policy with respect to $Q_A + Q_B$. Then at each step randomly one of the two action value functions is updated, e.g. when $Q_A$ is updated the update equation becomes
+
+$$
+Q_A(S_t, A_t) \leftarrow Q_A(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q_B(S_{t+1}, \text{argmax}_{a \in \mathcal{A}} Q_A(S_{t+1}, a)) - Q_A(S_t, A_t) \right]
+$$
+
+Double Learning can also be used for Sarsa, Expected Sarsa and Q($\sigma$). The update rule for Q($\sigma$) is 
+
+$$
+Q_A(S_t, A_t) \leftarrow Q_A(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left( \sigma Q_B(S_{t+1}, A_{t+1}) + (1 - \sigma) \sum_a \pi(a|S_{t+1}) Q_B(S_{t+1}, a) \right) - Q_A(S_t, A_t)
+ \right].
+$$
+
+Update equations for $Q_B$ can be obtained by interchanging the roles of $Q_A$ and $Q_B$ in the above equations. 
+
+To use Double Learning with `qSigma`, `qlearning`, `sarsa` and `expectedSarsa` just pass `double.learning = TRUE` to the algorithm. Double Learning works with tables and linear value function approximation.
+
+```{r}
+res = expectedSarsa(env, double.learning = TRUE, n.episodes = 50)
+print(res$steps)
+```
+
+### Experience Replay
+
+When using function approximation in reinforcement learning training can be difficult because subsequent state observations are often highly correlated and we train on these states the order they are experienced. Experience replay is a simple idea to break these correlations and stabilize learning. Instead of training on a simple observation at each time step the algorithm trains now on more than one observation sampled randomly from a replay memory, which stores all previously visited states and actions. Because the observations are trained on in a random order correlations are much smaller.
+
+In `reinforcelearn` experience replay can be used by passing on a list of experiences to the `replay.memory` argument. Each list entry is itself a list with the entries `state`, `action`, `reward` and `next.state`. `state` and `next.state` should have been preprocessed, e.g. by calling `preprocessState(state)`. A different possibility is to specify the `replay.memory.size` argument, which will then be initialized with experiences generated by a random policy. The number of experiences trained on at each step is controled via the `batch.size` argument.
+
+When experiencing a new transition the algorithm replaces the oldest entry in the replay memory by the new transition.
+
+```{r}
+# Fill a replay memory of size 100 on the mountain car task.
+# We will use grid tiling as defined above.
+memory = vector("list", length = 100)
+env = MountainCar()
+env$reset()
+for (i in 1:100) {
+  if (env$done) {
+    env$reset()
+  }
+  action = sample(0:2, size = 1, prob = c(0.5, 0, 0.5))
+  env$step(action)
+  memory[[i]] = list(state = gridTiling(env$previous.state), action = action, 
+    reward = env$reward, next.state = gridTiling(env$state))
+}
+
+# res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling, 
+#   replay.memory = memory, batch.size = 32, n.episodes = 30)
+# print(res$steps)
+
+# res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling, 
+#   replay.memory.size = 100, batch.size = 32, n.episodes = 30)
+```
+
+As a default experiences will be randomly sampled from the replay memory. A prioritized experience replay prioritizes experiences with a high error, where the error is for example in Sarsa given by
+
+$$
+R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t).
+$$
+
+Each entry of the replay memory $j$ has a priority $p_j$ , proportional to the probability of being sampled.
+
+$$
+j \tilde{} P(j) = \frac{p_j^\alpha}{\sum_i p_i^\alpha}.
+$$
+
+When $\alpha = 0$ (the default) experiences are sampled with equal probability else experiences with a high error have a higher probability of being sampled.
+To each priority a small positive constant $\theta$ is added to prevent that experiences with an error of 0 are never replayed.
+
+```{r}
+# Prioritized experience replay
+# res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling,
+#   replay.memory.size = 100, batch.size = 32, n.episodes = 30,
+#   alpha = 0.5, theta = 0.05)
+```
+
+----
+
+### TD
+
+
+### Actor Critic
+
+----
+
+### Dynamic Programming
+
+----
+
+#### Multi-armed Bandit
+
+---
+
+Have a look at the other vignettes: [Introduction to reinforcelearn](introduction.html) and [How to create an environment?](environments.html).
+
+Author: Markus Dumke

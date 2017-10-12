@@ -12,16 +12,16 @@ env = makeEnvironment(transitions = P, rewards = R)
 paste("State space:" , env$state.space)
 paste("Number of actions:", env$n.actions)
 
-print("Reset the environment")
+# Reset the environment
 env$reset()
-paste("The state is initially", env$state)
-print("Take action 1")
+print(env)
+
 env$step(1)
-paste("The state is now", env$state)
-paste("And the reward for action 1 was", env$reward)
+print(env)
 
 ## ------------------------------------------------------------------------
 # Solve the windy gridworld task using Q-Learning
-# env = windyGridworld()
-# res = qlearning(env)
+env = windyGridworld()
+res = qlearning(env)
+res$steps
 

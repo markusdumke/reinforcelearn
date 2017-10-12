@@ -34,32 +34,34 @@ The function `makeEnvironment` returns an R6 class with a set of attributes and 
 paste("State space:" , env$state.space)
 paste("Number of actions:", env$n.actions)
 
-print("Reset the environment")
+# Reset the environment
 env$reset()
-paste("The state is initially", env$state)
-print("Take action 1")
+print(env)
+
 env$step(1)
-paste("The state is now", env$state)
-paste("And the reward for action 1 was", env$reward)
+print(env)
 ```
-For more details on the creation of environments have a look at the vignette "How to create an environment?".
+
+For more details on the creation of environments have a look at the vignette [How to create an environment?](environments.html).
 
 ---
 
 ## Solve an environment
 
-Once you have created an environment you can find the optimal way to behave in this environment with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning.
+Once you have created an environment you can find the optimal way to behave in this environment with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning. Here we will solve a simple gridworld MDP using Q-Learning.
 
 ```{r}
 # Solve the windy gridworld task using Q-Learning
-# env = windyGridworld()
-# res = qlearning(env)
+env = windyGridworld()
+res = qlearning(env)
+res$steps
 ```
 
 The algorithms return the state or action value function, sometimes also the policy and some statistics about learning behaviour, e.g. the number of steps per episode.
 
+To learn more about algorithms implemented in `reinforcelearn` have a look at the [How to solve an environment?](algorithms.html) vignette.
 ---
 
-Learn more about reinforcement learning in R by having a look at the other vignettes: "How to create an environment?" and "How to solve an environment?".
+Also have a look at the other vignettes: [How to create an environment?](environments.html) and [How to solve an environment?](algorithms.html).
 
 Author: Markus Dumke
