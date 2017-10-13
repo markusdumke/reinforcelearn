@@ -6,9 +6,18 @@ cache: packages
 
 warnings_are_errors: true
 
+r_github_packages:
+  - jimhester/lintr
+
 r:
 - release
 - devel
 
 after_success:
 - Rscript -e 'covr::codecov(type = "all")'
+- Rscript -e 'lintr::lint_package()'
+
+notifications:
+  slack:
+    on_success: change
+    on_failure: change
