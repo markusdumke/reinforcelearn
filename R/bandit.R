@@ -6,12 +6,14 @@
 #' can be seen as actions, after each action the episode ends (there
 #' are no states). To find the best action, the algorithm is faced with
 #' a tradeoff between exploration and exploitation.
+#' 
+#' Actions are numerated starting with 0!
 #'
 #' @param n.episodes [\code{integer(1)}] \cr
 #'   Number of episodes.
 #' @param action.selection [\code{character(1)}] \cr
-#'   Which method to use for action selection, one of \code{"epsilon-greedy"},
-#'   \code{"greedy"}, \code{"UCB"} or \code{"gradient_bandit"}.
+#'   Which method to use for action selection, one of \code{"egreedy"},
+#'   \code{"greedy"}, \code{"UCB"} or \code{"gradientbandit"}.
 #' @param epsilon [\code{numeric(1) in [0,1]}] \cr
 #'   Ratio of random exploration in epsilon-greedy action selection.
 #' @param initial.value [\code{numeric(1)}] \cr
@@ -26,7 +28,7 @@
 #'   Number of episodes after which to decay epsilon.
 #' @param C [\code{numeric(1)}] \cr
 #'   Controls the degree of exploration. High C values lead to more exploration.
-#' @param step [\code{function}] \cr
+#' @param rewardFun [\code{function}] \cr
 #'   A function, which takes an action (\code{integer(1)}) as first argument
 #'   and returns a numeric scalar reward.
 #' @param n.actions [\code{integer(1)}] \cr
@@ -45,42 +47,42 @@
 #' set.seed(123)
 #'
 #' # Define reward function
-#' step = function(action) {
-#'   if (action == 1) {
+#' rewardFun = function(action) {
+#'   if (action == 0) {
 #'     reward = rnorm(1, mean = 1, sd = 1)
 #'   }
-#'   if (action == 2) {
+#'   if (action == 1) {
 #'     reward = rnorm(1, mean = 2, sd = 4)
 #'   }
-#'   if (action == 3) {
+#'   if (action == 2) {
 #'     reward = runif(1, min = 0, max = 5)
 #'   }
-#'   if (action == 4) {
+#'   if (action == 3) {
 #'     reward = rexp(1, rate = 0.25)
 #'   }
 #'   reward
 #' }
 #'
-#' solveBandit(step, n.actions = 4, n.episodes = 1000,
+#' solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #'   action.selection = "greedy")
-#' solveBandit(step, n.actions = 4, n.episodes = 1000,
+#' solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #'   action.selection = "egreedy", epsilon = 0.5)
-#' solveBandit(step, n.actions = 4, n.episodes = 1000,
+#' solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #'   action.selection = "greedy",
 #'   initial.value = 5, initial.visits = 100)
-#' solveBandit(step, n.actions = 4, n.episodes = 1000,
+#' solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #'   action.selection = "UCB", C = 2)
 #' # true values: 1, 2, 2.5, 4
 #'
 #' # Gradient bandit algorithm
-#' solveBandit(step, n.actions = 4, n.episodes = 10000,
+#' solveBandit(rewardFun, n.actions = 4, n.episodes = 10000,
 #'   action.selection = "gradientbandit", alpha = 0.1)
-solveBandit = function(step, n.actions, n.episodes = 100,
+solveBandit = function(rewardFun, n.actions, n.episodes = 100,
   action.selection = c("egreedy", "greedy", "UCB", "gradientbandit"),
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100,
   alpha = 0.1, initial.value = 0, initial.visits = 0, C = 2) {
   
-  checkmate::assertFunction(step)
+  checkmate::assertFunction(rewardFun)
   checkmate::assertInt(n.actions)
   checkmate::assertInt(n.episodes, lower = 1)
   checkmate::assertChoice(action.selection, c("egreedy", "greedy", "UCB", "gradientbandit"))
@@ -116,7 +118,7 @@ solveBandit = function(step, n.actions, n.episodes = 100,
         action = sample(seq_len(n.actions), 1, prob = Q)
       }
     }
-    reward = step(action)
+    reward = rewardFun(action - 1)
     
     action.visits[action] = action.visits[action] + 1
     rewards[action] = rewards[action] + reward

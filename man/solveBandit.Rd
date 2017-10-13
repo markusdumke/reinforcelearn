@@ -4,13 +4,13 @@
 \alias{solveBandit}
 \title{Solve multi-armed bandit}
 \usage{
-solveBandit(step, n.actions, n.episodes = 100,
+solveBandit(rewardFun, n.actions, n.episodes = 100,
   action.selection = c("egreedy", "greedy", "UCB", "gradientbandit"),
   epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100,
   alpha = 0.1, initial.value = 0, initial.visits = 0, C = 2)
 }
 \arguments{
-\item{step}{[\code{function}] \cr
+\item{rewardFun}{[\code{function}] \cr
 A function, which takes an action (\code{integer(1)}) as first argument
 and returns a numeric scalar reward.}
 
@@ -21,8 +21,8 @@ Number of actions.}
 Number of episodes.}
 
 \item{action.selection}{[\code{character(1)}] \cr
-Which method to use for action selection, one of \code{"epsilon-greedy"},
-\code{"greedy"}, \code{"UCB"} or \code{"gradient_bandit"}.}
+Which method to use for action selection, one of \code{"egreedy"},
+\code{"greedy"}, \code{"UCB"} or \code{"gradientbandit"}.}
 
 \item{epsilon}{[\code{numeric(1) in [0,1]}] \cr
 Ratio of random exploration in epsilon-greedy action selection.}
@@ -62,38 +62,41 @@ can be seen as actions, after each action the episode ends (there
 are no states). To find the best action, the algorithm is faced with
 a tradeoff between exploration and exploitation.
 }
+\details{
+Actions are numerated starting with 0!
+}
 \examples{
 set.seed(123)
 
 # Define reward function
-step = function(action) {
-  if (action == 1) {
+rewardFun = function(action) {
+  if (action == 0) {
     reward = rnorm(1, mean = 1, sd = 1)
   }
-  if (action == 2) {
+  if (action == 1) {
     reward = rnorm(1, mean = 2, sd = 4)
   }
-  if (action == 3) {
+  if (action == 2) {
     reward = runif(1, min = 0, max = 5)
   }
-  if (action == 4) {
+  if (action == 3) {
     reward = rexp(1, rate = 0.25)
   }
   reward
 }
 
-solveBandit(step, n.actions = 4, n.episodes = 1000,
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
   action.selection = "greedy")
-solveBandit(step, n.actions = 4, n.episodes = 1000,
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
   action.selection = "egreedy", epsilon = 0.5)
-solveBandit(step, n.actions = 4, n.episodes = 1000,
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
   action.selection = "greedy",
   initial.value = 5, initial.visits = 100)
-solveBandit(step, n.actions = 4, n.episodes = 1000,
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
   action.selection = "UCB", C = 2)
 # true values: 1, 2, 2.5, 4
 
 # Gradient bandit algorithm
-solveBandit(step, n.actions = 4, n.episodes = 10000,
+solveBandit(rewardFun, n.actions = 4, n.episodes = 10000,
   action.selection = "gradientbandit", alpha = 0.1)
 }
