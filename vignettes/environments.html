@@ -320,7 +320,7 @@ env$close()</code></pre>
 <li><p><code>state.shape</code>: Number of state variables in a continuous state space.</p></li>
 <li><p><code>state.space.bounds</code>: The bounds of a boxed state space, a list with lower and upper bound for each state variable as one list element.</p></li>
 <li><p><code>states</code>: States (in a discrete state space). Numerated starting with 0.</p></li>
-<li><p><code>terminal.states</code>: Terminal states in a Markov Decision Process.</p></li>
+<li><p><code>terminal.states</code>: Terminal states in a Markov Decision Process. Will be derived from the <code>transition</code> argument in <code>makeEnvironment</code>.</p></li>
 <li><p><code>n.states</code>: Number of states (for a discrete state space).</p></li>
 <li><p><code>action.space</code>: One of <code>Discrete</code> or <code>Box</code>.</p></li>
 <li><p><code>action.shape</code>: Number of action variables in a continuous action space.</p></li>
@@ -329,6 +329,12 @@ env$close()</code></pre>
 <li><p><code>n.actions</code>: Number of actions (for a discrete action space).</p></li>
 <li><p><code>transitions</code>: A state transition array (n.states x n.states x n.actions).</p></li>
 <li><p><code>rewards</code>: A state reward matrix (n.states x n.actions).</p></li>
+</ul>
+<p>These are the methods:</p>
+<ul>
+<li><p><code>reset()</code>: Resets the environment, i.e. it sets the <code>state</code> attribute to a starting state and sets the <code>done</code> flag to <code>FALSE</code>. It is usually called at the beginning of an episode.</p></li>
+<li><p><code>step(action)</code>: The basic interaction function between agent and environment. <code>step</code> is called with an action as an argument. It then takes the action and alters the <code>state</code> and <code>reward</code> attributes of the <code>R6</code> class. If the episode is done, e.g. a terminal state reached, the <code>done</code> flag is set to <code>TRUE</code>.</p></li>
+<li><p><code>done()</code>: When using an OpenAI Gym environment this method closes the python window. Else it returns the <code>R6</code> class object unchanged, i.e. <code>self$close = function() {invisible(self)}</code>.</p></li>
 </ul>
 <hr />
 <p>Here is an example creating the Mountain Car environment yourself.</p>

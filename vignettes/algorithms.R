@@ -88,7 +88,7 @@ print(res$steps)
 res = expectedSarsa(env, target.policy = "greedy")
 
 # With an epsilon-greedy target policy:
-res = expectedSarsa(env, target.policy = "e-greedy")
+res = expectedSarsa(env, target.policy = "egreedy")
 
 ## ------------------------------------------------------------------------
 res = qSigma(env, sigma = 0.5)
@@ -135,4 +135,108 @@ for (i in 1:100) {
 # res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling,
 #   replay.memory.size = 100, batch.size = 32, n.episodes = 30,
 #   alpha = 0.5, theta = 0.05)
+
+## ------------------------------------------------------------------------
+# Random Walk Task (Sutton & Barto Example 6.2)
+P = array(dim = c(7, 7, 2))
+P[, , 1] = matrix(c(rep(c(1, rep(0, 6)), 2), c(0, 1, rep(0, 5)), 
+  c(0, 0, 1, rep(0, 4)), c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)), 
+  c(rep(0, 6), 1)), ncol = 7, byrow = TRUE)
+P[, , 2] = matrix(c(c(1, rep(0, 6)), c(0, 0, 1, rep(0, 4)), 
+  c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)), 
+  c(rep(0, 5), 1, 0), c(rep(0, 6), 1), c(rep(0, 6), 1)), ncol = 7, byrow = TRUE)
+R = matrix(c(rep(0, 12), 1, 0), ncol = 2)
+env = makeEnvironment(transitions = P, rewards = R, initial.state = 3)
+
+# Uniform random policy
+random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
+  ncol = env$n.actions)
+
+# Estimate state value function with TD(0)
+res = td(env, random.policy, n.episodes = 100, lambda = 0.5)
+print(res$V)
+
+## ------------------------------------------------------------------------
+# Set up gridworld problem
+env = gridworld()
+  
+# Define uniform random policy, take each action with equal probability
+random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
+  ncol = env$n.actions)
+
+# Evaluate this policy
+res = evaluatePolicy(env, random.policy, precision = 0.01)
+print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
+
+## ------------------------------------------------------------------------
+# Find optimal policy using Policy Iteration
+res = iteratePolicy(env)
+print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
+
+## ------------------------------------------------------------------------
+# Find optimal policy using Value Iteration
+res = iterateValue(env, n.iter = 100)
+print(res$policy)
+
+## ------------------------------------------------------------------------
+env = MountainCar()
+
+# Linear function approximation and softmax policy
+res = actorCritic(env, fun.approx = "linear", 
+  preprocessState = gridTiling, n.episodes = 30)
+print(res$steps)
+
+## ------------------------------------------------------------------------
+# Mountain Car with continuous action space
+env = MountainCar(action.space = "Continuous")
+
+# Linear function approximation and gaussian policy
+set.seed(123)
+res = actorCritic(env, fun.approx = "linear", policy = "gaussian", 
+  preprocessState = gridTiling, n.episodes = 20)
+print(res$steps)
+
+## ---- eval = FALSE-------------------------------------------------------
+#  # Define reward function
+#  step = function(action) {
+#    if (action == 0) {
+#      reward = rnorm(1, mean = 1, sd = 1)
+#    }
+#    if (action == 1) {
+#      reward = rnorm(1, mean = 2, sd = 4)
+#    }
+#    if (action == 2) {
+#      reward = runif(1, min = 0, max = 5)
+#    }
+#    if (action == 3) {
+#      reward = rexp(1, rate = 0.25)
+#    }
+#    reward
+#  }
+
+## ---- eval = FALSE-------------------------------------------------------
+#  solveBandit(step, n.actions = 4, n.episodes = 1000,
+#    action.selection = "egreedy")
+
+## ---- eval = FALSE-------------------------------------------------------
+#  solveBandit(step, n.actions = 4, n.episodes = 1000,
+#    action.selection = "greedy",
+#    initial.value = 5, initial.visits = 100)
+
+## ---- eval = FALSE-------------------------------------------------------
+#  solveBandit(step, n.actions = 4, n.episodes = 1000,
+#    action.selection = "epsilon-greedy", epsilon = 0.5)
+
+## ---- eval = FALSE-------------------------------------------------------
+#  solveBandit(step, n.actions = 4, n.episodes = 1000,
+#    action.selection = "epsilon-greedy", epsilon = 0.5,
+#    epsilon.decay = 0.5, epsilon.decay.after = 100)
+
+## ---- eval = FALSE-------------------------------------------------------
+#  solveBandit(step, n.actions = 4, n.episodes = 1000,
+#    action.selection = "UCB", C = 2)
+
+## ---- eval = FALSE-------------------------------------------------------
+#  solveBandit(step, n.actions = 4, n.episodes = 10000,
+#    action.selection = "gradient-bandit", alpha = 0.1)
 

@@ -240,7 +240,7 @@ Here is a full list describing all attributes of the `R6` class created by `make
 
 - `states`: States (in a discrete state space). Numerated starting with 0.
 
-- `terminal.states`: Terminal states in a Markov Decision Process.
+- `terminal.states`: Terminal states in a Markov Decision Process. Will be derived from the `transition` argument in `makeEnvironment`.
 
 - `n.states`: Number of states (for a discrete state space).
 
@@ -257,6 +257,14 @@ Here is a full list describing all attributes of the `R6` class created by `make
 - `transitions`: A state transition array (n.states x n.states x n.actions).
 
 - `rewards`: A state reward matrix (n.states x n.actions).
+
+These are the methods:
+
+- `reset()`: Resets the environment, i.e. it sets the `state` attribute to a starting state and sets the `done` flag to `FALSE`. It is usually called at the beginning of an episode. 
+
+- `step(action)`: The basic interaction function between agent and environment. `step` is called with an action as an argument. It then takes the action and alters the `state` and `reward` attributes of the `R6` class. If the episode is done, e.g. a terminal state reached, the `done` flag is set to `TRUE`.
+
+- `done()`: When using an OpenAI Gym environment this method closes the python window. Else it returns the `R6` class object unchanged, i.e. `self$close = function() {invisible(self)}`.
 
 ---
 
