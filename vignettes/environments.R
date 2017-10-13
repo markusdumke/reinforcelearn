@@ -1,5 +1,5 @@
 ## ----setup, include=FALSE------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE, eval = TRUE, collapse = TRUE, comment = "#>")
 
 ## ------------------------------------------------------------------------
 library(reinforcelearn)

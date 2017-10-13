@@ -1,4 +1,4 @@
-## ----setup, include=FALSE------------------------------------------------
+## ----setup, include = FALSE----------------------------------------------
 knitr::opts_chunk$set(message = FALSE, eval = T, collapse = TRUE, comment = "#>")
 
 ## ------------------------------------------------------------------------
@@ -196,47 +196,47 @@ res = actorCritic(env, fun.approx = "linear", policy = "gaussian",
   preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
 
-## ---- eval = FALSE-------------------------------------------------------
-#  # Define reward function
-#  step = function(action) {
-#    if (action == 0) {
-#      reward = rnorm(1, mean = 1, sd = 1)
-#    }
-#    if (action == 1) {
-#      reward = rnorm(1, mean = 2, sd = 4)
-#    }
-#    if (action == 2) {
-#      reward = runif(1, min = 0, max = 5)
-#    }
-#    if (action == 3) {
-#      reward = rexp(1, rate = 0.25)
-#    }
-#    reward
-#  }
+## ------------------------------------------------------------------------
+# Define reward function
+rewardFun = function(action) {
+  if (action == 0) {
+    reward = rnorm(1, mean = 1, sd = 1)
+  }
+  if (action == 1) {
+    reward = rnorm(1, mean = 2, sd = 4)
+  }
+  if (action == 2) {
+    reward = runif(1, min = 0, max = 5)
+  }
+  if (action == 3) {
+    reward = rexp(1, rate = 0.25)
+  }
+  reward
+}
 
-## ---- eval = FALSE-------------------------------------------------------
-#  solveBandit(step, n.actions = 4, n.episodes = 1000,
-#    action.selection = "egreedy")
+## ------------------------------------------------------------------------
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+  action.selection = "greedy")
 
-## ---- eval = FALSE-------------------------------------------------------
-#  solveBandit(step, n.actions = 4, n.episodes = 1000,
-#    action.selection = "greedy",
-#    initial.value = 5, initial.visits = 100)
+## ------------------------------------------------------------------------
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "greedy", 
+  initial.value = 5, initial.visits = 100)
 
-## ---- eval = FALSE-------------------------------------------------------
-#  solveBandit(step, n.actions = 4, n.episodes = 1000,
-#    action.selection = "epsilon-greedy", epsilon = 0.5)
+## ------------------------------------------------------------------------
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "egreedy", epsilon = 0.5)
 
-## ---- eval = FALSE-------------------------------------------------------
-#  solveBandit(step, n.actions = 4, n.episodes = 1000,
-#    action.selection = "epsilon-greedy", epsilon = 0.5,
-#    epsilon.decay = 0.5, epsilon.decay.after = 100)
+## ------------------------------------------------------------------------
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "egreedy", epsilon = 0.5,
+  epsilon.decay = 0.5, epsilon.decay.after = 100)
 
-## ---- eval = FALSE-------------------------------------------------------
-#  solveBandit(step, n.actions = 4, n.episodes = 1000,
-#    action.selection = "UCB", C = 2)
+## ------------------------------------------------------------------------
+solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "UCB", C = 2)
 
-## ---- eval = FALSE-------------------------------------------------------
-#  solveBandit(step, n.actions = 4, n.episodes = 10000,
-#    action.selection = "gradient-bandit", alpha = 0.1)
+## ------------------------------------------------------------------------
+solveBandit(rewardFun, n.actions = 4, n.episodes = 10000, 
+  action.selection = "gradientbandit", alpha = 0.1)
 

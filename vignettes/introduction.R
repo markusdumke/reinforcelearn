@@ -1,3 +1,6 @@
+## ----setup, include=FALSE------------------------------------------------
+knitr::opts_chunk$set(message = FALSE, eval = TRUE, collapse = TRUE, comment = "#>")
+
 ## ------------------------------------------------------------------------
 library(reinforcelearn)
 
@@ -24,4 +27,12 @@ print(env)
 env = windyGridworld()
 res = qlearning(env)
 res$steps
+
+## ------------------------------------------------------------------------
+# Show value of each state.
+print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
+
+## ------------------------------------------------------------------------
+optimal.policy = max.col(res$Q1) - 1L
+print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 

@@ -1,5 +1,4 @@
 ---
-title: "Introduction to reinforcelearn"
 output:rmarkdown::html_vignette:
 fig_caption: yes
 vignette: >
@@ -8,11 +7,17 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, eval = TRUE, collapse = TRUE, comment = "#>")
+```
+
+## Introduction to reinforcelearn
+
 This vignette gives a short introduction how to solve reinforcement learning problems with the `reinforcelearn` package.
 
 ---
 
-## Set up an environment
+### Set up an environment
 
 ```{r}
 library(reinforcelearn)
@@ -46,7 +51,7 @@ For more details on the creation of environments have a look at the vignette [Ho
 
 ---
 
-## Solve an environment
+### Solve an environment
 
 Once you have created an environment you can find the optimal way to behave in this environment with one of the implemented algorithms, e.g. Value Iteration, Sarsa or Q-Learning. Here we will solve a simple gridworld MDP using Q-Learning.
 
@@ -59,9 +64,24 @@ res$steps
 
 The algorithms return the state or action value function, sometimes also the policy and some statistics about learning behaviour, e.g. the number of steps per episode.
 
+```{r}
+# Show value of each state.
+print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
+```
+
+We can then get the optimal policy by taking the argmax over the action value function Q.
+
+```{r}
+optimal.policy = max.col(res$Q1) - 1L
+print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
+```
+
 To learn more about algorithms implemented in `reinforcelearn` have a look at the [How to solve an environment?](algorithms.html) vignette.
+
 ---
 
-Also have a look at the other vignettes: [How to create an environment?](environments.html) and [How to solve an environment?](algorithms.html).
+Also have a look at the other vignettes: 
 
-Author: Markus Dumke
+- [How to create an environment?](environments.html)
+
+- [How to solve an environment?](algorithms.html).
