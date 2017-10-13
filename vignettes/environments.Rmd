@@ -1,7 +1,7 @@
 ---
-title: "How to create an environment?"
 output:rmarkdown::html_vignette:
 fig_caption: yes
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,6 +11,8 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## How to create an environment?
 
 This vignette explains the different possibilities to create a reinforcement learning environment in `reinforcelearn`.
 
@@ -132,11 +134,17 @@ env$step(0)
 print(env)
 ```
 
-### Gridworld Environments
+----
 
-A gridworld is a simple navigation task, where the goal is to get from some starting state to a goal state. Gridworlds are MDPsand the function `makeGridworld` can be used to create gridworlds of different shapes and properties. Possible actions are going left, right, up and down. If `diagonal.moves = TRUE` diagonal moves are also possible. States and actions are numerated starting with 0. `makeGridworld` computes the state transition array and reward matrix of the specfied gridworld and then calls `makeEnvironment` internal. Arguments can be passed on to `makeEnvironment` via the `...`argument, e.g. `initial.state`.
+### Gridworlds
 
-Here is an example of a 4x4 grid with the standard actions and two terminal states in the lower right and upper left of the grid. Rewards are - 1 for every transition until reaching a terminal state. States are always numerated row-wise starting with 0.
+A gridworld is a simple navigation task with a discrete state and action space. The agent has to move through a grid from a start state to a goal state. Each episode starts in the start state and  terminates if the agent reaches a goal state. States are always numerated row-wise starting with 0. Possible actions are the standard moves (left, right, up, down) or could also include the diagonal moves (leftup, leftdown, rightup, rightdown).
+
+If an action would take the agent off the grid, the next state will be the nearest cell inside the grid. For each step the agent gets a reward, e.g. - 1, until it reaches a goal state, then the episode is done.
+
+Gridworlds with different shapes, rewards and transition dynamics can be created with the function `makeGridworld`. It computes the state transition array and reward matrix of the specified gridworld (because a gridworld is a MDP) and then internally calls `makeEnvironment`. Arguments from `makeEnvironment` can be passed on via the `...` argument, e.g. `initial.state`.
+
+Here is an example of a 4x4 gridworld [@sutton2017, Example 4.1] with the 4 standard actions and two terminal states in the lower right and upper left of the grid. Rewards are - 1 for every transition until reaching a terminal state. 
 
 ```{r, out.width = "300px", fig.align="center", echo = FALSE}
 knitr::include_graphics("gridworld.JPG")
@@ -156,7 +164,20 @@ env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15),
 print(env$actions)
 ```
 
-A cliff state is a state with a high negative reward and a transition to some other state. You can specify a cliff walking gridworld via the `cliff.states`, `cliff.transition.states` and `reward.cliff` arguments.
+In the above gridworld actions will deterministically change the state, e.g. when going left from state 5 the new state will always be 4. A stochastic gridworld can be specified via the `stochasticity` argument. Then the next state will be randomly sampled from all eight successor state with a probability `stochasticity`.
+
+```{r}
+# Gridworld with 10% random transitions
+env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
+```
+
+```{r, out.width = "500px", fig.align = "center", echo = FALSE}
+knitr::include_graphics("cliff.JPG")
+```
+
+The cliff walking gridworld [@sutton2017, Example 6.6] has a cliff in the lower part of the grid. Stepping into this cliff will result in a high negative reward of -100 and a transition back to the starting state in the lower left part of the grid. So the agent has to learn to avoid stepping into this cliff. Other transitions have the usual reward of -1.  The optimal path is directly above the cliff, while the safe path runs at the top of the gridworld far away from the dangerous cliff. The optimal path has a length of 13 steps.
+
+In `makeGridworld` we can specify the cliff via the `cliff.states` argument and the reward when stepping into the cliff via `reward.cliff`. The states to which the agent transitions, when stepping into the cliff can be specified via `cliff.transition.states`.
 
 ```{r}
 # Cliff Walking (Sutton & Barto (2017) Example 6.6)   
@@ -165,14 +186,11 @@ cliff = makeGridworld(shape = c(4, 12), goal.states = 47,
   cliff.transition.states = 36, initial.state = 36)
 ```
 
-Actions will deterministically change the state, e.g. when going left from state 5 in the gridworld in the figure the new state will always be 4. A stochastic gridworld can be specified via the `stochasticity` argument. Then the next state will be randomly sampled from all eight successor state with probability `stochasticity`.
-
-```{r}
-# Gridworld with 10% random transitions
-env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
+```{r, out.width = "350px", fig.align = "center", echo = FALSE}
+knitr::include_graphics("windygrid.PNG")
 ```
 
-A windy gridworld is a variant, where the agent will be pushed up a number of cells when transitioning into a column with an upward wind. The `wind` argument specifies the strength of this wind. It is an integer vector with the same size as the number of columns in the grid. Here is an example creating a windy gridworld environment.
+The windy gridworld [@sutton2017, Example 6.5] is a gridworld with shape 7x10. The agent will be pushed up a number of cells when transitioning into a column with an upward wind. The `wind` argument specifies the strength of this wind. It is an integer vector with the same size as the number of columns in the grid. E.g. going right from the state directly left to the goal, will push the agent to a state two cells above the goal. The reward for each step is -1. The optimal path has a length of 15 steps.
 
 ```{r}
 # Windy Gridworld (Sutton & Barto (2017) Example 6.5) 
@@ -184,9 +202,9 @@ windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37,
 
 ### OpenAI Gym Environments
 
-OpenAI Gym is a toolkit for developing and comparing reinforcement learning algorithms.  It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. To use this in R you need to install the dependencies listed [here](https://github.com/openai/gym-http-api). You also need to install the R package `gym`.
+OpenAI Gym [@gym_openai] is a toolkit for developing and comparing reinforcement learning algorithms.  It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. To use this in R you need to install the dependencies listed [here](https://github.com/openai/gym-http-api). You also need to install the R package `gym` [@gym].
 
-Then it is simple to use one of the existing Gym environments by passing on the name of the environment via the `gym.envir.name` argument in `makeEnvironment`. Have a look at [https://gym.openai.com/envs](https://gym.openai.com/envs) for possible environments.
+Then it is simple to use one of the existing OpenAI Gym environments by passing on the name of the environment via the `gym.envir.name` argument in `makeEnvironment`. Have a look at [https://gym.openai.com/envs](https://gym.openai.com/envs) for possible environments.
 
 ```{r, eval = FALSE}
 # Note: There is a bug: The following line might return an error. 
@@ -212,15 +230,16 @@ You should see a window opening showing the graphical interface.
 ```{r, out.width = "300px", fig.align="center", echo = FALSE}
 knitr::include_graphics("mountaincar.JPG")
 ```
+
 ---
 
 ### Create your own environment
 
-Some reinforcement learning problems cannot be formulated in the above way. Then it is necessary to create the environment yourself and pass it on to the algorithms. Make sure, that the environment is an `R6 class` with certain attributes and methods.
+Some reinforcement learning problems cannot be formulated in the above way. Then it is necessary to create the environment yourself and pass it on to the algorithms. Make sure, that the environment is an `R6 class` with the necessary attributes and methods.
 
-Depending on the algorithm different of these attributes and methods may be necessary, e.g. `terminal.states`, `rewards` and `transitions` for model-based dynamic programming or `step`, `reset`, `state`, `reward` and `done`, if using a model-free algorithm.
+Here is a full list describing all attributes of the `R6` class created by `makeEnvironment`. Depending on the algorithm different of these attributes and methods may be necessary, e.g. `terminal.states`, `rewards` and `transitions` for model-based dynamic programming or `step`, `reset`, `state`, `previous.state`, `n.steps`, `reward` and `done`, if using a model-free algorithm.
 
-Here is a full list describing all attributes of the `R6` class created by `makeEnvironment`.
+**Attributes**:
 
 - `state`: The current state observation of the environment. Depending on the problem this can be anything, e.g. a scalar integer, a matrix or a list.
 
@@ -258,7 +277,7 @@ Here is a full list describing all attributes of the `R6` class created by `make
 
 - `rewards`: A state reward matrix (n.states x n.actions).
 
-These are the methods:
+**Methods**:
 
 - `reset()`: Resets the environment, i.e. it sets the `state` attribute to a starting state and sets the `done` flag to `FALSE`. It is usually called at the beginning of an episode. 
 
@@ -268,7 +287,20 @@ These are the methods:
 
 ---
 
-Here is an example creating the Mountain Car environment yourself.
+## Mountain Car
+
+The Mountain Car problem [@sutton2017] is a simple episodic reinforcement learning task with a continuous state space and discrete action space. The goal is to drive an underpowered car up a steep slope. Because the car cannot accelerate fast enough, the optimal strategy consists of first going backwards to build enough momentum and then drive up the slope. The two-dimensional state space is characterized by the position and velocity of the car. These are updated due to the following equations:
+
+\begin{align}
+\text{position}_{t+1} &\leftarrow \text{bound}[\text{position}_t + \text{velocity}_{t+1}] \\
+\text{velocity}_{t+1} &\leftarrow \text{bound}[\text{velocity}_t + 0.001 A_t - 0.0025 \cos(3 * \; \text{position}_t)].
+\end{align}
+
+The position is bounded in $[-1.2, 0.5]$, the velocity in $[-0.07, 0.07]$. When reaching the left position bound, the velocity will be set to 0. Each episode starts from a random position in the valley (position $\in [-0.6, -0.4]$) and a velocity of 0.
+
+The original formulation of the problem has three actions: "push left", "no push" and "push right", which are coded as -1, 0 and 1. The reward for each step is - 1 until the terminal state at the right mountain summit is reached.
+
+Here is an example implementation of the mountain car environment.
 
 ```{r}
 MountainCar = R6::R6Class("MountainCar", 
@@ -277,7 +309,7 @@ MountainCar = R6::R6Class("MountainCar",
     actions = 0:2,
     n.actions = 3,
     state.space = "Box",
-    state.space.bounds = list(c(-1.2, 0.6), c(-0.07, 0.07)),
+    state.space.bounds = list(c(-1.2, 0.5), c(-0.07, 0.07)),
     done = FALSE,
     n.steps = 0,
     state = NULL,
@@ -300,14 +332,10 @@ MountainCar = R6::R6Class("MountainCar",
       self$previous.state = self$state
       self$n.steps = self$n.steps + 1
       
-      self$velocity = self$velocity + 0.001 * (action - 1) - 
+      self$velocity = self$velocity + 0.001 * (action - 1) -
         0.0025 * cos(3 * self$position)
-      if (self$velocity < self$state.space.bounds[[2]][1]) {
-        self$velocity = self$state.space.bounds[[2]][1]
-      }
-      if (self$velocity > self$state.space.bounds[[2]][2]) {
-        self$velocity = self$state.space.bounds[[2]][2]
-      }
+      self$velocity = min(max(self$velocity, self$state.space.bounds[[2]][1]), 
+        self$state.space.bounds[[2]][2])
       self$position = self$position + self$velocity
       if (self$position < self$state.space.bounds[[1]][1]) {
         self$position = self$state.space.bounds[[1]][1]
@@ -353,18 +381,27 @@ m$step(1)
 print(m)
 ```
 
-There is also a variant with a continuous (boxed) action space
+There is also a variant with a continuous action space (bounded in $[-1, 1]$)
 
 ```{r}
 # Mountain Car with continuous action space
 m = MountainCar(action.space = "Continuous")
 m$reset()
+print(m)
 m$step(0.27541)
 print(m)
 ```
 
 ---
 
-Have a look at the other vignettes: [Introduction to reinforcelearn](introduction.html) and [How to solve an environment?](algorithms.html).
+### Other vignettes
 
-Author: Markus Dumke
+Have a look at the other vignettes: 
+
+- [Introduction to reinforcelearn](introduction.html)
+
+- [How to solve an environment?](algorithms.html)
+
+----
+
+### References

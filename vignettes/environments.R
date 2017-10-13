@@ -80,14 +80,20 @@ env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15),
 print(env$actions)
 
 ## ------------------------------------------------------------------------
+# Gridworld with 10% random transitions
+env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
+
+## ---- out.width = "500px", fig.align = "center", echo = FALSE------------
+knitr::include_graphics("cliff.JPG")
+
+## ------------------------------------------------------------------------
 # Cliff Walking (Sutton & Barto (2017) Example 6.6)   
 cliff = makeGridworld(shape = c(4, 12), goal.states = 47, 
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100, 
   cliff.transition.states = 36, initial.state = 36)
 
-## ------------------------------------------------------------------------
-# Gridworld with 10% random transitions
-env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
+## ---- out.width = "350px", fig.align = "center", echo = FALSE------------
+knitr::include_graphics("windygrid.PNG")
 
 ## ------------------------------------------------------------------------
 # Windy Gridworld (Sutton & Barto (2017) Example 6.5) 
@@ -117,7 +123,7 @@ MountainCar = R6::R6Class("MountainCar",
     actions = 0:2,
     n.actions = 3,
     state.space = "Box",
-    state.space.bounds = list(c(-1.2, 0.6), c(-0.07, 0.07)),
+    state.space.bounds = list(c(-1.2, 0.5), c(-0.07, 0.07)),
     done = FALSE,
     n.steps = 0,
     state = NULL,
@@ -140,14 +146,10 @@ MountainCar = R6::R6Class("MountainCar",
       self$previous.state = self$state
       self$n.steps = self$n.steps + 1
       
-      self$velocity = self$velocity + 0.001 * (action - 1) - 
+      self$velocity = self$velocity + 0.001 * (action - 1) -
         0.0025 * cos(3 * self$position)
-      if (self$velocity < self$state.space.bounds[[2]][1]) {
-        self$velocity = self$state.space.bounds[[2]][1]
-      }
-      if (self$velocity > self$state.space.bounds[[2]][2]) {
-        self$velocity = self$state.space.bounds[[2]][2]
-      }
+      self$velocity = min(max(self$velocity, self$state.space.bounds[[2]][1]), 
+        self$state.space.bounds[[2]][2])
       self$position = self$position + self$velocity
       if (self$position < self$state.space.bounds[[1]][1]) {
         self$position = self$state.space.bounds[[1]][1]
@@ -190,6 +192,7 @@ print(m)
 # Mountain Car with continuous action space
 m = MountainCar(action.space = "Continuous")
 m$reset()
+print(m)
 m$step(0.27541)
 print(m)
 

@@ -1,5 +1,7 @@
 ---
 output:rmarkdown::html_vignette:
+fig_caption: yes
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -23,9 +25,9 @@ library(reinforcelearn)
 
 ### Q-Learning
 
-The most well-known algorithm for reinforcement learning is probably Q-Learning.
+The most well-known algorithm for reinforcement learning is probably Q-Learning [@watkins1989].
 
-$Q$ is the action value function and specifies how good a state-action pair is. It is a matrix (n.states x n.actions). Interacting with the environment an action is chosen according to an $\epsilon$-greedy behavior policy
+$Q$ is the action value function and specifies how good a state-action pair is. It is a matrix (number of states x number of actions). Interacting with the environment an action is chosen according to an $\epsilon$-greedy behavior policy
 
 $$
 \pi(a | S_t) = \left\{ \begin{array}{ll} 1 - \epsilon + \frac{\epsilon}{m}, & \text{if} \; a = \text{argmax}_a Q(S_t, a)  \\
@@ -123,7 +125,7 @@ $$
 w_{t+1} = w_t + \alpha \left[ R_{t+1} + \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right] x(S_t).
 $$
 
-But how to get a good feature vector from the state observation? We will use grid tiling to aggregate the state space. Each tiling is a grid which overlays the state space. A state observation then falls into one tile per tiling and we will use as many weights as there are tiles. The feature vector is then just a one-hot vector of all active tiles.
+But how to get a good feature vector from the state observation? We will use grid tiling [@sutton2017] to aggregate the state space. Each tiling is a grid which overlays the state space. A state observation then falls into one tile per tiling and we will use as many weights as there are tiles. The feature vector is then just a one-hot vector of all active tiles.
 
 ```{r, out.width = "300px", fig.align="center", echo = FALSE}
 knitr::include_graphics("gridtiling.JPG")
@@ -162,7 +164,7 @@ print(res$steps)
 
 ### Sarsa, Expected Sarsa and Q(sigma)
 
-The Sarsa algorithm is similar to Q-Learning but samples the next action instead of taking the max. Therefore the update rule is
+The Sarsa algorithm [@rummery1994] is similar to Q-Learning but samples the next action instead of taking the max. Therefore the update rule is
 
 $$
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \right].
@@ -178,7 +180,7 @@ res = sarsa(env, n.episodes = 50)
 print(res$steps)
 ```
 
-Expected Sarsa is a generalization of Q-Learning to arbitrary target policies. While Sarsa samples the next action, Expected Sarsa computes the expectation by multiplying each action value with the probability of choosing this action. The update rule is 
+Expected Sarsa [@vanseijen2009] is a generalization of Q-Learning to arbitrary target policies. While Sarsa samples the next action, Expected Sarsa computes the expectation by multiplying each action value with the probability of choosing this action. The update rule is 
 
 $$
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a) - Q(S_t, A_t) \right].
@@ -194,7 +196,7 @@ res = expectedSarsa(env, target.policy = "greedy")
 res = expectedSarsa(env, target.policy = "egreedy")
 ```
 
-The Q($\sigma$) algorithm generalizes all the algorithms presented so far, i.e. Sarsa, Expected Sarsa and Q-Learning.
+The Q($\sigma$) algorithm [@deasis2017] generalizes all the algorithms presented so far, i.e. Sarsa, Expected Sarsa and Q-Learning.
 
 The update rule is
 
@@ -225,7 +227,7 @@ $$
 or for the weights
 
 $$
-E_t(w) = (1 - \beta) \, E_{t-1}(w) + x(S_t),
+E_t(w) = (1 - \psi) \, E_{t-1}(w) + x(S_t),
 $$
 
 when used with linear function approximation.
@@ -244,9 +246,9 @@ $$
 
 The use of eligibility traces can make reinforcement learning agents learn much faster because all state-action pairs are updated at each time step. 
 
-The factor $\beta$ controls the type of eligibility, for $\beta = 0$ this is the standard accumulating trace, for $\beta = 1$ this is the replacing trace. The factor $\lambda$ is the eligibility decay parameter. The eligibility decrease is weighted with the target's policy probability of the next action for the Expected Sarsa part of the target.
+The factor $\psi$ controls the type of eligibility, for $\psi = 0$ this is the standard accumulating trace, for $\psi = 1$ this is the replacing trace. The factor $\lambda$ is the eligibility decay parameter. The eligibility decrease is weighted with the target's policy probability of the next action for the Expected Sarsa part of the target.
 
-We can specify $\beta$ via the `eligibility.type` argument and $\lambda$ via the `lambda` argument.
+We can specify $\psi$ via the `eligibility.type` argument and $\lambda$ via the `lambda` argument.
 
 ```{r}
 res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 50)
@@ -364,7 +366,7 @@ $$
 The `td` function implements TD. It can be used with a tabular or linear function approximation and with eligibility traces. There is now one eligibility trace per state value (or weight) and its incrementally increased by
 
 $$
-E_t = (1 - \beta) E_{t-1} + 1
+E_t = (1 - \psi) E_{t-1} + 1
 $$
 
 and then the state value function is updated by
@@ -588,7 +590,7 @@ solveBandit(step, n.actions = 4, n.episodes = 1000,
   action.selection = "UCB", C = 2)
 ```
 
-The Bandit algorithm is implemented in the following way. Action values are increased incrementally which is computationally cheaper as storing all rewards in a table.
+The bandit algorithm is implemented in the following way. Action values are increased incrementally which is computationally cheaper as storing all rewards in a table.
 
 In R:
 
@@ -599,6 +601,12 @@ solveBandit(step, n.actions = 4, n.episodes = 10000,
 
 ---
 
-Have a look at the other vignettes: [Introduction to reinforcelearn](introduction.html) and [How to create an environment?](environments.html).
+### Other vignettes
 
-Author: Markus Dumke
+Have a look at the other vignettes: 
+
+- [Introduction to reinforcelearn](introduction.html)
+
+- [How to create an environment?](environments.html)
+
+----

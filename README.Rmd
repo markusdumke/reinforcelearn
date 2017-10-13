@@ -90,7 +90,7 @@ MountainCar$close()
 
 This should open a Python window showing the interaction with the environment.
 
-For more details on how to create an environment have a look at the vignette: [How to create an environment?](vignettes/environments.html)
+For more details on how to create an environment have a look at the vignette: [How to create an environment?](vignettes/environments.Rmd)
 
 ----
 
@@ -115,7 +115,7 @@ optimal.policy = max.col(res$Q1) - 1L
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 ```
 
-For more details on algorithms have a look at the vignette: [How to solve an environment?](algorithms.html)
+For more details on algorithms have a look at the vignette: [How to solve an environment?](algorithms.Rmd)
 
 ----
 
@@ -161,9 +161,9 @@ print(res$steps)
 
 Also have a look at the vignettes for further examples.
 
-- [Introduction to reinforcelearn](vignettes/introduction.html)
-- [How to create an environment?](vignettes/environments.html)
-- [How to solve an environment?](vignettes/algorithms.html)
+- [Introduction to reinforcelearn](vignettes/introduction.Rmd)
+- [How to create an environment?](vignettes/environments.Rmd)
+- [How to solve an environment?](vignettes/algorithms.Rmd)
 
 ----
 
@@ -171,4 +171,4 @@ Logo is a modification of https://www.r-project.org/logo/.
 
 Author: Markus Dumke
 
-Date: "`r format(Sys.time(), '%d %B, %Y')`"
+Date: "`r format(Sys.time(), '%d %B %Y')`"
