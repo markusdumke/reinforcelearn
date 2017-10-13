@@ -11,7 +11,7 @@
 #' Q(sigma) subsumes the well known Q-Learning, Sarsa and Expected Sarsa algorithms as special cases.
 #' The default call \code{qsigma()} is exactly equivalent to Sarsa(0). A weighted mean between sarsa
 #' and expected sarsa updates can be used by varying the parameter \code{sigma}.
-#' When \code{target.policy == "e-greedy"} the policy used to compute the expected sarsa is the epsilon-greedy
+#' When \code{target.policy == "egreedy"} the policy used to compute the expected sarsa is the epsilon-greedy
 #' policy used for action selection, when \code{target.policy == "greedy"} a greedy target policy will be
 #' used as in Q-Learning. See De Asis et al. (2017) for more details.
 #'
@@ -102,7 +102,7 @@
 #'   Discount factor.
 #' @param target.policy [\code{character(1)}] \cr
 #'   Should the temporal-difference target be computed on-policy
-#'   using the epsilon-greedy behavior policy (\code{target.policy = "e-greedy"})
+#'   using the epsilon-greedy behavior policy (\code{target.policy = "egreedy"})
 #'   or off-policy using a greedy policy in the
 #'   expected sarsa part of the update (\code{target.policy = "greedy"})?
 #' @param double.learning [\code{logical(1)}] \cr
@@ -207,7 +207,7 @@
 #'
 qSigma = function(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, sigma = 1,
-  target.policy = "e-greedy", lambda = 0, eligibility.type = 0, learning.rate = 0.1,
+  target.policy = "egreedy", lambda = 0, eligibility.type = 0, learning.rate = 0.1,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
@@ -290,7 +290,7 @@ checkArgs = function(envir, fun.approx, preprocessState,
   if (replay.memory.size < batch.size) {
     stop("Batch size must be smaller than replay memory size!")
   }
-  checkmate::assertChoice(target.policy, c("greedy", "e-greedy"))
+  checkmate::assertChoice(target.policy, c("greedy", "egreedy"))
   checkmate::assertFlag(double.learning)
   checkmate::assertFunction(preprocessState, null.ok = TRUE)
   checkmate::assertFunction(updateEpsilon,  nargs = 2, null.ok = TRUE)
@@ -333,7 +333,7 @@ sarsa = function(envir, fun.approx = "table", preprocessState = identity,
   
   qSigma(envir, fun.approx, preprocessState, 
     model, initial.value, n.states, n.episodes, sigma = 1, 
-    target.policy = "e-greedy", lambda, eligibility.type, learning.rate, 
+    target.policy = "egreedy", lambda, eligibility.type, learning.rate, 
     epsilon, discount, double.learning, update.target.after, 
     replay.memory, replay.memory.size, batch.size, alpha, theta, 
     updateEpsilon, updateSigma, updateLambda, updateAlpha, 
@@ -344,7 +344,7 @@ sarsa = function(envir, fun.approx = "table", preprocessState = identity,
 #' @inheritParams qSigma
 #' @rdname qSigma
 expectedSarsa = function(envir, fun.approx = "table", preprocessState = identity, 
-  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, target.policy = "e-greedy",
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, target.policy = "egreedy",
   lambda = 0, eligibility.type = 0, learning.rate = 0.1, 
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 

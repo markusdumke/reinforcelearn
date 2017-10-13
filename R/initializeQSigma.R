@@ -84,7 +84,7 @@ qSigmaAgent = R6::R6Class(public = list(
     # update parameters over time?
     
     self$epsilon = epsilon
-    if (target.policy == "e-greedy") {
+    if (target.policy == "egreedy") {
       self$epsilon.target = epsilon
     } else {
       self$epsilon.target = 0
