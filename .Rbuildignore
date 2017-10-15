@@ -6,3 +6,5 @@
 ^NEWS\.md$
 ^cran-comments\.md$
 ^codecov\.yml$
+^docs$
+^_pkgdown\.yml$

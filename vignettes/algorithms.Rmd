@@ -1,4 +1,5 @@
 ---
+title: "How to solve an environment?"
 output:rmarkdown::html_vignette:
 fig_caption: yes
 bibliography: references.bib
@@ -8,11 +9,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<style type="text/css">
+h1.title {
+  font-size: 34px;
+}
+</style>
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(message = FALSE, eval = T, collapse = TRUE, comment = "#>")
 ```
-
-## How to solve an environment?
 
 This vignette explains the reinforcement learning algorithms implemented in `reinforcelearn`. 
 For details of how to create an environment have a look at the [How to create an environment?](environments.html) vignette.
@@ -533,7 +538,7 @@ In the following we will consider an example bandit with four different actions.
 
 To solve this bandit problem we need to specify the reward function,
 
-```{r}
+```{r, eval = F}
 # Define reward function
 rewardFun = function(action) {
   if (action == 0) {
@@ -554,14 +559,14 @@ rewardFun = function(action) {
 
 To solve the bandit, i.e. to find out, which action returns the most reward, we can use the `solveBandit` function. There are several different action selection methods implemented, e.g. `greedy`, `epsilon-greedy`, `UCB` and `gradient-bandit`.
 
-```{r}
+```{r, eval = F}
 solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
   action.selection = "greedy")
 ```
 
 In the `solveBandit` function we can specify the argument `initial.value` which sets all Q values initially to this number. Additionally we can assign a confidence to this initial value via the `initial.visits` argument. A value of 10 for example means that the algorithm has already seen 10 rewards for each action with an average value of `initial.value`.
 
-```{r}
+```{r, eval = F}
 solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = "greedy", 
   initial.value = 5, initial.visits = 100)
@@ -569,13 +574,13 @@ solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
 
 An epsilon-greedy policy can be used as well.
 
-```{r}
+```{r, eval = F}
 solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = "egreedy", epsilon = 0.5)
 ```
 
 In the following we will decrease epsilon every 100 episodes by a factor of 0.5.
-```{r}
+```{r, eval = F}
 solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = "egreedy", epsilon = 0.5,
   epsilon.decay = 0.5, epsilon.decay.after = 100)
@@ -585,7 +590,7 @@ The schedule after which epsilon is decreased can be controled by the `epsilon.d
 
 The estimates come close to the true values and will therefore correctly estimate the 4th action as the best one.
 
-```{r}
+```{r, eval = F}
 solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = "UCB", C = 2)
 ```
@@ -594,7 +599,7 @@ The bandit algorithm is implemented in the following way. Action values are incr
 
 There is also a gradient-bandit algorithm [@sutton2017].
 
-```{r}
+```{r, eval = F}
 solveBandit(rewardFun, n.actions = 4, n.episodes = 10000, 
   action.selection = "gradientbandit", alpha = 0.1)
 ```
