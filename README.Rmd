@@ -2,13 +2,6 @@
 output: github_document
 ---
 
-<img src="inst/ReinforceLogo.png" width="150px">: Reinforcement Learning in R.
-
-----
-
-[![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn)
-[![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
-
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -17,6 +10,17 @@ knitr::opts_chunk$set(
   fig.path = "README-"
 )
 ```
+
+```{r, out.width = "150px", echo = FALSE}
+knitr::include_graphics("inst/reinforcelearn.png")
+```
+: Reinforcement Learning in R.
+
+----
+
+[![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn)
+[![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
 
 ### Installation
 
@@ -38,7 +42,7 @@ library(reinforcelearn)
 env = windyGridworld()
 
 # Solve environment using Sarsa
-res = sarsa(env, n.episodes = 50)
+res = sarsa(env, n.episodes = 30)
 print(res$steps)
 ```
 
@@ -90,7 +94,7 @@ MountainCar$close()
 
 This should open a Python window showing the interaction with the environment.
 
-For more details on how to create an environment have a look at the vignette: [How to create an environment?](vignettes/environments.Rmd)
+For more details on how to create an environment have a look at the vignette: [How to create an environment?](markdumke.github.io/reinforcelearn/articles/environments.html)
 
 ----
 
@@ -101,7 +105,7 @@ After you created an environment you can use various reinforcement learning algo
 ```{r}
 # Create the windy gridworld environment.
 env = windyGridworld()
-res = qlearning(env, n.episodes = 50)
+res = qlearning(env, n.episodes = 30)
 print(res$steps)
 
 # Show value of each state.
@@ -115,7 +119,7 @@ optimal.policy = max.col(res$Q1) - 1L
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 ```
 
-For more details on algorithms have a look at the vignette: [How to solve an environment?](algorithms.Rmd)
+For more details on algorithms have a look at the vignette: [How to solve an environment?](markdumke.github.io/reinforcelearn/articles/algorithms.html)
 
 ----
 
@@ -151,7 +155,7 @@ preprocessState = function(state) {
 
 set.seed(123)
 res = qlearning(m, fun.approx = "linear", 
-  preprocessState = preprocessState, n.episodes = 30)
+  preprocessState = preprocessState, n.episodes = 20)
 print(res$steps)
 ```
 
@@ -161,9 +165,9 @@ print(res$steps)
 
 Also have a look at the vignettes for further examples.
 
-- [Introduction to reinforcelearn](vignettes/introduction.Rmd)
-- [How to create an environment?](vignettes/environments.Rmd)
-- [How to solve an environment?](vignettes/algorithms.Rmd)
+- [Introduction to reinforcelearn](markdumke.github.io/reinforcelearn/articles/introduction.html)
+- [How to create an environment?](markdumke.github.io/reinforcelearn/articles/environments.html)
+- [How to solve an environment?](markdumke.github.io/reinforcelearn/articles/algorithms.html)
 
 ----
 
