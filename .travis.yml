@@ -10,7 +10,6 @@ r_github_packages:
   - jimhester/lintr
 
 r:
-- release
 - devel
 
 before_install:
