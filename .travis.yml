@@ -18,7 +18,8 @@ before_install:
 
 after_success:
 - Rscript -e 'covr::codecov(type = "all")'
-- Rscript -e 'lintr::lint_package()'
+- Rscript -e 'source("tests/testthat/helper_lint.R")'
+- Rscript -e 'lintr::lint_package(linters = linters)'
 
 notifications:
   slack:
