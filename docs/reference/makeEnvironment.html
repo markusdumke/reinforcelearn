@@ -199,7 +199,7 @@ at <a href='https://github.com/openai/gym-http-api'>https://github.com/openai/gy
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <p>Create gridworlds with <code><a href='makeGridworld.html'>makeGridworld</a></code>. 
-For the mountain car environment have a look at <code><a href='MountainCar.html'>MountainCar</a></code>.</p>
+For the mountain car environment have a look at <code><a href='mountainCar.html'>mountainCar</a></code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -214,10 +214,10 @@ For the mountain car environment have a look at <code><a href='MountainCar.html'
 <span class='fu'>print</span>(<span class='no'>CartPole</span>)
 
 <span class='co'># Create the MountainCar environment which has a continuous state space.</span>
-<span class='no'>MountainCar</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='st'>"MountainCar-v0"</span>)
+<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='st'>"MountainCar-v0"</span>)
 
-<span class='no'>MountainCar</span>$<span class='no'>state.space</span>
-<span class='no'>MountainCar</span>$<span class='no'>state.space.bounds</span>
+<span class='no'>m</span>$<span class='no'>state.space</span>
+<span class='no'>m</span>$<span class='no'>state.space.bounds</span>
 <span class='co'># }</span><div class='input'>
 <span class='co'># Create an environment from a transition array and reward matrix.</span>
 <span class='no'>P</span> <span class='kw'>=</span> <span class='fu'>array</span>(<span class='fl'>0</span>, <span class='fu'>c</span>(<span class='fl'>2</span>,<span class='fl'>2</span>,<span class='fl'>2</span>))

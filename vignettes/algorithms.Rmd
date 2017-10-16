@@ -108,7 +108,7 @@ In many interesting problems there are lots of states and actions or the space i
 In the following we will have a look at the mountain car problem, where the goal is to drive an underpowered car up a steep hill. The state space is continuous in two dimensions, the position and velocity of the car, each bounded in some interval. There are three different actions: push back (0), do nothing (1) and push forward (2).
 
 ```{r}
-env = MountainCar()
+env = mountainCar()
 print(env$state.space)
 print(env$state.space.bounds)
 
@@ -316,7 +316,7 @@ When experiencing a new transition the algorithm replaces the oldest entry in th
 # Fill a replay memory of size 100 on the mountain car task.
 # We will use grid tiling as defined above.
 memory = vector("list", length = 100)
-env = MountainCar()
+env = mountainCar()
 env$reset()
 for (i in 1:100) {
   if (env$done) {
@@ -505,7 +505,7 @@ $$
 where $\nabla_\theta \log \pi(A_t | S_t, \theta)$ is the gradient of the log policy. There are now two learning rates $\alpha$ and $\beta$.
 
 ```{r}
-env = MountainCar()
+env = mountainCar()
 
 # Linear function approximation and softmax policy
 res = actorCritic(env, fun.approx = "linear", 
@@ -519,7 +519,7 @@ Here we will solve a continuous version of the mountain car problem, where the a
 
 ```{r}
 # Mountain Car with continuous action space
-env = MountainCar(action.space = "Continuous")
+env = mountainCar(action.space = "Continuous")
 
 # Linear function approximation and gaussian policy
 set.seed(123)

@@ -18,9 +18,10 @@ Imports:
     checkmate (>= 1.8.4),
     R6 (>= 2.2.2)
 Suggests:
-    gym (>= 0.1.0),
+    gym,
     knitr,
     rmarkdown,
     testthat,
-    covr
+    covr,
+    lintr
 VignetteBuilder: knitr

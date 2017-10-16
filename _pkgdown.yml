@@ -10,7 +10,7 @@ reference:
     contents:
     - makeEnvironment
     - makeGridworld
-    - MountainCar
+    - mountainCar
     - windyGridworld
     - gridworld
     - cliff
@@ -19,7 +19,6 @@ reference:
     contents:
     - qSigma
     - td
-    - sarsa
     - actorCritic
     - evaluatePolicy
     - solveBandit

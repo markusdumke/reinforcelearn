@@ -43,7 +43,7 @@ res = qlearning(env, n.episodes = 5, initial.value = Q)
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 
 ## ------------------------------------------------------------------------
-env = MountainCar()
+env = mountainCar()
 print(env$state.space)
 print(env$state.space.bounds)
 
@@ -111,7 +111,7 @@ print(res$steps)
 # Fill a replay memory of size 100 on the mountain car task.
 # We will use grid tiling as defined above.
 memory = vector("list", length = 100)
-env = MountainCar()
+env = mountainCar()
 env$reset()
 for (i in 1:100) {
   if (env$done) {
@@ -179,7 +179,7 @@ res = iterateValue(env, n.iter = 100)
 print(res$policy)
 
 ## ------------------------------------------------------------------------
-env = MountainCar()
+env = mountainCar()
 
 # Linear function approximation and softmax policy
 res = actorCritic(env, fun.approx = "linear", 
@@ -188,7 +188,7 @@ print(res$steps)
 
 ## ------------------------------------------------------------------------
 # Mountain Car with continuous action space
-env = MountainCar(action.space = "Continuous")
+env = mountainCar(action.space = "Continuous")
 
 # Linear function approximation and gaussian policy
 set.seed(123)

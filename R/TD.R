@@ -90,8 +90,8 @@ td = function(envir, policy, fun.approx = "table", preprocessState = identity,
   state = preprocessState(envir$state)
   episode = 0
   step = 0
-  steps = c()
-  returns = c()
+  steps = vector()
+  returns = vector()
   return.ep = 0
   
   if (fun.approx == "table") {

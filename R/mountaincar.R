@@ -8,27 +8,27 @@
 #' @export
 #' @examples 
 #' # Classic Mountain Car task
-#' m = MountainCar()
+#' m = mountainCar()
 #' m$reset()
 #' m$step(1)
 #' print(m)
 #' 
 #' # Mountain Car with continuous action space
-#' m = MountainCar(action.space = "Continuous")
+#' m = mountainCar(action.space = "Continuous")
 #' m$reset()
 #' m$step(0.27541)
 #' print(m)
 #' 
-MountainCar = function(action.space = "Discrete") {
+mountainCar = function(action.space = "Discrete") {
   checkmate::assertChoice(action.space, c("Discrete", "Continuous", "discrete", "continuous"))
   if (action.space %in% c("Discrete", "discrete")) {
-    MountainCarDiscrete$new()
+    mountainCarDiscrete$new()
   } else {
-    MountainCarContinuous$new()
+    mountainCarContinuous$new()
   }
 }
 
-MountainCarDiscrete = R6::R6Class("MountainCar",
+mountainCarDiscrete = R6::R6Class("mountainCar",
   public = list(
     action.space = "Discrete",
     actions = 0:2,
@@ -86,7 +86,7 @@ MountainCarDiscrete = R6::R6Class("MountainCar",
   )
 )
 
-MountainCarContinuous = R6::R6Class("MountainCarContinuous",
+mountainCarContinuous = R6::R6Class("mountainCarContinuous",
   public = list(
     action.space = "Box",
     action.space.bounds = list(c(-1, 1)),

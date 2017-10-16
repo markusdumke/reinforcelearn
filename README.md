@@ -1,6 +1,8 @@
 
-<img src="inst/reinforcelearn.png" width="150px" />  
+<img src="reinforcelearn.png" width="150px" />
+
 Reinforcement Learning in R.
+----------------------------
 
 ------------------------------------------------------------------------
 
@@ -28,9 +30,9 @@ env = windyGridworld()
 # Solve environment using Sarsa
 res = sarsa(env, n.episodes = 30)
 print(res$steps)
-#>  [1] 1244 1434  600  316  573   70  293  360  148  256  177  220  117  243
-#> [15]   34   61  239  190  177  181  102  174   82   52  104   51  214  133
-#> [29]  170  126
+#>  [1]  818 1807  727  460  410  128  369  159  332   33  221  148  329   96
+#> [15]   89  270  122   68  177  185  179   92  117   46  225  116  190   90
+#> [29]  137  184
 ```
 
 ------------------------------------------------------------------------
@@ -63,9 +65,9 @@ print(env)
 env$step(0)
 print(env)
 #> Number of steps: 1 
-#> State: 1 
+#> State: 0 
 #> Reward: 5 
-#> Done: TRUE
+#> Done: FALSE
 ```
 
 You can also create an environment from [OpenAI Gym](https://gym.openai.com/). You need to install all dependencies listed [here](https://github.com/openai/gym-http-api). Then you can use an environment with the name.
@@ -74,15 +76,15 @@ You can also create an environment from [OpenAI Gym](https://gym.openai.com/). Y
 # Create Gym environment.
 # Note: There is a bug: The following line might return an error. 
 # If so, repeat this line, then it should work.
-MountainCar = makeEnvironment("MountainCar-v0")
+m = makeEnvironment("MountainCar-v0")
 
-MountainCar$reset()
+m$reset()
 # take random actions for 200 steps
 for (i in 1:200) {
-  action = sample(MountainCar$actions, 1)
-  MountainCar$step(action)
+  action = sample(m$actions, 1)
+  m$step(action)
 }
-MountainCar$close()
+m$close()
 ```
 
 This should open a Python window showing the interaction with the environment.
@@ -100,20 +102,20 @@ After you created an environment you can use various reinforcement learning algo
 env = windyGridworld()
 res = qlearning(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  950 1446  912  336  496  219  185  219  236  239  352  147   64  129
-#> [15]  219  243  135  134   49  343  185   68  108   84  128  159   70   87
-#> [29]   21  108
+#>  [1] 1005 1618  739  330  546   79  147  389  220  241   78  179  119  395
+#> [15]  215   49  205   60  196   35  295   46   78  198   87   79  143  100
+#> [29]  145  255
 
 # Show value of each state.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,] -4.6 -4.9 -5.4 -6.2 -6.9 -7.4 -7.3 -6.7 -5.9  -5.1
-#> [2,] -4.5 -4.5 -4.7 -5.0 -4.9 -4.0 -2.9 -3.9 -4.2  -4.2
-#> [3,] -4.2 -4.1 -4.0 -4.1 -3.4 -1.9 -1.3 -2.2 -3.2  -3.4
-#> [4,] -3.9 -3.6 -3.4 -3.1 -2.0 -0.8 -0.3  0.0 -2.1  -2.5
-#> [5,] -3.4 -3.1 -2.7 -2.3 -1.1 -0.3  0.0 -0.3 -0.9  -1.7
-#> [6,] -2.9 -2.6 -2.2 -1.6 -0.6  0.0  0.0  0.0 -0.8  -1.2
-#> [7,] -2.5 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7
+#> [1,] -4.8 -5.0 -5.6 -6.3 -7.1 -7.5 -7.4 -6.8 -6.1  -5.2
+#> [2,] -4.5 -4.6 -4.8 -5.2 -4.9 -4.3 -3.0 -3.9 -4.4  -4.3
+#> [3,] -4.3 -4.2 -4.1 -4.0 -3.5 -2.0 -1.3 -2.3 -3.2  -3.5
+#> [4,] -3.9 -3.7 -3.5 -3.3 -1.9 -0.9 -0.3  0.0 -2.4  -2.6
+#> [5,] -3.4 -3.2 -2.8 -2.3 -1.1 -0.3  0.0 -0.3 -0.9  -1.8
+#> [6,] -2.9 -2.7 -2.2 -1.6 -0.7  0.0  0.0  0.0 -0.7  -1.1
+#> [7,] -2.7 -2.4 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7
 ```
 
 We can then get the optimal policy by taking the argmax over the action value function Q.
@@ -122,13 +124,13 @@ We can then get the optimal policy by taking the argmax over the action value fu
 optimal.policy = max.col(res$Q1) - 1L
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,]    1    1    0    0    0    0    1    1    1     2
-#> [2,]    2    1    0    0    3    0    2    0    3     3
-#> [3,]    2    2    3    3    3    3    1    1    0     2
-#> [4,]    1    0    3    2    0    2    0    2    3     0
-#> [5,]    3    3    3    2    3    0    1    0    0     0
-#> [6,]    3    0    1    1    1    2    1    2    0     3
-#> [7,]    3    3    1    3    3    1    2    3    3     0
+#> [1,]    3    2    0    3    0    0    1    1    1     3
+#> [2,]    1    0    3    3    0    3    2    3    3     2
+#> [3,]    3    3    1    3    3    3    0    2    1     3
+#> [4,]    3    0    3    2    0    1    1    3    0     3
+#> [5,]    2    2    1    2    1    0    1    3    0     0
+#> [6,]    3    3    1    1    2    1    0    3    0     0
+#> [7,]    2    1    2    1    0    2    1    0    0     1
 ```
 
 For more details on algorithms have a look at the vignette: [How to solve an environment?](markdumke.github.io/reinforcelearn/articles/algorithms.html)
@@ -141,7 +143,7 @@ When the state space is large or even continuous tabular solution methods cannot
 
 ``` r
 # Set up the Mountain Car problem
-m = MountainCar()
+m = mountainCar()
 
 # Define preprocessing function (here grid tiling)
 n.tilings = 8
@@ -188,4 +190,4 @@ Logo is a modification of <https://www.r-project.org/logo/>.
 
 Author: Markus Dumke
 
-Date: "15 Oktober 2017"
+Date: "16 Oktober 2017"

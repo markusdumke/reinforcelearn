@@ -222,7 +222,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               
               s.n = self$preprocessState(envir$state)
@@ -263,7 +263,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
@@ -318,7 +318,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               
               s.n = self$preprocessState(envir$state)
@@ -371,7 +371,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               
               s.n = self$preprocessState(envir$state)
@@ -428,7 +428,7 @@ qSigmaAgent = R6::R6Class(public = list(
           self$runEpisode = function(envir, i) {
             envir$reset()
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               s = self$preprocessState(envir$state)
               Q = self$predictQ(self$Q1, s)
               policy = getPolicy(Q, self$epsilon)
@@ -471,7 +471,7 @@ qSigmaAgent = R6::R6Class(public = list(
           self$runEpisode = function(envir, i) {
             envir$reset()
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               s = self$preprocessState(envir$state)
               Q = self$predictQ(self$Q1 + self$Q2, s)
               policy = getPolicy(Q, self$epsilon)
@@ -554,7 +554,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               
               s.n = self$preprocessState(envir$state)
@@ -595,7 +595,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               
               s.n = self$preprocessState(envir$state)
@@ -651,7 +651,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               
               s.n = self$preprocessState(envir$state)
@@ -704,7 +704,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               
               s.n = self$preprocessState(envir$state)
@@ -761,7 +761,7 @@ qSigmaAgent = R6::R6Class(public = list(
           self$runEpisode = function(envir, i) {
             envir$reset()
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               s = self$preprocessState(envir$state)
               Q = self$predictQ(self$Q1, s)
               policy = getPolicy(Q, self$epsilon)
@@ -815,7 +815,7 @@ qSigmaAgent = R6::R6Class(public = list(
         predict(Q, state)
       }
       
-      keras::compile(model, loss = 'mse', optimizer = keras::optimizer_sgd(lr = self$learning.rate))
+      keras::compile(model, loss = "mse", optimizer = keras::optimizer_sgd(lr = self$learning.rate))
       self$Q1 = model
       
       if (!experience.replay) {
@@ -827,7 +827,7 @@ qSigmaAgent = R6::R6Class(public = list(
             policy = getPolicy(Q, self$epsilon)
             a = sampleActionFromPolicy(policy)
             
-            while(envir$done == FALSE) {
+            while (envir$done == FALSE) {
               envir$step(a)
               
               s.n = self$preprocessState(envir$state)

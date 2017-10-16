@@ -53,23 +53,23 @@ tiles = function(iht, n.tilings, state, action = integer(0)) {
   checkmate::assertIntegerish(action, max.len = 1)
   
   qfloats = floor(state * n.tilings)
-  Tiles = rep(0, n.tilings)
+  active.tiles = rep(0, n.tilings)
   coords = rep(0, length(state) + 1)
   
   for (tiling in seq_len(n.tilings)) {
     tiling = tiling - 1
-    tilingX2 = tiling * 2
+    tiling2 = tiling * 2
     coords[1] = tiling
     b = tiling
     for (q in seq_along(qfloats)) {
       coords[q + 1] = (qfloats[q] + b) %/% n.tilings
-      b = b + tilingX2
+      b = b + tiling2
     }
     coords = append(coords, action)
-    Tiles[tiling + 1] = hashcoords(paste(coords, collapse = ""), iht)
+    active.tiles[tiling + 1] = hashcoords(paste(coords, collapse = ""), iht)
   }
   
-  return(Tiles)
+  return(active.tiles)
 }
 
 hashcoords = function(coords, iht) {

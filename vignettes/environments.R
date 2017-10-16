@@ -117,7 +117,7 @@ windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37,
 knitr::include_graphics("mountaincar.JPG")
 
 ## ------------------------------------------------------------------------
-MountainCar = R6::R6Class("MountainCar", 
+mountainCar = R6::R6Class("MountainCar", 
   public = list(
     action.space = "Discrete",
     actions = 0:2,
@@ -172,7 +172,7 @@ MountainCar = R6::R6Class("MountainCar",
 )
 
 ## ------------------------------------------------------------------------
-m = MountainCar$new()
+m = mountainCar$new()
 set.seed(123456)
 m$reset()
 while(!m$done) {
@@ -183,14 +183,14 @@ print(paste("Episode finished after", m$n.steps, "steps."))
 
 ## ------------------------------------------------------------------------
 # Mountain Car with discrete action space
-m = MountainCar()
+m = mountainCar()
 m$reset()
 m$step(1)
 print(m)
 
 ## ------------------------------------------------------------------------
 # Mountain Car with continuous action space
-m = MountainCar(action.space = "Continuous")
+m = mountainCar(action.space = "Continuous")
 m$reset()
 print(m)
 m$step(0.27541)

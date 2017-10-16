@@ -77,7 +77,7 @@ res = actorCritic(env, n.episodes = 100)
 
 #----------------
 # Mountain Car
-m = MountainCar()
+m = mountainCar()
 
 # Define preprocessing function (we use grid tiling)
 n.tilings = 8
@@ -104,7 +104,7 @@ res = actorCritic(m, fun.approx = "linear",
 
 #----------------
 # Mountain Car with continuous action space
-m2 = MountainCar(action.space = "Continuous")
+m2 = mountainCar(action.space = "Continuous")
 
 # Linear function approximation and gaussian policy
 set.seed(123)

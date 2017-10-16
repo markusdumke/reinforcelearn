@@ -165,7 +165,7 @@
 #' expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon)
 #'
 #' # Solve the Mountain Car problem using linear function approximation
-#' m = MountainCar()
+#' m = mountainCar()
 #' 
 #' # Define preprocessing function (we use grid tiling)
 #' n.tilings = 8

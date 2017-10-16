@@ -45,7 +45,7 @@
 #'   Whether to render the OpenAI Gym environment. If \code{TRUE} a python window 
 #'   with a graphical interface opens whenever the step method is called.
 #' @seealso Create gridworlds with \code{\link{makeGridworld}}. 
-#' For the mountain car environment have a look at \code{\link{MountainCar}}.
+#' For the mountain car environment have a look at \code{\link{mountainCar}}.
 #' @return [\code{R6 class}] \cr 
 #'   Reinforcement Learning Environment.
 #' @section Methods: \describe{
@@ -75,10 +75,10 @@
 #' print(CartPole)
 #' 
 #' # Create the MountainCar environment which has a continuous state space.
-#' MountainCar = makeEnvironment("MountainCar-v0")
+#' m = makeEnvironment("MountainCar-v0")
 #' 
-#' MountainCar$state.space
-#' MountainCar$state.space.bounds
+#' m$state.space
+#' m$state.space.bounds
 #' }
 #' 
 #' # Create an environment from a transition array and reward matrix.
@@ -339,7 +339,7 @@ envir = R6::R6Class("envir",
 # Copied from R6 class
 # Trim a string to n characters; if it's longer than n, add " ..." to the end
 trim = function(str, n = 60) {
-  if (nchar(str) > n) paste(substr(str, 1, n-4), "...")
+  if (nchar(str) > n) paste(substr(str, 1, n - 4), "...")
   else str
 }
 

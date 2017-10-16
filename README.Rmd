@@ -12,9 +12,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, out.width = "150px", echo = FALSE}
-knitr::include_graphics("inst/reinforcelearn.png")
+knitr::include_graphics("reinforcelearn.png")
 ```
-: Reinforcement Learning in R.
+
+## Reinforcement Learning in R.
 
 ----
 
@@ -81,15 +82,15 @@ Then you can use an environment with the name.
 # Create Gym environment.
 # Note: There is a bug: The following line might return an error. 
 # If so, repeat this line, then it should work.
-MountainCar = makeEnvironment("MountainCar-v0")
+m = makeEnvironment("MountainCar-v0")
 
-MountainCar$reset()
+m$reset()
 # take random actions for 200 steps
 for (i in 1:200) {
-  action = sample(MountainCar$actions, 1)
-  MountainCar$step(action)
+  action = sample(m$actions, 1)
+  m$step(action)
 }
-MountainCar$close()
+m$close()
 ```
 
 This should open a Python window showing the interaction with the environment.
@@ -130,7 +131,7 @@ Here is an example solving the mountain car problem using linear function approx
 
 ```{r}
 # Set up the Mountain Car problem
-m = MountainCar()
+m = mountainCar()
 
 # Define preprocessing function (here grid tiling)
 n.tilings = 8

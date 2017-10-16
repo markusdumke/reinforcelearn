@@ -128,7 +128,7 @@ solveBandit = function(rewardFun, n.actions, n.episodes = 100,
       total.reward = sum(rewards)
       total.action.visits = sum(action.visits)
       average.reward = total.reward / total.action.visits
-      H[- action] = H[- action] - alpha * (reward - average.reward) * Q[ - action]
+      H[- action] = H[- action] - alpha * (reward - average.reward) * Q[- action]
       H[action] = H[action] + alpha * 
         (reward - average.reward) * (1 - Q[action])
     }

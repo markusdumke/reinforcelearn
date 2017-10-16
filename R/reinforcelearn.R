@@ -9,7 +9,7 @@
 #' * [gridworld]
 #' * [windyGridworld]
 #' * [cliff]
-#' * [MountainCar]
+#' * [mountainCar]
 #' 
 #' @section Bandits:
 #' * [solveBandit]

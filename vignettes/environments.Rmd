@@ -308,7 +308,7 @@ The original formulation of the problem has three actions: "push left", "no push
 Here is an example implementation of the mountain car environment.
 
 ```{r}
-MountainCar = R6::R6Class("MountainCar", 
+mountainCar = R6::R6Class("MountainCar", 
   public = list(
     action.space = "Discrete",
     actions = 0:2,
@@ -366,7 +366,7 @@ MountainCar = R6::R6Class("MountainCar",
 Then we can use this to generate samples.
 
 ```{r}
-m = MountainCar$new()
+m = mountainCar$new()
 set.seed(123456)
 m$reset()
 while(!m$done) {
@@ -376,11 +376,11 @@ while(!m$done) {
 print(paste("Episode finished after", m$n.steps, "steps."))
 ```
 
-Note: The mountain car implementation above is already included in the package and can be called with the `MountainCar` function.
+Note: The mountain car implementation above is already included in the package and can be called with the `mountainCar` function.
 
 ```{r}
 # Mountain Car with discrete action space
-m = MountainCar()
+m = mountainCar()
 m$reset()
 m$step(1)
 print(m)
@@ -390,7 +390,7 @@ There is also a variant with a continuous action space (bounded in $[-1, 1]$)
 
 ```{r}
 # Mountain Car with continuous action space
-m = MountainCar(action.space = "Continuous")
+m = mountainCar(action.space = "Continuous")
 m$reset()
 print(m)
 m$step(0.27541)

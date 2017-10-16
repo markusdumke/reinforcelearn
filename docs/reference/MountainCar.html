@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mountain Car — MountainCar â€¢ reinforcelearn</title>
+<title>Mountain Car — mountainCar â€¢ reinforcelearn</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -108,7 +108,7 @@
     <p>Mountain Car</p>
     
 
-    <pre class="usage"><span class='fu'>MountainCar</span>(<span class='kw'>action.space</span> <span class='kw'>=</span> <span class='st'>"Discrete"</span>)</pre>
+    <pre class="usage"><span class='fu'>mountainCar</span>(<span class='kw'>action.space</span> <span class='kw'>=</span> <span class='st'>"Discrete"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -129,7 +129,7 @@ the continuous version one action in a box from -1 to 1.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Classic Mountain Car task</span>
-<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'>MountainCar</span>()
+<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'>mountainCar</span>()
 <span class='no'>m</span>$<span class='fu'>reset</span>()
 <span class='no'>m</span>$<span class='fu'>step</span>(<span class='fl'>1</span>)
 <span class='fu'>print</span>(<span class='no'>m</span>)</div><div class='output co'>#&gt; Number of steps: 1 
@@ -137,7 +137,7 @@ the continuous version one action in a box from -1 to 1.</p></td>
 #&gt; Reward: -1 
 #&gt; Done: FALSE </div><div class='input'>
 <span class='co'># Mountain Car with continuous action space</span>
-<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'>MountainCar</span>(<span class='kw'>action.space</span> <span class='kw'>=</span> <span class='st'>"Continuous"</span>)
+<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'>mountainCar</span>(<span class='kw'>action.space</span> <span class='kw'>=</span> <span class='st'>"Continuous"</span>)
 <span class='no'>m</span>$<span class='fu'>reset</span>()
 <span class='no'>m</span>$<span class='fu'>step</span>(<span class='fl'>0.27541</span>)
 <span class='fu'>print</span>(<span class='no'>m</span>)</div><div class='output co'>#&gt; Number of steps: 1 

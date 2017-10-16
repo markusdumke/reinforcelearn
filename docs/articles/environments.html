@@ -333,7 +333,7 @@ env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
 <p>The position is bounded in <span class="math inline">\([-1.2, 0.5]\)</span>, the velocity in <span class="math inline">\([-0.07, 0.07]\)</span>. When reaching the left position bound, the velocity will be set to 0. Each episode starts from a random position in the valley (position <span class="math inline">\(\in [-0.6, -0.4]\)</span>) and a velocity of 0.</p>
 <p>The original formulation of the problem has three actions: “push left”, “no push” and “push right”, which are coded as -1, 0 and 1. The reward for each step is - 1 until the terminal state at the right mountain summit is reached.</p>
 <p>Here is an example implementation of the mountain car environment.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MountainCar =<span class="st"> </span>R6<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/R6/topics/R6Class">R6Class</a></span>(<span class="st">"MountainCar"</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mountainCar =<span class="st"> </span>R6<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/R6/topics/R6Class">R6Class</a></span>(<span class="st">"MountainCar"</span>, 
   <span class="dt">public =</span> <span class="kw">list</span>(
     <span class="dt">action.space =</span> <span class="st">"Discrete"</span>,
     <span class="dt">actions =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">2</span>,
@@ -387,7 +387,7 @@ env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
   )
 )</code></pre></div>
 <p>Then we can use this to generate samples.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span>MountainCar<span class="op">$</span><span class="kw">new</span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span>mountainCar<span class="op">$</span><span class="kw">new</span>()
 <span class="kw">set.seed</span>(<span class="dv">123456</span>)
 m<span class="op">$</span><span class="kw">reset</span>()
 <span class="cf">while</span>(<span class="op">!</span>m<span class="op">$</span>done) {
@@ -396,9 +396,9 @@ m<span class="op">$</span><span class="kw">reset</span>()
 }
 <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">"Episode finished after"</span>, m<span class="op">$</span>n.steps, <span class="st">"steps."</span>))
 <span class="co">#&gt; [1] "Episode finished after 787 steps."</span></code></pre></div>
-<p>Note: The mountain car implementation above is already included in the package and can be called with the <code>MountainCar</code> function.</p>
+<p>Note: The mountain car implementation above is already included in the package and can be called with the <code>mountainCar</code> function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mountain Car with discrete action space</span>
-m =<span class="st"> </span><span class="kw"><a href="../reference/MountainCar.html">MountainCar</a></span>()
+m =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>()
 m<span class="op">$</span><span class="kw">reset</span>()
 m<span class="op">$</span><span class="kw">step</span>(<span class="dv">1</span>)
 <span class="kw">print</span>(m)
@@ -408,7 +408,7 @@ m<span class="op">$</span><span class="kw">step</span>(<span class="dv">1</span>
 <span class="co">#&gt; Done: FALSE</span></code></pre></div>
 <p>There is also a variant with a continuous action space (bounded in <span class="math inline">\([-1, 1]\)</span>)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mountain Car with continuous action space</span>
-m =<span class="st"> </span><span class="kw"><a href="../reference/MountainCar.html">MountainCar</a></span>(<span class="dt">action.space =</span> <span class="st">"Continuous"</span>)
+m =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>(<span class="dt">action.space =</span> <span class="st">"Continuous"</span>)
 m<span class="op">$</span><span class="kw">reset</span>()
 <span class="kw">print</span>(m)
 <span class="co">#&gt; Number of steps: 0 </span>

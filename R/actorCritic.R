@@ -50,7 +50,7 @@
 #' 
 #' #----------------
 #' # Mountain Car
-#' m = MountainCar()
+#' m = mountainCar()
 #' 
 #' # Define preprocessing function (we use grid tiling)
 #' n.tilings = 8
@@ -77,7 +77,7 @@
 #' 
 #' #----------------
 #' # Mountain Car with continuous action space
-#' m2 = MountainCar(action.space = "Continuous")
+#' m2 = mountainCar(action.space = "Continuous")
 #' 
 #' # Linear function approximation and gaussian policy
 #' set.seed(123)
@@ -118,7 +118,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
       e.actor = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
       e.critic = rep(0, envir$n.states)
       j = 1
-      while(envir$done == FALSE) {
+      while (envir$done == FALSE) {
         s = preprocessState(envir$state)
         a = sampleActionFromPolicy(policy[s + 1, ])
         envir$step(a)
@@ -173,7 +173,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
       e.actor = matrix(0, nrow = n.weights, ncol = envir$n.actions)
       e.critic = rep(0, n.weights)
       j = 1
-      while(envir$done == FALSE) {
+      while (envir$done == FALSE) {
         s = preprocessState(envir$state)
         policy = predictPolicy(s)
         action = sampleActionFromPolicy(policy)
@@ -232,7 +232,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
       e.actor.sigma = rep(0, n.weights)
       e.critic = rep(0, n.weights)
       j = 1
-      while(envir$done == FALSE) {
+      while (envir$done == FALSE) {
         s = preprocessState(envir$state)
         mu = c(theta.mu %*% s)
         sigma = exp(c(theta.sigma %*% s))

@@ -149,34 +149,34 @@ res = qlearning(env, n.episodes = 50)
 # Note: to find the optimal policy we need to run at least 500 episodes.</code></pre>
 <p>The <code>qlearning</code> function returns the action value function <span class="math inline">\(Q\)</span> (here a matrix) and some statistics about learning behavior, e.g. the number of steps and return per episode.</p>
 <pre class="r"><code>print(res$steps)
-#&gt;  [1]  885 1807  708  334  422  234  164  284  142  361   80  284  227  156
-#&gt; [15]  141   89  173  130   70  362   57   70  183  112  117  178  125   47
-#&gt; [29]  220   84   58  119   42   31  163  152   30   67  100  114  148  116
-#&gt; [43]   40   93   78   22   95   68  215   44</code></pre>
+#&gt;  [1] 1101 1684  627  155  573   79  325  261   80  291  315  193  203  141
+#&gt; [15]  264  121  119  116  106  188  169   62   40  150  298   30  123   54
+#&gt; [29]  261  207   31  131   87   24  106  106  137   48   70   94   84  164
+#&gt; [43]   27  118   52   49  133   32   89   94</code></pre>
 <p>We can then find the optimal policy by acting greedily with respect to the action value function.</p>
 <pre class="r"><code># Values of each grid cell
 state.values = matrix(apply(res$Q1, 1, max), ncol = 10, byrow = TRUE)
 print(round(state.values, 1))
 #&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
 #&gt; [1,] -5.6 -5.9 -6.4 -7.2 -7.8 -8.2 -8.0 -7.3 -6.5  -5.6
-#&gt; [2,] -5.5 -5.5 -5.7 -6.1 -5.8 -5.5 -4.1 -4.4 -4.7  -4.7
-#&gt; [3,] -5.1 -5.0 -5.0 -5.2 -4.4 -3.2 -2.5 -2.7 -3.7  -3.8
-#&gt; [4,] -4.9 -4.5 -4.3 -4.2 -3.0 -1.9 -0.6  0.0 -2.6  -2.9
-#&gt; [5,] -4.3 -4.0 -3.6 -3.1 -2.0 -0.7  0.0 -0.4 -1.0  -2.0
-#&gt; [6,] -3.8 -3.5 -3.0 -2.5 -1.2  0.0  0.0 -0.1 -0.8  -1.3
-#&gt; [7,] -3.5 -3.1 -2.5 -1.7  0.0  0.0  0.0  0.0 -0.3  -0.8
+#&gt; [2,] -5.3 -5.5 -5.7 -6.0 -6.2 -5.3 -4.4 -4.2 -4.8  -4.7
+#&gt; [3,] -5.1 -5.0 -5.0 -5.1 -4.4 -3.2 -2.5 -2.7 -3.7  -3.8
+#&gt; [4,] -4.9 -4.5 -4.3 -4.2 -3.1 -1.7 -0.6  0.0 -2.6  -2.9
+#&gt; [5,] -4.3 -4.0 -3.6 -3.3 -1.9 -0.8  0.0 -0.5 -1.0  -2.0
+#&gt; [6,] -3.8 -3.4 -3.0 -2.4 -1.2  0.0  0.0 -0.1 -0.9  -1.3
+#&gt; [7,] -3.4 -3.1 -2.4 -1.7  0.0  0.0  0.0  0.0 -0.3  -0.8
 
 # Subtract 1 to be consistent with action numeration in env
 optimal.policy = max.col(res$Q1) - 1
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,]    2    0    3    0    2    0    1    1    2     3
-#&gt; [2,]    1    3    3    3    1    3    1    3    0     3
-#&gt; [3,]    2    3    0    3    2    3    1    3    0     3
-#&gt; [4,]    2    3    3    1    1    1    0    2    1     3
-#&gt; [5,]    3    1    0    1    3    3    3    0    0     0
-#&gt; [6,]    1    3    3    2    1    2    3    0    0     3
-#&gt; [7,]    3    1    3    1    1    0    2    0    2     2</code></pre>
+#&gt; [1,]    3    3    0    3    0    2    1    1    1     3
+#&gt; [2,]    0    0    3    0    2    2    0    2    1     3
+#&gt; [3,]    2    1    3    2    3    3    1    3    3     0
+#&gt; [4,]    1    3    0    2    1    2    0    3    1     3
+#&gt; [5,]    1    2    0    3    1    1    2    3    0     0
+#&gt; [6,]    1    3    3    1    2    0    3    0    1     3
+#&gt; [7,]    3    1    1    3    0    3    0    2    2     1</code></pre>
 <p>There are many parameters, which can be specified, e.g. the discount factor <span class="math inline">\(\gamma\)</span> via <code>discount</code>, the learning rate <span class="math inline">\(\alpha\)</span> via <code>learning.rate</code> and <span class="math inline">\(\epsilon\)</span> via the <code>epsilon</code> argument. These parameters can also be updated over time by passing a function <code>updateEpsilon</code> etc. The update function takes two arguments, the old value of the parameter and the number of episodes finished. It returns the updated parameter, e.g. a decreased learning rate. After each episode is finished the update functions are called.</p>
 <pre class="r"><code>res = qlearning(env, epsilon = 0.2, learning.rate = 0.5, discount = 0.99)
 
@@ -195,19 +195,19 @@ res = qlearning(env, n.episodes = 5, initial.value = Q)
 # After only 5 episodes the Q values will still be similar to the initial values.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #&gt;      [,1] [,2] [,3] [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
-#&gt; [1,] 97.3 97.0 96.6 95.9  95.3  94.9  94.9  95.1  95.7  96.4
-#&gt; [2,] 97.4 97.4 97.3 97.2  97.6  98.9 100.0  98.0  97.2  97.2
-#&gt; [3,] 97.7 97.8 97.9 98.1  99.1  99.9 100.0  99.3  98.4  98.0
-#&gt; [4,] 98.0 98.2 98.4 98.8  99.5 100.0 100.0 100.0  99.1  98.7
-#&gt; [5,] 98.4 98.6 98.8 99.2  99.8 100.0 100.0 100.0  99.6  99.2
-#&gt; [6,] 98.6 98.8 99.1 99.6  99.9 100.0 100.0 100.0  99.8  99.6
-#&gt; [7,] 98.8 98.9 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</code></pre>
+#&gt; [1,] 97.2 97.0 96.5 95.8  95.1  94.8  94.8  95.1  95.7  96.4
+#&gt; [2,] 97.4 97.4 97.2 97.1  97.6  98.4 100.0  98.0  97.2  97.2
+#&gt; [3,] 97.7 97.8 97.8 98.2  99.1  99.8 100.0  99.3  98.3  98.0
+#&gt; [4,] 98.0 98.2 98.4 98.8  99.6  99.9 100.0 100.0  99.1  98.7
+#&gt; [5,] 98.4 98.6 98.8 99.3  99.8 100.0 100.0 100.0  99.6  99.2
+#&gt; [6,] 98.6 98.8 99.1 99.4 100.0 100.0 100.0 100.0  99.8  99.6
+#&gt; [7,] 98.7 98.9 99.2 99.8 100.0 100.0 100.0 100.0 100.0  99.7</code></pre>
 </div>
 <div id="function-approximation" class="section level3">
 <h3>Function Approximation</h3>
 <p>So far the value function has been represented as a table (number of states x number of actions). In many interesting problems there are lots of states and actions or the space is continuous. Then it is inpractical to store a tabular value function and to slow to update state-action pairs individually. The solution is to approximate the value function with a function approximator, e.g. a linear combination of features.</p>
 <p>In the following we will have a look at the mountain car problem, where the goal is to drive an underpowered car up a steep hill. The state space is continuous in two dimensions, the position and velocity of the car, each bounded in some interval. There are three different actions: push back (0), do nothing (1) and push forward (2).</p>
-<pre class="r"><code>env = MountainCar()
+<pre class="r"><code>env = mountainCar()
 print(env$state.space)
 #&gt; [1] &quot;Box&quot;
 print(env$state.space.bounds)
@@ -219,8 +219,8 @@ print(env$state.space.bounds)
 
 env$reset()
 print(env$state)
-#&gt;            [,1] [,2]
-#&gt; [1,] -0.5000846    0</code></pre>
+#&gt;           [,1] [,2]
+#&gt; [1,] -0.429608    0</code></pre>
 <p>We will solve this environment using linear function approximation. With linear function approximation the action value function is represented as</p>
 <p><span class="math display">\[
 \hat{q}(S_t, A_t, w) = x(S_t)^T w = \sum_{j=1}^{n} x_j(S_t) \, w_j.
@@ -367,7 +367,7 @@ print(res$steps)
 <pre class="r"><code># Fill a replay memory of size 100 on the mountain car task.
 # We will use grid tiling as defined above.
 memory = vector(&quot;list&quot;, length = 100)
-env = MountainCar()
+env = mountainCar()
 env$reset()
 for (i in 1:100) {
   if (env$done) {
@@ -527,7 +527,7 @@ w_{t+1} = w_t + \beta [ R_{t+1} + \gamma V(S_{t+1}) - V(S_t)] x(S_t).
 \theta_{t+1} = \theta_t + \alpha \gamma^t [ R_{t+1} + \gamma V(S_{t+1}) - V(S_t)] \nabla_\theta \log \pi(A_t | S_t, \theta),
 \]</span></p>
 <p>where <span class="math inline">\(\nabla_\theta \log \pi(A_t | S_t, \theta)\)</span> is the gradient of the log policy. There are now two learning rates <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p>
-<pre class="r"><code>env = MountainCar()
+<pre class="r"><code>env = mountainCar()
 
 # Linear function approximation and softmax policy
 res = actorCritic(env, fun.approx = &quot;linear&quot;, 
@@ -538,7 +538,7 @@ print(res$steps)
 <p>With a gaussian policy we can also solve problems with a continuous action space.</p>
 <p>Here we will solve a continuous version of the mountain car problem, where the action is a real number.</p>
 <pre class="r"><code># Mountain Car with continuous action space
-env = MountainCar(action.space = &quot;Continuous&quot;)
+env = mountainCar(action.space = &quot;Continuous&quot;)
 
 # Linear function approximation and gaussian policy
 set.seed(123)

@@ -115,34 +115,34 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 <span class="co"># Note: to find the optimal policy we need to run at least 500 episodes.</span></code></pre></div>
 <p>The <code>qlearning</code> function returns the action value function <span class="math inline">\(Q\)</span> (here a matrix) and some statistics about learning behavior, e.g. the number of steps and return per episode.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  839 1820  169  532  256  640  297  123  224  167  399  198  219  206</span>
-<span class="co">#&gt; [15]   41  280   47  256   67  225  109   40  113  125  112  159  288   65</span>
-<span class="co">#&gt; [29]   68   26   42  310   77   76  105   94  129  117   32   32   45  236</span>
-<span class="co">#&gt; [43]   51   81   91   83   86  155   79   39</span></code></pre></div>
+<span class="co">#&gt;  [1]  728 1494 1217  152  182  494  407  304  147  158  160  219  169   46</span>
+<span class="co">#&gt; [15]  229  147   84  256  245  133  119   67  138  144  224   52  157   86</span>
+<span class="co">#&gt; [29]  177   76  144   75  161   56  102  156   24   67  207   32   55   86</span>
+<span class="co">#&gt; [43]   73   73   63  109  145   60   61   87</span></code></pre></div>
 <p>We can then find the optimal policy by acting greedily with respect to the action value function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Values of each grid cell</span>
 state.values =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
 <span class="kw">print</span>(<span class="kw">round</span>(state.values, <span class="dv">1</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -5.7 -5.8 -6.4 -7.1 -7.8 -8.3 -8.0 -7.3 -6.5  -5.6</span>
-<span class="co">#&gt; [2,] -5.4 -5.4 -5.7 -6.0 -6.0 -5.2 -4.5 -4.7 -4.8  -4.7</span>
-<span class="co">#&gt; [3,] -5.1 -5.0 -5.0 -5.1 -4.4 -3.4 -2.5 -2.7 -3.8  -3.8</span>
-<span class="co">#&gt; [4,] -4.9 -4.5 -4.3 -4.1 -3.2 -1.8 -0.8  0.0 -2.6  -2.9</span>
-<span class="co">#&gt; [5,] -4.3 -4.0 -3.6 -3.2 -2.0 -0.8  0.0 -0.4 -1.0  -2.0</span>
-<span class="co">#&gt; [6,] -3.8 -3.5 -3.0 -2.5 -1.2  0.0  0.0 -0.1 -0.9  -1.3</span>
-<span class="co">#&gt; [7,] -3.4 -3.0 -2.5 -1.7  0.0  0.0  0.0  0.0 -0.3  -0.8</span>
+<span class="co">#&gt; [1,] -5.6 -5.8 -6.4 -7.1 -7.8 -8.2 -8.0 -7.3 -6.5  -5.6</span>
+<span class="co">#&gt; [2,] -5.4 -5.5 -5.6 -6.1 -6.0 -5.4 -4.5 -4.3 -4.9  -4.7</span>
+<span class="co">#&gt; [3,] -5.1 -5.0 -5.0 -5.0 -4.5 -3.4 -2.5 -2.6 -3.7  -3.8</span>
+<span class="co">#&gt; [4,] -4.9 -4.5 -4.3 -4.2 -3.1 -1.8 -0.8  0.0 -2.5  -2.9</span>
+<span class="co">#&gt; [5,] -4.3 -4.0 -3.6 -3.2 -2.0 -0.8  0.0 -0.3 -1.0  -2.0</span>
+<span class="co">#&gt; [6,] -3.7 -3.5 -3.0 -2.5 -1.2  0.0  0.0  0.0 -0.9  -1.3</span>
+<span class="co">#&gt; [7,] -3.4 -3.1 -2.5 -1.8  0.0  0.0  0.0  0.0 -0.3  -0.8</span>
 
 <span class="co"># Subtract 1 to be consistent with action numeration in env</span>
 optimal.policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(optimal.policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    2    3    0    2    1    0    1    1    3     3</span>
-<span class="co">#&gt; [2,]    3    2    3    0    0    0    0    2    3     3</span>
-<span class="co">#&gt; [3,]    1    2    3    3    2    1    1    3    1     3</span>
-<span class="co">#&gt; [4,]    0    1    3    1    2    2    2    0    1     3</span>
-<span class="co">#&gt; [5,]    3    3    1    3    1    1    0    3    0     3</span>
-<span class="co">#&gt; [6,]    1    3    3    1    1    1    1    0    0     2</span>
-<span class="co">#&gt; [7,]    0    2    1    1    0    1    2    3    2     1</span></code></pre></div>
+<span class="co">#&gt; [1,]    3    2    0    0    0    0    2    1    1     3</span>
+<span class="co">#&gt; [2,]    2    1    0    1    0    3    0    0    3     3</span>
+<span class="co">#&gt; [3,]    0    0    0    3    3    2    1    2    2     3</span>
+<span class="co">#&gt; [4,]    3    3    1    3    1    2    2    1    0     3</span>
+<span class="co">#&gt; [5,]    3    1    1    1    1    1    1    3    0     0</span>
+<span class="co">#&gt; [6,]    3    0    3    1    1    2    1    2    0     0</span>
+<span class="co">#&gt; [7,]    2    0    1    1    0    1    0    2    1     0</span></code></pre></div>
 <p>There are many parameters, which can be specified, e.g. the discount factor <span class="math inline">\(\gamma\)</span> via <code>discount</code>, the learning rate <span class="math inline">\(\alpha\)</span> via <code>learning.rate</code> and <span class="math inline">\(\epsilon\)</span> via the <code>epsilon</code> argument. These parameters can also be updated over time by passing a function <code>updateEpsilon</code> etc. The update function takes two arguments, the old value of the parameter and the number of episodes finished. It returns the updated parameter, e.g. a decreased learning rate. After each episode is finished the update functions are called.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">epsilon =</span> <span class="fl">0.2</span>, <span class="dt">learning.rate =</span> <span class="fl">0.5</span>, <span class="dt">discount =</span> <span class="fl">0.99</span>)
 
@@ -160,21 +160,21 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">5</span>, <span class="dt">initial.value =</span> Q)
 <span class="co"># After only 5 episodes the Q values will still be similar to the initial values.</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
-<span class="co">#&gt;      [,1] [,2] [,3] [,4]  [,5]  [,6] [,7]  [,8]  [,9] [,10]</span>
-<span class="co">#&gt; [1,] 97.3 97.0 96.6 95.9  95.3  95.1   95  95.2  95.8  96.5</span>
-<span class="co">#&gt; [2,] 97.5 97.4 97.3 97.2  97.7  98.8  100  98.3  97.3  97.3</span>
-<span class="co">#&gt; [3,] 97.8 97.8 97.9 98.2  99.1  99.8  100  99.3  98.4  98.1</span>
-<span class="co">#&gt; [4,] 98.1 98.3 98.4 98.9  99.5 100.0  100 100.0  99.2  98.7</span>
-<span class="co">#&gt; [5,] 98.5 98.6 98.9 99.3  99.8 100.0  100 100.0  99.6  99.3</span>
-<span class="co">#&gt; [6,] 98.7 98.8 99.1 99.5 100.0 100.0  100 100.0  99.9  99.6</span>
-<span class="co">#&gt; [7,] 98.8 99.0 99.3 99.8 100.0 100.0  100 100.0 100.0  99.8</span></code></pre></div>
+<span class="co">#&gt;      [,1] [,2] [,3] [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]</span>
+<span class="co">#&gt; [1,] 97.4 97.1 96.6 95.9  95.3  95.0  94.8  95.1  95.7  96.4</span>
+<span class="co">#&gt; [2,] 97.5 97.5 97.3 97.4  97.8  98.7 100.0  98.1  97.3  97.2</span>
+<span class="co">#&gt; [3,] 97.8 97.9 97.9 98.1  99.1  99.8 100.0  99.3  98.3  98.0</span>
+<span class="co">#&gt; [4,] 98.1 98.3 98.5 98.9  99.5 100.0 100.0 100.0  99.1  98.7</span>
+<span class="co">#&gt; [5,] 98.4 98.6 98.8 99.3  99.8 100.0 100.0 100.0  99.6  99.2</span>
+<span class="co">#&gt; [6,] 98.7 98.8 99.1 99.5 100.0 100.0 100.0 100.0  99.9  99.6</span>
+<span class="co">#&gt; [7,] 98.8 99.0 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</span></code></pre></div>
 </div>
 <div id="function-approximation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#function-approximation" class="anchor"></a>Function Approximation</h3>
 <p>So far the value function has been represented as a table (number of states x number of actions). In many interesting problems there are lots of states and actions or the space is continuous. Then it is inpractical to store a tabular value function and to slow to update state-action pairs individually. The solution is to approximate the value function with a function approximator, e.g. a linear combination of features.</p>
 <p>In the following we will have a look at the mountain car problem, where the goal is to drive an underpowered car up a steep hill. The state space is continuous in two dimensions, the position and velocity of the car, each bounded in some interval. There are three different actions: push back (0), do nothing (1) and push forward (2).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/MountainCar.html">MountainCar</a></span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>()
 <span class="kw">print</span>(env<span class="op">$</span>state.space)
 <span class="co">#&gt; [1] "Box"</span>
 <span class="kw">print</span>(env<span class="op">$</span>state.space.bounds)
@@ -187,7 +187,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 env<span class="op">$</span><span class="kw">reset</span>()
 <span class="kw">print</span>(env<span class="op">$</span>state)
 <span class="co">#&gt;            [,1] [,2]</span>
-<span class="co">#&gt; [1,] -0.4416284    0</span></code></pre></div>
+<span class="co">#&gt; [1,] -0.5927072    0</span></code></pre></div>
 <p>We will solve this environment using linear function approximation. With linear function approximation the action value function is represented as</p>
 <p><span class="math display">\[
 \hat{q}(S_t, A_t, w) = x(S_t)^T w = \sum_{j=1}^{n} x_j(S_t) \, w_j.
@@ -338,7 +338,7 @@ Q_A(S_t, A_t) \leftarrow Q_A(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left( \
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fill a replay memory of size 100 on the mountain car task.</span>
 <span class="co"># We will use grid tiling as defined above.</span>
 memory =<span class="st"> </span><span class="kw">vector</span>(<span class="st">"list"</span>, <span class="dt">length =</span> <span class="dv">100</span>)
-env =<span class="st"> </span><span class="kw"><a href="../reference/MountainCar.html">MountainCar</a></span>()
+env =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>()
 env<span class="op">$</span><span class="kw">reset</span>()
 <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>) {
   <span class="cf">if</span> (env<span class="op">$</span>done) {
@@ -501,7 +501,7 @@ w_{t+1} = w_t + \beta [ R_{t+1} + \gamma V(S_{t+1}) - V(S_t)] x(S_t).
 \theta_{t+1} = \theta_t + \alpha \gamma^t [ R_{t+1} + \gamma V(S_{t+1}) - V(S_t)] \nabla_\theta \log \pi(A_t | S_t, \theta),
 \]</span></p>
 <p>where <span class="math inline">\(\nabla_\theta \log \pi(A_t | S_t, \theta)\)</span> is the gradient of the log policy. There are now two learning rates <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/MountainCar.html">MountainCar</a></span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>()
 
 <span class="co"># Linear function approximation and softmax policy</span>
 res =<span class="st"> </span><span class="kw"><a href="../reference/actorCritic.html">actorCritic</a></span>(env, <span class="dt">fun.approx =</span> <span class="st">"linear"</span>, 
@@ -512,7 +512,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/actorCritic
 <p>With a gaussian policy we can also solve problems with a continuous action space.</p>
 <p>Here we will solve a continuous version of the mountain car problem, where the action is a real number.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mountain Car with continuous action space</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/MountainCar.html">MountainCar</a></span>(<span class="dt">action.space =</span> <span class="st">"Continuous"</span>)
+env =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>(<span class="dt">action.space =</span> <span class="st">"Continuous"</span>)
 
 <span class="co"># Linear function approximation and gaussian policy</span>
 <span class="kw">set.seed</span>(<span class="dv">123</span>)

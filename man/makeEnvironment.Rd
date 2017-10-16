@@ -95,10 +95,10 @@ CartPole$close()
 print(CartPole)
 
 # Create the MountainCar environment which has a continuous state space.
-MountainCar = makeEnvironment("MountainCar-v0")
+m = makeEnvironment("MountainCar-v0")
 
-MountainCar$state.space
-MountainCar$state.space.bounds
+m$state.space
+m$state.space.bounds
 }
 
 # Create an environment from a transition array and reward matrix.
@@ -136,5 +136,5 @@ grid = gridworld()
 }
 \seealso{
 Create gridworlds with \code{\link{makeGridworld}}. 
-For the mountain car environment have a look at \code{\link{MountainCar}}.
+For the mountain car environment have a look at \code{\link{mountainCar}}.
 }

@@ -16,7 +16,7 @@ Implementations of reinforcement learning algorithms and environments.
 \item \link{gridworld}
 \item \link{windyGridworld}
 \item \link{cliff}
-\item \link{MountainCar}
+\item \link{mountainCar}
 }
 }
 
