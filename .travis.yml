@@ -13,7 +13,7 @@ r:
 - release
 - devel
 
-install:
+before_install:
 - Rscript -e 'if (length(find.package("devtools", quiet = TRUE)) == 0) install.packages("devtools")'
 - Rscript -e 'devtools::install_deps()'
 
