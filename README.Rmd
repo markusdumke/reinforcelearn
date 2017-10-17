@@ -11,13 +11,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, out.width = "150px", echo = FALSE}
-knitr::include_graphics("reinforcelearn.png")
-```
-
-## Reinforcement Learning in R.
-
-----
+# Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="36"/>
 
 [![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn)
@@ -75,22 +69,27 @@ env$step(0)
 print(env)
 ```
 
-You can also create an environment from [OpenAI Gym](https://gym.openai.com/). You need to install all dependencies listed [here](https://github.com/openai/gym-http-api).
-Then you can use an environment with the name.
+You can also create an environment from [OpenAI Gym](https://gym.openai.com/) via the `gym` package. You need to install all dependencies listed [here](https://github.com/openai/gym-http-api).
 
 ```{r, eval = FALSE}
-# Create Gym environment.
-# Note: There is a bug: The following line might return an error. 
-# If so, repeat this line, then it should work.
-m = makeEnvironment("MountainCar-v0")
+# Create an OpenAI Gym environment.
+# Make sure you have Python and Gym installed.
+# Start server and create gym client.
+package.path = system.file(package = "reinforcelearn")
+path2pythonfile = paste0(package.path, "/gym_http_server.py")
+system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE)
+client = gym::create_GymClient("http://127.0.0.1:5000")
+instance.id = gym::env_create(client, "MountainCar-v0")
 
-m$reset()
-# take random actions for 200 steps
+env = makeEnvironment(list(client, instance.id))
+
+# Take random actions for 200 steps.
+env$reset()
 for (i in 1:200) {
   action = sample(m$actions, 1)
-  m$step(action)
+  env$step(action)
 }
-m$close()
+env$close()
 ```
 
 This should open a Python window showing the interaction with the environment.

@@ -270,11 +270,18 @@ windy.gridworld =<span class="st"> </span><span class="kw"><a href="../reference
 <div id="openai-gym-environments" class="section level3">
 <h3 class="hasAnchor">
 <a href="#openai-gym-environments" class="anchor"></a>OpenAI Gym Environments</h3>
-<p>OpenAI Gym <span class="citation">(Brockman et al. 2016)</span> is a toolkit for developing and comparing reinforcement learning algorithms. It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. To use this in R you need to install the dependencies listed <a href="https://github.com/openai/gym-http-api">here</a>. You also need to install the R package <code>gym</code> <span class="citation">(Hendricks 2016)</span>.</p>
-<p>Then it is simple to use one of the existing OpenAI Gym environments by passing on the name of the environment via the <code>gym.envir.name</code> argument in <code>makeEnvironment</code>. Have a look at <a href="https://gym.openai.com/envs" class="uri">https://gym.openai.com/envs</a> for possible environments.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Note: There is a bug: The following line might return an error. </span>
-<span class="co"># Calling the following line twice should solve this.</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"MountainCar-v0"</span>, <span class="dt">render =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>OpenAI Gym <span class="citation">(Brockman et al. 2016)</span> is a toolkit for developing and comparing reinforcement learning algorithms. It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. Have a look at <a href="https://gym.openai.com/envs" class="uri">https://gym.openai.com/envs</a> for possible environments. To use this in R you need to install the dependencies listed <a href="https://github.com/openai/gym-http-api">here</a>. You also need to install the R package <code>gym</code> <span class="citation">(Hendricks 2016)</span>.</p>
+<p>Then it is simple to use one of the existing OpenAI Gym environments. First you need to start a server via the <code>gym</code> package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create an OpenAI Gym environment.</span>
+<span class="co"># Make sure you have Python and Gym installed.</span>
+<span class="co"># Start server and create gym client.</span>
+package.path =<span class="st"> </span><span class="kw">system.file</span>(<span class="dt">package =</span> <span class="st">"reinforcelearn"</span>)
+path2pythonfile =<span class="st"> </span><span class="kw">paste0</span>(package.path, <span class="st">"/gym_http_server.py"</span>)
+<span class="kw">system2</span>(<span class="st">"python"</span>, <span class="dt">args =</span> path2pythonfile, <span class="dt">stdout =</span> <span class="ot">NULL</span>, <span class="dt">wait =</span> <span class="ot">FALSE</span>)
+client =<span class="st"> </span>gym<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/gym/topics/create_GymClient">create_GymClient</a></span>(<span class="st">"http://127.0.0.1:5000"</span>)
+instance.id =<span class="st"> </span>gym<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/gym/topics/env_create">env_create</a></span>(client, <span class="st">"MountainCar-v0"</span>)
+
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="kw">list</span>(client, instance.id))</code></pre></div>
 <p>The <code>render</code> argument specifies whether to render the environment. If <code>render = TRUE</code> a Python window will open showing a graphical interface of the environment when calling the <code>step</code> method.</p>
 <p>The <code>reset</code>, <code>step</code> and <code>close</code> method can then be used to sample experience. Here is an example running a random agent for 200 steps on the mountain car task.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env<span class="op">$</span><span class="kw">reset</span>()

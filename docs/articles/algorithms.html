@@ -115,34 +115,34 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 <span class="co"># Note: to find the optimal policy we need to run at least 500 episodes.</span></code></pre></div>
 <p>The <code>qlearning</code> function returns the action value function <span class="math inline">\(Q\)</span> (here a matrix) and some statistics about learning behavior, e.g. the number of steps and return per episode.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  728 1494 1217  152  182  494  407  304  147  158  160  219  169   46</span>
-<span class="co">#&gt; [15]  229  147   84  256  245  133  119   67  138  144  224   52  157   86</span>
-<span class="co">#&gt; [29]  177   76  144   75  161   56  102  156   24   67  207   32   55   86</span>
-<span class="co">#&gt; [43]   73   73   63  109  145   60   61   87</span></code></pre></div>
+<span class="co">#&gt;  [1]  740 2023  600  202  555  109  261  358  236  247   91  208  154  320</span>
+<span class="co">#&gt; [15]   88   98  174  154   50  130  348   46   56  179  112  213   85   95</span>
+<span class="co">#&gt; [29]   67  116  142  103   79   38  135  131  122   37   81   81   24  143</span>
+<span class="co">#&gt; [43]  194   90   46   92   62  180   31  118</span></code></pre></div>
 <p>We can then find the optimal policy by acting greedily with respect to the action value function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Values of each grid cell</span>
 state.values =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
 <span class="kw">print</span>(<span class="kw">round</span>(state.values, <span class="dv">1</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -5.6 -5.8 -6.4 -7.1 -7.8 -8.2 -8.0 -7.3 -6.5  -5.6</span>
-<span class="co">#&gt; [2,] -5.4 -5.5 -5.6 -6.1 -6.0 -5.4 -4.5 -4.3 -4.9  -4.7</span>
-<span class="co">#&gt; [3,] -5.1 -5.0 -5.0 -5.0 -4.5 -3.4 -2.5 -2.6 -3.7  -3.8</span>
-<span class="co">#&gt; [4,] -4.9 -4.5 -4.3 -4.2 -3.1 -1.8 -0.8  0.0 -2.5  -2.9</span>
-<span class="co">#&gt; [5,] -4.3 -4.0 -3.6 -3.2 -2.0 -0.8  0.0 -0.3 -1.0  -2.0</span>
-<span class="co">#&gt; [6,] -3.7 -3.5 -3.0 -2.5 -1.2  0.0  0.0  0.0 -0.9  -1.3</span>
-<span class="co">#&gt; [7,] -3.4 -3.1 -2.5 -1.8  0.0  0.0  0.0  0.0 -0.3  -0.8</span>
+<span class="co">#&gt; [1,] -5.6 -5.8 -6.4 -7.2 -7.9 -8.2 -8.0 -7.3 -6.5  -5.6</span>
+<span class="co">#&gt; [2,] -5.4 -5.4 -5.7 -6.0 -6.1 -5.6 -4.1 -4.3 -4.8  -4.7</span>
+<span class="co">#&gt; [3,] -5.1 -5.0 -5.0 -5.2 -4.4 -3.4 -2.2 -2.6 -3.7  -3.8</span>
+<span class="co">#&gt; [4,] -4.9 -4.5 -4.3 -4.2 -3.3 -1.7 -0.7  0.0 -2.6  -2.9</span>
+<span class="co">#&gt; [5,] -4.3 -4.0 -3.6 -3.3 -2.0 -0.7  0.0 -0.5 -1.0  -1.9</span>
+<span class="co">#&gt; [6,] -3.8 -3.5 -3.0 -2.4 -1.1  0.0  0.0 -0.1 -0.9  -1.3</span>
+<span class="co">#&gt; [7,] -3.4 -3.1 -2.5 -1.7  0.0  0.0  0.0  0.0 -0.3  -0.8</span>
 
 <span class="co"># Subtract 1 to be consistent with action numeration in env</span>
 optimal.policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(optimal.policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    3    2    0    0    0    0    2    1    1     3</span>
-<span class="co">#&gt; [2,]    2    1    0    1    0    3    0    0    3     3</span>
-<span class="co">#&gt; [3,]    0    0    0    3    3    2    1    2    2     3</span>
-<span class="co">#&gt; [4,]    3    3    1    3    1    2    2    1    0     3</span>
-<span class="co">#&gt; [5,]    3    1    1    1    1    1    1    3    0     0</span>
-<span class="co">#&gt; [6,]    3    0    3    1    1    2    1    2    0     0</span>
-<span class="co">#&gt; [7,]    2    0    1    1    0    1    0    2    1     0</span></code></pre></div>
+<span class="co">#&gt; [1,]    1    3    3    0    1    2    3    1    1     3</span>
+<span class="co">#&gt; [2,]    2    2    3    1    2    0    1    0    0     3</span>
+<span class="co">#&gt; [3,]    2    0    3    2    0    1    3    1    0     3</span>
+<span class="co">#&gt; [4,]    1    1    3    0    3    1    3    2    0     2</span>
+<span class="co">#&gt; [5,]    1    1    2    2    1    1    0    3    0     0</span>
+<span class="co">#&gt; [6,]    1    0    3    0    1    1    1    0    1     1</span>
+<span class="co">#&gt; [7,]    0    0    1    1    3    1    1    3    2     1</span></code></pre></div>
 <p>There are many parameters, which can be specified, e.g. the discount factor <span class="math inline">\(\gamma\)</span> via <code>discount</code>, the learning rate <span class="math inline">\(\alpha\)</span> via <code>learning.rate</code> and <span class="math inline">\(\epsilon\)</span> via the <code>epsilon</code> argument. These parameters can also be updated over time by passing a function <code>updateEpsilon</code> etc. The update function takes two arguments, the old value of the parameter and the number of episodes finished. It returns the updated parameter, e.g. a decreased learning rate. After each episode is finished the update functions are called.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">epsilon =</span> <span class="fl">0.2</span>, <span class="dt">learning.rate =</span> <span class="fl">0.5</span>, <span class="dt">discount =</span> <span class="fl">0.99</span>)
 
@@ -161,13 +161,13 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 <span class="co"># After only 5 episodes the Q values will still be similar to the initial values.</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]</span>
-<span class="co">#&gt; [1,] 97.4 97.1 96.6 95.9  95.3  95.0  94.8  95.1  95.7  96.4</span>
-<span class="co">#&gt; [2,] 97.5 97.5 97.3 97.4  97.8  98.7 100.0  98.1  97.3  97.2</span>
-<span class="co">#&gt; [3,] 97.8 97.9 97.9 98.1  99.1  99.8 100.0  99.3  98.3  98.0</span>
-<span class="co">#&gt; [4,] 98.1 98.3 98.5 98.9  99.5 100.0 100.0 100.0  99.1  98.7</span>
-<span class="co">#&gt; [5,] 98.4 98.6 98.8 99.3  99.8 100.0 100.0 100.0  99.6  99.2</span>
-<span class="co">#&gt; [6,] 98.7 98.8 99.1 99.5 100.0 100.0 100.0 100.0  99.9  99.6</span>
-<span class="co">#&gt; [7,] 98.8 99.0 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</span></code></pre></div>
+<span class="co">#&gt; [1,] 97.2 97.0 96.5 95.8  95.2  94.9  94.9  95.2  95.8  96.5</span>
+<span class="co">#&gt; [2,] 97.4 97.3 97.2 97.0  97.7  98.9 100.0  98.1  97.2  97.2</span>
+<span class="co">#&gt; [3,] 97.7 97.7 97.8 98.1  99.1  99.8 100.0  99.3  98.3  98.0</span>
+<span class="co">#&gt; [4,] 98.1 98.2 98.4 98.8  99.6 100.0 100.0 100.0  99.2  98.7</span>
+<span class="co">#&gt; [5,] 98.4 98.5 98.8 99.3  99.8 100.0 100.0 100.0  99.6  99.3</span>
+<span class="co">#&gt; [6,] 98.7 98.8 99.1 99.5 100.0 100.0 100.0 100.0  99.8  99.6</span>
+<span class="co">#&gt; [7,] 98.8 98.9 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</span></code></pre></div>
 </div>
 <div id="function-approximation" class="section level3">
 <h3 class="hasAnchor">
@@ -187,7 +187,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 env<span class="op">$</span><span class="kw">reset</span>()
 <span class="kw">print</span>(env<span class="op">$</span>state)
 <span class="co">#&gt;            [,1] [,2]</span>
-<span class="co">#&gt; [1,] -0.5927072    0</span></code></pre></div>
+<span class="co">#&gt; [1,] -0.5256833    0</span></code></pre></div>
 <p>We will solve this environment using linear function approximation. With linear function approximation the action value function is represented as</p>
 <p><span class="math display">\[
 \hat{q}(S_t, A_t, w) = x(S_t)^T w = \sum_{j=1}^{n} x_j(S_t) \, w_j.

@@ -207,14 +207,21 @@ windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37,
 
 ### OpenAI Gym Environments
 
-OpenAI Gym [@gym_openai] is a toolkit for developing and comparing reinforcement learning algorithms.  It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. To use this in R you need to install the dependencies listed [here](https://github.com/openai/gym-http-api). You also need to install the R package `gym` [@gym].
+OpenAI Gym [@gym_openai] is a toolkit for developing and comparing reinforcement learning algorithms.  It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. Have a look at [https://gym.openai.com/envs](https://gym.openai.com/envs) for possible environments. To use this in R you need to install the dependencies listed [here](https://github.com/openai/gym-http-api). You also need to install the R package `gym` [@gym].
 
-Then it is simple to use one of the existing OpenAI Gym environments by passing on the name of the environment via the `gym.envir.name` argument in `makeEnvironment`. Have a look at [https://gym.openai.com/envs](https://gym.openai.com/envs) for possible environments.
+Then it is simple to use one of the existing OpenAI Gym environments. First you need to start a server via the `gym` package. 
 
 ```{r, eval = FALSE}
-# Note: There is a bug: The following line might return an error. 
-# Calling the following line twice should solve this.
-env = makeEnvironment("MountainCar-v0", render = TRUE)
+# Create an OpenAI Gym environment.
+# Make sure you have Python and Gym installed.
+# Start server and create gym client.
+package.path = system.file(package = "reinforcelearn")
+path2pythonfile = paste0(package.path, "/gym_http_server.py")
+system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE)
+client = gym::create_GymClient("http://127.0.0.1:5000")
+instance.id = gym::env_create(client, "MountainCar-v0")
+
+env = makeEnvironment(list(client, instance.id))
 ```
 
 The `render` argument specifies whether to render the environment. If `render = TRUE` a Python window will open showing a graphical interface of the environment when calling the `step` method.

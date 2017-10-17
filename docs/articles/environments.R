@@ -101,9 +101,16 @@ windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37,
   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  # Note: There is a bug: The following line might return an error.
-#  # Calling the following line twice should solve this.
-#  env = makeEnvironment("MountainCar-v0", render = TRUE)
+#  # Create an OpenAI Gym environment.
+#  # Make sure you have Python and Gym installed.
+#  # Start server and create gym client.
+#  package.path = system.file(package = "reinforcelearn")
+#  path2pythonfile = paste0(package.path, "/gym_http_server.py")
+#  system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE)
+#  client = gym::create_GymClient("http://127.0.0.1:5000")
+#  instance.id = gym::env_create(client, "MountainCar-v0")
+#  
+#  env = makeEnvironment(list(client, instance.id))
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  env$reset()
