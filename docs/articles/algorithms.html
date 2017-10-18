@@ -102,49 +102,48 @@ h1.title {
 \pi(a | S_t) = \left\{ \begin{array}{ll} 1 - \epsilon + \frac{\epsilon}{m}, &amp; \text{if} \; a = \text{argmax}_a Q(S_t, a)  \\
                                         \frac{\epsilon}{m}, &amp; \text{else.} \end{array} \right.
 \]</span></p>
-<p>Then the <span class="math inline">\(Q\)</span> value of the state-action pair is updated by</p>
+<p>Then the <span class="math inline">\(Q\)</span> value of the current state-action pair is updated by</p>
 <p><span class="math display">\[
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right],
 \]</span></p>
 <p>where <span class="math inline">\(\gamma\)</span> is the so called discount factor and <span class="math inline">\(\alpha\)</span> the learning rate.</p>
-<p>In <code>reinforcelearn</code> there is a <code>qlearning</code> function. In the following we will train on a simple navigation task, the windy gridworld. The first argument of all algorithms is the environment (the <code>envir</code>) argument. The number of episodes can be specified via <code>n.episodes</code>.</p>
+<p>In <code>reinforcelearn</code> there is a <code>qlearning</code> function. In the following we will train on a simple navigation task, the windy gridworld. The first argument of all algorithms is called <code>envir</code>, where the environment can be passed on. The number of episodes can be specified via <code>n.episodes</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Windy gridworld environment</span>
 env =<span class="st"> </span><span class="kw"><a href="../reference/windyGridworld.html">windyGridworld</a></span>()
 
-res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">50</span>)
-<span class="co"># Note: to find the optimal policy we need to run at least 500 episodes.</span></code></pre></div>
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
+<span class="co"># Note: to find a good policy we need to run at least 500 episodes.</span></code></pre></div>
 <p>The <code>qlearning</code> function returns the action value function <span class="math inline">\(Q\)</span> (here a matrix) and some statistics about learning behavior, e.g. the number of steps and return per episode.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  606 1838 1146  605   71  158  197  298  298  151  224  143  258   55</span>
-<span class="co">#&gt; [15]  229  141  149  169   46  327   75   63  152  165   84  131  156  110</span>
-<span class="co">#&gt; [29]  117   52   41   66  185   43  123  181   72   50  113   85   50   93</span>
-<span class="co">#&gt; [43]   64   96   70   44   77  208   47   98</span></code></pre></div>
+<span class="co">#&gt;  [1]  761 1919  702  231  327  436  208  283  197   63  157  303  324  132</span>
+<span class="co">#&gt; [15]  121  257   33  248   40  243</span></code></pre></div>
 <p>We can then find the optimal policy by acting greedily with respect to the action value function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Values of each grid cell</span>
 state.values =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
 <span class="kw">print</span>(<span class="kw">round</span>(state.values, <span class="dv">1</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -5.7 -5.9 -6.4 -7.2 -7.9 -8.3 -8.0 -7.3 -6.5  -5.6</span>
-<span class="co">#&gt; [2,] -5.4 -5.5 -5.7 -6.1 -5.9 -5.5 -4.3 -4.2 -4.7  -4.7</span>
-<span class="co">#&gt; [3,] -5.1 -5.1 -5.0 -5.1 -4.5 -3.4 -2.5 -2.6 -3.7  -3.8</span>
-<span class="co">#&gt; [4,] -4.9 -4.6 -4.3 -4.1 -3.1 -1.6 -0.8  0.0 -2.5  -2.9</span>
-<span class="co">#&gt; [5,] -4.3 -4.0 -3.6 -3.3 -1.9 -0.8  0.0 -0.5 -1.0  -1.9</span>
-<span class="co">#&gt; [6,] -3.8 -3.5 -3.0 -2.4 -1.2  0.0  0.0 -0.1 -0.9  -1.3</span>
-<span class="co">#&gt; [7,] -3.4 -3.1 -2.5 -1.8  0.0  0.0  0.0  0.0 -0.3  -0.8</span>
+<span class="co">#&gt; [1,] -4.2 -4.5 -5.0 -5.7 -6.4 -6.8 -6.8 -6.3 -5.5  -4.7</span>
+<span class="co">#&gt; [2,] -4.0 -4.0 -4.2 -4.4 -4.2 -3.4 -1.9 -3.4 -3.9  -3.9</span>
+<span class="co">#&gt; [3,] -3.6 -3.6 -3.5 -3.5 -2.7 -1.2 -0.7 -1.9 -2.9  -3.1</span>
+<span class="co">#&gt; [4,] -3.3 -3.1 -2.9 -2.5 -1.3 -0.4  0.0  0.0 -1.9  -2.3</span>
+<span class="co">#&gt; [5,] -2.8 -2.7 -2.3 -1.7 -0.8 -0.2  0.0 -0.2 -0.8  -1.5</span>
+<span class="co">#&gt; [6,] -2.5 -2.3 -1.8 -1.3 -0.4  0.0  0.0  0.0 -0.6  -1.0</span>
+<span class="co">#&gt; [7,] -2.2 -2.0 -1.4 -0.8  0.0  0.0  0.0  0.0 -0.2  -0.6</span>
 
 <span class="co"># Subtract 1 to be consistent with action numeration in env</span>
 optimal.policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(optimal.policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    0    3    3    0    0    3    1    2    1     3</span>
-<span class="co">#&gt; [2,]    0    2    3    3    1    3    0    2    0     3</span>
-<span class="co">#&gt; [3,]    3    1    2    2    3    1    3    3    0     3</span>
-<span class="co">#&gt; [4,]    1    3    1    3    0    3    1    0    3     3</span>
-<span class="co">#&gt; [5,]    0    3    0    0    1    3    1    3    0     0</span>
-<span class="co">#&gt; [6,]    1    1    2    1    2    1    0    0    1     2</span>
-<span class="co">#&gt; [7,]    0    0    1    1    3    1    0    0    1     0</span></code></pre></div>
+<span class="co">#&gt; [1,]    3    3    0    0    2    0    1    1    1     3</span>
+<span class="co">#&gt; [2,]    1    1    1    0    3    3    3    2    3     3</span>
+<span class="co">#&gt; [3,]    1    3    3    2    2    2    3    0    2     3</span>
+<span class="co">#&gt; [4,]    3    1    1    0    3    3    3    1    3     0</span>
+<span class="co">#&gt; [5,]    2    3    1    1    1    2    0    3    2     0</span>
+<span class="co">#&gt; [6,]    3    1    3    1    3    0    3    3    0     0</span>
+<span class="co">#&gt; [7,]    0    1    2    2    3    1    0    2    0     1</span></code></pre></div>
 <p>There are many parameters, which can be specified, e.g. the discount factor <span class="math inline">\(\gamma\)</span> via <code>discount</code>, the learning rate <span class="math inline">\(\alpha\)</span> via <code>learning.rate</code> and <span class="math inline">\(\epsilon\)</span> via the <code>epsilon</code> argument. These parameters can also be updated over time by passing a function <code>updateEpsilon</code> etc. The update function takes two arguments, the old value of the parameter and the number of episodes finished. It returns the updated parameter, e.g. a decreased learning rate. After each episode is finished the update functions are called.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">epsilon =</span> <span class="fl">0.2</span>, <span class="dt">learning.rate =</span> <span class="fl">0.5</span>, <span class="dt">discount =</span> <span class="fl">0.99</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">epsilon =</span> <span class="fl">0.2</span>, <span class="dt">learning.rate =</span> <span class="fl">0.5</span>, 
+  <span class="dt">discount =</span> <span class="fl">0.99</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 
 <span class="co"># Decay epsilon over time. Every 10 episodes epsilon will be halfed.</span>
 decayEpsilon =<span class="st"> </span><span class="cf">function</span>(epsilon, i) {
@@ -154,20 +153,22 @@ decayEpsilon =<span class="st"> </span><span class="cf">function</span>(epsilon,
   epsilon
 }
 
-res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">epsilon =</span> <span class="fl">0.5</span>, <span class="dt">updateEpsilon =</span> decayEpsilon)</code></pre></div>
-<p>Initially the action value function will be initialized to 0. But you can also specify an initial value function via the <code>initial.value</code> argument.</p>
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">epsilon =</span> <span class="fl">0.5</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>,
+  <span class="dt">updateEpsilon =</span> decayEpsilon)</code></pre></div>
+<p>The action value function will be initialized to 0. But you can also specify an initial value function via the <code>initial.value</code> argument.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Q =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">100</span>, <span class="dt">nrow =</span> env<span class="op">$</span>n.states, <span class="dt">ncol =</span> env<span class="op">$</span>n.actions)
 res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">5</span>, <span class="dt">initial.value =</span> Q)
+
 <span class="co"># After only 5 episodes the Q values will still be similar to the initial values.</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]</span>
-<span class="co">#&gt; [1,] 97.3 97.1 96.7 96.0  95.4  95.2  95.1  95.2  95.8  96.5</span>
-<span class="co">#&gt; [2,] 97.5 97.5 97.4 97.4  98.0  98.8 100.0  98.3  97.3  97.3</span>
-<span class="co">#&gt; [3,] 97.9 97.9 98.1 98.3  99.2  99.8 100.0  99.3  98.3  98.0</span>
-<span class="co">#&gt; [4,] 98.2 98.3 98.5 98.9  99.6 100.0 100.0 100.0  99.2  98.7</span>
-<span class="co">#&gt; [5,] 98.5 98.7 98.9 99.3  99.9 100.0 100.0 100.0  99.6  99.2</span>
-<span class="co">#&gt; [6,] 98.8 98.9 99.2 99.6 100.0 100.0 100.0 100.0  99.8  99.7</span>
-<span class="co">#&gt; [7,] 98.9 99.0 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.9</span></code></pre></div>
+<span class="co">#&gt; [1,] 97.2 97.1 96.7 95.9  95.3  95.0  95.1  95.2  95.8  96.6</span>
+<span class="co">#&gt; [2,] 97.5 97.4 97.3 97.4  97.8  98.7 100.0  98.3  97.4  97.4</span>
+<span class="co">#&gt; [3,] 97.8 97.8 97.9 98.2  99.2  99.8 100.0  99.3  98.5  98.1</span>
+<span class="co">#&gt; [4,] 98.1 98.3 98.5 99.0  99.6 100.0 100.0 100.0  99.2  98.7</span>
+<span class="co">#&gt; [5,] 98.4 98.6 98.9 99.3  99.8 100.0 100.0 100.0  99.6  99.3</span>
+<span class="co">#&gt; [6,] 98.7 98.8 99.2 99.5 100.0 100.0 100.0 100.0  99.8  99.6</span>
+<span class="co">#&gt; [7,] 98.8 99.0 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</span></code></pre></div>
 </div>
 <div id="function-approximation" class="section level3">
 <h3 class="hasAnchor">
@@ -187,13 +188,13 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 env<span class="op">$</span><span class="kw">reset</span>()
 <span class="kw">print</span>(env<span class="op">$</span>state)
 <span class="co">#&gt;            [,1] [,2]</span>
-<span class="co">#&gt; [1,] -0.4414836    0</span></code></pre></div>
+<span class="co">#&gt; [1,] -0.5450101    0</span></code></pre></div>
 <p>We will solve this environment using linear function approximation. With linear function approximation the action value function is represented as</p>
 <p><span class="math display">\[
 \hat{q}(S_t, A_t, w) = x(S_t)^T w = \sum_{j=1}^{n} x_j(S_t) \, w_j.
 \]</span></p>
 <p>There is a distinct weight vector per action.</p>
-<p>The weights are then updated by</p>
+<p>The weights are then updated by gradient descent,</p>
 <p><span class="math display">\[
 w_{t+1} = w_t + \alpha \left[ R_{t+1} + \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right] x(S_t).
 \]</span></p>
@@ -235,35 +236,33 @@ Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q(S_{t+1}, A
 <p>In contrast to Q-Learning Sarsa is an on-policy algorithm because the action values are adjusted using a target value <span class="math inline">\(Q(S_{t+1}, A_{t+1})\)</span> which uses an action $A_{t+1} $sampled from the same <span class="math inline">\(\epsilon\)</span>-greedy policy as <span class="math inline">\(A_t\)</span>.</p>
 <p>In <code>reinforcelearn</code> this algorithm is implemented in the <code>sarsa</code> function. It takes the same arguments as the <code>qlearning</code> function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/windyGridworld.html">windyGridworld</a></span>()
-res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">sarsa</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">50</span>)
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">sarsa</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
 <span class="co">#&gt;  [1]  817 1643  970  287  350  405  396   58  429  128  298  120  208  139</span>
-<span class="co">#&gt; [15]   98  330   24   47  196  129   77  163  100   55  157   76  207   58</span>
-<span class="co">#&gt; [29]   70   99  139   64  198  130   35   31  103  187   51   50   77  103</span>
-<span class="co">#&gt; [43]   63   72  120  169   54   65   60  128</span></code></pre></div>
+<span class="co">#&gt; [15]   98  330   24   47  196  129</span></code></pre></div>
 <p>Expected Sarsa <span class="citation">(Seijen et al. 2009)</span> is a generalization of Q-Learning to arbitrary target policies. While Sarsa samples the next action, Expected Sarsa computes the expectation by multiplying each action value with the probability of choosing this action. The update rule is</p>
 <p><span class="math display">\[
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a) - Q(S_t, A_t) \right].
 \]</span></p>
 <p>The term <span class="math inline">\(\pi(a|S_{t+1})\)</span> is called the target policy because it is used to compute the target to update the values. If <span class="math inline">\(\pi(a|S_{t+1})\)</span> is the greedy policy Expected Sarsa is exactly Q-Learning. When the target policy uses the same <span class="math inline">\(\epsilon\)</span>-greedy policy as to sample <span class="math inline">\(A_t\)</span>, then Expected Sarsa is an on-policy algorithm. In R we can use the <code>target.policy</code> argument, which can be <code>"greedy"</code> or <code>"egreedy"</code> for <span class="math inline">\(\epsilon\)</span>-greedy.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># This is equivalent to qlearning(env):</span>
-res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">expectedSarsa</a></span>(env, <span class="dt">target.policy =</span> <span class="st">"greedy"</span>)
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">expectedSarsa</a></span>(env, <span class="dt">target.policy =</span> <span class="st">"greedy"</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 
-<span class="co"># With an epsilon-greedy target policy:</span>
-res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">expectedSarsa</a></span>(env, <span class="dt">target.policy =</span> <span class="st">"egreedy"</span>)</code></pre></div>
+<span class="co"># Expected Sarsa with an epsilon-greedy target policy:</span>
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">expectedSarsa</a></span>(env, <span class="dt">target.policy =</span> <span class="st">"egreedy"</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)</code></pre></div>
 <p>The Q(<span class="math inline">\(\sigma\)</span>) algorithm <span class="citation">(Asis et al. 2017)</span> generalizes all the algorithms presented so far, i.e. Sarsa, Expected Sarsa and Q-Learning.</p>
 <p>The update rule is</p>
 <p><span class="math display">\[
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left(\sigma Q(S_{t+1}, A_{t+1}) + (1 - \sigma) \sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a) \right) - Q(S_t, A_t) \right].
 \]</span></p>
 <p>The parameter <span class="math inline">\(\sigma\)</span> controls a weighting between the Sarsa target <span class="math inline">\(Q(S_{t+1}, A_{t+1})\)</span> and Expected Sarsa target <span class="math inline">\(\sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a)\)</span>. Therefore Sarsa is equal to Q(1) and Expected Sarsa to Q(0).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qSigma</a></span>(env, <span class="dt">sigma =</span> <span class="fl">0.5</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qSigma</a></span>(env, <span class="dt">sigma =</span> <span class="fl">0.5</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 
 <span class="co"># This is equivalent to Sarsa:</span>
-res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qSigma</a></span>(env, <span class="dt">sigma =</span> <span class="dv">1</span>)
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qSigma</a></span>(env, <span class="dt">sigma =</span> <span class="dv">1</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 
 <span class="co"># This is equivalent to Q-learning:</span>
-res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qSigma</a></span>(env, <span class="dt">sigma =</span> <span class="dv">0</span>, <span class="dt">target.policy =</span> <span class="st">"greedy"</span>)</code></pre></div>
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qSigma</a></span>(env, <span class="dt">sigma =</span> <span class="dv">0</span>, <span class="dt">target.policy =</span> <span class="st">"greedy"</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)</code></pre></div>
 </div>
 <div id="eligibility-traces" class="section level3">
 <h3 class="hasAnchor">
@@ -283,17 +282,15 @@ Q(s, a) \leftarrow Q(s, a) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a)
 \]</span></p>
 <p>and then over time fade away with an exponential decrease</p>
 <p><span class="math display">\[
-E_{t+1}(s, a) = \gamma \lambda (\sigma + (1- \sigma) \pi(A_{t+1} | S_{t+1})) \, E_t(s, a) \qquad \forall s \in \mathcal{S}, \forall a \in \mathcal{A}.
+E_{t+1}(s, a) = \gamma \lambda \, (\sigma + (1 - \sigma) \, \pi(A_{t+1} | S_{t+1})) \, E_t(s, a) \qquad \forall s \in \mathcal{S}, \forall a \in \mathcal{A}.
 \]</span></p>
 <p>The use of eligibility traces can make reinforcement learning agents learn much faster because all state-action pairs are updated at each time step.</p>
-<p>The factor <span class="math inline">\(\psi\)</span> controls the type of eligibility, for <span class="math inline">\(\psi = 0\)</span> this is the standard accumulating trace, for <span class="math inline">\(\psi = 1\)</span> this is the replacing trace. The factor <span class="math inline">\(\lambda\)</span> is the eligibility decay parameter. The eligibility decrease is weighted with the target’s policy probability of the next action for the Expected Sarsa part of the target.</p>
+<p>The factor <span class="math inline">\(\psi\)</span> controls the type of eligibility, for <span class="math inline">\(\psi = 0\)</span> this is the standard accumulating trace, for <span class="math inline">\(\psi = 1\)</span> this is the replacing trace <span class="citation">(Singh and Sutton 1996)</span>. The factor <span class="math inline">\(\lambda\)</span> is the eligibility decay parameter. The eligibility decrease is weighted with the target’s policy probability of the next action for the Expected Sarsa part of the target.</p>
 <p>We can specify <span class="math inline">\(\psi\)</span> via the <code>eligibility.type</code> argument and <span class="math inline">\(\lambda\)</span> via the <code>lambda</code> argument.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">sarsa</a></span>(env, <span class="dt">lambda =</span> <span class="fl">0.9</span>, <span class="dt">eligibility.type =</span> <span class="dv">1</span>, <span class="dt">n.episodes =</span> <span class="dv">50</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">sarsa</a></span>(env, <span class="dt">lambda =</span> <span class="fl">0.9</span>, <span class="dt">eligibility.type =</span> <span class="dv">1</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1] 1382 2471  121  102   32   21   25   79   77  137   68   56   42   25</span>
-<span class="co">#&gt; [15]   74   37   32   22   20   24   25   24   35   32   35   79   21   21</span>
-<span class="co">#&gt; [29]   19   20   45   26   19   20   22   27   22   17   16   32   31   26</span>
-<span class="co">#&gt; [43]   18   19   19   22   19   21   15   26</span></code></pre></div>
+<span class="co">#&gt;  [1] 1165 2550  316   37   21  127   51   31   51   60   41   75   36   44</span>
+<span class="co">#&gt; [15]   33   54   26   35   28   31</span></code></pre></div>
 </div>
 <div id="double-learning" class="section level3">
 <h3 class="hasAnchor">
@@ -322,12 +319,10 @@ Q_A(S_t, A_t) \leftarrow Q_A(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left( \
 \]</span></p>
 <p>Update equations for <span class="math inline">\(Q_B\)</span> can be obtained by interchanging the roles of <span class="math inline">\(Q_A\)</span> and <span class="math inline">\(Q_B\)</span> in the above equations.</p>
 <p>To use Double Learning with <code>qSigma</code>, <code>qlearning</code>, <code>sarsa</code> and <code>expectedSarsa</code> just pass <code>double.learning = TRUE</code> to the algorithm. Double Learning works with tables and linear value function approximation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">expectedSarsa</a></span>(env, <span class="dt">double.learning =</span> <span class="ot">TRUE</span>, <span class="dt">n.episodes =</span> <span class="dv">50</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">expectedSarsa</a></span>(env, <span class="dt">double.learning =</span> <span class="ot">TRUE</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1] 1029 1810 1488  522  330  511  683  552  423  146  650  265  285  311</span>
-<span class="co">#&gt; [15]  107  145  355  183  177   78  329  117  265  171  173  391   43  219</span>
-<span class="co">#&gt; [29]  150   96  227  123  263  161  213  208   32  443   67  125   36  114</span>
-<span class="co">#&gt; [43]  134   83  226  128  132  170   72  161</span></code></pre></div>
+<span class="co">#&gt;  [1]  975  493 1836 1475  433  327  517  470  692  421  451  453  184  381</span>
+<span class="co">#&gt; [15]  217  173  261  259   70  370</span></code></pre></div>
 </div>
 <div id="experience-replay" class="section level3">
 <h3 class="hasAnchor">
@@ -338,24 +333,38 @@ Q_A(S_t, A_t) \leftarrow Q_A(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left( \
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fill a replay memory of size 100 on the mountain car task.</span>
 <span class="co"># We will use grid tiling as defined above.</span>
 memory =<span class="st"> </span><span class="kw">vector</span>(<span class="st">"list"</span>, <span class="dt">length =</span> <span class="dv">100</span>)
-env =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>()
+env =<span class="st"> </span><span class="kw"><a href="../reference/windyGridworld.html">windyGridworld</a></span>()
 env<span class="op">$</span><span class="kw">reset</span>()
 <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>) {
   <span class="cf">if</span> (env<span class="op">$</span>done) {
     env<span class="op">$</span><span class="kw">reset</span>()
   }
-  action =<span class="st"> </span><span class="kw">sample</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">2</span>, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">c</span>(<span class="fl">0.5</span>, <span class="dv">0</span>, <span class="fl">0.5</span>))
+  action =<span class="st"> </span><span class="kw">sample</span>(env<span class="op">$</span>actions, <span class="dt">size =</span> <span class="dv">1</span>)
   env<span class="op">$</span><span class="kw">step</span>(action)
-  memory[[i]] =<span class="st"> </span><span class="kw">list</span>(<span class="dt">state =</span> <span class="kw">gridTiling</span>(env<span class="op">$</span>previous.state), <span class="dt">action =</span> action, 
-    <span class="dt">reward =</span> env<span class="op">$</span>reward, <span class="dt">next.state =</span> <span class="kw">gridTiling</span>(env<span class="op">$</span>state))
+  memory[[i]] =<span class="st"> </span><span class="kw">list</span>(<span class="dt">state =</span> env<span class="op">$</span>previous.state, <span class="dt">action =</span> action, 
+    <span class="dt">reward =</span> env<span class="op">$</span>reward, <span class="dt">next.state =</span> env<span class="op">$</span>state)
 }
+<span class="kw">print</span>(memory[[<span class="dv">1</span>]])
+<span class="co">#&gt; $state</span>
+<span class="co">#&gt; [1] 30</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $action</span>
+<span class="co">#&gt; [1] 0</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $reward</span>
+<span class="co">#&gt; [1] -1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $next.state</span>
+<span class="co">#&gt; [1] 30</span>
 
-<span class="co"># res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling, </span>
-<span class="co">#   replay.memory = memory, batch.size = 32, n.episodes = 30)</span>
-<span class="co"># print(res$steps)</span>
+<span class="co"># Pass on replay memory.</span>
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">sarsa</a></span>(env, <span class="dt">replay.memory =</span> memory, <span class="dt">batch.size =</span> <span class="dv">32</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
+<span class="kw">print</span>(res<span class="op">$</span>steps)
+<span class="co">#&gt;  [1] 763 450 251  53  91 104 110  34  37  66  85  96  37  57  22 110 206</span>
+<span class="co">#&gt; [18] 110  61  82</span>
 
-<span class="co"># res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling, </span>
-<span class="co">#   replay.memory.size = 100, batch.size = 32, n.episodes = 30)</span></code></pre></div>
+<span class="co"># Specify replay memory size, replay memory will be filled internally.</span>
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">sarsa</a></span>(env, <span class="dt">replay.memory.size =</span> <span class="dv">100</span>, <span class="dt">batch.size =</span> <span class="dv">32</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)</code></pre></div>
 <p>As a default experiences will be randomly sampled from the replay memory. A prioritized experience replay prioritizes experiences with a high error, where the error is for example in Sarsa given by</p>
 <p><span class="math display">\[
 R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t).
@@ -366,9 +375,11 @@ j \tilde{} P(j) = \frac{p_j^\alpha}{\sum_i p_i^\alpha}.
 \]</span></p>
 <p>When <span class="math inline">\(\alpha = 0\)</span> (the default) experiences are sampled with equal probability else experiences with a high error have a higher probability of being sampled. To each priority a small positive constant <span class="math inline">\(\theta\)</span> is added to prevent that experiences with an error of 0 are never replayed.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Prioritized experience replay</span>
-<span class="co"># res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling,</span>
-<span class="co">#   replay.memory.size = 100, batch.size = 32, n.episodes = 30,</span>
-<span class="co">#   alpha = 0.5, theta = 0.05)</span></code></pre></div>
+res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">sarsa</a></span>(env, <span class="dt">replay.memory.size =</span> <span class="dv">100</span>, <span class="dt">batch.size =</span> <span class="dv">32</span>, 
+  <span class="dt">n.episodes =</span> <span class="dv">20</span>, <span class="dt">alpha =</span> <span class="fl">0.5</span>, <span class="dt">theta =</span> <span class="fl">0.01</span>)
+<span class="kw">print</span>(res<span class="op">$</span>returns)
+<span class="co">#&gt;  [1] -274 -739 -240 -208 -190  -21  -48 -101  -36 -117  -34  -67 -190 -133</span>
+<span class="co">#&gt; [15]  -22  -43  -23 -261  -74  -77</span></code></pre></div>
 <hr>
 </div>
 <div id="td" class="section level3">
@@ -410,7 +421,7 @@ random.policy =<span class="st"> </span><span class="kw">matrix</span>(<span cla
 <span class="co"># Estimate state value function with TD(0)</span>
 res =<span class="st"> </span><span class="kw"><a href="../reference/td.html">td</a></span>(env, random.policy, <span class="dt">n.episodes =</span> <span class="dv">100</span>, <span class="dt">lambda =</span> <span class="fl">0.5</span>)
 <span class="kw">print</span>(res<span class="op">$</span>V)
-<span class="co">#&gt; [1] 0.0000000 0.1468266 0.3319113 0.5742682 0.7571109 0.9284267 0.0000000</span></code></pre></div>
+<span class="co">#&gt; [1] 0.0000000 0.1525976 0.2686215 0.5527451 0.7012868 0.8468207 0.0000000</span></code></pre></div>
 <p>Note that the state values fluctuate around the true values due to the learning rate, which changes the estimates in the direction of the last transition.</p>
 <hr>
 </div>
@@ -490,25 +501,17 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/dp.html">it
 <div id="actor-critic" class="section level3">
 <h3 class="hasAnchor">
 <a href="#actor-critic" class="anchor"></a>Actor Critic</h3>
-<p>An actor critic is a policy-based reinforcement learning algorithm. It uses both parametrized policy and value function. In <code>reinforcelearn</code> a TD actor critic is implemented, which uses a state value function as a critic.</p>
+<p>An actor critic is a policy-based reinforcement learning algorithm <span class="citation">(Sutton and Barto 2017)</span>. It uses a parametrized policy and value function. In <code>reinforcelearn</code> an advantage actor critic is implemented, which uses the td error of the state value function as a critic.</p>
 <p>The policy can be a softmax policy for discrete actions or a gaussian policy for a continuous action space.</p>
-<p>The parameters of the critic are updated (for linear function approximation) by</p>
-<p><span class="math display">\[
-w_{t+1} = w_t + \beta [ R_{t+1} + \gamma V(S_{t+1}) - V(S_t)] x(S_t).
-\]</span></p>
-<p>and the policy’s parameter by</p>
-<p><span class="math display">\[
-\theta_{t+1} = \theta_t + \alpha \gamma^t [ R_{t+1} + \gamma V(S_{t+1}) - V(S_t)] \nabla_\theta \log \pi(A_t | S_t, \theta),
-\]</span></p>
-<p>where <span class="math inline">\(\nabla_\theta \log \pi(A_t | S_t, \theta)\)</span> is the gradient of the log policy. There are now two learning rates <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p>
+<p>There are now two learning rates <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>, one for the critic and one for the actor.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>()
 
 <span class="co"># Linear function approximation and softmax policy</span>
 res =<span class="st"> </span><span class="kw"><a href="../reference/actorCritic.html">actorCritic</a></span>(env, <span class="dt">fun.approx =</span> <span class="st">"linear"</span>, 
-  <span class="dt">preprocessState =</span> gridTiling, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
+  <span class="dt">preprocessState =</span> gridTiling, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1] 891 902 277 420 234 426 235 236 193 155 237 157 192 184 147 150 157</span>
-<span class="co">#&gt; [18] 189 193 201 127 151 116 124 148 148 147 143 149 151</span></code></pre></div>
+<span class="co">#&gt;  [1] 970 504 394 248 331 273 240 307 282 198 183 187 186 158 189 195 154</span>
+<span class="co">#&gt; [18] 213 186 153</span></code></pre></div>
 <p>With a gaussian policy we can also solve problems with a continuous action space.</p>
 <p>Here we will solve a continuous version of the mountain car problem, where the action is a real number.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mountain Car with continuous action space</span>
@@ -521,6 +524,23 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/actorCritic
 <span class="kw">print</span>(res<span class="op">$</span>steps)
 <span class="co">#&gt;  [1] 780 319 317 157 149 194 153 132 106 151 106 136 110  98  96 101 144</span>
 <span class="co">#&gt; [18]  96 103 165</span></code></pre></div>
+<p>The actor critic can be used with eligibility traces, then there are separate eligibility traces for the policy parameters and the value function parameters, which can be decayed by different factor <span class="math inline">\(\lambda\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Variant of cliff walking</span>
+rewardFun =<span class="st"> </span><span class="cf">function</span>(state, action, n.state) {
+  <span class="cf">if</span> (n.state <span class="op">%in%</span><span class="st"> </span><span class="dv">37</span><span class="op">:</span><span class="dv">46</span>) {
+    <span class="kw">return</span>(<span class="op">-</span><span class="st"> </span><span class="dv">100</span>)
+  } <span class="cf">else</span> {
+    <span class="kw">return</span>(<span class="op">-</span><span class="st"> </span><span class="dv">1</span>)
+  }
+}
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">12</span>), <span class="dt">goal.states =</span> <span class="dv">47</span>,
+  <span class="dt">cliff.states =</span> <span class="dv">37</span><span class="op">:</span><span class="dv">46</span>, <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">reward.cliff =</span> <span class="op">-</span><span class="st"> </span><span class="dv">100</span>,
+  <span class="dt">cliff.transition.done =</span> <span class="ot">TRUE</span>, <span class="dt">initial.state =</span> <span class="dv">36</span>, <span class="dt">sampleReward =</span> rewardFun)
+
+res =<span class="st"> </span><span class="kw"><a href="../reference/actorCritic.html">actorCritic</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">20</span>, <span class="dt">lambda.actor =</span> <span class="fl">0.5</span>, <span class="dt">lambda.critic =</span> <span class="fl">0.8</span>)
+<span class="kw">print</span>(res<span class="op">$</span>returns)
+<span class="co">#&gt;  [1] -100 -103 -162 -148 -113 -179 -119 -124 -191 -104 -143 -100 -142 -108</span>
+<span class="co">#&gt; [15] -149 -127 -172 -221 -158 -145</span></code></pre></div>
 <hr>
 <div id="multi-armed-bandit" class="section level4">
 <h4 class="hasAnchor">
@@ -546,26 +566,40 @@ rewardFun =<span class="st"> </span><span class="cf">function</span>(action) {
 }</code></pre></div>
 <p>To solve the bandit, i.e. to find out, which action returns the most reward, we can use the <code>bandit</code> function. There are several different action selection methods implemented, e.g. <code>greedy</code>, <code>epsilon-greedy</code>, <code>UCB</code> and <code>gradient-bandit</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/bandit.html">bandit</a></span>(rewardFun, <span class="dt">n.actions =</span> <span class="dv">4</span>, <span class="dt">n.episodes =</span> <span class="dv">1000</span>,
-  <span class="dt">action.selection =</span> <span class="st">"greedy"</span>)</code></pre></div>
+  <span class="dt">action.selection =</span> <span class="st">"greedy"</span>)
+<span class="co">#&gt; [1] -0.1976585 -1.3866575  2.1102407  3.9465064</span></code></pre></div>
 <p>In the <code>bandit</code> function we can specify the argument <code>initial.value</code> which sets all Q values initially to this number. Additionally we can assign a confidence to this initial value via the <code>initial.visits</code> argument. A value of 10 for example means that the algorithm has already seen 10 rewards for each action with an average value of <code>initial.value</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/bandit.html">bandit</a></span>(rewardFun, <span class="dt">n.actions =</span> <span class="dv">4</span>, <span class="dt">n.episodes =</span> <span class="dv">1000</span>, 
   <span class="dt">action.selection =</span> <span class="st">"greedy"</span>, 
-  <span class="dt">initial.value =</span> <span class="dv">5</span>, <span class="dt">initial.visits =</span> <span class="dv">100</span>)</code></pre></div>
+  <span class="dt">initial.value =</span> <span class="dv">5</span>, <span class="dt">initial.visits =</span> <span class="dv">100</span>)
+<span class="co">#&gt; [1] 4.095788 4.064578 4.103341 4.135369</span></code></pre></div>
 <p>An epsilon-greedy policy can be used as well.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/bandit.html">bandit</a></span>(rewardFun, <span class="dt">n.actions =</span> <span class="dv">4</span>, <span class="dt">n.episodes =</span> <span class="dv">1000</span>, 
-  <span class="dt">action.selection =</span> <span class="st">"egreedy"</span>, <span class="dt">epsilon =</span> <span class="fl">0.5</span>)</code></pre></div>
-<p>In the following we will decrease epsilon every 100 episodes by a factor of 0.5.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/bandit.html">bandit</a></span>(rewardFun, <span class="dt">n.actions =</span> <span class="dv">4</span>, <span class="dt">n.episodes =</span> <span class="dv">1000</span>, 
+  <span class="dt">action.selection =</span> <span class="st">"egreedy"</span>, <span class="dt">epsilon =</span> <span class="fl">0.5</span>)
+<span class="co">#&gt; [1] 0.9944536 1.6240003 2.4483131 4.6093580</span></code></pre></div>
+<p>The parameter <code>epsilon</code> can be decreased over time by passing a function <code>updateEpsilon</code>, which takes the current <code>epsilon</code> value and the number of episodes finished as arguments.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Decay epsilon every 5 episodes by a half.</span>
+decayEpsilon =<span class="st"> </span><span class="cf">function</span>(epsilon, i) {
+  <span class="cf">if</span> (i <span class="op">%%</span><span class="st"> </span><span class="dv">5</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) {
+    epsilon =<span class="st"> </span>epsilon <span class="op">/</span><span class="st"> </span><span class="dv">2</span>
+  }
+  epsilon
+}
+
+<span class="kw"><a href="../reference/bandit.html">bandit</a></span>(rewardFun, <span class="dt">n.actions =</span> <span class="dv">4</span>, <span class="dt">n.episodes =</span> <span class="dv">1000</span>, 
   <span class="dt">action.selection =</span> <span class="st">"egreedy"</span>, <span class="dt">epsilon =</span> <span class="fl">0.5</span>,
-  <span class="dt">epsilon.decay =</span> <span class="fl">0.5</span>, <span class="dt">epsilon.decay.after =</span> <span class="dv">100</span>)</code></pre></div>
+  <span class="dt">updateEpsilon =</span> decayEpsilon)
+<span class="co">#&gt; [1] 0.9890049 4.9588979 2.7322591 3.7268878</span></code></pre></div>
 <p>The schedule after which epsilon is decreased can be controled by the <code>epsilon.decay</code> and <code>epsilon.decay.after</code> parameters. After every <code>epsilon.decay.after</code> episodes epsilon will be multiplied with <code>epsilon.decay</code>, usually a value between 0 and 1, and therefore decreases over time.</p>
 <p>The estimates come close to the true values and will therefore correctly estimate the 4th action as the best one.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/bandit.html">bandit</a></span>(rewardFun, <span class="dt">n.actions =</span> <span class="dv">4</span>, <span class="dt">n.episodes =</span> <span class="dv">1000</span>, 
-  <span class="dt">action.selection =</span> <span class="st">"UCB"</span>, <span class="dt">C =</span> <span class="dv">2</span>)</code></pre></div>
+  <span class="dt">action.selection =</span> <span class="st">"UCB"</span>, <span class="dt">C =</span> <span class="dv">2</span>)
+<span class="co">#&gt; [1] 1.534875 2.069442 2.501997 4.133577</span></code></pre></div>
 <p>The bandit algorithm is implemented in the following way. Action values are increased incrementally which is computationally cheaper as storing all rewards in a table.</p>
 <p>There is also a gradient-bandit algorithm <span class="citation">(Sutton and Barto 2017)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/bandit.html">bandit</a></span>(rewardFun, <span class="dt">n.actions =</span> <span class="dv">4</span>, <span class="dt">n.episodes =</span> <span class="dv">10000</span>, 
-  <span class="dt">action.selection =</span> <span class="st">"gradientbandit"</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>)</code></pre></div>
+  <span class="dt">action.selection =</span> <span class="st">"gradientbandit"</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>)
+<span class="co">#&gt; [1] 1.019872e-04 4.369316e-05 4.108634e-04 9.994435e-01</span></code></pre></div>
 <hr>
 </div>
 </div>
@@ -593,6 +627,9 @@ rewardFun =<span class="st"> </span><span class="cf">function</span>(action) {
 </div>
 <div id="ref-vanseijen2009">
 <p>Seijen, Harm van, Hado van Hasselt, Shimon Whiteson, and Marco Wiering. 2009. “A Theoretical and Empirical Analysis of Expected Sarsa.” In <em>ADPRL 2009: Proceedings of the Ieee Symposium on Adaptive Dynamic Programming and Reinforcement Learning</em>, 177–84.</p>
+</div>
+<div id="ref-eligibility">
+<p>Singh, Satinder P., and Richard S. Sutton. 1996. “Reinforcement Learning with Replacing Eligibility Traces.” <em>Machine Learning</em> 22 (1): 123–58. doi:<a href="https://doi.org/10.1007/BF00114726">10.1007/BF00114726</a>.</p>
 </div>
 <div id="ref-sutton2017">
 <p>Sutton, Richard S., and Andrew G. Barto. 2017. “Reinforcement Learning : An Introduction.” Cambridge, MA, USA: <a href="http://incompleteideas.net/sutton/book/the-book-2nd.html" class="uri">http://incompleteideas.net/sutton/book/the-book-2nd.html</a>; MIT Press.</p>
