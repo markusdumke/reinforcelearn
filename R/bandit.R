@@ -1,4 +1,4 @@
-#' Solve multi-armed bandit
+#' Multi-armed bandit
 #'
 #' Multi-armed bandits are a simplified reinforcement learning problem,
 #' each arm of the bandit pays off a reward and the goal is to maximize
@@ -6,7 +6,7 @@
 #' can be seen as actions, after each action the episode ends (there
 #' are no states). To find the best action, the algorithm is faced with
 #' a tradeoff between exploration and exploitation.
-#' 
+#'
 #' Actions are numerated starting with 0!
 #'
 #' @param n.episodes [\code{integer(1)}] \cr
@@ -22,10 +22,12 @@
 #' @param initial.visits [\code{integer(1)}] \cr
 #'   Set this to a high number to encourage exploration
 #'   (together with a high \code{initial.value}).
-#' @param epsilon.decay [\code{numeric(1) in [0,1]}] \cr
-#'   Decay epsilon by this factor.
-#' @param epsilon.decay.after [\code{integer(1)}] \cr
-#'   Number of episodes after which to decay epsilon.
+#' @param updateAlpha [\code{function}] \cr
+#'  A function which takes two arguments, \code{alpha} and the current number of episodes.
+#'  Could be used to decay the parameter over time.
+#' @param updateEpsilon [\code{function}] \cr
+#'  A function which takes two arguments, \code{epsilon} and the current number of episodes.
+#'  Could be used to decay the parameter over time.
 #' @param C [\code{numeric(1)}] \cr
 #'   Controls the degree of exploration. High C values lead to more exploration.
 #' @param rewardFun [\code{function}] \cr
@@ -34,8 +36,8 @@
 #' @param n.actions [\code{integer(1)}] \cr
 #'   Number of actions.
 #' @param alpha [\code{numeric(1)}] \cr
-#'   Parameter of gradient bandit algorithm, higher alpha value gives more weight to
-#'   recent rewards (useful for non-stationary environments). Not implemented!
+#'   Parameter of the gradient bandit algorithm, a higher alpha value gives more weight to
+#'   recent rewards (useful for non-stationary environments).
 #'
 #' @return [\code{numeric}] \cr
 #' Returns the action values for the arms of the bandit or,
@@ -63,43 +65,44 @@
 #'   reward
 #' }
 #'
-#' solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#' bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #'   action.selection = "greedy")
-#' solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#' bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #'   action.selection = "egreedy", epsilon = 0.5)
-#' solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#' bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #'   action.selection = "greedy",
 #'   initial.value = 5, initial.visits = 100)
-#' solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#' bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #'   action.selection = "UCB", C = 2)
 #' # true values: 1, 2, 2.5, 4
 #'
 #' # Gradient bandit algorithm
-#' solveBandit(rewardFun, n.actions = 4, n.episodes = 10000,
+#' bandit(rewardFun, n.actions = 4, n.episodes = 10000,
 #'   action.selection = "gradientbandit", alpha = 0.1)
-solveBandit = function(rewardFun, n.actions, n.episodes = 100,
+#'
+bandit = function(rewardFun, n.actions, n.episodes = 100,
   action.selection = c("egreedy", "greedy", "UCB", "gradientbandit"),
-  epsilon = 0.1, epsilon.decay = 0.5, epsilon.decay.after = 100,
-  alpha = 0.1, initial.value = 0, initial.visits = 0, C = 2) {
-  
+  epsilon = 0.1, alpha = 0.1, initial.value = 0, initial.visits = 0,
+  C = 2, updateEpsilon = identity2, updateAlpha = identity2) {
+
   checkmate::assertFunction(rewardFun)
   checkmate::assertInt(n.actions)
   checkmate::assertInt(n.episodes, lower = 1)
   checkmate::assertChoice(action.selection, c("egreedy", "greedy", "UCB", "gradientbandit"))
   checkmate::assertNumber(epsilon, lower = 0, upper = 1)
-  checkmate::assertNumber(epsilon.decay, lower = 0, upper = 1)
-  checkmate::assertInt(epsilon.decay.after, lower = 1)
+  checkmate::assertFunction(updateEpsilon)
+  checkmate::assertFunction(updateAlpha)
   checkmate::assertNumber(alpha, lower = 0, upper = 1)
   checkmate::assertNumber(initial.value)
   checkmate::assertInt(initial.visits, lower = 0)
   checkmate::assertNumber(C)
-  
+
   action.selection = match.arg(action.selection)
   action.visits = rep(initial.visits, n.actions)
   rewards = rep(initial.value * initial.visits, n.actions)
   Q = rep(initial.value, n.actions)
   H = rep(0, n.actions)
-  
+
   for (i in seq_len(n.episodes)) {
     if (any(action.visits == 0)) {
       action = sample(which(action.visits == 0), 1)
@@ -107,9 +110,6 @@ solveBandit = function(rewardFun, n.actions, n.episodes = 100,
       if (action.selection == "greedy") {
         action = which.max(Q)
       } else if (action.selection == "egreedy") {
-        if (i %% epsilon.decay.after == 0) {
-          epsilon = epsilon * epsilon.decay
-        }
         action = selectActionEgreedy(Q, n.actions, epsilon)
       } else if (action.selection == "UCB") {
         action = which.max(Q + sqrt(C * log(i) / action.visits))
@@ -119,7 +119,7 @@ solveBandit = function(rewardFun, n.actions, n.episodes = 100,
       }
     }
     reward = rewardFun(action - 1)
-    
+
     action.visits[action] = action.visits[action] + 1
     rewards[action] = rewards[action] + reward
     if (action.selection != "gradientbandit") {
@@ -129,9 +129,11 @@ solveBandit = function(rewardFun, n.actions, n.episodes = 100,
       total.action.visits = sum(action.visits)
       average.reward = total.reward / total.action.visits
       H[- action] = H[- action] - alpha * (reward - average.reward) * Q[- action]
-      H[action] = H[action] + alpha * 
+      H[action] = H[action] + alpha *
         (reward - average.reward) * (1 - Q[action])
     }
+    epsilon = updateEpsilon(epsilon, i)
+    alpha = updateAlpha(alpha, i)
   }
   Q
 }

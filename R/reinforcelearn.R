@@ -1,7 +1,7 @@
 #' Reinforcement Learning in R.
-#' 
+#'
 #' Implementations of reinforcement learning algorithms and environments.
-#' 
+#'
 #' @md
 #' @section Environments:
 #' * [makeEnvironment]
@@ -10,16 +10,16 @@
 #' * [windyGridworld]
 #' * [cliff]
 #' * [mountainCar]
-#' 
+#'
 #' @section Bandits:
-#' * [solveBandit]
-#' 
+#' * [bandit]
+#'
 #' @section Algorithms:
-#' Dynamic Programming: 
+#' Dynamic Programming:
 #' * [evaluatePolicy]
 #' * [iteratePolicy]
 #' * [iterateValue]
-#' 
+#'
 #' Model-free Reinforcement Learning
 #' * [td]
 #' * [qSigma]
@@ -27,7 +27,7 @@
 #' * [expectedSarsa]
 #' * [qlearning]
 #' * [actorCritic]
-#' 
+#'
 #' @name reinforcelearn
 #' @docType package
 NULL

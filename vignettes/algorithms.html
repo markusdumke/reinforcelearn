@@ -149,34 +149,34 @@ res = qlearning(env, n.episodes = 50)
 # Note: to find the optimal policy we need to run at least 500 episodes.</code></pre>
 <p>The <code>qlearning</code> function returns the action value function <span class="math inline">\(Q\)</span> (here a matrix) and some statistics about learning behavior, e.g. the number of steps and return per episode.</p>
 <pre class="r"><code>print(res$steps)
-#&gt;  [1] 1101 1684  627  155  573   79  325  261   80  291  315  193  203  141
-#&gt; [15]  264  121  119  116  106  188  169   62   40  150  298   30  123   54
-#&gt; [29]  261  207   31  131   87   24  106  106  137   48   70   94   84  164
-#&gt; [43]   27  118   52   49  133   32   89   94</code></pre>
+#&gt;  [1]  805 1821  660  405  490  141  358  247  220  216  116  248  235  189
+#&gt; [15]  149  171  183  154   55  140  116  170   80   78   90  268  187   35
+#&gt; [29]   43  167   60  136   75   78  154   82  113   71   33  189  166   48
+#&gt; [43]  155   56   24   30   94   44  107   68</code></pre>
 <p>We can then find the optimal policy by acting greedily with respect to the action value function.</p>
 <pre class="r"><code># Values of each grid cell
 state.values = matrix(apply(res$Q1, 1, max), ncol = 10, byrow = TRUE)
 print(round(state.values, 1))
 #&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,] -5.6 -5.9 -6.4 -7.2 -7.8 -8.2 -8.0 -7.3 -6.5  -5.6
-#&gt; [2,] -5.3 -5.5 -5.7 -6.0 -6.2 -5.3 -4.4 -4.2 -4.8  -4.7
-#&gt; [3,] -5.1 -5.0 -5.0 -5.1 -4.4 -3.2 -2.5 -2.7 -3.7  -3.8
-#&gt; [4,] -4.9 -4.5 -4.3 -4.2 -3.1 -1.7 -0.6  0.0 -2.6  -2.9
-#&gt; [5,] -4.3 -4.0 -3.6 -3.3 -1.9 -0.8  0.0 -0.5 -1.0  -2.0
-#&gt; [6,] -3.8 -3.4 -3.0 -2.4 -1.2  0.0  0.0 -0.1 -0.9  -1.3
-#&gt; [7,] -3.4 -3.1 -2.4 -1.7  0.0  0.0  0.0  0.0 -0.3  -0.8
+#&gt; [1,] -5.6 -5.8 -6.4 -7.2 -7.8 -8.2 -8.0 -7.3 -6.5  -5.6
+#&gt; [2,] -5.4 -5.4 -5.7 -6.1 -6.0 -5.3 -4.5 -4.2 -4.7  -4.7
+#&gt; [3,] -5.1 -5.0 -5.0 -5.3 -4.5 -3.3 -2.5 -2.6 -3.5  -3.8
+#&gt; [4,] -4.9 -4.5 -4.3 -4.0 -3.2 -1.8 -0.8  0.0 -2.6  -2.9
+#&gt; [5,] -4.3 -4.0 -3.6 -3.3 -2.0 -0.9  0.0 -0.4 -1.0  -1.9
+#&gt; [6,] -3.8 -3.5 -3.0 -2.5 -1.2  0.0  0.0 -0.1 -0.8  -1.3
+#&gt; [7,] -3.4 -3.1 -2.5 -1.8  0.0  0.0  0.0  0.0 -0.3  -0.8
 
 # Subtract 1 to be consistent with action numeration in env
 optimal.policy = max.col(res$Q1) - 1
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,]    3    3    0    3    0    2    1    1    1     3
-#&gt; [2,]    0    0    3    0    2    2    0    2    1     3
-#&gt; [3,]    2    1    3    2    3    3    1    3    3     0
-#&gt; [4,]    1    3    0    2    1    2    0    3    1     3
-#&gt; [5,]    1    2    0    3    1    1    2    3    0     0
-#&gt; [6,]    1    3    3    1    2    0    3    0    1     3
-#&gt; [7,]    3    1    1    3    0    3    0    2    2     1</code></pre>
+#&gt; [1,]    1    2    0    0    3    0    1    1    2     3
+#&gt; [2,]    1    3    3    2    3    2    0    1    1     3
+#&gt; [3,]    3    3    3    1    2    3    3    1    3     3
+#&gt; [4,]    2    1    1    3    1    1    2    1    0     3
+#&gt; [5,]    3    1    3    1    1    0    1    0    0     0
+#&gt; [6,]    3    1    1    1    1    1    0    0    0     0
+#&gt; [7,]    3    0    1    2    2    1    3    1    2     3</code></pre>
 <p>There are many parameters, which can be specified, e.g. the discount factor <span class="math inline">\(\gamma\)</span> via <code>discount</code>, the learning rate <span class="math inline">\(\alpha\)</span> via <code>learning.rate</code> and <span class="math inline">\(\epsilon\)</span> via the <code>epsilon</code> argument. These parameters can also be updated over time by passing a function <code>updateEpsilon</code> etc. The update function takes two arguments, the old value of the parameter and the number of episodes finished. It returns the updated parameter, e.g. a decreased learning rate. After each episode is finished the update functions are called.</p>
 <pre class="r"><code>res = qlearning(env, epsilon = 0.2, learning.rate = 0.5, discount = 0.99)
 
@@ -195,13 +195,13 @@ res = qlearning(env, n.episodes = 5, initial.value = Q)
 # After only 5 episodes the Q values will still be similar to the initial values.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #&gt;      [,1] [,2] [,3] [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
-#&gt; [1,] 97.2 97.0 96.5 95.8  95.1  94.8  94.8  95.1  95.7  96.4
-#&gt; [2,] 97.4 97.4 97.2 97.1  97.6  98.4 100.0  98.0  97.2  97.2
-#&gt; [3,] 97.7 97.8 97.8 98.2  99.1  99.8 100.0  99.3  98.3  98.0
-#&gt; [4,] 98.0 98.2 98.4 98.8  99.6  99.9 100.0 100.0  99.1  98.7
-#&gt; [5,] 98.4 98.6 98.8 99.3  99.8 100.0 100.0 100.0  99.6  99.2
-#&gt; [6,] 98.6 98.8 99.1 99.4 100.0 100.0 100.0 100.0  99.8  99.6
-#&gt; [7,] 98.7 98.9 99.2 99.8 100.0 100.0 100.0 100.0 100.0  99.7</code></pre>
+#&gt; [1,] 97.3 97.1 96.6 95.9  95.4  95.1  94.9  95.1  95.7  96.5
+#&gt; [2,] 97.5 97.4 97.3 97.4  97.7  99.0 100.0  98.1  97.2  97.2
+#&gt; [3,] 97.8 97.8 98.0 98.2  99.2  99.8 100.0  99.3  98.3  98.0
+#&gt; [4,] 98.1 98.2 98.5 98.9  99.6 100.0 100.0 100.0  99.1  98.7
+#&gt; [5,] 98.4 98.6 98.9 99.3  99.8 100.0 100.0 100.0  99.7  99.3
+#&gt; [6,] 98.7 98.8 99.2 99.5 100.0 100.0 100.0 100.0 100.0  99.6
+#&gt; [7,] 98.8 99.0 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</code></pre>
 </div>
 <div id="function-approximation" class="section level3">
 <h3>Function Approximation</h3>
@@ -219,8 +219,8 @@ print(env$state.space.bounds)
 
 env$reset()
 print(env$state)
-#&gt;           [,1] [,2]
-#&gt; [1,] -0.429608    0</code></pre>
+#&gt;            [,1] [,2]
+#&gt; [1,] -0.4594292    0</code></pre>
 <p>We will solve this environment using linear function approximation. With linear function approximation the action value function is represented as</p>
 <p><span class="math display">\[
 \hat{q}(S_t, A_t, w) = x(S_t)^T w = \sum_{j=1}^{n} x_j(S_t) \, w_j.
@@ -569,27 +569,27 @@ rewardFun = function(action) {
   }
   reward
 }</code></pre>
-<p>To solve the bandit, i.e. to find out, which action returns the most reward, we can use the <code>solveBandit</code> function. There are several different action selection methods implemented, e.g. <code>greedy</code>, <code>epsilon-greedy</code>, <code>UCB</code> and <code>gradient-bandit</code>.</p>
-<pre class="r"><code>solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+<p>To solve the bandit, i.e. to find out, which action returns the most reward, we can use the <code>bandit</code> function. There are several different action selection methods implemented, e.g. <code>greedy</code>, <code>epsilon-greedy</code>, <code>UCB</code> and <code>gradient-bandit</code>.</p>
+<pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000,
   action.selection = &quot;greedy&quot;)</code></pre>
-<p>In the <code>solveBandit</code> function we can specify the argument <code>initial.value</code> which sets all Q values initially to this number. Additionally we can assign a confidence to this initial value via the <code>initial.visits</code> argument. A value of 10 for example means that the algorithm has already seen 10 rewards for each action with an average value of <code>initial.value</code>.</p>
-<pre class="r"><code>solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+<p>In the <code>bandit</code> function we can specify the argument <code>initial.value</code> which sets all Q values initially to this number. Additionally we can assign a confidence to this initial value via the <code>initial.visits</code> argument. A value of 10 for example means that the algorithm has already seen 10 rewards for each action with an average value of <code>initial.value</code>.</p>
+<pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = &quot;greedy&quot;, 
   initial.value = 5, initial.visits = 100)</code></pre>
 <p>An epsilon-greedy policy can be used as well.</p>
-<pre class="r"><code>solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+<pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = &quot;egreedy&quot;, epsilon = 0.5)</code></pre>
 <p>In the following we will decrease epsilon every 100 episodes by a factor of 0.5.</p>
-<pre class="r"><code>solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+<pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = &quot;egreedy&quot;, epsilon = 0.5,
   epsilon.decay = 0.5, epsilon.decay.after = 100)</code></pre>
 <p>The schedule after which epsilon is decreased can be controled by the <code>epsilon.decay</code> and <code>epsilon.decay.after</code> parameters. After every <code>epsilon.decay.after</code> episodes epsilon will be multiplied with <code>epsilon.decay</code>, usually a value between 0 and 1, and therefore decreases over time.</p>
 <p>The estimates come close to the true values and will therefore correctly estimate the 4th action as the best one.</p>
-<pre class="r"><code>solveBandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+<pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = &quot;UCB&quot;, C = 2)</code></pre>
 <p>The bandit algorithm is implemented in the following way. Action values are increased incrementally which is computationally cheaper as storing all rewards in a table.</p>
 <p>There is also a gradient-bandit algorithm <span class="citation">(Sutton and Barto 2017)</span>.</p>
-<pre class="r"><code>solveBandit(rewardFun, n.actions = 4, n.episodes = 10000, 
+<pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 10000, 
   action.selection = &quot;gradientbandit&quot;, alpha = 0.1)</code></pre>
 <hr />
 </div>

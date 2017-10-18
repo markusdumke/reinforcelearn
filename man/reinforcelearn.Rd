@@ -23,7 +23,7 @@ Implementations of reinforcement learning algorithms and environments.
 \section{Bandits}{
 
 \itemize{
-\item \link{solveBandit}
+\item \link{bandit}
 }
 }
 
