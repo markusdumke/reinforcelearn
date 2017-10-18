@@ -1,5 +1,5 @@
 ## ----setup, include = FALSE----------------------------------------------
-knitr::opts_chunk$set(message = FALSE, eval = T, collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(message = FALSE, eval = TRUE, collapse = TRUE, comment = "#>")
 
 ## ------------------------------------------------------------------------
 library(reinforcelearn)
@@ -8,8 +8,8 @@ library(reinforcelearn)
 # Windy gridworld environment
 env = windyGridworld()
 
-res = qlearning(env, n.episodes = 50)
-# Note: to find the optimal policy we need to run at least 500 episodes.
+res = qlearning(env, n.episodes = 20)
+# Note: to find a good policy we need to run at least 500 episodes.
 
 ## ------------------------------------------------------------------------
 print(res$steps)
@@ -24,7 +24,8 @@ optimal.policy = max.col(res$Q1) - 1
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 
 ## ------------------------------------------------------------------------
-res = qlearning(env, epsilon = 0.2, learning.rate = 0.5, discount = 0.99)
+res = qlearning(env, epsilon = 0.2, learning.rate = 0.5, 
+  discount = 0.99, n.episodes = 20)
 
 # Decay epsilon over time. Every 10 episodes epsilon will be halfed.
 decayEpsilon = function(epsilon, i) {
@@ -34,11 +35,13 @@ decayEpsilon = function(epsilon, i) {
   epsilon
 }
 
-res = qlearning(env, epsilon = 0.5, updateEpsilon = decayEpsilon)
+res = qlearning(env, epsilon = 0.5, n.episodes = 20,
+  updateEpsilon = decayEpsilon)
 
 ## ------------------------------------------------------------------------
 Q = matrix(100, nrow = env$n.states, ncol = env$n.actions)
 res = qlearning(env, n.episodes = 5, initial.value = Q)
+
 # After only 5 episodes the Q values will still be similar to the initial values.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 
@@ -74,67 +77,154 @@ gridTiling = function(state) {
 }
 
 ## ------------------------------------------------------------------------
+env = mountainCar()
+
+# Linear function approximation and softmax policy
+res = actorCritic(env, fun.approx = "linear", 
+  preprocessState = gridTiling, n.episodes = 20)
+print(res$steps)
+
+## ------------------------------------------------------------------------
 set.seed(123)
 res = qlearning(env, fun.approx = "linear", preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
 
 ## ------------------------------------------------------------------------
 env = windyGridworld()
-res = sarsa(env, n.episodes = 50)
+res = sarsa(env, n.episodes = 20)
 print(res$steps)
+
+## ------------------------------------------------------------------------
+# Mountain Car with continuous action space
+env = mountainCar(action.space = "Continuous")
+
+# Linear function approximation and gaussian policy
+set.seed(123)
+res = actorCritic(env, fun.approx = "linear", policy = "gaussian", 
+  preprocessState = gridTiling, n.episodes = 20)
+print(res$steps)
+
+## ------------------------------------------------------------------------
+# Variant of cliff walking
+rewardFun = function(state, action, n.state) {
+  if (n.state %in% 37:46) {
+    return(- 100)
+  } else {
+    return(- 1)
+  }
+}
+env = makeGridworld(shape = c(4, 12), goal.states = 47,
+  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
+  cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
+
+res = actorCritic(env, n.episodes = 20, lambda.actor = 0.5, lambda.critic = 0.8)
+print(res$returns)
+
+## ------------------------------------------------------------------------
+# Define reward function
+rewardFun = function(action) {
+  if (action == 0) {
+    reward = rnorm(1, mean = 1, sd = 1)
+  }
+  if (action == 1) {
+    reward = rnorm(1, mean = 2, sd = 4)
+  }
+  if (action == 2) {
+    reward = runif(1, min = 0, max = 5)
+  }
+  if (action == 3) {
+    reward = rexp(1, rate = 0.25)
+  }
+  reward
+}
+
+## ---- eval = F-----------------------------------------------------------
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#    action.selection = "greedy")
+
+## ---- eval = F-----------------------------------------------------------
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#    action.selection = "greedy",
+#    initial.value = 5, initial.visits = 100)
+
+## ---- eval = F-----------------------------------------------------------
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#    action.selection = "egreedy", epsilon = 0.5)
+
+## ---- eval = F-----------------------------------------------------------
+#  # Decay epsilon every 5 episodes by a half.
+#  decayEpsilon = function(epsilon, i) {
+#    if (i %% 5 == 0) {
+#      epsilon = epsilon / 2
+#    }
+#    epsilon
+#  }
+#  
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#    action.selection = "egreedy", epsilon = 0.5,
+#    updateEpsilon = decayEpsilon)
+
+## ---- eval = F-----------------------------------------------------------
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#    action.selection = "UCB", C = 2)
+
+## ---- eval = F-----------------------------------------------------------
+#  bandit(rewardFun, n.actions = 4, n.episodes = 10000,
+#    action.selection = "gradientbandit", alpha = 0.1)
 
 ## ------------------------------------------------------------------------
 # This is equivalent to qlearning(env):
-res = expectedSarsa(env, target.policy = "greedy")
+res = expectedSarsa(env, target.policy = "greedy", n.episodes = 20)
 
-# With an epsilon-greedy target policy:
-res = expectedSarsa(env, target.policy = "egreedy")
+# Expected Sarsa with an epsilon-greedy target policy:
+res = expectedSarsa(env, target.policy = "egreedy", n.episodes = 20)
 
 ## ------------------------------------------------------------------------
-res = qSigma(env, sigma = 0.5)
+res = qSigma(env, sigma = 0.5, n.episodes = 20)
 
 # This is equivalent to Sarsa:
-res = qSigma(env, sigma = 1)
+res = qSigma(env, sigma = 1, n.episodes = 20)
 
 # This is equivalent to Q-learning:
-res = qSigma(env, sigma = 0, target.policy = "greedy")
+res = qSigma(env, sigma = 0, target.policy = "greedy", n.episodes = 20)
 
 ## ------------------------------------------------------------------------
-res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 50)
+res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 20)
 print(res$steps)
 
 ## ------------------------------------------------------------------------
-res = expectedSarsa(env, double.learning = TRUE, n.episodes = 50)
+res = expectedSarsa(env, double.learning = TRUE, n.episodes = 20)
 print(res$steps)
 
 ## ------------------------------------------------------------------------
 # Fill a replay memory of size 100 on the mountain car task.
 # We will use grid tiling as defined above.
 memory = vector("list", length = 100)
-env = mountainCar()
+env = windyGridworld()
 env$reset()
 for (i in 1:100) {
   if (env$done) {
     env$reset()
   }
-  action = sample(0:2, size = 1, prob = c(0.5, 0, 0.5))
+  action = sample(env$actions, size = 1)
   env$step(action)
-  memory[[i]] = list(state = gridTiling(env$previous.state), action = action, 
-    reward = env$reward, next.state = gridTiling(env$state))
+  memory[[i]] = list(state = env$previous.state, action = action, 
+    reward = env$reward, next.state = env$state)
 }
+print(memory[[1]])
 
-# res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling, 
-#   replay.memory = memory, batch.size = 32, n.episodes = 30)
-# print(res$steps)
+# Pass on replay memory.
+res = sarsa(env, replay.memory = memory, batch.size = 32, n.episodes = 20)
+print(res$steps)
 
-# res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling, 
-#   replay.memory.size = 100, batch.size = 32, n.episodes = 30)
+# Specify replay memory size, replay memory will be filled internally.
+res = sarsa(env, replay.memory.size = 100, batch.size = 32, n.episodes = 20)
 
 ## ------------------------------------------------------------------------
 # Prioritized experience replay
-# res = sarsa(env, fun.approx = "linear", preprocessState = gridTiling,
-#   replay.memory.size = 100, batch.size = 32, n.episodes = 30,
-#   alpha = 0.5, theta = 0.05)
+res = sarsa(env, replay.memory.size = 100, batch.size = 32, 
+  n.episodes = 20, alpha = 0.5, theta = 0.01)
+print(res$returns)
 
 ## ------------------------------------------------------------------------
 # Random Walk Task (Sutton & Barto Example 6.2)
@@ -183,7 +273,7 @@ env = mountainCar()
 
 # Linear function approximation and softmax policy
 res = actorCritic(env, fun.approx = "linear", 
-  preprocessState = gridTiling, n.episodes = 30)
+  preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
 
 ## ------------------------------------------------------------------------
@@ -196,47 +286,71 @@ res = actorCritic(env, fun.approx = "linear", policy = "gaussian",
   preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
 
-## ---- eval = F-----------------------------------------------------------
-#  # Define reward function
-#  rewardFun = function(action) {
-#    if (action == 0) {
-#      reward = rnorm(1, mean = 1, sd = 1)
-#    }
-#    if (action == 1) {
-#      reward = rnorm(1, mean = 2, sd = 4)
-#    }
-#    if (action == 2) {
-#      reward = runif(1, min = 0, max = 5)
-#    }
-#    if (action == 3) {
-#      reward = rexp(1, rate = 0.25)
-#    }
-#    reward
-#  }
+## ------------------------------------------------------------------------
+# Variant of cliff walking
+rewardFun = function(state, action, n.state) {
+  if (n.state %in% 37:46) {
+    return(- 100)
+  } else {
+    return(- 1)
+  }
+}
+env = makeGridworld(shape = c(4, 12), goal.states = 47,
+  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
+  cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "greedy")
+res = actorCritic(env, n.episodes = 20, lambda.actor = 0.5, lambda.critic = 0.8)
+print(res$returns)
 
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "greedy",
-#    initial.value = 5, initial.visits = 100)
+## ------------------------------------------------------------------------
+# Define reward function
+rewardFun = function(action) {
+  if (action == 0) {
+    reward = rnorm(1, mean = 1, sd = 1)
+  }
+  if (action == 1) {
+    reward = rnorm(1, mean = 2, sd = 4)
+  }
+  if (action == 2) {
+    reward = runif(1, min = 0, max = 5)
+  }
+  if (action == 3) {
+    reward = rexp(1, rate = 0.25)
+  }
+  reward
+}
 
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "egreedy", epsilon = 0.5)
+## ------------------------------------------------------------------------
+bandit(rewardFun, n.actions = 4, n.episodes = 1000,
+  action.selection = "greedy")
 
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "egreedy", epsilon = 0.5,
-#    epsilon.decay = 0.5, epsilon.decay.after = 100)
+## ------------------------------------------------------------------------
+bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "greedy", 
+  initial.value = 5, initial.visits = 100)
 
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "UCB", C = 2)
+## ------------------------------------------------------------------------
+bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "egreedy", epsilon = 0.5)
 
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 10000,
-#    action.selection = "gradientbandit", alpha = 0.1)
+## ------------------------------------------------------------------------
+# Decay epsilon every 5 episodes by a half.
+decayEpsilon = function(epsilon, i) {
+  if (i %% 5 == 0) {
+    epsilon = epsilon / 2
+  }
+  epsilon
+}
+
+bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "egreedy", epsilon = 0.5,
+  updateEpsilon = decayEpsilon)
+
+## ------------------------------------------------------------------------
+bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "UCB", C = 2)
+
+## ------------------------------------------------------------------------
+bandit(rewardFun, n.actions = 4, n.episodes = 10000, 
+  action.selection = "gradientbandit", alpha = 0.1)
 

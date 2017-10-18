@@ -136,49 +136,48 @@ h1.title {
 \pi(a | S_t) = \left\{ \begin{array}{ll} 1 - \epsilon + \frac{\epsilon}{m}, &amp; \text{if} \; a = \text{argmax}_a Q(S_t, a)  \\
                                         \frac{\epsilon}{m}, &amp; \text{else.} \end{array} \right.
 \]</span></p>
-<p>Then the <span class="math inline">\(Q\)</span> value of the state-action pair is updated by</p>
+<p>Then the <span class="math inline">\(Q\)</span> value of the current state-action pair is updated by</p>
 <p><span class="math display">\[
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right],
 \]</span></p>
 <p>where <span class="math inline">\(\gamma\)</span> is the so called discount factor and <span class="math inline">\(\alpha\)</span> the learning rate.</p>
-<p>In <code>reinforcelearn</code> there is a <code>qlearning</code> function. In the following we will train on a simple navigation task, the windy gridworld. The first argument of all algorithms is the environment (the <code>envir</code>) argument. The number of episodes can be specified via <code>n.episodes</code>.</p>
+<p>In <code>reinforcelearn</code> there is a <code>qlearning</code> function. In the following we will train on a simple navigation task, the windy gridworld. The first argument of all algorithms is called <code>envir</code>, where the environment can be passed on. The number of episodes can be specified via <code>n.episodes</code>.</p>
 <pre class="r"><code># Windy gridworld environment
 env = windyGridworld()
 
-res = qlearning(env, n.episodes = 50)
-# Note: to find the optimal policy we need to run at least 500 episodes.</code></pre>
+res = qlearning(env, n.episodes = 20)
+# Note: to find a good policy we need to run at least 500 episodes.</code></pre>
 <p>The <code>qlearning</code> function returns the action value function <span class="math inline">\(Q\)</span> (here a matrix) and some statistics about learning behavior, e.g. the number of steps and return per episode.</p>
 <pre class="r"><code>print(res$steps)
-#&gt;  [1]  805 1821  660  405  490  141  358  247  220  216  116  248  235  189
-#&gt; [15]  149  171  183  154   55  140  116  170   80   78   90  268  187   35
-#&gt; [29]   43  167   60  136   75   78  154   82  113   71   33  189  166   48
-#&gt; [43]  155   56   24   30   94   44  107   68</code></pre>
+#&gt;  [1] 1275 1383  695  270  441  158  176  541  244  114  419  124  112   61
+#&gt; [15]  198  106  141  128  321  117</code></pre>
 <p>We can then find the optimal policy by acting greedily with respect to the action value function.</p>
 <pre class="r"><code># Values of each grid cell
 state.values = matrix(apply(res$Q1, 1, max), ncol = 10, byrow = TRUE)
 print(round(state.values, 1))
 #&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,] -5.6 -5.8 -6.4 -7.2 -7.8 -8.2 -8.0 -7.3 -6.5  -5.6
-#&gt; [2,] -5.4 -5.4 -5.7 -6.1 -6.0 -5.3 -4.5 -4.2 -4.7  -4.7
-#&gt; [3,] -5.1 -5.0 -5.0 -5.3 -4.5 -3.3 -2.5 -2.6 -3.5  -3.8
-#&gt; [4,] -4.9 -4.5 -4.3 -4.0 -3.2 -1.8 -0.8  0.0 -2.6  -2.9
-#&gt; [5,] -4.3 -4.0 -3.6 -3.3 -2.0 -0.9  0.0 -0.4 -1.0  -1.9
-#&gt; [6,] -3.8 -3.5 -3.0 -2.5 -1.2  0.0  0.0 -0.1 -0.8  -1.3
-#&gt; [7,] -3.4 -3.1 -2.5 -1.8  0.0  0.0  0.0  0.0 -0.3  -0.8
+#&gt; [1,] -4.2 -4.4 -4.9 -5.7 -6.4 -6.9 -6.9 -6.3 -5.6  -4.8
+#&gt; [2,] -4.0 -4.0 -4.2 -4.5 -4.1 -3.2 -1.7 -3.4 -4.0  -4.0
+#&gt; [3,] -3.7 -3.6 -3.5 -3.5 -2.6 -1.2 -0.5 -2.0 -3.0  -3.1
+#&gt; [4,] -3.3 -3.2 -2.9 -2.5 -1.4 -0.4  0.0  0.0 -2.0  -2.3
+#&gt; [5,] -2.8 -2.7 -2.3 -1.8 -0.8 -0.2  0.0 -0.2 -0.8  -1.6
+#&gt; [6,] -2.5 -2.2 -1.8 -1.3 -0.4  0.0  0.0  0.0 -0.5  -1.0
+#&gt; [7,] -2.2 -1.9 -1.4 -0.8  0.0  0.0  0.0  0.0 -0.2  -0.6
 
 # Subtract 1 to be consistent with action numeration in env
 optimal.policy = max.col(res$Q1) - 1
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,]    1    2    0    0    3    0    1    1    2     3
-#&gt; [2,]    1    3    3    2    3    2    0    1    1     3
-#&gt; [3,]    3    3    3    1    2    3    3    1    3     3
-#&gt; [4,]    2    1    1    3    1    1    2    1    0     3
-#&gt; [5,]    3    1    3    1    1    0    1    0    0     0
-#&gt; [6,]    3    1    1    1    1    1    0    0    0     0
-#&gt; [7,]    3    0    1    2    2    1    3    1    2     3</code></pre>
+#&gt; [1,]    1    3    0    3    0    0    1    0    1     1
+#&gt; [2,]    2    0    3    3    3    0    1    2    0     3
+#&gt; [3,]    2    3    3    0    3    3    3    3    0     3
+#&gt; [4,]    3    0    1    1    3    3    3    2    1     0
+#&gt; [5,]    2    3    1    1    2    2    0    0    0     3
+#&gt; [6,]    1    3    3    1    3    0    3    3    0     0
+#&gt; [7,]    1    0    1    2    0    1    1    0    0     1</code></pre>
 <p>There are many parameters, which can be specified, e.g. the discount factor <span class="math inline">\(\gamma\)</span> via <code>discount</code>, the learning rate <span class="math inline">\(\alpha\)</span> via <code>learning.rate</code> and <span class="math inline">\(\epsilon\)</span> via the <code>epsilon</code> argument. These parameters can also be updated over time by passing a function <code>updateEpsilon</code> etc. The update function takes two arguments, the old value of the parameter and the number of episodes finished. It returns the updated parameter, e.g. a decreased learning rate. After each episode is finished the update functions are called.</p>
-<pre class="r"><code>res = qlearning(env, epsilon = 0.2, learning.rate = 0.5, discount = 0.99)
+<pre class="r"><code>res = qlearning(env, epsilon = 0.2, learning.rate = 0.5, 
+  discount = 0.99, n.episodes = 20)
 
 # Decay epsilon over time. Every 10 episodes epsilon will be halfed.
 decayEpsilon = function(epsilon, i) {
@@ -188,20 +187,22 @@ decayEpsilon = function(epsilon, i) {
   epsilon
 }
 
-res = qlearning(env, epsilon = 0.5, updateEpsilon = decayEpsilon)</code></pre>
-<p>Initially the action value function will be initialized to 0. But you can also specify an initial value function via the <code>initial.value</code> argument.</p>
+res = qlearning(env, epsilon = 0.5, n.episodes = 20,
+  updateEpsilon = decayEpsilon)</code></pre>
+<p>The action value function will be initialized to 0. But you can also specify an initial value function via the <code>initial.value</code> argument.</p>
 <pre class="r"><code>Q = matrix(100, nrow = env$n.states, ncol = env$n.actions)
 res = qlearning(env, n.episodes = 5, initial.value = Q)
+
 # After only 5 episodes the Q values will still be similar to the initial values.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #&gt;      [,1] [,2] [,3] [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
-#&gt; [1,] 97.3 97.1 96.6 95.9  95.4  95.1  94.9  95.1  95.7  96.5
-#&gt; [2,] 97.5 97.4 97.3 97.4  97.7  99.0 100.0  98.1  97.2  97.2
-#&gt; [3,] 97.8 97.8 98.0 98.2  99.2  99.8 100.0  99.3  98.3  98.0
-#&gt; [4,] 98.1 98.2 98.5 98.9  99.6 100.0 100.0 100.0  99.1  98.7
-#&gt; [5,] 98.4 98.6 98.9 99.3  99.8 100.0 100.0 100.0  99.7  99.3
-#&gt; [6,] 98.7 98.8 99.2 99.5 100.0 100.0 100.0 100.0 100.0  99.6
-#&gt; [7,] 98.8 99.0 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</code></pre>
+#&gt; [1,] 97.3 97.0 96.6 95.8  95.2  94.9  94.9  95.1  95.7  96.5
+#&gt; [2,] 97.5 97.4 97.3 97.2  97.6  98.7 100.0  98.0  97.5  97.2
+#&gt; [3,] 97.8 97.8 97.9 98.2  99.2  99.7 100.0  99.3  98.3  97.9
+#&gt; [4,] 98.1 98.2 98.4 98.9  99.5 100.0 100.0 100.0  99.1  98.6
+#&gt; [5,] 98.4 98.6 98.8 99.2  99.8 100.0 100.0 100.0  99.6  99.2
+#&gt; [6,] 98.6 98.7 99.1 99.5 100.0 100.0 100.0 100.0  99.8  99.6
+#&gt; [7,] 98.7 98.9 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</code></pre>
 </div>
 <div id="function-approximation" class="section level3">
 <h3>Function Approximation</h3>
@@ -220,13 +221,13 @@ print(env$state.space.bounds)
 env$reset()
 print(env$state)
 #&gt;            [,1] [,2]
-#&gt; [1,] -0.4594292    0</code></pre>
+#&gt; [1,] -0.5902054    0</code></pre>
 <p>We will solve this environment using linear function approximation. With linear function approximation the action value function is represented as</p>
 <p><span class="math display">\[
 \hat{q}(S_t, A_t, w) = x(S_t)^T w = \sum_{j=1}^{n} x_j(S_t) \, w_j.
 \]</span></p>
 <p>There is a distinct weight vector per action.</p>
-<p>The weights are then updated by</p>
+<p>The weights are then updated by gradient descent,</p>
 <p><span class="math display">\[
 w_{t+1} = w_t + \alpha \left[ R_{t+1} + \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right] x(S_t).
 \]</span></p>
@@ -267,35 +268,33 @@ Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q(S_{t+1}, A
 <p>In contrast to Q-Learning Sarsa is an on-policy algorithm because the action values are adjusted using a target value <span class="math inline">\(Q(S_{t+1}, A_{t+1})\)</span> which uses an action $A_{t+1} $sampled from the same <span class="math inline">\(\epsilon\)</span>-greedy policy as <span class="math inline">\(A_t\)</span>.</p>
 <p>In <code>reinforcelearn</code> this algorithm is implemented in the <code>sarsa</code> function. It takes the same arguments as the <code>qlearning</code> function.</p>
 <pre class="r"><code>env = windyGridworld()
-res = sarsa(env, n.episodes = 50)
+res = sarsa(env, n.episodes = 20)
 print(res$steps)
 #&gt;  [1]  817 1643  970  287  350  405  396   58  429  128  298  120  208  139
-#&gt; [15]   98  330   24   47  196  129   77  163  100   55  157   76  207   58
-#&gt; [29]   70   99  139   64  198  130   35   31  103  187   51   50   77  103
-#&gt; [43]   63   72  120  169   54   65   60  128</code></pre>
+#&gt; [15]   98  330   24   47  196  129</code></pre>
 <p>Expected Sarsa <span class="citation">(Seijen et al. 2009)</span> is a generalization of Q-Learning to arbitrary target policies. While Sarsa samples the next action, Expected Sarsa computes the expectation by multiplying each action value with the probability of choosing this action. The update rule is</p>
 <p><span class="math display">\[
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a) - Q(S_t, A_t) \right].
 \]</span></p>
 <p>The term <span class="math inline">\(\pi(a|S_{t+1})\)</span> is called the target policy because it is used to compute the target to update the values. If <span class="math inline">\(\pi(a|S_{t+1})\)</span> is the greedy policy Expected Sarsa is exactly Q-Learning. When the target policy uses the same <span class="math inline">\(\epsilon\)</span>-greedy policy as to sample <span class="math inline">\(A_t\)</span>, then Expected Sarsa is an on-policy algorithm. In R we can use the <code>target.policy</code> argument, which can be <code>&quot;greedy&quot;</code> or <code>&quot;egreedy&quot;</code> for <span class="math inline">\(\epsilon\)</span>-greedy.</p>
 <pre class="r"><code># This is equivalent to qlearning(env):
-res = expectedSarsa(env, target.policy = &quot;greedy&quot;)
+res = expectedSarsa(env, target.policy = &quot;greedy&quot;, n.episodes = 20)
 
-# With an epsilon-greedy target policy:
-res = expectedSarsa(env, target.policy = &quot;egreedy&quot;)</code></pre>
+# Expected Sarsa with an epsilon-greedy target policy:
+res = expectedSarsa(env, target.policy = &quot;egreedy&quot;, n.episodes = 20)</code></pre>
 <p>The Q(<span class="math inline">\(\sigma\)</span>) algorithm <span class="citation">(Asis et al. 2017)</span> generalizes all the algorithms presented so far, i.e. Sarsa, Expected Sarsa and Q-Learning.</p>
 <p>The update rule is</p>
 <p><span class="math display">\[
 Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left(\sigma Q(S_{t+1}, A_{t+1}) + (1 - \sigma) \sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a) \right) - Q(S_t, A_t) \right].
 \]</span></p>
 <p>The parameter <span class="math inline">\(\sigma\)</span> controls a weighting between the Sarsa target <span class="math inline">\(Q(S_{t+1}, A_{t+1})\)</span> and Expected Sarsa target <span class="math inline">\(\sum_{a \in \mathcal{A}} \pi(a|S_{t+1}) Q(S_{t+1}, a)\)</span>. Therefore Sarsa is equal to Q(1) and Expected Sarsa to Q(0).</p>
-<pre class="r"><code>res = qSigma(env, sigma = 0.5)
+<pre class="r"><code>res = qSigma(env, sigma = 0.5, n.episodes = 20)
 
 # This is equivalent to Sarsa:
-res = qSigma(env, sigma = 1)
+res = qSigma(env, sigma = 1, n.episodes = 20)
 
 # This is equivalent to Q-learning:
-res = qSigma(env, sigma = 0, target.policy = &quot;greedy&quot;)</code></pre>
+res = qSigma(env, sigma = 0, target.policy = &quot;greedy&quot;, n.episodes = 20)</code></pre>
 </div>
 <div id="eligibility-traces" class="section level3">
 <h3>Eligibility Traces</h3>
@@ -314,17 +313,15 @@ Q(s, a) \leftarrow Q(s, a) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a)
 \]</span></p>
 <p>and then over time fade away with an exponential decrease</p>
 <p><span class="math display">\[
-E_{t+1}(s, a) = \gamma \lambda (\sigma + (1- \sigma) \pi(A_{t+1} | S_{t+1})) \, E_t(s, a) \qquad \forall s \in \mathcal{S}, \forall a \in \mathcal{A}.
+E_{t+1}(s, a) = \gamma \lambda \, (\sigma + (1 - \sigma) \, \pi(A_{t+1} | S_{t+1})) \, E_t(s, a) \qquad \forall s \in \mathcal{S}, \forall a \in \mathcal{A}.
 \]</span></p>
 <p>The use of eligibility traces can make reinforcement learning agents learn much faster because all state-action pairs are updated at each time step.</p>
-<p>The factor <span class="math inline">\(\psi\)</span> controls the type of eligibility, for <span class="math inline">\(\psi = 0\)</span> this is the standard accumulating trace, for <span class="math inline">\(\psi = 1\)</span> this is the replacing trace. The factor <span class="math inline">\(\lambda\)</span> is the eligibility decay parameter. The eligibility decrease is weighted with the target’s policy probability of the next action for the Expected Sarsa part of the target.</p>
+<p>The factor <span class="math inline">\(\psi\)</span> controls the type of eligibility, for <span class="math inline">\(\psi = 0\)</span> this is the standard accumulating trace, for <span class="math inline">\(\psi = 1\)</span> this is the replacing trace <span class="citation">(Singh and Sutton 1996)</span>. The factor <span class="math inline">\(\lambda\)</span> is the eligibility decay parameter. The eligibility decrease is weighted with the target’s policy probability of the next action for the Expected Sarsa part of the target.</p>
 <p>We can specify <span class="math inline">\(\psi\)</span> via the <code>eligibility.type</code> argument and <span class="math inline">\(\lambda\)</span> via the <code>lambda</code> argument.</p>
-<pre class="r"><code>res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 50)
+<pre class="r"><code>res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 20)
 print(res$steps)
-#&gt;  [1] 1382 2471  121  102   32   21   25   79   77  137   68   56   42   25
-#&gt; [15]   74   37   32   22   20   24   25   24   35   32   35   79   21   21
-#&gt; [29]   19   20   45   26   19   20   22   27   22   17   16   32   31   26
-#&gt; [43]   18   19   19   22   19   21   15   26</code></pre>
+#&gt;  [1] 1165 2550  316   37   21  127   51   31   51   60   41   75   36   44
+#&gt; [15]   33   54   26   35   28   31</code></pre>
 </div>
 <div id="double-learning" class="section level3">
 <h3>Double Learning</h3>
@@ -352,12 +349,10 @@ Q_A(S_t, A_t) \leftarrow Q_A(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left( \
 \]</span></p>
 <p>Update equations for <span class="math inline">\(Q_B\)</span> can be obtained by interchanging the roles of <span class="math inline">\(Q_A\)</span> and <span class="math inline">\(Q_B\)</span> in the above equations.</p>
 <p>To use Double Learning with <code>qSigma</code>, <code>qlearning</code>, <code>sarsa</code> and <code>expectedSarsa</code> just pass <code>double.learning = TRUE</code> to the algorithm. Double Learning works with tables and linear value function approximation.</p>
-<pre class="r"><code>res = expectedSarsa(env, double.learning = TRUE, n.episodes = 50)
+<pre class="r"><code>res = expectedSarsa(env, double.learning = TRUE, n.episodes = 20)
 print(res$steps)
-#&gt;  [1] 1029 1810 1488  522  330  511  683  552  423  146  650  265  285  311
-#&gt; [15]  107  145  355  183  177   78  329  117  265  171  173  391   43  219
-#&gt; [29]  150   96  227  123  263  161  213  208   32  443   67  125   36  114
-#&gt; [43]  134   83  226  128  132  170   72  161</code></pre>
+#&gt;  [1]  975  493 1836 1475  433  327  517  470  692  421  451  453  184  381
+#&gt; [15]  217  173  261  259   70  370</code></pre>
 </div>
 <div id="experience-replay" class="section level3">
 <h3>Experience Replay</h3>
@@ -367,24 +362,38 @@ print(res$steps)
 <pre class="r"><code># Fill a replay memory of size 100 on the mountain car task.
 # We will use grid tiling as defined above.
 memory = vector(&quot;list&quot;, length = 100)
-env = mountainCar()
+env = windyGridworld()
 env$reset()
 for (i in 1:100) {
   if (env$done) {
     env$reset()
   }
-  action = sample(0:2, size = 1, prob = c(0.5, 0, 0.5))
+  action = sample(env$actions, size = 1)
   env$step(action)
-  memory[[i]] = list(state = gridTiling(env$previous.state), action = action, 
-    reward = env$reward, next.state = gridTiling(env$state))
+  memory[[i]] = list(state = env$previous.state, action = action, 
+    reward = env$reward, next.state = env$state)
 }
+print(memory[[1]])
+#&gt; $state
+#&gt; [1] 30
+#&gt; 
+#&gt; $action
+#&gt; [1] 0
+#&gt; 
+#&gt; $reward
+#&gt; [1] -1
+#&gt; 
+#&gt; $next.state
+#&gt; [1] 30
 
-# res = sarsa(env, fun.approx = &quot;linear&quot;, preprocessState = gridTiling, 
-#   replay.memory = memory, batch.size = 32, n.episodes = 30)
-# print(res$steps)
+# Pass on replay memory.
+res = sarsa(env, replay.memory = memory, batch.size = 32, n.episodes = 20)
+print(res$steps)
+#&gt;  [1] 763 450 251  53  91 104 110  34  37  66  85  96  37  57  22 110 206
+#&gt; [18] 110  61  82
 
-# res = sarsa(env, fun.approx = &quot;linear&quot;, preprocessState = gridTiling, 
-#   replay.memory.size = 100, batch.size = 32, n.episodes = 30)</code></pre>
+# Specify replay memory size, replay memory will be filled internally.
+res = sarsa(env, replay.memory.size = 100, batch.size = 32, n.episodes = 20)</code></pre>
 <p>As a default experiences will be randomly sampled from the replay memory. A prioritized experience replay prioritizes experiences with a high error, where the error is for example in Sarsa given by</p>
 <p><span class="math display">\[
 R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t).
@@ -395,9 +404,11 @@ j \tilde{} P(j) = \frac{p_j^\alpha}{\sum_i p_i^\alpha}.
 \]</span></p>
 <p>When <span class="math inline">\(\alpha = 0\)</span> (the default) experiences are sampled with equal probability else experiences with a high error have a higher probability of being sampled. To each priority a small positive constant <span class="math inline">\(\theta\)</span> is added to prevent that experiences with an error of 0 are never replayed.</p>
 <pre class="r"><code># Prioritized experience replay
-# res = sarsa(env, fun.approx = &quot;linear&quot;, preprocessState = gridTiling,
-#   replay.memory.size = 100, batch.size = 32, n.episodes = 30,
-#   alpha = 0.5, theta = 0.05)</code></pre>
+res = sarsa(env, replay.memory.size = 100, batch.size = 32, 
+  n.episodes = 20, alpha = 0.5, theta = 0.01)
+print(res$returns)
+#&gt;  [1] -274 -739 -240 -208 -190  -21  -48 -101  -36 -117  -34  -67 -190 -133
+#&gt; [15]  -22  -43  -23 -261  -74  -77</code></pre>
 <hr />
 </div>
 <div id="td" class="section level3">
@@ -438,7 +449,7 @@ random.policy = matrix(1 / env$n.actions, nrow = env$n.states,
 # Estimate state value function with TD(0)
 res = td(env, random.policy, n.episodes = 100, lambda = 0.5)
 print(res$V)
-#&gt; [1] 0.0000000 0.1468266 0.3319113 0.5742682 0.7571109 0.9284267 0.0000000</code></pre>
+#&gt; [1] 0.0000000 0.1525976 0.2686215 0.5527451 0.7012868 0.8468207 0.0000000</code></pre>
 <p>Note that the state values fluctuate around the true values due to the learning rate, which changes the estimates in the direction of the last transition.</p>
 <hr />
 </div>
@@ -516,25 +527,17 @@ print(res$policy)
 </div>
 <div id="actor-critic" class="section level3">
 <h3>Actor Critic</h3>
-<p>An actor critic is a policy-based reinforcement learning algorithm. It uses both parametrized policy and value function. In <code>reinforcelearn</code> a TD actor critic is implemented, which uses a state value function as a critic.</p>
+<p>An actor critic is a policy-based reinforcement learning algorithm <span class="citation">(Sutton and Barto 2017)</span>. It uses a parametrized policy and value function. In <code>reinforcelearn</code> an advantage actor critic is implemented, which uses the td error of the state value function as a critic.</p>
 <p>The policy can be a softmax policy for discrete actions or a gaussian policy for a continuous action space.</p>
-<p>The parameters of the critic are updated (for linear function approximation) by</p>
-<p><span class="math display">\[
-w_{t+1} = w_t + \beta [ R_{t+1} + \gamma V(S_{t+1}) - V(S_t)] x(S_t).
-\]</span></p>
-<p>and the policy’s parameter by</p>
-<p><span class="math display">\[
-\theta_{t+1} = \theta_t + \alpha \gamma^t [ R_{t+1} + \gamma V(S_{t+1}) - V(S_t)] \nabla_\theta \log \pi(A_t | S_t, \theta),
-\]</span></p>
-<p>where <span class="math inline">\(\nabla_\theta \log \pi(A_t | S_t, \theta)\)</span> is the gradient of the log policy. There are now two learning rates <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p>
+<p>There are now two learning rates <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>, one for the critic and one for the actor.</p>
 <pre class="r"><code>env = mountainCar()
 
 # Linear function approximation and softmax policy
 res = actorCritic(env, fun.approx = &quot;linear&quot;, 
-  preprocessState = gridTiling, n.episodes = 30)
+  preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
-#&gt;  [1] 891 902 277 420 234 426 235 236 193 155 237 157 192 184 147 150 157
-#&gt; [18] 189 193 201 127 151 116 124 148 148 147 143 149 151</code></pre>
+#&gt;  [1] 970 504 394 248 331 273 240 307 282 198 183 187 186 158 189 195 154
+#&gt; [18] 213 186 153</code></pre>
 <p>With a gaussian policy we can also solve problems with a continuous action space.</p>
 <p>Here we will solve a continuous version of the mountain car problem, where the action is a real number.</p>
 <pre class="r"><code># Mountain Car with continuous action space
@@ -547,6 +550,23 @@ res = actorCritic(env, fun.approx = &quot;linear&quot;, policy = &quot;gaussian&
 print(res$steps)
 #&gt;  [1] 780 319 317 157 149 194 153 132 106 151 106 136 110  98  96 101 144
 #&gt; [18]  96 103 165</code></pre>
+<p>The actor critic can be used with eligibility traces, then there are separate eligibility traces for the policy parameters and the value function parameters, which can be decayed by different factor <span class="math inline">\(\lambda\)</span>.</p>
+<pre class="r"><code># Variant of cliff walking
+rewardFun = function(state, action, n.state) {
+  if (n.state %in% 37:46) {
+    return(- 100)
+  } else {
+    return(- 1)
+  }
+}
+env = makeGridworld(shape = c(4, 12), goal.states = 47,
+  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
+  cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
+
+res = actorCritic(env, n.episodes = 20, lambda.actor = 0.5, lambda.critic = 0.8)
+print(res$returns)
+#&gt;  [1] -100 -103 -162 -148 -113 -179 -119 -124 -191 -104 -143 -100 -142 -108
+#&gt; [15] -149 -127 -172 -221 -158 -145</code></pre>
 <hr />
 <div id="multi-armed-bandit" class="section level4">
 <h4>Multi-armed Bandit</h4>
@@ -571,26 +591,40 @@ rewardFun = function(action) {
 }</code></pre>
 <p>To solve the bandit, i.e. to find out, which action returns the most reward, we can use the <code>bandit</code> function. There are several different action selection methods implemented, e.g. <code>greedy</code>, <code>epsilon-greedy</code>, <code>UCB</code> and <code>gradient-bandit</code>.</p>
 <pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-  action.selection = &quot;greedy&quot;)</code></pre>
+  action.selection = &quot;greedy&quot;)
+#&gt; [1] -0.1976585 -1.3866575  2.1102407  3.9465064</code></pre>
 <p>In the <code>bandit</code> function we can specify the argument <code>initial.value</code> which sets all Q values initially to this number. Additionally we can assign a confidence to this initial value via the <code>initial.visits</code> argument. A value of 10 for example means that the algorithm has already seen 10 rewards for each action with an average value of <code>initial.value</code>.</p>
 <pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = &quot;greedy&quot;, 
-  initial.value = 5, initial.visits = 100)</code></pre>
+  initial.value = 5, initial.visits = 100)
+#&gt; [1] 4.095788 4.064578 4.103341 4.135369</code></pre>
 <p>An epsilon-greedy policy can be used as well.</p>
 <pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
-  action.selection = &quot;egreedy&quot;, epsilon = 0.5)</code></pre>
-<p>In the following we will decrease epsilon every 100 episodes by a factor of 0.5.</p>
-<pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = &quot;egreedy&quot;, epsilon = 0.5)
+#&gt; [1] 0.9944536 1.6240003 2.4483131 4.6093580</code></pre>
+<p>The parameter <code>epsilon</code> can be decreased over time by passing a function <code>updateEpsilon</code>, which takes the current <code>epsilon</code> value and the number of episodes finished as arguments.</p>
+<pre class="r"><code># Decay epsilon every 5 episodes by a half.
+decayEpsilon = function(epsilon, i) {
+  if (i %% 5 == 0) {
+    epsilon = epsilon / 2
+  }
+  epsilon
+}
+
+bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = &quot;egreedy&quot;, epsilon = 0.5,
-  epsilon.decay = 0.5, epsilon.decay.after = 100)</code></pre>
+  updateEpsilon = decayEpsilon)
+#&gt; [1] 0.9890049 4.9588979 2.7322591 3.7268878</code></pre>
 <p>The schedule after which epsilon is decreased can be controled by the <code>epsilon.decay</code> and <code>epsilon.decay.after</code> parameters. After every <code>epsilon.decay.after</code> episodes epsilon will be multiplied with <code>epsilon.decay</code>, usually a value between 0 and 1, and therefore decreases over time.</p>
 <p>The estimates come close to the true values and will therefore correctly estimate the 4th action as the best one.</p>
 <pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
-  action.selection = &quot;UCB&quot;, C = 2)</code></pre>
+  action.selection = &quot;UCB&quot;, C = 2)
+#&gt; [1] 1.534875 2.069442 2.501997 4.133577</code></pre>
 <p>The bandit algorithm is implemented in the following way. Action values are increased incrementally which is computationally cheaper as storing all rewards in a table.</p>
 <p>There is also a gradient-bandit algorithm <span class="citation">(Sutton and Barto 2017)</span>.</p>
 <pre class="r"><code>bandit(rewardFun, n.actions = 4, n.episodes = 10000, 
-  action.selection = &quot;gradientbandit&quot;, alpha = 0.1)</code></pre>
+  action.selection = &quot;gradientbandit&quot;, alpha = 0.1)
+#&gt; [1] 1.019872e-04 4.369316e-05 4.108634e-04 9.994435e-01</code></pre>
 <hr />
 </div>
 </div>
@@ -617,6 +651,9 @@ rewardFun = function(action) {
 </div>
 <div id="ref-vanseijen2009">
 <p>Seijen, Harm van, Hado van Hasselt, Shimon Whiteson, and Marco Wiering. 2009. “A Theoretical and Empirical Analysis of Expected Sarsa.” In <em>ADPRL 2009: Proceedings of the Ieee Symposium on Adaptive Dynamic Programming and Reinforcement Learning</em>, 177–84.</p>
+</div>
+<div id="ref-eligibility">
+<p>Singh, Satinder P., and Richard S. Sutton. 1996. “Reinforcement Learning with Replacing Eligibility Traces.” <em>Machine Learning</em> 22 (1): 123–58. doi:<a href="https://doi.org/10.1007/BF00114726">10.1007/BF00114726</a>.</p>
 </div>
 <div id="ref-sutton2017">
 <p>Sutton, Richard S., and Andrew G. Barto. 2017. “Reinforcement Learning : An Introduction.” Cambridge, MA, USA: <a href="http://incompleteideas.net/sutton/book/the-book-2nd.html" class="uri">http://incompleteideas.net/sutton/book/the-book-2nd.html</a>; MIT Press.</p>
