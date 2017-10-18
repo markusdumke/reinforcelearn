@@ -6,15 +6,16 @@
 \usage{
 td(envir, policy, fun.approx = "table", preprocessState = identity,
   initial.value = NULL, n.episodes = NULL, n.steps = NULL, discount = 1,
-  lambda = 0, eligibility.type = 0, learning.rate = 0.1)
+  lambda = 0, eligibility.type = 0, learning.rate = 0.1,
+  updateLambda = identity2, updateLearningRate = identity2)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
 The reinforcement learning environment created by \code{\link{makeEnvironment}}.}
 
-\item{policy}{[\code{matrix} | \code{function}] \cr 
-A policy specified as a probability matrix (states x actions) or 
-a function returning an action given a preprocessed state observation 
+\item{policy}{[\code{matrix} | \code{function}] \cr
+A policy specified as a probability matrix (states x actions) or
+a function returning an action given a preprocessed state observation
 (with linear function approximation).}
 
 \item{fun.approx}{[\code{character(1)}] \cr
@@ -33,7 +34,7 @@ Only used for tabular or linear function approximation.}
 \item{n.episodes}{[\code{integer(1)}] \cr
 Number of episodes.}
 
-\item{n.steps}{[\code{integer(1)}] \cr 
+\item{n.steps}{[\code{integer(1)}] \cr
 Number of evaluations (steps in the environment).}
 
 \item{discount}{[\code{numeric(1) in [0, 1]}] \cr
@@ -48,33 +49,43 @@ Type of eligibility trace, use \code{eligibility.type = 1} for replacing traces,
 
 \item{learning.rate}{[\code{numeric(1)}] \cr
 Learning rate used for gradient descent.}
+
+\item{updateLambda}{[\code{function}] \cr
+A function that updates \code{lambda}. It takes two arguments, 
+\code{lambda} and the current number
+of episodes which are finished, and returns the new \code{lambda} value.}
+
+\item{updateLearningRate}{[\code{function}] \cr
+A function that updates the learning rate. It takes two arguments, \code{learning.rate}
+and the current number of episodes which are finished, and returns the new
+\code{learning.rate} value.}
 }
 \value{
 [\code{list}] \cr
-Returns the state value function V and some statistics about learning behavior, e.g. the number 
+Returns the state value function V and some statistics about learning behavior, e.g. the number
 of steps and return per episode.
 }
 \description{
 Estimate the state value function for a given policy using temporal difference learning.
 }
 \details{
-Can be used for episodic or continuing environments, please specify either a maximum number of 
+Can be used for episodic or continuing environments, please specify either a maximum number of
 steps or a maximum number of episodes.
 }
 \examples{
 # Random Walk Task (Sutton & Barto Example 6.2)
 P = array(dim = c(7, 7, 2))
-P[, , 1] = matrix(c(rep(c(1, rep(0, 6)), 2), c(0, 1, rep(0, 5)), 
-  c(0, 0, 1, rep(0, 4)), c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)), 
+P[, , 1] = matrix(c(rep(c(1, rep(0, 6)), 2), c(0, 1, rep(0, 5)),
+  c(0, 0, 1, rep(0, 4)), c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)),
   c(rep(0, 6), 1)), ncol = 7, byrow = TRUE)
-P[, , 2] = matrix(c(c(1, rep(0, 6)), c(0, 0, 1, rep(0, 4)), 
-  c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)), 
+P[, , 2] = matrix(c(c(1, rep(0, 6)), c(0, 0, 1, rep(0, 4)),
+  c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)),
   c(rep(0, 5), 1, 0), c(rep(0, 6), 1), c(rep(0, 6), 1)), ncol = 7, byrow = TRUE)
 R = matrix(c(rep(0, 12), 1, 0), ncol = 2)
 env = makeEnvironment(transitions = P, rewards = R, initial.state = 3)
 
 # Uniform random policy
-random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
+random.policy = matrix(1 / env$n.actions, nrow = env$n.states,
   ncol = env$n.actions)
 
 # Estimate state value function with TD(0)
