@@ -6,15 +6,17 @@
 \usage{
 actorCritic(envir, fun.approx = "table", policy = "softmax",
   critic.type = "advantage", preprocessState = identity, n.episodes = 100,
-  discount = 1, alpha = 0.01, beta = 0.1, lambda = 0)
+  discount = 1, alpha = 0.01, beta = 0.1, lambda.actor = 0,
+  lambda.critic = 0, updateAlpha = identity2, updateBeta = identity2,
+  updateLambdaActor = identity2, updateLambdaCritic = identity2)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
 The reinforcement learning environment created by \code{\link{makeEnvironment}}.}
 
 \item{fun.approx}{[\code{character(1)}] \cr
-Type of function approximator used for policy and value function. 
-Currently supported are linear combination of features (\code{"linear"}) and 
+Type of function approximator used for policy and value function.
+Currently supported are linear combination of features (\code{"linear"}) and
 table lookup (\code{"table"}).}
 
 \item{policy}{[\code{character(1)}] \cr
@@ -22,7 +24,8 @@ Policy type, supported are \code{"softmax"} for a discrete action space and
 \code{"gaussian"} for a continuous action space using a normal distribution.}
 
 \item{critic.type}{[\code{character(1)}] \cr
-Type of the critic. Currently only advantage actor critic is supported.}
+Type of the critic. Currently only advantage actor critic is supported, which is
+approximated by the td error.}
 
 \item{preprocessState}{[\code{function}] \cr
 A function that takes the state observation returned from the environment as an input and
@@ -40,28 +43,46 @@ Learning rate (step size) for the policy.}
 \item{beta}{[\code{numeric(1)}] \cr
 Learning rate (step size) for the critic.}
 
-\item{lambda}{[\code{numeric(1) in [0, 1]}] \cr
-Eligibility trace decay parameter.}
+\item{lambda.actor}{[\code{numeric(1)} in [0, 1]] \cr
+Trace decay parameter for the actor.}
+
+\item{lambda.critic}{[\code{numeric(1)} in [0, 1]] \cr
+Trace decay parameter for the critic.}
+
+\item{updateAlpha}{[\code{function}] \cr
+A function which takes two arguments, \code{alpha} and the current number of episodes.
+Could be used to decay the parameter over time.}
+
+\item{updateBeta}{[\code{function}] \cr
+A function which takes two arguments, \code{beta} and the current number of episodes.
+Could be used to decay the parameter over time.}
+
+\item{updateLambdaActor}{[\code{function}] \cr
+A function which takes two arguments, \code{lambda.actor} and the current number of episodes.
+Could be used to decay the parameter over time.}
+
+\item{updateLambdaCritic}{[\code{function}] \cr
+A function which takes two arguments, \code{lambda.critic} and the current number of episodes.
+Could be used to decay the parameter over time.}
 }
 \value{
 [\code{list}] \cr
-Returns a list with policy and value function parameters and 
-some statistics about learning behaviour, e.g. the number of 
+Returns a list with policy and value function parameters and
+some statistics about learning behaviour, e.g. the number of
 steps and return per episode.
 }
 \description{
-Policy-based reinforcement learning control algorithm using both policy (the actor) 
+Policy-based reinforcement learning control algorithm using both policy (the actor)
 and value function (the critic).
 }
 \details{
-When using a gaussian policy mean and variance will be parametrized 
+When using a gaussian policy mean and variance will be parametrized
 as a linear combination of features mu = x * w_1 and sigma = exp(x * w_2).
 
 Eligibility traces are used for both policy parameters and value function parameters.
 }
 \examples{
 # Variant of cliff walking
-library(reinforcelearn)
 rewardFun = function(state, action, n.state) {
   if (n.state \%in\% 37:46) {
     return(- 100)
@@ -73,7 +94,7 @@ env = makeGridworld(shape = c(4, 12), goal.states = 47,
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 
-res = actorCritic(env, n.episodes = 100)
+res = actorCritic(env, n.episodes = 20)
 
 #----------------
 # Mountain Car
@@ -99,17 +120,17 @@ gridTiling = function(state) {
 }
 
 # Linear function approximation and softmax policy
-res = actorCritic(m, fun.approx = "linear", 
-  preprocessState = gridTiling, n.episodes = 50)
+res = actorCritic(m, fun.approx = "linear",
+  preprocessState = gridTiling, n.episodes = 20)
 
 #----------------
 # Mountain Car with continuous action space
-m2 = mountainCar(action.space = "Continuous")
+m = mountainCar(action.space = "Continuous")
 
 # Linear function approximation and gaussian policy
 set.seed(123)
-res = actorCritic(m, fun.approx = "linear", policy = "gaussian", 
-  preprocessState = gridTiling, n.episodes = 50)
+res = actorCritic(m, fun.approx = "linear", policy = "gaussian",
+  preprocessState = gridTiling, n.episodes = 20)
 
 }
 \references{

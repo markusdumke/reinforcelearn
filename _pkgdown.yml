@@ -5,6 +5,9 @@ template:
     bootswatch: cerulean
 
 reference:
+  - title: Package help page
+    contents:
+    - reinforcelearn
   - title: Environments
     desc: Creation of reinforcement learning environments and example environments.
     contents:
@@ -22,9 +25,10 @@ reference:
     - actorCritic
     - evaluatePolicy
     - solveBandit
-  - title: State preprocessing
+  - title: State preprocessing and helper functions
     contents:
     - tiles
     - IHT
     - makeNHot
+    - identity2
 
