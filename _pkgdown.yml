@@ -24,7 +24,7 @@ reference:
     - td
     - actorCritic
     - evaluatePolicy
-    - solveBandit
+    - bandit
   - title: State preprocessing and helper functions
     contents:
     - tiles

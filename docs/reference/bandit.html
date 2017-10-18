@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Solve multi-armed bandit — solveBandit â€¢ reinforcelearn</title>
+<title>Multi-armed bandit — bandit â€¢ reinforcelearn</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -101,7 +101,7 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Solve multi-armed bandit</h1>
+    <h1>Multi-armed bandit</h1>
     </div>
 
     
@@ -113,10 +113,10 @@ are no states). To find the best action, the algorithm is faced with
 a tradeoff between exploration and exploitation.</p>
     
 
-    <pre class="usage"><span class='fu'>solveBandit</span>(<span class='no'>rewardFun</span>, <span class='no'>n.actions</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+    <pre class="usage"><span class='fu'>bandit</span>(<span class='no'>rewardFun</span>, <span class='no'>n.actions</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"egreedy"</span>, <span class='st'>"greedy"</span>, <span class='st'>"UCB"</span>, <span class='st'>"gradientbandit"</span>),
-  <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>epsilon.decay</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>epsilon.decay.after</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>initial.value</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>initial.visits</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>C</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+  <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>initial.value</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>initial.visits</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>C</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -149,20 +149,10 @@ Which method to use for action selection, one of <code>"egreedy"</code>,
 Ratio of random exploration in epsilon-greedy action selection.</p></td>
     </tr>
     <tr>
-      <th>epsilon.decay</th>
-      <td><p>[<code>numeric(1) in [0,1]</code>] 
-Decay epsilon by this factor.</p></td>
-    </tr>
-    <tr>
-      <th>epsilon.decay.after</th>
-      <td><p>[<code>integer(1)</code>] 
-Number of episodes after which to decay epsilon.</p></td>
-    </tr>
-    <tr>
       <th>alpha</th>
       <td><p>[<code>numeric(1)</code>] 
-Parameter of gradient bandit algorithm, higher alpha value gives more weight to
-recent rewards (useful for non-stationary environments). Not implemented!</p></td>
+Parameter of the gradient bandit algorithm, a higher alpha value gives more weight to
+recent rewards (useful for non-stationary environments).</p></td>
     </tr>
     <tr>
       <th>initial.value</th>
@@ -180,6 +170,18 @@ Set this to a high number to encourage exploration
       <th>C</th>
       <td><p>[<code>numeric(1)</code>] 
 Controls the degree of exploration. High C values lead to more exploration.</p></td>
+    </tr>
+    <tr>
+      <th>updateEpsilon</th>
+      <td><p>[<code>function</code>] 
+A function which takes two arguments, <code>epsilon</code> and the current number of episodes.
+Could be used to decay the parameter over time.</p></td>
+    </tr>
+    <tr>
+      <th>updateAlpha</th>
+      <td><p>[<code>function</code>] 
+A function which takes two arguments, <code>alpha</code> and the current number of episodes.
+Could be used to decay the parameter over time.</p></td>
     </tr>
     </table>
     
@@ -215,16 +217,17 @@ each action.</p>
   <span class='no'>reward</span>
 }
 
-<span class='fu'>solveBandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"greedy"</span>)</div><div class='output co'>#&gt; [1] 0.9938972 1.6475474 2.4775240 0.1263094</div><div class='input'><span class='fu'>solveBandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"egreedy"</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='output co'>#&gt; [1] 1.021046 1.772384 2.217260 3.779258</div><div class='input'><span class='fu'>solveBandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+<span class='fu'>bandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"greedy"</span>)</div><div class='output co'>#&gt; [1] 0.9938972 1.6475474 2.4775240 0.1263094</div><div class='input'><span class='fu'>bandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"egreedy"</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='output co'>#&gt; [1] 1.091109 1.810578 2.368114 3.973869</div><div class='input'><span class='fu'>bandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
   <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"greedy"</span>,
-  <span class='kw'>initial.value</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>initial.visits</span> <span class='kw'>=</span> <span class='fl'>100</span>)</div><div class='output co'>#&gt; [1] 4.164015 4.158123 4.178272 4.199591</div><div class='input'><span class='fu'>solveBandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
-  <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"UCB"</span>, <span class='kw'>C</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] 0.7644437 2.4343482 1.7791806 4.0699471</div><div class='input'><span class='co'># true values: 1, 2, 2.5, 4</span>
+  <span class='kw'>initial.value</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>initial.visits</span> <span class='kw'>=</span> <span class='fl'>100</span>)</div><div class='output co'>#&gt; [1] 4.175454 4.132243 4.152457 4.208284</div><div class='input'><span class='fu'>bandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"UCB"</span>, <span class='kw'>C</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; [1] -0.1064495  2.5144118  2.7020018  4.0096271</div><div class='input'><span class='co'># true values: 1, 2, 2.5, 4</span>
 
 <span class='co'># Gradient bandit algorithm</span>
-<span class='fu'>solveBandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
-  <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"gradientbandit"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</div><div class='output co'>#&gt; [1] 9.917463e-05 8.637307e-05 3.039731e-04 9.995105e-01</div></pre>
+<span class='fu'>bandit</span>(<span class='no'>rewardFun</span>, <span class='kw'>n.actions</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
+  <span class='kw'>action.selection</span> <span class='kw'>=</span> <span class='st'>"gradientbandit"</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</div><div class='output co'>#&gt; [1] 0.0000690247 0.0001050642 0.0003705861 0.9994553250</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
