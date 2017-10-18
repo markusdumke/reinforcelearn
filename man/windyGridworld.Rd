@@ -18,7 +18,7 @@ take you off the grid, you remain in the previous state. For each step you
 get a reward of -1, until you reach into a terminal state.
 }
 \details{
-This is the gridworld (goal state denoted G, start state denoted S). 
+This is the gridworld (goal state denoted G, start state denoted S).
 The last row specifies the upward wind in each column.
 \tabular{rrrrrrrrrr}{
  . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
