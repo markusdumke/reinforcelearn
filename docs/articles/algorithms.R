@@ -215,28 +215,28 @@ print(res$steps)
 #  }
 
 ## ---- eval = F-----------------------------------------------------------
-#  solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #    action.selection = "greedy")
 
 ## ---- eval = F-----------------------------------------------------------
-#  solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #    action.selection = "greedy",
 #    initial.value = 5, initial.visits = 100)
 
 ## ---- eval = F-----------------------------------------------------------
-#  solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #    action.selection = "egreedy", epsilon = 0.5)
 
 ## ---- eval = F-----------------------------------------------------------
-#  solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #    action.selection = "egreedy", epsilon = 0.5,
 #    epsilon.decay = 0.5, epsilon.decay.after = 100)
 
 ## ---- eval = F-----------------------------------------------------------
-#  solveBandit(rewardFun, n.actions = 4, n.episodes = 1000,
+#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 #    action.selection = "UCB", C = 2)
 
 ## ---- eval = F-----------------------------------------------------------
-#  solveBandit(rewardFun, n.actions = 4, n.episodes = 10000,
+#  bandit(rewardFun, n.actions = 4, n.episodes = 10000,
 #    action.selection = "gradientbandit", alpha = 0.1)
 

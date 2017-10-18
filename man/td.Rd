@@ -27,8 +27,8 @@ A function that takes the state observation returned from the environment as an 
 preprocesses this in a way the algorithm can work with it.}
 
 \item{initial.value}{[\code{numeric}] \cr
-Initial value function matrix or weight matrix. 
-If \code{NULL} weights will be initialized to 0. 
+Initial value function matrix or weight matrix.
+If \code{NULL} weights will be initialized to 0.
 Only used for tabular or linear function approximation.}
 
 \item{n.episodes}{[\code{integer(1)}] \cr
@@ -51,7 +51,7 @@ Type of eligibility trace, use \code{eligibility.type = 1} for replacing traces,
 Learning rate used for gradient descent.}
 
 \item{updateLambda}{[\code{function}] \cr
-A function that updates \code{lambda}. It takes two arguments, 
+A function that updates \code{lambda}. It takes two arguments,
 \code{lambda} and the current number
 of episodes which are finished, and returns the new \code{lambda} value.}
 

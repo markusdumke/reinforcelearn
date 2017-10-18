@@ -70,15 +70,15 @@
 #' @param epsilon [\code{numeric(1) in [0, 1]}] \cr
 #'   Ratio of random exploration in epsilon-greedy action selection.
 #' @param updateEpsilon [\code{function}] \cr
-#'   A function that updates \code{epsilon}. It takes two arguments, 
-#'   \code{epsilon} and the current number of episodes which are finished, 
+#'   A function that updates \code{epsilon}. It takes two arguments,
+#'   \code{epsilon} and the current number of episodes which are finished,
 #'   and returns the new \code{epsilon} value.
 #' @param updateSigma [\code{function}] \cr
-#'   A function that updates \code{sigma}. It takes two arguments, 
-#'   \code{sigma} and the current number of episodes which are finished, 
+#'   A function that updates \code{sigma}. It takes two arguments,
+#'   \code{sigma} and the current number of episodes which are finished,
 #'   and returns the new \code{sigma} value.
 #' @param updateLambda [\code{function}] \cr
-#'   A function that updates \code{lambda}. It takes two arguments, 
+#'   A function that updates \code{lambda}. It takes two arguments,
 #'   \code{lambda} and the current number
 #'   of episodes which are finished, and returns the new \code{lambda} value.
 #' @param updateLearningRate [\code{function}] \cr
@@ -86,17 +86,17 @@
 #'   and the current number of episodes which are finished, and returns the new
 #'   \code{learning.rate} value.
 #' @param updateAlpha [\code{function}] \cr
-#'   A function that updates \code{alpha}. It takes two arguments, 
+#'   A function that updates \code{alpha}. It takes two arguments,
 #'   \code{alpha} and the current number
 #'   of episodes which are finished, and returns the new \code{alpha} value.
 #' @param initial.value [\code{numeric}] \cr
-#'   Initial value function matrix or weight matrix. 
-#'   If \code{NULL} weights will be initialized to 0. 
+#'   Initial value function matrix or weight matrix.
+#'   If \code{NULL} weights will be initialized to 0.
 #'   Only used for tabular or linear function approximation.
 #' @param n.states [\code{integer(1)}] \cr
-#'   Number of states for tabular value function. 
+#'   Number of states for tabular value function.
 #'   Only needed if the state space is continuous, but
-#'   will be transformed by \code{preprocessState}, so that a single integer value is returned. 
+#'   will be transformed by \code{preprocessState}, so that a single integer value is returned.
 #'   Else the number of states is accessed from the \code{envir} argument.
 #' @param discount [\code{numeric(1) in [0, 1]}] \cr
 #'   Discount factor.
@@ -108,7 +108,7 @@
 #' @param double.learning [\code{logical(1)}] \cr
 #'   Should double learning be used?
 #' @param replay.memory [\code{list}] \cr
-#'   Initial replay memory, which can be passed on. 
+#'   Initial replay memory, which can be passed on.
 #'   Each list element must be a list containing state, action,
 #'   reward and next.state.
 #' @param replay.memory.size [\code{integer(1)}] \cr
@@ -151,8 +151,10 @@
 #' # Solve Windy Gridworld
 #' env = windyGridworld()
 #'
-#' qSigma(env, sigma = 0.5)
-#' qlearning(env)
+#' res = qSigma(env, sigma = 0.5, n.episodes = 20)
+#' print(res$steps)
+#' res = qlearning(env, n.episodes = 20)
+#' print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #'
 #' # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 #' decayEpsilon = function(epsilon, i) {
@@ -162,33 +164,36 @@
 #'   epsilon
 #' }
 #'
-#' expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon)
+#' res = expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon, n.episodes = 20)
+#' optimal.policy = max.col(res$Q1) - 1L
+#' print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #'
 #' # Solve the Mountain Car problem using linear function approximation
 #' m = mountainCar()
-#' 
+#'
 #' # Define preprocessing function (we use grid tiling)
 #' n.tilings = 8
 #' max.size = 4096
 #' iht = IHT(max.size)
-#' 
+#'
 #' position.max = m$state.space.bounds[[1]][2]
 #' position.min = m$state.space.bounds[[1]][1]
 #' velocity.max = m$state.space.bounds[[2]][2]
 #' velocity.min = m$state.space.bounds[[2]][1]
 #' position.scale = n.tilings / (position.max - position.min)
 #' velocity.scale = n.tilings / (velocity.max - velocity.min)
-#' 
+#'
 #' # Scale state first, then get active tiles and return n hot vector
 #' gridTiling = function(state) {
 #'   state = c(position.scale * state[1], velocity.scale * state[2])
 #'   active.tiles = tiles(iht, 8, state)
 #'   makeNHot(active.tiles, max.size, out = "vector")
 #' }
-#' 
+#'
 #' set.seed(123)
-#' sarsa(m, fun.approx = "linear", preprocessState = gridTiling)
-#' 
+#' res = sarsa(m, fun.approx = "linear", preprocessState = gridTiling, n.episodes = 20)
+#' print(res$returns)
+#'
 #' \dontrun{
 #' # Use a neural network as function approximator
 #' makeOneHot = function(state) {
@@ -196,13 +201,14 @@
 #'   one.hot[1, state + 1] = 1
 #'   one.hot
 #' }
-#' 
+#'
 #' # Define keras model
 #' library(keras)
 #' model = keras_model_sequential()
 #' model %>% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
 #'
-#' qSigma(env, fun.approx = "neural.network", model = model, preprocessState = makeOneHot)
+#' res = qSigma(env, fun.approx = "neural.network", model = model,
+#'   preprocessState = makeOneHot, n.episodes = 20)
 #' }
 #'
 qSigma = function(envir, fun.approx = "table", preprocessState = identity,
@@ -210,8 +216,8 @@ qSigma = function(envir, fun.approx = "table", preprocessState = identity,
   target.policy = "egreedy", lambda = 0, eligibility.type = 0, learning.rate = 0.1,
   epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
-  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL,
-  updateLearningRate = NULL) {
+  updateEpsilon = identity2, updateSigma = identity2, updateLambda = identity2,
+  updateAlpha = identity2, updateLearningRate = identity2) {
 
   # argument checking
   checkArgs(envir, fun.approx, preprocessState,
@@ -235,19 +241,19 @@ qSigma = function(envir, fun.approx = "table", preprocessState = identity,
     agent$runEpisode(envir, i)
   }
 
-  list(Q1 = agent$Q1, Q2 = agent$Q2, steps = agent$episode.steps)
+  list(Q1 = agent$Q1, Q2 = agent$Q2, steps = agent$episode.steps, returns = agent$returns)
 }
 
 #=================================================================
 # Check function arguments of qSigma
-checkArgs = function(envir, fun.approx, preprocessState, 
-  model, initial.value, n.states, n.episodes, sigma, 
-  target.policy, lambda, eligibility.type, learning.rate, 
-  epsilon, discount, double.learning, update.target.after, 
-  replay.memory, replay.memory.size, batch.size, alpha, theta, 
-  updateEpsilon, updateSigma, updateLambda, updateAlpha, 
+checkArgs = function(envir, fun.approx, preprocessState,
+  model, initial.value, n.states, n.episodes, sigma,
+  target.policy, lambda, eligibility.type, learning.rate,
+  epsilon, discount, double.learning, update.target.after,
+  replay.memory, replay.memory.size, batch.size, alpha, theta,
+  updateEpsilon, updateSigma, updateLambda, updateAlpha,
   updateLearningRate) {
-  
+
   checkmate::assertClass(envir, "R6")
   stopifnot(envir$action.space == "Discrete")
   checkmate::assertChoice(fun.approx, c("table", "neural.network", "linear"))
@@ -257,16 +263,16 @@ checkArgs = function(envir, fun.approx, preprocessState,
   checkmate::assertNumber(alpha, lower = 0, upper = 1)
   checkmate::assertNumber(theta, lower = 0, upper = 1)
   if (fun.approx == "table") {
-    checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 
+    checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE,
       nrows = envir$n.states, ncols = envir$n.actions)
   }
   if (fun.approx == "linear") {
     envir$reset()
     n.weights = length(preprocessState(envir$state))
-    checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 
+    checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE,
       nrows = n.weights, ncols = envir$n.actions)
   }
-  checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE, 
+  checkmate::assertMatrix(initial.value, null.ok = TRUE, any.missing = FALSE,
     nrows = envir$n.states, ncols = envir$n.actions)
   checkmate::assertNumber(lambda, lower = 0, upper = 1)
   checkmate::assertNumber(sigma, lower = 0, upper = 1)
@@ -279,12 +285,12 @@ checkArgs = function(envir, fun.approx, preprocessState,
   checkmate::assertList(replay.memory, types = "list", null.ok = TRUE, any.missing = FALSE)
   if (!is.null(replay.memory)) {
     for (i in seq_along(replay.memory)) {
-      checkmate::assertList(replay.memory[[i]], len = 4) 
+      checkmate::assertList(replay.memory[[i]], len = 4)
        # names = c("state", "action", "reward", "next.state"))
       checkmate::assertInt(replay.memory[[i]][["action"]])
       checkmate::assertNumber(replay.memory[[i]][["reward"]])
     }
-    
+
     replay.memory.size = length(replay.memory)
   }
   if (replay.memory.size < batch.size) {
@@ -292,70 +298,70 @@ checkArgs = function(envir, fun.approx, preprocessState,
   }
   checkmate::assertChoice(target.policy, c("greedy", "egreedy"))
   checkmate::assertFlag(double.learning)
-  checkmate::assertFunction(preprocessState, null.ok = TRUE)
-  checkmate::assertFunction(updateEpsilon,  nargs = 2, null.ok = TRUE)
-  checkmate::assertFunction(updateSigma,  nargs = 2, null.ok = TRUE)
-  checkmate::assertFunction(updateLambda,  nargs = 2, null.ok = TRUE)
-  checkmate::assertFunction(updateAlpha,  nargs = 2, null.ok = TRUE)
-  checkmate::assertFunction(updateLearningRate,  nargs = 2, null.ok = TRUE)
+  checkmate::assertFunction(preprocessState)
+  checkmate::assertFunction(updateEpsilon)
+  checkmate::assertFunction(updateSigma)
+  checkmate::assertFunction(updateLambda)
+  checkmate::assertFunction(updateAlpha)
+  checkmate::assertFunction(updateLearningRate)
 }
 
 #' @export
 #' @inheritParams qSigma
 #' @rdname qSigma
-qlearning = function(envir, fun.approx = "table", preprocessState = identity, 
+qlearning = function(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
-  lambda = 0, eligibility.type = 0, learning.rate = 0.1, 
-  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
-  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL) {
-  
-  qSigma(envir, fun.approx, preprocessState,   
-    model, initial.value, n.states, n.episodes, sigma = 0, 
-    target.policy = "greedy", lambda, eligibility.type, learning.rate, 
-    epsilon, discount, double.learning, update.target.after, 
-    replay.memory, replay.memory.size, batch.size, alpha, theta, 
-    updateEpsilon, updateSigma, updateLambda, updateAlpha, 
+  lambda = 0, eligibility.type = 0, learning.rate = 0.1,
+  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
+  replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
+  updateEpsilon = identity2, updateSigma = identity2, updateLambda = identity2,
+  updateAlpha = identity2, updateLearningRate = identity2) {
+
+  qSigma(envir, fun.approx, preprocessState,
+    model, initial.value, n.states, n.episodes, sigma = 0,
+    target.policy = "greedy", lambda, eligibility.type, learning.rate,
+    epsilon, discount, double.learning, update.target.after,
+    replay.memory, replay.memory.size, batch.size, alpha, theta,
+    updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate)
 }
 
 #' @export
 #' @inheritParams qSigma
 #' @rdname qSigma
-sarsa = function(envir, fun.approx = "table", preprocessState = identity, 
-  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, 
-  lambda = 0, eligibility.type = 0, learning.rate = 0.1, 
-  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
-  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL) {
-  
-  qSigma(envir, fun.approx, preprocessState, 
-    model, initial.value, n.states, n.episodes, sigma = 1, 
-    target.policy = "egreedy", lambda, eligibility.type, learning.rate, 
-    epsilon, discount, double.learning, update.target.after, 
-    replay.memory, replay.memory.size, batch.size, alpha, theta, 
-    updateEpsilon, updateSigma, updateLambda, updateAlpha, 
+sarsa = function(envir, fun.approx = "table", preprocessState = identity,
+  model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
+  lambda = 0, eligibility.type = 0, learning.rate = 0.1,
+  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
+  replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
+  updateEpsilon = identity2, updateSigma = identity2, updateLambda = identity2,
+  updateAlpha = identity2, updateLearningRate = identity2) {
+
+  qSigma(envir, fun.approx, preprocessState,
+    model, initial.value, n.states, n.episodes, sigma = 1,
+    target.policy = "egreedy", lambda, eligibility.type, learning.rate,
+    epsilon, discount, double.learning, update.target.after,
+    replay.memory, replay.memory.size, batch.size, alpha, theta,
+    updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate)
 }
 
 #' @export
 #' @inheritParams qSigma
 #' @rdname qSigma
-expectedSarsa = function(envir, fun.approx = "table", preprocessState = identity, 
+expectedSarsa = function(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, target.policy = "egreedy",
-  lambda = 0, eligibility.type = 0, learning.rate = 0.1, 
-  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1, 
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01, 
-  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL, updateAlpha = NULL, 
-  updateLearningRate = NULL) {
-  
-  qSigma(envir, fun.approx, preprocessState, 
+  lambda = 0, eligibility.type = 0, learning.rate = 0.1,
+  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
+  replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
+  updateEpsilon = identity2, updateSigma = identity2, updateLambda = identity2,
+  updateAlpha = identity2, updateLearningRate = identity2) {
+
+  qSigma(envir, fun.approx, preprocessState,
     model, initial.value, n.states, n.episodes, sigma = 0, target.policy,
-    lambda, eligibility.type, learning.rate, 
-    epsilon, discount, double.learning, update.target.after, 
-    replay.memory, replay.memory.size, batch.size, alpha, theta, 
-    updateEpsilon, updateSigma, updateLambda, updateAlpha, 
+    lambda, eligibility.type, learning.rate,
+    epsilon, discount, double.learning, update.target.after,
+    replay.memory, replay.memory.size, batch.size, alpha, theta,
+    updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate)
 }

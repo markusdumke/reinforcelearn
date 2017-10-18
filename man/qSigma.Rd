@@ -13,24 +13,27 @@ qSigma(envir, fun.approx = "table", preprocessState = identity,
   eligibility.type = 0, learning.rate = 0.1, epsilon = 0.1,
   discount = 1, double.learning = FALSE, update.target.after = 1,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
-  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL)
+  alpha = 0, theta = 0.01, updateEpsilon = identity2,
+  updateSigma = identity2, updateLambda = identity2,
+  updateAlpha = identity2, updateLearningRate = identity2)
 
 qlearning(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   lambda = 0, eligibility.type = 0, learning.rate = 0.1, epsilon = 0.1,
   discount = 1, double.learning = FALSE, update.target.after = 1,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
-  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL)
+  alpha = 0, theta = 0.01, updateEpsilon = identity2,
+  updateSigma = identity2, updateLambda = identity2,
+  updateAlpha = identity2, updateLearningRate = identity2)
 
 sarsa(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   lambda = 0, eligibility.type = 0, learning.rate = 0.1, epsilon = 0.1,
   discount = 1, double.learning = FALSE, update.target.after = 1,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, updateEpsilon = NULL, updateSigma = NULL,
-  updateLambda = NULL, updateAlpha = NULL, updateLearningRate = NULL)
+  alpha = 0, theta = 0.01, updateEpsilon = identity2,
+  updateSigma = identity2, updateLambda = identity2,
+  updateAlpha = identity2, updateLearningRate = identity2)
 
 expectedSarsa(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
@@ -38,8 +41,9 @@ expectedSarsa(envir, fun.approx = "table", preprocessState = identity,
   learning.rate = 0.1, epsilon = 0.1, discount = 1,
   double.learning = FALSE, update.target.after = 1, replay.memory = NULL,
   replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
-  updateEpsilon = NULL, updateSigma = NULL, updateLambda = NULL,
-  updateAlpha = NULL, updateLearningRate = NULL)
+  updateEpsilon = identity2, updateSigma = identity2,
+  updateLambda = identity2, updateAlpha = identity2,
+  updateLearningRate = identity2)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
@@ -58,14 +62,14 @@ A neural network model specified using the \code{keras} package.
 See Details for more information.}
 
 \item{initial.value}{[\code{numeric}] \cr
-Initial value function matrix or weight matrix. 
-If \code{NULL} weights will be initialized to 0. 
+Initial value function matrix or weight matrix.
+If \code{NULL} weights will be initialized to 0.
 Only used for tabular or linear function approximation.}
 
 \item{n.states}{[\code{integer(1)}] \cr
-Number of states for tabular value function. 
+Number of states for tabular value function.
 Only needed if the state space is continuous, but
-will be transformed by \code{preprocessState}, so that a single integer value is returned. 
+will be transformed by \code{preprocessState}, so that a single integer value is returned.
 Else the number of states is accessed from the \code{envir} argument.}
 
 \item{n.episodes}{[\code{integer(1)}] \cr
@@ -107,7 +111,7 @@ When using double learning the target network / table will be updated after
 \code{update.target.after} steps.}
 
 \item{replay.memory}{[\code{list}] \cr
-Initial replay memory, which can be passed on. 
+Initial replay memory, which can be passed on.
 Each list element must be a list containing state, action,
 reward and next.state.}
 
@@ -128,22 +132,22 @@ high temporal-difference error will be proportionally prioritized.}
 in the replay memory not being revisited once their TD error is zero.}
 
 \item{updateEpsilon}{[\code{function}] \cr
-A function that updates \code{epsilon}. It takes two arguments, 
-\code{epsilon} and the current number of episodes which are finished, 
+A function that updates \code{epsilon}. It takes two arguments,
+\code{epsilon} and the current number of episodes which are finished,
 and returns the new \code{epsilon} value.}
 
 \item{updateSigma}{[\code{function}] \cr
-A function that updates \code{sigma}. It takes two arguments, 
-\code{sigma} and the current number of episodes which are finished, 
+A function that updates \code{sigma}. It takes two arguments,
+\code{sigma} and the current number of episodes which are finished,
 and returns the new \code{sigma} value.}
 
 \item{updateLambda}{[\code{function}] \cr
-A function that updates \code{lambda}. It takes two arguments, 
+A function that updates \code{lambda}. It takes two arguments,
 \code{lambda} and the current number
 of episodes which are finished, and returns the new \code{lambda} value.}
 
 \item{updateAlpha}{[\code{function}] \cr
-A function that updates \code{alpha}. It takes two arguments, 
+A function that updates \code{alpha}. It takes two arguments,
 \code{alpha} and the current number
 of episodes which are finished, and returns the new \code{alpha} value.}
 
@@ -215,8 +219,10 @@ the function must be the parameter itself, the second argument is the current ep
 # Solve Windy Gridworld
 env = windyGridworld()
 
-qSigma(env, sigma = 0.5)
-qlearning(env)
+res = qSigma(env, sigma = 0.5, n.episodes = 20)
+print(res$steps)
+res = qlearning(env, n.episodes = 20)
+print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 
 # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 decayEpsilon = function(epsilon, i) {
@@ -226,7 +232,9 @@ decayEpsilon = function(epsilon, i) {
   epsilon
 }
 
-expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon)
+res = expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon, n.episodes = 20)
+optimal.policy = max.col(res$Q1) - 1L
+print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 
 # Solve the Mountain Car problem using linear function approximation
 m = mountainCar()
@@ -251,7 +259,8 @@ gridTiling = function(state) {
 }
 
 set.seed(123)
-sarsa(m, fun.approx = "linear", preprocessState = gridTiling)
+res = sarsa(m, fun.approx = "linear", preprocessState = gridTiling, n.episodes = 20)
+print(res$returns)
 
 \dontrun{
 # Use a neural network as function approximator
@@ -266,7 +275,8 @@ library(keras)
 model = keras_model_sequential()
 model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
 
-qSigma(env, fun.approx = "neural.network", model = model, preprocessState = makeOneHot)
+res = qSigma(env, fun.approx = "neural.network", model = model,
+  preprocessState = makeOneHot, n.episodes = 20)
 }
 
 }

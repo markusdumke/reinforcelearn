@@ -131,15 +131,16 @@ td = function(envir, policy, fun.approx = "table", preprocessState = identity,
 
     if (envir$done == TRUE) {
       episode = episode + 1
-      message(paste("Episode", episode, "finished after", envir$n.steps, "steps."))
+      message(paste("Episode", episode, "finished after", envir$n.steps,
+        "steps with a return of", return.ep))
       steps = append(steps, envir$n.steps)
       returns = append(returns, return.ep)
       return.ep = 0
       envir$reset()
       state = preprocessState(envir$state)
       eligibility = rep(0, n.weights)
-      learning.rate = updateLearningRate(learning.rate, i)
-      lambda = updateLambda(lambda, i)
+      learning.rate = updateLearningRate(learning.rate, return.ep)
+      lambda = updateLambda(lambda, return.ep)
     }
   }
 

@@ -169,7 +169,8 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         j = discount * j
 
         if (envir$done) {
-          message(paste("Episode", i, "finished after", envir$n.steps, "steps."))
+          message(paste("Episode", i, "finished after", envir$n.steps,
+            "steps with a return of", returns[i]))
           steps[i] = envir$n.steps
           alpha = updateAlpha(alpha, i)
           beta = updateBeta(beta, i)
