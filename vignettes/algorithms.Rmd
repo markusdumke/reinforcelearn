@@ -316,7 +316,7 @@ In `reinforcelearn` experience replay can be used by passing on a list of experi
 When experiencing a new transition the algorithm replaces the oldest entry in the replay memory by the new transition.
 
 ```{r}
-# Fill a replay memory of size 100 on the mountain car task.
+# Fill a replay memory of size 100 on the windy gridworld task.
 # We will use grid tiling as defined above.
 memory = vector("list", length = 100)
 env = windyGridworld()

@@ -77,14 +77,6 @@ gridTiling = function(state) {
 }
 
 ## ------------------------------------------------------------------------
-env = mountainCar()
-
-# Linear function approximation and softmax policy
-res = actorCritic(env, fun.approx = "linear", 
-  preprocessState = gridTiling, n.episodes = 20)
-print(res$steps)
-
-## ------------------------------------------------------------------------
 set.seed(123)
 res = qlearning(env, fun.approx = "linear", preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
@@ -93,84 +85,6 @@ print(res$steps)
 env = windyGridworld()
 res = sarsa(env, n.episodes = 20)
 print(res$steps)
-
-## ------------------------------------------------------------------------
-# Mountain Car with continuous action space
-env = mountainCar(action.space = "Continuous")
-
-# Linear function approximation and gaussian policy
-set.seed(123)
-res = actorCritic(env, fun.approx = "linear", policy = "gaussian", 
-  preprocessState = gridTiling, n.episodes = 20)
-print(res$steps)
-
-## ------------------------------------------------------------------------
-# Variant of cliff walking
-rewardFun = function(state, action, n.state) {
-  if (n.state %in% 37:46) {
-    return(- 100)
-  } else {
-    return(- 1)
-  }
-}
-env = makeGridworld(shape = c(4, 12), goal.states = 47,
-  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
-  cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
-
-res = actorCritic(env, n.episodes = 20, lambda.actor = 0.5, lambda.critic = 0.8)
-print(res$returns)
-
-## ------------------------------------------------------------------------
-# Define reward function
-rewardFun = function(action) {
-  if (action == 0) {
-    reward = rnorm(1, mean = 1, sd = 1)
-  }
-  if (action == 1) {
-    reward = rnorm(1, mean = 2, sd = 4)
-  }
-  if (action == 2) {
-    reward = runif(1, min = 0, max = 5)
-  }
-  if (action == 3) {
-    reward = rexp(1, rate = 0.25)
-  }
-  reward
-}
-
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "greedy")
-
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "greedy",
-#    initial.value = 5, initial.visits = 100)
-
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "egreedy", epsilon = 0.5)
-
-## ---- eval = F-----------------------------------------------------------
-#  # Decay epsilon every 5 episodes by a half.
-#  decayEpsilon = function(epsilon, i) {
-#    if (i %% 5 == 0) {
-#      epsilon = epsilon / 2
-#    }
-#    epsilon
-#  }
-#  
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "egreedy", epsilon = 0.5,
-#    updateEpsilon = decayEpsilon)
-
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 1000,
-#    action.selection = "UCB", C = 2)
-
-## ---- eval = F-----------------------------------------------------------
-#  bandit(rewardFun, n.actions = 4, n.episodes = 10000,
-#    action.selection = "gradientbandit", alpha = 0.1)
 
 ## ------------------------------------------------------------------------
 # This is equivalent to qlearning(env):
@@ -197,7 +111,7 @@ res = expectedSarsa(env, double.learning = TRUE, n.episodes = 20)
 print(res$steps)
 
 ## ------------------------------------------------------------------------
-# Fill a replay memory of size 100 on the mountain car task.
+# Fill a replay memory of size 100 on the windy gridworld task.
 # We will use grid tiling as defined above.
 memory = vector("list", length = 100)
 env = windyGridworld()
