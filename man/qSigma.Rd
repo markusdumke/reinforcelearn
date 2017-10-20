@@ -263,9 +263,11 @@ res = sarsa(m, fun.approx = "linear", preprocessState = gridTiling, n.episodes =
 print(res$returns)
 
 \dontrun{
+env = gridworld()
+
 # Use a neural network as function approximator
 makeOneHot = function(state) {
-  one.hot = matrix(rep(0, 70), nrow = 1)
+  one.hot = matrix(rep(0, 16), nrow = 1)
   one.hot[1, state + 1] = 1
   one.hot
 }
@@ -273,7 +275,7 @@ makeOneHot = function(state) {
 # Define keras model
 library(keras)
 model = keras_model_sequential()
-model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(70))
+model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(16))
 
 res = qSigma(env, fun.approx = "neural.network", model = model,
   preprocessState = makeOneHot, n.episodes = 20)
