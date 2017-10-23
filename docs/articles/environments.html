@@ -277,11 +277,9 @@ windy.gridworld =<span class="st"> </span><span class="kw"><a href="../reference
 <span class="co"># Start server and create gym client.</span>
 package.path =<span class="st"> </span><span class="kw">system.file</span>(<span class="dt">package =</span> <span class="st">"reinforcelearn"</span>)
 path2pythonfile =<span class="st"> </span><span class="kw">paste0</span>(package.path, <span class="st">"/gym_http_server.py"</span>)
-<span class="kw">system2</span>(<span class="st">"python"</span>, <span class="dt">args =</span> path2pythonfile, <span class="dt">stdout =</span> <span class="ot">NULL</span>, <span class="dt">wait =</span> <span class="ot">FALSE</span>)
-client =<span class="st"> </span>gym<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/gym/topics/create_GymClient">create_GymClient</a></span>(<span class="st">"http://127.0.0.1:5000"</span>)
-instance.id =<span class="st"> </span>gym<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/gym/topics/env_create">env_create</a></span>(client, <span class="st">"MountainCar-v0"</span>)
+<span class="kw">system2</span>(<span class="st">"python"</span>, <span class="dt">args =</span> path2pythonfile, <span class="dt">stdout =</span> <span class="ot">NULL</span>, <span class="dt">wait =</span> <span class="ot">FALSE</span>, <span class="dt">invisible =</span> <span class="ot">FALSE</span>)
 
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="kw">list</span>(client, instance.id))</code></pre></div>
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"MountainCar-v0"</span>)</code></pre></div>
 <p>The <code>render</code> argument specifies whether to render the environment. If <code>render = TRUE</code> a Python window will open showing a graphical interface of the environment when calling the <code>step</code> method.</p>
 <p>The <code>reset</code>, <code>step</code> and <code>close</code> method can then be used to sample experience. Here is an example running a random agent for 200 steps on the mountain car task.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env<span class="op">$</span><span class="kw">reset</span>()

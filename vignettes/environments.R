@@ -106,11 +106,9 @@ windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37,
 #  # Start server and create gym client.
 #  package.path = system.file(package = "reinforcelearn")
 #  path2pythonfile = paste0(package.path, "/gym_http_server.py")
-#  system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE)
-#  client = gym::create_GymClient("http://127.0.0.1:5000")
-#  instance.id = gym::env_create(client, "MountainCar-v0")
+#  system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE, invisible = FALSE)
 #  
-#  env = makeEnvironment(list(client, instance.id))
+#  env = makeEnvironment("MountainCar-v0")
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  env$reset()

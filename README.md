@@ -26,9 +26,9 @@ env = windyGridworld()
 # Solve environment using Sarsa
 res = sarsa(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  839 1129 1375  159  435  418   86  410  149  176  104  380   57  293
-#> [15]   74  163  248   49  175  232   80  113  125   65   50  122  197  117
-#> [29]  195   71
+#>  [1]  783 1572  980  336  442  400   61  414  181  241  145  211  138  118
+#> [15]  172   93  349   92  185  187   31   60  182  117   76   35  117   85
+#> [29]   86  294
 ```
 
 ------------------------------------------------------------------------
@@ -71,19 +71,18 @@ You can also create an environment from [OpenAI Gym](https://gym.openai.com/) vi
 ``` r
 # Create an OpenAI Gym environment.
 # Make sure you have Python and Gym installed.
-# Start server and create gym client.
+# Start server.
 package.path = system.file(package = "reinforcelearn")
 path2pythonfile = paste0(package.path, "/gym_http_server.py")
-system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE)
-client = gym::create_GymClient("http://127.0.0.1:5000")
-instance.id = gym::env_create(client, "MountainCar-v0")
+system2("python", args = path2pythonfile, stdout = NULL,
+  wait = FALSE, invisible = FALSE)
 
-env = makeEnvironment(list(client, instance.id))
+env = makeEnvironment("MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
 for (i in 1:200) {
-  action = sample(m$actions, 1)
+  action = sample(env$actions, 1)
   env$step(action)
 }
 env$close()
@@ -104,20 +103,20 @@ After you created an environment you can use various reinforcement learning algo
 env = windyGridworld()
 res = qlearning(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  804 1859  387  493  521  267  168  286  301  158  263  131  258  168
-#> [15]   97  157  240   32   84   28  345  113   30  114  171  174  175   78
-#> [29]   48   32
+#>  [1]  749 2198  511  242  470  306   89  439  245  216  257   97  180   66
+#> [15]   74  221  319  142   68   24  172  228  116   91  172  102  111   36
+#> [29]   95  236
 
 # Show value of each state.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,] -4.7 -4.9 -5.4 -6.2 -6.8 -7.3 -7.3 -6.7 -5.9  -5.1
-#> [2,] -4.4 -4.5 -4.7 -5.0 -4.7 -4.0 -2.9 -3.8 -4.1  -4.3
-#> [3,] -4.1 -4.0 -4.0 -3.9 -3.3 -1.9 -1.1 -2.4 -3.2  -3.4
-#> [4,] -3.9 -3.5 -3.3 -3.0 -1.9 -0.8 -0.2  0.0 -2.2  -2.6
-#> [5,] -3.3 -3.0 -2.6 -2.2 -1.1 -0.2  0.0 -0.3 -0.9  -1.8
-#> [6,] -2.9 -2.6 -2.2 -1.6 -0.6  0.0  0.0  0.0 -0.7  -1.1
-#> [7,] -2.6 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7
+#> [1,] -4.8 -5.1 -5.6 -6.4 -7.0 -7.4 -7.3 -6.7 -5.9  -5.1
+#> [2,] -4.6 -4.7 -4.9 -5.1 -5.0 -4.2 -3.0 -3.8 -4.4  -4.3
+#> [3,] -4.3 -4.2 -4.1 -4.3 -3.4 -2.0 -1.3 -2.1 -3.4  -3.4
+#> [4,] -4.0 -3.7 -3.5 -3.1 -2.1 -0.9 -0.3  0.0 -2.2  -2.6
+#> [5,] -3.5 -3.2 -2.8 -2.4 -1.2 -0.4  0.0 -0.3 -0.9  -1.7
+#> [6,] -3.0 -2.7 -2.3 -1.7 -0.7  0.0  0.0 -0.1 -0.7  -1.1
+#> [7,] -2.7 -2.4 -1.9 -1.2  0.0  0.0  0.0  0.0 -0.3  -0.7
 ```
 
 We can then get the optimal policy by taking the argmax over the action value function Q.
@@ -126,13 +125,13 @@ We can then get the optimal policy by taking the argmax over the action value fu
 optimal.policy = max.col(res$Q1) - 1L
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,]    2    1    0    0    2    0    0    1    1     3
-#> [2,]    1    2    3    1    3    3    0    2    3     3
-#> [3,]    1    3    0    3    3    0    3    0    0     3
-#> [4,]    2    1    1    3    3    1    1    1    1     3
-#> [5,]    1    2    0    3    1    3    0    3    0     3
-#> [6,]    1    0    2    3    3    1    2    3    0     1
-#> [7,]    0    0    1    3    0    1    3    2    3     0
+#> [1,]    0    0    3    0    1    1    1    1    1     3
+#> [2,]    0    3    0    1    2    3    2    0    2     3
+#> [3,]    2    3    3    1    1    3    3    3    2     3
+#> [4,]    1    1    1    3    1    2    3    1    0     3
+#> [5,]    3    0    3    1    0    2    3    0    0     0
+#> [6,]    1    0    1    2    2    1    0    0    0     1
+#> [7,]    3    3    0    2    0    0    3    0    3     1
 ```
 
 For more details on algorithms have a look at the vignette: [How to solve an environment?](markdumke.github.io/reinforcelearn/articles/algorithms.html)
@@ -192,4 +191,4 @@ Logo is a modification of <https://www.r-project.org/logo/>.
 
 Author: Markus Dumke
 
-Date: "18 Oktober 2017"
+Date: "23 Oktober 2017"

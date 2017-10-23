@@ -74,19 +74,18 @@ You can also create an environment from [OpenAI Gym](https://gym.openai.com/) vi
 ```{r, eval = FALSE}
 # Create an OpenAI Gym environment.
 # Make sure you have Python and Gym installed.
-# Start server and create gym client.
+# Start server.
 package.path = system.file(package = "reinforcelearn")
 path2pythonfile = paste0(package.path, "/gym_http_server.py")
-system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE)
-client = gym::create_GymClient("http://127.0.0.1:5000")
-instance.id = gym::env_create(client, "MountainCar-v0")
+system2("python", args = path2pythonfile, stdout = NULL,
+  wait = FALSE, invisible = FALSE)
 
-env = makeEnvironment(list(client, instance.id))
+env = makeEnvironment("MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
 for (i in 1:200) {
-  action = sample(m$actions, 1)
+  action = sample(env$actions, 1)
   env$step(action)
 }
 env$close()

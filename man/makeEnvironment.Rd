@@ -9,8 +9,8 @@ makeEnvironment(gym = NULL, transitions = NULL, rewards = NULL,
   render = TRUE)
 }
 \arguments{
-\item{gym}{[\code{list(2)}] \cr
-Gym client and instance id. Have a look at the examples.}
+\item{gym}{[\code{character(1)}] \cr
+Name of gym environment, e.g. \code{"CartPole-v0"}}
 
 \item{transitions}{[\code{array (n.states x n.states x n.actions)}] \cr
 Transition array of Markov Decision Process: For each action specifying the probabilities for
@@ -86,22 +86,20 @@ For a detailed explanation have a look at the vignette "How to create an environ
 \dontrun{
 # Create an OpenAI Gym environment.
 # Make sure you have Python and Gym installed.
-# Start server and create gym client.
+# Start server.
 package.path = system.file(package = "reinforcelearn")
 path2pythonfile = paste0(package.path, "/gym_http_server.py")
-system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE)
-client = gym::create_GymClient("http://127.0.0.1:5000")
-instance.id = gym::env_create(client, "CartPole-v0")
+system2("python", args = path2pythonfile, stdout = NULL,
+  wait = FALSE, invisible = FALSE)
 
-env = makeEnvironment(list(client, instance.id), render = FALSE)
+env = makeEnvironment("CartPole-v0", render = FALSE)
 env$reset()
 env$step(action = 0)
 env$close()
 print(env)
 
 # Create the MountainCar environment which has a continuous state space.
-instance.id = gym::env_create(client, "MountainCar-v0")
-env = makeEnvironment(list(client, instance.id))
+env = makeEnvironment("MountainCar-v0")
 env$state.space
 env$state.space.bounds
 

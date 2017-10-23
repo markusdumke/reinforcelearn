@@ -263,7 +263,7 @@ res = sarsa(m, fun.approx = "linear", preprocessState = gridTiling, n.episodes =
 print(res$returns)
 
 \dontrun{
-env = gridworld()
+env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
 
 # Use a neural network as function approximator
 makeOneHot = function(state) {

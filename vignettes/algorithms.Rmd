@@ -542,7 +542,7 @@ print(res$returns)
 
 ----
 
-#### Multi-armed Bandit
+### Multi-armed Bandit
 
 A multi-armed bandit is a simplified reinforcement learning problem with an episode which consists only of one step. In the simplest form there are no states. The goal is to estimate the values of all actions and to find the best action by trying these out over a number of episodes.
 

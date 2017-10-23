@@ -89,7 +89,7 @@ random.policy = matrix(1 / env$n.actions, nrow = env$n.states,
   ncol = env$n.actions)
 
 # Estimate state value function with TD(0)
-res = td(env, random.policy, n.episodes = 100)
+res = td(env, random.policy, n.episodes = 20)
 
 }
 \references{

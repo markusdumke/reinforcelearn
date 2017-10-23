@@ -115,32 +115,32 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 <span class="co"># Note: to find a good policy we need to run at least 500 episodes.</span></code></pre></div>
 <p>The <code>qlearning</code> function returns the action value function <span class="math inline">\(Q\)</span> (here a matrix) and some statistics about learning behavior, e.g. the number of steps and return per episode.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  761 1919  702  231  327  436  208  283  197   63  157  303  324  132</span>
-<span class="co">#&gt; [15]  121  257   33  248   40  243</span></code></pre></div>
+<span class="co">#&gt;  [1]  740 2020  514  382  512  168  371   97  164   89  410  190  185  131</span>
+<span class="co">#&gt; [15]  208   83  157  116   81  125</span></code></pre></div>
 <p>We can then find the optimal policy by acting greedily with respect to the action value function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Values of each grid cell</span>
 state.values =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
 <span class="kw">print</span>(<span class="kw">round</span>(state.values, <span class="dv">1</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -4.2 -4.5 -5.0 -5.7 -6.4 -6.8 -6.8 -6.3 -5.5  -4.7</span>
-<span class="co">#&gt; [2,] -4.0 -4.0 -4.2 -4.4 -4.2 -3.4 -1.9 -3.4 -3.9  -3.9</span>
-<span class="co">#&gt; [3,] -3.6 -3.6 -3.5 -3.5 -2.7 -1.2 -0.7 -1.9 -2.9  -3.1</span>
-<span class="co">#&gt; [4,] -3.3 -3.1 -2.9 -2.5 -1.3 -0.4  0.0  0.0 -1.9  -2.3</span>
-<span class="co">#&gt; [5,] -2.8 -2.7 -2.3 -1.7 -0.8 -0.2  0.0 -0.2 -0.8  -1.5</span>
-<span class="co">#&gt; [6,] -2.5 -2.3 -1.8 -1.3 -0.4  0.0  0.0  0.0 -0.6  -1.0</span>
-<span class="co">#&gt; [7,] -2.2 -2.0 -1.4 -0.8  0.0  0.0  0.0  0.0 -0.2  -0.6</span>
+<span class="co">#&gt; [1,] -4.1 -4.3 -4.8 -5.5 -6.2 -6.7 -6.7 -6.2 -5.5  -4.7</span>
+<span class="co">#&gt; [2,] -3.8 -3.9 -4.0 -4.3 -3.9 -3.2 -1.7 -3.5 -4.0  -3.9</span>
+<span class="co">#&gt; [3,] -3.5 -3.5 -3.3 -3.3 -2.6 -1.1 -0.3 -1.9 -2.8  -3.0</span>
+<span class="co">#&gt; [4,] -3.3 -3.0 -2.7 -2.4 -1.2 -0.4  0.0  0.0 -1.9  -2.2</span>
+<span class="co">#&gt; [5,] -2.7 -2.5 -2.1 -1.6 -0.7 -0.1  0.0 -0.2 -0.8  -1.5</span>
+<span class="co">#&gt; [6,] -2.3 -2.1 -1.7 -1.2 -0.3  0.0  0.0  0.0 -0.6  -0.9</span>
+<span class="co">#&gt; [7,] -2.1 -1.9 -1.4 -0.7  0.0  0.0  0.0  0.0 -0.1  -0.6</span>
 
 <span class="co"># Subtract 1 to be consistent with action numeration in env</span>
 optimal.policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(optimal.policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    3    3    0    0    2    0    1    1    1     3</span>
-<span class="co">#&gt; [2,]    1    1    1    0    3    3    3    2    3     3</span>
-<span class="co">#&gt; [3,]    1    3    3    2    2    2    3    0    2     3</span>
-<span class="co">#&gt; [4,]    3    1    1    0    3    3    3    1    3     0</span>
-<span class="co">#&gt; [5,]    2    3    1    1    1    2    0    3    2     0</span>
-<span class="co">#&gt; [6,]    3    1    3    1    3    0    3    3    0     0</span>
-<span class="co">#&gt; [7,]    0    1    2    2    3    1    0    2    0     1</span></code></pre></div>
+<span class="co">#&gt; [1,]    2    1    1    1    0    0    3    1    3     3</span>
+<span class="co">#&gt; [2,]    0    1    2    3    3    3    1    2    1     3</span>
+<span class="co">#&gt; [3,]    0    3    3    3    0    0    3    3    1     3</span>
+<span class="co">#&gt; [4,]    3    2    3    0    3    3    3    0    0     3</span>
+<span class="co">#&gt; [5,]    1    3    1    1    0    0    0    0    3     3</span>
+<span class="co">#&gt; [6,]    3    0    1    1    3    2    0    3    0     3</span>
+<span class="co">#&gt; [7,]    0    1    1    2    0    2    3    0    2     0</span></code></pre></div>
 <p>There are many parameters, which can be specified, e.g. the discount factor <span class="math inline">\(\gamma\)</span> via <code>discount</code>, the learning rate <span class="math inline">\(\alpha\)</span> via <code>learning.rate</code> and <span class="math inline">\(\epsilon\)</span> via the <code>epsilon</code> argument. These parameters can also be updated over time by passing a function <code>updateEpsilon</code> etc. The update function takes two arguments, the old value of the parameter and the number of episodes finished. It returns the updated parameter, e.g. a decreased learning rate. After each episode is finished the update functions are called.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">epsilon =</span> <span class="fl">0.2</span>, <span class="dt">learning.rate =</span> <span class="fl">0.5</span>, 
   <span class="dt">discount =</span> <span class="fl">0.99</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
@@ -162,13 +162,13 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 <span class="co"># After only 5 episodes the Q values will still be similar to the initial values.</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]</span>
-<span class="co">#&gt; [1,] 97.2 97.1 96.7 95.9  95.3  95.0  95.1  95.2  95.8  96.6</span>
-<span class="co">#&gt; [2,] 97.5 97.4 97.3 97.4  97.8  98.7 100.0  98.3  97.4  97.4</span>
-<span class="co">#&gt; [3,] 97.8 97.8 97.9 98.2  99.2  99.8 100.0  99.3  98.5  98.1</span>
-<span class="co">#&gt; [4,] 98.1 98.3 98.5 99.0  99.6 100.0 100.0 100.0  99.2  98.7</span>
-<span class="co">#&gt; [5,] 98.4 98.6 98.9 99.3  99.8 100.0 100.0 100.0  99.6  99.3</span>
-<span class="co">#&gt; [6,] 98.7 98.8 99.2 99.5 100.0 100.0 100.0 100.0  99.8  99.6</span>
-<span class="co">#&gt; [7,] 98.8 99.0 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.8</span></code></pre></div>
+<span class="co">#&gt; [1,] 97.2 97.0 96.6 95.8  95.3  94.9  94.8  95.1  95.7  96.4</span>
+<span class="co">#&gt; [2,] 97.5 97.4 97.3 97.1  97.9  98.6 100.0  97.9  97.2  97.2</span>
+<span class="co">#&gt; [3,] 97.8 97.8 97.9 98.1  99.0  99.9 100.0  99.2  98.3  97.9</span>
+<span class="co">#&gt; [4,] 98.0 98.2 98.4 98.9  99.6  99.9 100.0 100.0  99.1  98.7</span>
+<span class="co">#&gt; [5,] 98.4 98.5 98.8 99.3  99.8 100.0 100.0 100.0  99.6  99.2</span>
+<span class="co">#&gt; [6,] 98.6 98.7 99.1 99.5 100.0 100.0 100.0 100.0  99.8  99.6</span>
+<span class="co">#&gt; [7,] 98.8 98.9 99.3 99.8 100.0 100.0 100.0 100.0 100.0  99.9</span></code></pre></div>
 </div>
 <div id="function-approximation" class="section level3">
 <h3 class="hasAnchor">
@@ -188,7 +188,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 env<span class="op">$</span><span class="kw">reset</span>()
 <span class="kw">print</span>(env<span class="op">$</span>state)
 <span class="co">#&gt;            [,1] [,2]</span>
-<span class="co">#&gt; [1,] -0.5450101    0</span></code></pre></div>
+<span class="co">#&gt; [1,] -0.4846524    0</span></code></pre></div>
 <p>We will solve this environment using linear function approximation. With linear function approximation the action value function is represented as</p>
 <p><span class="math display">\[
 \hat{q}(S_t, A_t, w) = x(S_t)^T w = \sum_{j=1}^{n} x_j(S_t) \, w_j.
@@ -330,7 +330,7 @@ Q_A(S_t, A_t) \leftarrow Q_A(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \left( \
 <p>When using function approximation in reinforcement learning training can be difficult because subsequent state observations are often highly correlated and we train on these states the order they are experienced. Experience replay <span class="citation">(Mnih et al. 2013)</span> is a simple idea to break these correlations and stabilize learning. Instead of training on a simple observation at each time step the algorithm trains now on more than one observation sampled randomly from a replay memory, which stores all previously visited states and actions. Because the observations are trained on in a random order correlations are much smaller .</p>
 <p>In <code>reinforcelearn</code> experience replay can be used by passing on a list of experiences to the <code>replay.memory</code> argument. Each list entry is itself a list with the entries <code>state</code>, <code>action</code>, <code>reward</code> and <code>next.state</code>. <code>state</code> and <code>next.state</code> should have been preprocessed, e.g. by calling <code>preprocessState(state)</code>. A different possibility is to specify the <code>replay.memory.size</code> argument, which will then be initialized with experiences generated by a random policy. The number of experiences trained on at each step is controled via the <code>batch.size</code> argument.</p>
 <p>When experiencing a new transition the algorithm replaces the oldest entry in the replay memory by the new transition.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fill a replay memory of size 100 on the mountain car task.</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Fill a replay memory of size 100 on the windy gridworld task.</span>
 <span class="co"># We will use grid tiling as defined above.</span>
 memory =<span class="st"> </span><span class="kw">vector</span>(<span class="st">"list"</span>, <span class="dt">length =</span> <span class="dv">100</span>)
 env =<span class="st"> </span><span class="kw"><a href="../reference/windyGridworld.html">windyGridworld</a></span>()
@@ -542,9 +542,10 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/actorCritic
 <span class="co">#&gt;  [1] -100 -103 -162 -148 -113 -179 -119 -124 -191 -104 -143 -100 -142 -108</span>
 <span class="co">#&gt; [15] -149 -127 -172 -221 -158 -145</span></code></pre></div>
 <hr>
-<div id="multi-armed-bandit" class="section level4">
-<h4 class="hasAnchor">
-<a href="#multi-armed-bandit" class="anchor"></a>Multi-armed Bandit</h4>
+</div>
+<div id="multi-armed-bandit" class="section level3">
+<h3 class="hasAnchor">
+<a href="#multi-armed-bandit" class="anchor"></a>Multi-armed Bandit</h3>
 <p>A multi-armed bandit is a simplified reinforcement learning problem with an episode which consists only of one step. In the simplest form there are no states. The goal is to estimate the values of all actions and to find the best action by trying these out over a number of episodes.</p>
 <p>In the following we will consider an example bandit with four different actions. For each action the reward will be sampled from a probability distribution. The reward of the first action is sampled from a normal distribution with mean 1 and standard deviation 1, the second action from a normal distribution with mean 2 and standard deviation 4, the third action from a uniform distribution with minimum 0 and maximum 5 and the fourth action from an exponential distribution with rate parameter 0.25. Therefore the fourth action is the best with an expected reward of 4.</p>
 <p>To solve this bandit problem we need to specify the reward function,</p>
@@ -601,7 +602,6 @@ decayEpsilon =<span class="st"> </span><span class="cf">function</span>(epsilon,
   <span class="dt">action.selection =</span> <span class="st">"gradientbandit"</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>)
 <span class="co">#&gt; [1] 1.019872e-04 4.369316e-05 4.108634e-04 9.994435e-01</span></code></pre></div>
 <hr>
-</div>
 </div>
 <div id="other-vignettes" class="section level3">
 <h3 class="hasAnchor">

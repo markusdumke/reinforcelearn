@@ -195,8 +195,8 @@
 #' print(res$returns)
 #'
 #' \dontrun{
-#' env = gridworld()
-#' 
+#' env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
+#'
 #' # Use a neural network as function approximator
 #' makeOneHot = function(state) {
 #'   one.hot = matrix(rep(0, 16), nrow = 1)

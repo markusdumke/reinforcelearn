@@ -36,7 +36,7 @@
 #'   ncol = env$n.actions)
 #'
 #' # Estimate state value function with TD(0)
-#' res = td(env, random.policy, n.episodes = 100)
+#' res = td(env, random.policy, n.episodes = 20)
 #'
 td = function(envir, policy, fun.approx = "table", preprocessState = identity,
   initial.value = NULL, n.episodes = NULL, n.steps = NULL, discount = 1,
