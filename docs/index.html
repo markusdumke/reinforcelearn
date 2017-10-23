@@ -87,6 +87,12 @@
 <a href="#reinforcement-learning-in-r" class="anchor"></a>Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="36">
 </h1></div>
 
+<div id="documentation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#documentation" class="anchor"></a>Documentation</h3>
+<p><a href="https://markdumke.github.io/reinforcelearn">Website</a></p>
+<hr>
+</div>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
@@ -106,9 +112,9 @@ env =<span class="st"> </span><span class="kw"><a href="reference/windyGridworld
 <span class="co"># Solve environment using Sarsa</span>
 res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">sarsa</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  782 2138  297  282  638  223  379  179  112  220  268  160   35  398</span>
-<span class="co">#&gt; [15]  124  117   98  239  203  351   78   62   29   48  134   39  102  130</span>
-<span class="co">#&gt; [29]  113  198</span></code></pre></div>
+<span class="co">#&gt;  [1]  728 2096  412  488  130  461  349  289   96  377  237   66  115  164</span>
+<span class="co">#&gt; [15]   37   85  372  117  133  169  259   73   82   38  163   34  205   42</span>
+<span class="co">#&gt; [29]  118   49</span></code></pre></div>
 <hr>
 </div>
 <div id="environments" class="section level3">
@@ -134,9 +140,9 @@ env<span class="op">$</span><span class="kw">reset</span>()
 env<span class="op">$</span><span class="kw">step</span>(<span class="dv">0</span>)
 <span class="kw">print</span>(env)
 <span class="co">#&gt; Number of steps: 1 </span>
-<span class="co">#&gt; State: 1 </span>
+<span class="co">#&gt; State: 0 </span>
 <span class="co">#&gt; Reward: 5 </span>
-<span class="co">#&gt; Done: TRUE</span></code></pre></div>
+<span class="co">#&gt; Done: FALSE</span></code></pre></div>
 <p>You can also create an environment from <a href="https://gym.openai.com/">OpenAI Gym</a> via the <code>gym</code> package. You need to install all dependencies listed <a href="https://github.com/openai/gym-http-api">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create an OpenAI Gym environment.</span>
 <span class="co"># Make sure you have Python and Gym installed.</span>
@@ -156,7 +162,7 @@ env<span class="op">$</span><span class="kw">reset</span>()
 }
 env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
 <p>This should open a Python window showing the interaction with the environment.</p>
-<p>For more details on how to create an environment have a look at the vignette: <a href="markdumke.github.io/reinforcelearn/articles/environments.html">How to create an environment?</a></p>
+<p>For more details on how to create an environment have a look at the vignette: <a href="https://markdumke.github.io/reinforcelearn/articles/environments.html">How to create an environment?</a></p>
 <hr>
 </div>
 <div id="algorithms" class="section level3">
@@ -167,32 +173,32 @@ env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
 env =<span class="st"> </span><span class="kw"><a href="reference/windyGridworld.html">windyGridworld</a></span>()
 res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  993 1642  587  277  681  147  333  419  253   46  109  203  261   58</span>
-<span class="co">#&gt; [15]  156   89  140  215   86  380  115  104   43  109  248   41   63   35</span>
-<span class="co">#&gt; [29]  167   66</span>
+<span class="co">#&gt;  [1] 1021 1547  488  408  425  363  393  180  219  270  318   44  145  180</span>
+<span class="co">#&gt; [15]  114  260   43   70  262  197  193  128   55  153   45  221   83   41</span>
+<span class="co">#&gt; [29]  125  169</span>
 
 <span class="co"># Show value of each state.</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -4.7 -4.9 -5.5 -6.2 -6.9 -7.3 -7.2 -6.7 -6.0  -5.1</span>
-<span class="co">#&gt; [2,] -4.4 -4.5 -4.7 -5.1 -4.9 -4.0 -2.9 -3.8 -4.3  -4.3</span>
-<span class="co">#&gt; [3,] -4.2 -4.1 -4.0 -4.0 -3.3 -1.9 -1.2 -2.4 -3.2  -3.4</span>
-<span class="co">#&gt; [4,] -3.9 -3.6 -3.4 -3.2 -1.9 -0.8 -0.2  0.0 -2.2  -2.6</span>
-<span class="co">#&gt; [5,] -3.4 -3.1 -2.7 -2.3 -1.0 -0.3  0.0 -0.3 -0.9  -1.8</span>
-<span class="co">#&gt; [6,] -2.9 -2.6 -2.2 -1.6 -0.6  0.0  0.0  0.0 -0.7  -1.1</span>
-<span class="co">#&gt; [7,] -2.6 -2.3 -1.7 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7</span></code></pre></div>
+<span class="co">#&gt; [1,] -4.7 -5.0 -5.5 -6.3 -7.0 -7.4 -7.2 -6.7 -6.0  -5.1</span>
+<span class="co">#&gt; [2,] -4.5 -4.6 -4.8 -5.1 -4.9 -4.2 -3.0 -3.8 -4.4  -4.3</span>
+<span class="co">#&gt; [3,] -4.2 -4.2 -4.1 -4.1 -3.3 -2.1 -1.3 -2.3 -3.2  -3.5</span>
+<span class="co">#&gt; [4,] -3.9 -3.6 -3.4 -3.2 -2.0 -0.9 -0.2  0.0 -2.3  -2.6</span>
+<span class="co">#&gt; [5,] -3.4 -3.1 -2.7 -2.3 -1.1 -0.3  0.0 -0.2 -0.9  -1.8</span>
+<span class="co">#&gt; [6,] -3.0 -2.7 -2.3 -1.6 -0.6  0.0  0.0  0.0 -0.7  -1.2</span>
+<span class="co">#&gt; [7,] -2.7 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7</span></code></pre></div>
 <p>We can then get the optimal policy by taking the argmax over the action value function Q.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">optimal.policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span>1L
 <span class="kw">print</span>(<span class="kw">matrix</span>(optimal.policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    0    2    3    0    0    0    3    1    1     1</span>
-<span class="co">#&gt; [2,]    1    1    0    2    0    2    0    0    1     3</span>
-<span class="co">#&gt; [3,]    2    3    0    3    0    1    1    3    3     3</span>
-<span class="co">#&gt; [4,]    0    1    3    1    1    3    3    0    3     3</span>
-<span class="co">#&gt; [5,]    3    1    1    1    3    0    0    0    0     0</span>
-<span class="co">#&gt; [6,]    0    0    3    1    3    2    0    3    3     1</span>
-<span class="co">#&gt; [7,]    1    0    0    3    2    3    3    2    0     0</span></code></pre></div>
-<p>For more details on algorithms have a look at the vignette: <a href="markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></p>
+<span class="co">#&gt; [1,]    0    2    2    0    0    0    3    0    1     3</span>
+<span class="co">#&gt; [2,]    0    0    2    3    0    3    2    0    2     3</span>
+<span class="co">#&gt; [3,]    3    1    2    3    3    3    2    3    3     0</span>
+<span class="co">#&gt; [4,]    1    3    3    0    1    1    3    1    0     3</span>
+<span class="co">#&gt; [5,]    3    1    1    1    3    0    0    1    0     0</span>
+<span class="co">#&gt; [6,]    3    3    1    3    1    3    2    3    3     3</span>
+<span class="co">#&gt; [7,]    1    1    1    3    1    2    0    2    3     0</span></code></pre></div>
+<p>For more details on algorithms have a look at the vignette: <a href="https://markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></p>
 <hr>
 </div>
 <div id="value-function-approximation" class="section level3">
@@ -236,14 +242,12 @@ res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">q
 <a href="#vignettes" class="anchor"></a>Vignettes</h3>
 <p>Also have a look at the vignettes for further examples.</p>
 <ul>
-<li><a href="markdumke.github.io/reinforcelearn/articles/introduction.html">Introduction to reinforcelearn</a></li>
-<li><a href="markdumke.github.io/reinforcelearn/articles/environments.html">How to create an environment?</a></li>
-<li><a href="markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></li>
+<li><a href="https://markdumke.github.io/reinforcelearn/articles/introduction.html">Introduction to reinforcelearn</a></li>
+<li><a href="https://markdumke.github.io/reinforcelearn/articles/environments.html">How to create an environment?</a></li>
+<li><a href="https://markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></li>
 </ul>
 <hr>
 <p>Logo is a modification of <a href="https://www.r-project.org/logo/" class="uri">https://www.r-project.org/logo/</a>.</p>
-<p>Author: Markus Dumke</p>
-<p>Date: “23 Oktober 2017”</p>
 </div>
 </div>
 </div>

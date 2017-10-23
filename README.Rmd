@@ -17,6 +17,12 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn)
 [![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
 
+### Documentation
+
+[Website](https://markdumke.github.io/reinforcelearn)
+
+----
+
 ### Installation
 
 ```{r, eval = FALSE}
@@ -93,7 +99,7 @@ env$close()
 
 This should open a Python window showing the interaction with the environment.
 
-For more details on how to create an environment have a look at the vignette: [How to create an environment?](markdumke.github.io/reinforcelearn/articles/environments.html)
+For more details on how to create an environment have a look at the vignette: [How to create an environment?](https://markdumke.github.io/reinforcelearn/articles/environments.html)
 
 ----
 
@@ -118,7 +124,7 @@ optimal.policy = max.col(res$Q1) - 1L
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 ```
 
-For more details on algorithms have a look at the vignette: [How to solve an environment?](markdumke.github.io/reinforcelearn/articles/algorithms.html)
+For more details on algorithms have a look at the vignette: [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
 
 ----
 
@@ -164,14 +170,10 @@ print(res$steps)
 
 Also have a look at the vignettes for further examples.
 
-- [Introduction to reinforcelearn](markdumke.github.io/reinforcelearn/articles/introduction.html)
-- [How to create an environment?](markdumke.github.io/reinforcelearn/articles/environments.html)
-- [How to solve an environment?](markdumke.github.io/reinforcelearn/articles/algorithms.html)
+- [Introduction to reinforcelearn](https://markdumke.github.io/reinforcelearn/articles/introduction.html)
+- [How to create an environment?](https://markdumke.github.io/reinforcelearn/articles/environments.html)
+- [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
 
 ----
 
 Logo is a modification of https://www.r-project.org/logo/.
-
-Author: Markus Dumke
-
-Date: "`r format(Sys.time(), '%d %B %Y')`"

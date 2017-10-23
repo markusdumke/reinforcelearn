@@ -4,6 +4,12 @@ Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="
 
 [![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn) [![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
 
+### Documentation
+
+[Website](https://markdumke.github.io/reinforcelearn)
+
+------------------------------------------------------------------------
+
 ### Installation
 
 ``` r
@@ -26,9 +32,9 @@ env = windyGridworld()
 # Solve environment using Sarsa
 res = sarsa(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  783 1572  980  336  442  400   61  414  181  241  145  211  138  118
-#> [15]  172   93  349   92  185  187   31   60  182  117   76   35  117   85
-#> [29]   86  294
+#>  [1]  804 1886  660  249  415  273  215  276  277  280   80  355  190   44
+#> [15]  221  105  175   84  211  148   49  183   49  139  102  216  215  178
+#> [29]   39   95
 ```
 
 ------------------------------------------------------------------------
@@ -90,7 +96,7 @@ env$close()
 
 This should open a Python window showing the interaction with the environment.
 
-For more details on how to create an environment have a look at the vignette: [How to create an environment?](markdumke.github.io/reinforcelearn/articles/environments.html)
+For more details on how to create an environment have a look at the vignette: [How to create an environment?](https://markdumke.github.io/reinforcelearn/articles/environments.html)
 
 ------------------------------------------------------------------------
 
@@ -103,20 +109,20 @@ After you created an environment you can use various reinforcement learning algo
 env = windyGridworld()
 res = qlearning(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  749 2198  511  242  470  306   89  439  245  216  257   97  180   66
-#> [15]   74  221  319  142   68   24  172  228  116   91  172  102  111   36
-#> [29]   95  236
+#>  [1]  683 2095  513  269  635  375  131  221  461   43   66  150  277  186
+#> [15]  140   81  157  183  185  133   68  143   93  150   79  207  168  154
+#> [29]   98   35
 
 # Show value of each state.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,] -4.8 -5.1 -5.6 -6.4 -7.0 -7.4 -7.3 -6.7 -5.9  -5.1
-#> [2,] -4.6 -4.7 -4.9 -5.1 -5.0 -4.2 -3.0 -3.8 -4.4  -4.3
-#> [3,] -4.3 -4.2 -4.1 -4.3 -3.4 -2.0 -1.3 -2.1 -3.4  -3.4
-#> [4,] -4.0 -3.7 -3.5 -3.1 -2.1 -0.9 -0.3  0.0 -2.2  -2.6
-#> [5,] -3.5 -3.2 -2.8 -2.4 -1.2 -0.4  0.0 -0.3 -0.9  -1.7
-#> [6,] -3.0 -2.7 -2.3 -1.7 -0.7  0.0  0.0 -0.1 -0.7  -1.1
-#> [7,] -2.7 -2.4 -1.9 -1.2  0.0  0.0  0.0  0.0 -0.3  -0.7
+#> [1,] -4.8 -5.0 -5.5 -6.3 -7.0 -7.4 -7.3 -6.7 -6.0  -5.1
+#> [2,] -4.5 -4.6 -4.8 -5.1 -4.9 -4.0 -2.8 -3.8 -4.3  -4.2
+#> [3,] -4.2 -4.1 -4.1 -4.2 -3.3 -1.9 -1.2 -2.2 -3.2  -3.4
+#> [4,] -4.0 -3.7 -3.4 -3.1 -1.9 -0.8 -0.2  0.0 -2.2  -2.6
+#> [5,] -3.5 -3.2 -2.8 -2.3 -1.2 -0.4  0.0 -0.3 -0.9  -1.8
+#> [6,] -3.0 -2.7 -2.3 -1.7 -0.7  0.0  0.0  0.0 -0.7  -1.1
+#> [7,] -2.7 -2.4 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7
 ```
 
 We can then get the optimal policy by taking the argmax over the action value function Q.
@@ -125,16 +131,16 @@ We can then get the optimal policy by taking the argmax over the action value fu
 optimal.policy = max.col(res$Q1) - 1L
 print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,]    0    0    3    0    1    1    1    1    1     3
-#> [2,]    0    3    0    1    2    3    2    0    2     3
-#> [3,]    2    3    3    1    1    3    3    3    2     3
-#> [4,]    1    1    1    3    1    2    3    1    0     3
-#> [5,]    3    0    3    1    0    2    3    0    0     0
-#> [6,]    1    0    1    2    2    1    0    0    0     1
-#> [7,]    3    3    0    2    0    0    3    0    3     1
+#> [1,]    3    2    0    0    3    0    2    1    1     3
+#> [2,]    1    0    0    3    3    2    1    2    2     3
+#> [3,]    3    1    3    1    3    1    1    1    1     1
+#> [4,]    0    3    1    1    1    3    3    2    0     3
+#> [5,]    3    2    1    2    1    0    0    3    0     0
+#> [6,]    3    1    1    1    2    0    2    3    0     3
+#> [7,]    1    1    1    2    3    1    1    2    3     0
 ```
 
-For more details on algorithms have a look at the vignette: [How to solve an environment?](markdumke.github.io/reinforcelearn/articles/algorithms.html)
+For more details on algorithms have a look at the vignette: [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
 
 ------------------------------------------------------------------------
 
@@ -181,14 +187,10 @@ print(res$steps)
 
 Also have a look at the vignettes for further examples.
 
--   [Introduction to reinforcelearn](markdumke.github.io/reinforcelearn/articles/introduction.html)
--   [How to create an environment?](markdumke.github.io/reinforcelearn/articles/environments.html)
--   [How to solve an environment?](markdumke.github.io/reinforcelearn/articles/algorithms.html)
+-   [Introduction to reinforcelearn](https://markdumke.github.io/reinforcelearn/articles/introduction.html)
+-   [How to create an environment?](https://markdumke.github.io/reinforcelearn/articles/environments.html)
+-   [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
 
 ------------------------------------------------------------------------
 
 Logo is a modification of <https://www.r-project.org/logo/>.
-
-Author: Markus Dumke
-
-Date: "23 Oktober 2017"
