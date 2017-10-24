@@ -250,7 +250,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
@@ -289,7 +289,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
               policy = getPolicy(Q.n, self$epsilon)
@@ -342,7 +342,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
@@ -393,7 +393,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
@@ -452,7 +452,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q, self$epsilon)
               a = sampleActionFromPolicy(policy)
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
 
@@ -493,7 +493,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q, self$epsilon)
               a = sampleActionFromPolicy(policy)
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
 
@@ -570,7 +570,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
@@ -609,7 +609,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
@@ -663,7 +663,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
@@ -714,7 +714,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
@@ -773,7 +773,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q, self$epsilon)
               a = sampleActionFromPolicy(policy)
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
 
@@ -833,7 +833,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount^(envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)

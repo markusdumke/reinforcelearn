@@ -18,13 +18,13 @@ test_that("tabular qsigma works with bootstrapping", {
 })
 
 test_that("tabular qsigma works with double learning", {
-  expect_error(qSigma(grid, sigma = 0.2, n.episodes = n, double.learning = TRUE, 
+  expect_error(qSigma(grid, sigma = 0.2, n.episodes = n, double.learning = TRUE,
     update.target.after = 2), NA)
 })
 
 # fixme
 # test_that("tabular qsigma works with double learning and bootstrapping", {
-#   expect_error(qSigma(grid, sigma = 0.8, n.episodes = n, double.learning = TRUE, 
+#   expect_error(qSigma(grid, sigma = 0.8, n.episodes = n, double.learning = TRUE,
 #     update.target.after = 4, lambda = 0.7), NA)
 # })
 
@@ -35,7 +35,7 @@ grid$reset()
 action = sample(grid$actions, 1)
 for (i in seq_len(size)) {
   grid$step(action)
-  memory[[i]] = list(state = grid$previous.state, action = action, reward = grid$reward, 
+  memory[[i]] = list(state = grid$previous.state, action = action, reward = grid$reward,
     next.state = grid$state)
   action = sample(grid$actions, 1)
   if (grid$done) {
@@ -50,7 +50,7 @@ test_that("tabular qsigma works with experience replay", {
 })
 
 test_that("tabular qsigma works with prioritized experience replay", {
-  expect_error(qSigma(grid, sigma = 0.5, n.episodes = n, replay.memory.size = 10, 
+  expect_error(qSigma(grid, sigma = 0.5, n.episodes = n, replay.memory.size = 10,
     batch.size = 5, alpha = 0.7, eligibility.type = 0.05), NA)
 })
 

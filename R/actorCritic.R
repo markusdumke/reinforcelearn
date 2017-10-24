@@ -149,7 +149,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         a = sampleActionFromPolicy(policy[s + 1, ])
         envir$step(a)
         r = envir$reward
-        returns[i] = returns[i] + discount^(envir$n.steps - 1) * r
+        returns[i] = returns[i] + discount ^ (envir$n.steps - 1) * r
         s.n = preprocessState(envir$state)
 
         delta = r + discount * v[s.n + 1] - v[s + 1]
@@ -210,7 +210,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         action = sampleActionFromPolicy(policy)
         envir$step(action)
         r = envir$reward
-        returns[i] = returns[i] + discount^(envir$n.steps - 1) * r
+        returns[i] = returns[i] + discount ^ (envir$n.steps - 1) * r
         s.n = preprocessState(envir$state)
         v = predictV(s)
         v.n = predictV(s.n)
@@ -275,7 +275,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         action = rnorm(1, mean = mu, sd = sigma)
         envir$step(action)
         r = envir$reward
-        returns[i] = returns[i] + discount^(envir$n.steps - 1) * r
+        returns[i] = returns[i] + discount ^ (envir$n.steps - 1) * r
         s.n = preprocessState(envir$state)
         v = predictV(s)
         v.n = predictV(s.n)

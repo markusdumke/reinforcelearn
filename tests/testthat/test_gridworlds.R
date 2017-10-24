@@ -18,11 +18,11 @@ test_that("makeGridworld works if there is only one row or column", {
 })
 
 test_that("input checking in makeGridworld works", {
-  expect_error(makeGridworld(shape = c(2, 2), goal.states = 5), 
+  expect_error(makeGridworld(shape = c(2, 2), goal.states = 5),
     "All states must be inside the grid! States are numerated row-wise starting with 0, check Details!")
-  expect_error(makeGridworld(shape = c(2, 2), goal.states = 2, cliff.states = 5), 
+  expect_error(makeGridworld(shape = c(2, 2), goal.states = 2, cliff.states = 5),
     "All states must be inside the grid! States are numerated row-wise starting with 0, check Details!")
-  expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, cliff.transition.states = 10), 
+  expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, cliff.transition.states = 10),
     "All states must be inside the grid! States are numerated row-wise starting with 0, check Details!")
   expect_error(makeGridworld(shape = c(4, 2, 3), goal.states = 1))
   expect_error(makeGridworld(shape = c(2, 2), goal.states = 1, wind = 0))
@@ -35,7 +35,7 @@ test_that("windy gridworlds can be created", {
   expect_equal(wind$transitions[3, , 2], c(0, 1, 0, 0))
 })
 
-cliff.walking = makeGridworld(shape = c(2, 2), goal.states = 3, 
+cliff.walking = makeGridworld(shape = c(2, 2), goal.states = 3,
   cliff.transition.states = 0, cliff.states = 1, reward.cliff = -200)
 
 test_that("reward matrix is correct", {
@@ -49,12 +49,12 @@ stochastic.grid = makeGridworld(shape = c(4, 4), goal.states = 15, stochasticity
 test_that("stochasticity is applied correctly", {
   expect_equal(stochastic.grid$transitions[11, c(6, 7, 8, 10, 12, 14, 16), 4], rep(0.025, 7))
   expect_equal(stochastic.grid$transitions[11, 15, 4], 0.8 + 0.2 / 8)
-  expect_equal(stochastic.grid$transitions[3, c(2, 3, 4, 6, 7, 8), 2], 
+  expect_equal(stochastic.grid$transitions[3, c(2, 3, 4, 6, 7, 8), 2],
     c(0.05, 0.025, 0.85, 0.025, 0.025, 0.025))
 })
 
 # grid = makeGridworld(diagonal.moves = TRUE)
-# 
+#
 # test_that("diagonal moves produce the right transition probabilities", {
-# 
+#
 # })

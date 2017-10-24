@@ -1,24 +1,24 @@
 #' Mountain Car
-#' 
+#'
 #' @param action.space [\code{character(1)}] \cr
-#'   Can be \code{"Discrete"} or \code{"Continuous"}. 
-#'   The classical Mountain Car task has three discrete actions, 
+#'   Can be \code{"Discrete"} or \code{"Continuous"}.
+#'   The classical Mountain Car task has three discrete actions,
 #'   the continuous version one action in a box from -1 to 1.
 #' @references Sutton and Barto (2017): Reinforcement Learning: An Introduction
 #' @export
-#' @examples 
+#' @examples
 #' # Classic Mountain Car task
 #' m = mountainCar()
 #' m$reset()
 #' m$step(1)
 #' print(m)
-#' 
+#'
 #' # Mountain Car with continuous action space
 #' m = mountainCar(action.space = "Continuous")
 #' m$reset()
 #' m$step(0.27541)
 #' print(m)
-#' 
+#'
 mountainCar = function(action.space = "Discrete") {
   checkmate::assertChoice(action.space, c("Discrete", "Continuous", "discrete", "continuous"))
   if (action.space %in% c("Discrete", "discrete")) {
@@ -42,7 +42,7 @@ mountainCarDiscrete = R6::R6Class("mountainCar",
     reward = NULL,
     velocity = NULL,
     position = NULL,
-    
+
     reset = function() {
       self$n.steps = 0
       self$previous.state = NULL
@@ -52,21 +52,21 @@ mountainCarDiscrete = R6::R6Class("mountainCar",
       self$state = matrix(c(self$position, self$velocity), ncol = 2)
       invisible(self)
     },
-    
+
     step = function(action) {
       self$previous.state = self$state
       self$n.steps = self$n.steps + 1
-      
+
       self$velocity = self$velocity + 0.001 * (action - 1) -
         0.0025 * cos(3 * self$position)
-      self$velocity = min(max(self$velocity, self$state.space.bounds[[2]][1]), 
+      self$velocity = min(max(self$velocity, self$state.space.bounds[[2]][1]),
         self$state.space.bounds[[2]][2])
       self$position = self$position + self$velocity
       if (self$position < self$state.space.bounds[[1]][1]) {
         self$position = self$state.space.bounds[[1]][1]
         self$velocity = 0
       }
-      
+
       self$state = matrix(c(self$position, self$velocity), ncol = 2)
       self$reward = - 1
       if (self$position >= 0.5) {
@@ -75,11 +75,11 @@ mountainCarDiscrete = R6::R6Class("mountainCar",
       }
       invisible(self)
     },
-    
+
     close = function() {
       invisible(self)
     },
-    
+
     print = function() {
       printEnvir(self)
     }
@@ -99,7 +99,7 @@ mountainCarContinuous = R6::R6Class("mountainCarContinuous",
     reward = NULL,
     velocity = NULL,
     position = NULL,
-    
+
     reset = function() {
       self$n.steps = 0
       self$previous.state = NULL
@@ -109,23 +109,23 @@ mountainCarContinuous = R6::R6Class("mountainCarContinuous",
       self$state = matrix(c(self$position, self$velocity), ncol = 2)
       invisible(self)
     },
-    
+
     step = function(action) {
       self$previous.state = self$state
       self$n.steps = self$n.steps + 1
-      
+
       force = min(max(action, - 1), 1)
-      
+
       self$velocity = self$velocity + 0.0015 * force - 0.0025 * cos(3 * self$position)
-      self$velocity = min(max(self$velocity, self$state.space.bounds[[2]][1]), 
+      self$velocity = min(max(self$velocity, self$state.space.bounds[[2]][1]),
         self$state.space.bounds[[2]][2])
-      
+
       self$position = self$position + self$velocity
       if (self$position < self$state.space.bounds[[1]][1]) {
         self$position = self$state.space.bounds[[1]][1]
         self$velocity = 0
       }
-      
+
       self$state = matrix(c(self$position, self$velocity), ncol = 2)
       self$reward = - 1
       if (self$position >= 0.5) {
@@ -134,11 +134,11 @@ mountainCarContinuous = R6::R6Class("mountainCarContinuous",
       }
       invisible(self)
     },
-    
+
     close = function() {
       invisible(self)
     },
-    
+
     print = function() {
       printEnvir(self)
     }
