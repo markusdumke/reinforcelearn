@@ -17,14 +17,14 @@ A hash table created with \code{IHT}.}
 Number of tilings.}
 
 \item{state}{[\code{vector(2)}] \cr
-A two-dimensional state observation. 
+A two-dimensional state observation.
 Make sure to scale the observation to unit variance before.}
 
 \item{action}{[\code{integer(1)}] \cr
-Optional: If supplied the action space will also be tiled. 
+Optional: If supplied the action space will also be tiled.
 All distinct actions will result in different tiles.}
 
-\item{max.size}{[\code{integer(1)}] \cr 
+\item{max.size}{[\code{integer(1)}] \cr
 Maximal size of hash table.}
 }
 \value{
@@ -35,20 +35,20 @@ Maximal size of hash table.}
 Implementation of Sutton's tile coding software version 3.
 }
 \details{
-Tile coding is a way of representing the values of a vector of continuous variables as a large 
-binary vector with few 1s and many 0s. The binary vector is not represented explicitly, 
-but as a list of the components that are 1s. The main step is to partition, or tile, 
-the continuous space multiple times and select one tile from each tiling, that corresponding 
-the the vector's value. Each tile is converted to an element in the big binary vector, 
+Tile coding is a way of representing the values of a vector of continuous variables as a large
+binary vector with few 1s and many 0s. The binary vector is not represented explicitly,
+but as a list of the components that are 1s. The main step is to partition, or tile,
+the continuous space multiple times and select one tile from each tiling, that corresponding
+the the vector's value. Each tile is converted to an element in the big binary vector,
 and the list of the tile (element) numbers is returned as the representation of the vector's value.
-Tile coding is recommended as a way of applying online learning methods to domains with continuous 
+Tile coding is recommended as a way of applying online learning methods to domains with continuous
 state or action variables. [copied from manual]
 
-See detailed manual at \url{http://incompleteideas.net/sutton/tiles/tiles3.html}. 
-In comparison to the Python implementation indices start with 1 instead of 0. The hash table is 
+See detailed manual at \url{http://incompleteideas.net/sutton/tiles/tiles3.html}.
+In comparison to the Python implementation indices start with 1 instead of 0. The hash table is
 implemented as an environment, which is an attribute of an R6 class.
 
-Make sure that the size of the hash table is large enough, else an error will be triggered, 
+Make sure that the size of the hash table is large enough, else an error will be triggered,
 when trying to assign a value to a full hash table.
 }
 \examples{

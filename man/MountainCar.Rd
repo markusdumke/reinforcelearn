@@ -8,8 +8,8 @@ mountainCar(action.space = "Discrete")
 }
 \arguments{
 \item{action.space}{[\code{character(1)}] \cr
-Can be \code{"Discrete"} or \code{"Continuous"}. 
-The classical Mountain Car task has three discrete actions, 
+Can be \code{"Discrete"} or \code{"Continuous"}.
+The classical Mountain Car task has three discrete actions,
 the continuous version one action in a box from -1 to 1.}
 }
 \description{

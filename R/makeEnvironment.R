@@ -89,6 +89,7 @@
 #'   action = sample(env$actions, 1)
 #'   env$step(action)
 #' }
+#' env$close()
 #' }
 #'
 #' # Create an environment from a transition array and reward matrix.
