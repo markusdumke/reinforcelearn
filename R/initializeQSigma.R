@@ -1,56 +1,21 @@
 qSigmaAgent = R6::R6Class(public = list(
 
   runEpisode = NULL,
-  start = NULL,
-  interactWithEnvironment = NULL,
-  getOnlineData = NULL,
   preprocessState = NULL,
-
-  getAction = NULL,
-  sampleActionFromPolicy = NULL,
-  getPolicy = NULL,
   predictQ = NULL,
-
-  online.data = NULL,
   Q1 = NULL,
-  policy = NULL,
   epsilon = NULL,
   episode.steps = NULL,
   returns = NULL,
-
-  getOldQ = NULL,
-  getTrainData = NULL,
-  train = NULL,
-  fit = NULL,
-  getTdTarget = NULL,
-  getTdError = NULL,
-  getSarsaTarget = NULL,
-  getExpSarsaTarget = NULL,
-  getNextAction = NULL,
-  updateQ = NULL,
-  train.data = NULL,
   sigma = NULL,
-  td.target = NULL,
-  td.error = NULL,
   discount = NULL,
   learning.rate = NULL,
   epsilon.target = NULL,
-  next.action = NULL,
-  getNextQ = NULL,
-  Q.old = NULL,
-
   n.actions = NULL,
-
-  Q.predict = NULL,
-  Q.target = NULL,
   Q2 = NULL,
-  updateTargetModel = NULL,
-  updateTargetModel2 = NULL,
-
   replay.memory = NULL,
   replay.index = 0,
   alpha = NULL,
-
   sampleBatch = NULL,
   getIndices = NULL,
   priority = NULL,
@@ -58,15 +23,9 @@ qSigmaAgent = R6::R6Class(public = list(
   add2ReplayMemory = NULL,
   batch.size = NULL,
   updatePriority = NULL,
-  theta = NULL,
-
-  E = NULL,
-  increaseEligibility = NULL,
-  resetEligibility = NULL,
-  reduceEligibility = NULL,
   lambda = NULL,
+  E = NULL,
   eligibility.type = NULL,
-
   done = NULL,
   updateEpsilon = NULL,
   updateSigma = NULL,
@@ -77,7 +36,7 @@ qSigmaAgent = R6::R6Class(public = list(
   initialize = function(envir, fun.approx, preprocessState,
     model, initial.value, n.states, n.episodes, sigma,
     target.policy, lambda, eligibility.type, learning.rate,
-    epsilon, discount, double.learning, update.target.after,
+    epsilon, discount, double.learning,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate) {
@@ -134,6 +93,9 @@ qSigmaAgent = R6::R6Class(public = list(
     } else {
       eligibility = FALSE
     }
+    if (lambda > 0 & experience.replay) {
+      warning("Eligibility traces are not used when training with experience replay!")
+    }
 
     # state preprocessing
     self$preprocessState = preprocessState
@@ -141,6 +103,9 @@ qSigmaAgent = R6::R6Class(public = list(
     self$done = function(envir, i) {
       self$episode.steps[i] = envir$n.steps
       self$epsilon = self$updateEpsilon(self$epsilon, i)
+      if (target.policy == "egreedy") {
+        self$epsilon.target = self$epsilon
+      }
       self$lambda = self$updateLambda(self$lambda, i)
       self$learning.rate = self$updateLearningRate(self$learning.rate, i)
       self$sigma = self$updateSigma(self$sigma, i)
@@ -153,6 +118,7 @@ qSigmaAgent = R6::R6Class(public = list(
       # initialize replay memory if no replay memory is supplied
       if (is.null(replay.memory)) {
         self$replay.memory = initializeReplayMemory(envir, replay.memory.size, self$preprocessState)
+        message("Replay memory randomly initialized.")
       } else {
         self$replay.memory = replay.memory
       }
@@ -218,6 +184,21 @@ qSigmaAgent = R6::R6Class(public = list(
             next.state = next.states))
         }
       }
+
+      if (fun.approx == "linear") {
+        self$sampleBatch = function() {
+          self$indices = self$getIndices(replay.memory.size, batch.size)
+          batch = self$replay.memory[self$indices]
+          states = lapply(batch, "[[", "state")
+          states = Reduce(rbind, states)
+          next.states = lapply(batch, "[[", "next.state")
+          next.states = Reduce(rbind, next.states)
+          actions = vapply(batch, "[[", "action", FUN.VALUE = integer(1))
+          rewards = vapply(batch, "[[", "reward", FUN.VALUE = double(1))
+          return(list(state = states, action = actions, reward = rewards,
+            next.state = next.states))
+        }
+      }
     }
 
     # ---- Tabular Value Function
@@ -239,6 +220,7 @@ qSigmaAgent = R6::R6Class(public = list(
         Q[state + 1, , drop = FALSE]
       }
 
+      # no experience replay, no double learning, no eligibility traces
       if (!experience.replay) {
         if (!eligibility) {
           self$runEpisode = function(envir, i) {
@@ -278,7 +260,7 @@ qSigmaAgent = R6::R6Class(public = list(
               }
             }
           }
-        } else {# with eligibility
+        } else {# no experience replay, no double learning, with eligibility traces
           self$runEpisode = function(envir, i) {
             self$E = matrix(0, nrow = nrow(self$Q1), ncol = envir$n.actions)
             envir$reset()
@@ -332,6 +314,7 @@ qSigmaAgent = R6::R6Class(public = list(
           self$Q2 = initial.value
         }
 
+        # no experience replay, with double learning, no eligibility traces
         if (!eligibility) {
           self$runEpisode = function(envir, i) {
             envir$reset()
@@ -382,7 +365,7 @@ qSigmaAgent = R6::R6Class(public = list(
               }
             }
           }
-        } else {# with eligibility
+        } else {# no experience replay, with double learning, with eligibility traces
           self$runEpisode = function(envir, i) {
             self$E = matrix(0, nrow = nrow(self$Q1), ncol = envir$n.actions)
             envir$reset()
@@ -442,6 +425,7 @@ qSigmaAgent = R6::R6Class(public = list(
       }
 
       if (experience.replay) {
+        # with experience replay, no double learning
         if (!double.learning) {
           self$runEpisode = function(envir, i) {
             envir$reset()
@@ -455,12 +439,9 @@ qSigmaAgent = R6::R6Class(public = list(
               self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
-
               batch = self$sampleBatch()
-              states = batch$state
-              next.states = batch$next.state
-              Q.old = self$Q1[states + 1, , drop = FALSE]
-              Q.n = self$Q1[next.states + 1, , drop = FALSE]
+
+              Q.n = self$Q1[batch$next.state + 1, , drop = FALSE]
               policy = t(apply(Q.n, 1, getPolicy, epsilon = self$epsilon))
               a.n = apply(policy, 1, sampleActionFromPolicy)
               sarsa.target = Q.n[matrix(c(seq_along(a.n), a.n + 1), ncol = 2)]
@@ -470,10 +451,12 @@ qSigmaAgent = R6::R6Class(public = list(
               exp.sarsa.target = rowSums(policy * Q.n)
               td.target = batch$reward + discount * (self$sigma * sarsa.target +
                   (1 - self$sigma) * exp.sarsa.target)
-              td.error = td.target - Q.old[matrix(c(seq_along(batch$action), batch$action + 1), ncol = 2)]
+              td.error = td.target - self$Q1[matrix(c(batch$state + 1, batch$action + 1), ncol = 2)]
 
-              self$Q1[matrix(c(states + 1, batch$action + 1), ncol = 2)] =
-                self$Q1[matrix(c(states + 1, batch$action + 1), ncol = 2)] + self$learning.rate * td.error
+              for (z in seq_along(batch$action)) {
+                self$Q1[batch$state[z] + 1, batch$action[z] + 1] = self$Q1[batch$state[z] + 1, batch$action[z] + 1] +
+                  self$learning.rate * td.error[z]
+              }
 
               self$priority = self$updatePriority(td.error, theta)
 
@@ -483,7 +466,7 @@ qSigmaAgent = R6::R6Class(public = list(
               }
             }
           }
-        } else {
+        } else {# with experience replay, with double learning
           self$runEpisode = function(envir, i) {
             envir$reset()
 
@@ -496,40 +479,39 @@ qSigmaAgent = R6::R6Class(public = list(
               self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
-
               batch = self$sampleBatch()
-              states = batch$state
-              next.states = batch$next.state
 
               update.which.Q = sample(1:2, 1)
               if (update.which.Q == 1) {
-                Q.A = self$Q1[next.states + 1, , drop = FALSE]
-                Q.B = self$Q2[next.states + 1, , drop = FALSE]
+                Q.A = self$Q1[batch$next.state + 1, , drop = FALSE]
+                Q.B = self$Q2[batch$next.state + 1, , drop = FALSE]
               } else {
-                Q.A = self$Q2[next.states + 1, , drop = FALSE]
-                Q.B = self$Q1[next.states + 1, , drop = FALSE]
+                Q.A = self$Q2[batch$next.state + 1, , drop = FALSE]
+                Q.B = self$Q1[batch$next.state + 1, , drop = FALSE]
               }
 
-              Q.new = (self$Q1 + self$Q2)[next.states + 1, , drop = FALSE]
-              policy = t(apply(Q.new, 1, getPolicy, epsilon = self$epsilon))
+              policy = t(apply(Q.A, 1, getPolicy, epsilon = self$epsilon))
               a.n = apply(policy, 1, sampleActionFromPolicy)
-
               sarsa.target = Q.B[matrix(c(seq_along(a.n), a.n + 1), ncol = 2)]
-              policy = t(apply(Q.A, 1, getPolicy, epsilon = self$epsilon.target))
+              if (target.policy == "greedy") {
+                policy = t(apply(Q.A, 1, getPolicy, epsilon = self$epsilon.target))
+              }
               exp.sarsa.target = rowSums(policy * Q.B)
               td.target = batch$reward + discount * (sigma * sarsa.target +
                   (1 - sigma) * exp.sarsa.target)
 
               if (update.which.Q == 1) {
-                Q = self$Q1[states + 1, , drop = FALSE]
-                td.error = td.target - Q[a + 1]
-                self$Q1[matrix(c(states + 1, batch$action + 1), ncol = 2)] =
-                  self$Q1[matrix(c(states + 1, batch$action + 1), ncol = 2)] + self$learning.rate * td.error
+                td.error = td.target - self$Q1[matrix(c(batch$state + 1, batch$action + 1), ncol = 2)]
+                for (z in seq_along(batch$action)) {
+                  self$Q1[batch$state[z] + 1, batch$action[z] + 1] = self$Q1[batch$state[z] + 1, batch$action[z] + 1] +
+                    self$learning.rate * td.error[z]
+                }
               } else {
-                Q = self$Q2[states + 1, , drop = FALSE]
-                td.error = td.target - Q[a + 1]
-                self$Q2[matrix(c(states + 1, batch$action + 1), ncol = 2)] =
-                  self$Q2[matrix(c(states + 1, batch$action + 1), ncol = 2)] + self$learning.rate * td.error
+                td.error = td.target - self$Q2[matrix(c(batch$state + 1, batch$action + 1), ncol = 2)]
+                for (z in seq_along(batch$action)) {
+                  self$Q2[batch$state[z] + 1, batch$action[z] + 1] = self$Q2[batch$state[z] + 1, batch$action[z] + 1] +
+                    self$learning.rate * td.error[z]
+                }
               }
 
               self$priority = self$updatePriority(td.error, theta)
@@ -559,6 +541,7 @@ qSigmaAgent = R6::R6Class(public = list(
         state %*% Q
       }
 
+      # no experience replay, no double learning, no eligibility traces
       if (!experience.replay) {
         if (!eligibility) {
           self$runEpisode = function(envir, i) {
@@ -598,7 +581,7 @@ qSigmaAgent = R6::R6Class(public = list(
               }
             }
           }
-        } else {# if eligibility
+        } else {# no experience replay, no double learning, with eligibility traces
           self$runEpisode = function(envir, i) {
             self$E = matrix(0, nrow = nrow(self$Q1), ncol = envir$n.actions)
             envir$reset()
@@ -653,6 +636,7 @@ qSigmaAgent = R6::R6Class(public = list(
           self$Q2 = initial.value
         }
 
+        # no experience replay, with double learning, no eligibility traces
         if (!eligibility) {
           self$runEpisode = function(envir, i) {
             envir$reset()
@@ -703,7 +687,7 @@ qSigmaAgent = R6::R6Class(public = list(
               }
             }
           }
-        } else {# if eligibility
+        } else {# no experience replay, with double learning, with eligibility traces
           self$runEpisode = function(envir, i) {
             self$E = matrix(0, nrow = nrow(self$Q1), ncol = envir$n.actions)
             envir$reset()
@@ -763,6 +747,7 @@ qSigmaAgent = R6::R6Class(public = list(
       }
 
       if (experience.replay) {
+        # with experience replay, no double learning
         if (!double.learning) {
           self$runEpisode = function(envir, i) {
             envir$reset()
@@ -776,13 +761,10 @@ qSigmaAgent = R6::R6Class(public = list(
               self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
-
               batch = self$sampleBatch()
 
-              Q.old = t(vapply(batch$state, self$predictQ, Q = self$Q1,
-                FUN.VALUE = numeric(envir$n.actions)))
-              Q.n = t(vapply(batch$next.state, self$predictQ, Q = self$Q1,
-                FUN.VALUE = numeric(envir$n.actions)))
+              Q.old = batch$state %*% self$Q1
+              Q.n = batch$next.state %*% self$Q1
 
               policy = t(apply(Q.n, 1, getPolicy, epsilon = self$epsilon))
               a.n = apply(policy, 1, sampleActionFromPolicy)
@@ -796,8 +778,10 @@ qSigmaAgent = R6::R6Class(public = list(
                   (1 - self$sigma) * exp.sarsa.target)
               td.error = td.target - Q.old[matrix(c(seq_along(batch$action), batch$action + 1), ncol = 2)]
 
-              states = Reduce(rbind, batch$state)
-              self$Q1[, batch$action + 1] = self$Q1[, batch$action + 1] + self$learning.rate * td.error * t(states)
+              for (z in seq_along(batch$action)) {
+                self$Q1[, batch$action[z] + 1] = self$Q1[, batch$action[z] + 1] +
+                  self$learning.rate * td.error[z] * batch$state[z, ]
+              }
 
               self$priority = self$updatePriority(td.error, theta)
 
@@ -807,8 +791,66 @@ qSigmaAgent = R6::R6Class(public = list(
               }
             }
           }
-        } else {
+        } else {# with experience replay, with double learning
+          self$runEpisode = function(envir, i) {
+            envir$reset()
 
+            while (envir$done == FALSE) {
+              s = self$preprocessState(envir$state)
+              Q = self$predictQ(self$Q1 + self$Q2, s)
+              policy = getPolicy(Q, self$epsilon)
+              a = sampleActionFromPolicy(policy)
+              envir$step(a)
+              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+
+              self$replay.memory = self$add2ReplayMemory(envir, a)
+              batch = self$sampleBatch()
+
+              update.which.Q = sample(1:2, 1)
+
+              if (update.which.Q == 1) {
+                Q.A = batch$next.state %*% self$Q1
+                Q.B = batch$next.state %*% self$Q2
+              } else {
+                Q.A = batch$next.state %*% self$Q2
+                Q.B = batch$next.state %*% self$Q1
+              }
+
+              policy = t(apply(Q.A, 1, getPolicy, epsilon = self$epsilon))
+              a.n = apply(policy, 1, sampleActionFromPolicy)
+              if (target.policy == "greedy") {
+                policy = t(apply(Q.A, 1, getPolicy, epsilon = self$epsilon.target))
+              }
+
+              sarsa.target = Q.B[matrix(c(seq_along(a.n), a.n + 1), ncol = 2)]
+              exp.sarsa.target = rowSums(policy * Q.B)
+              td.target = batch$reward + discount * (self$sigma * sarsa.target +
+                  (1 - self$sigma) * exp.sarsa.target)
+
+              if (update.which.Q == 1) {
+                td.error = td.target - (batch$state %*%
+                    self$Q1)[matrix(c(seq_along(batch$action), batch$action + 1), ncol = 2)]
+                for (z in seq_along(batch$action)) {
+                  self$Q1[, batch$action[z] + 1] = self$Q1[, batch$action[z] + 1] +
+                    self$learning.rate * td.error[z] * batch$state[z, ]
+                }
+              } else {
+                td.error = td.target - (batch$state %*%
+                    self$Q2)[matrix(c(seq_along(batch$action), batch$action + 1), ncol = 2)]
+                for (z in seq_along(batch$action)) {
+                  self$Q2[, batch$action[z] + 1] = self$Q2[, batch$action[z] + 1] +
+                    self$learning.rate * td.error[z] * batch$state[z, ]
+                }
+              }
+
+              self$priority = self$updatePriority(td.error, theta)
+
+              if (envir$done) {
+                self$done(envir, i)
+                break
+              }
+            }
+          }
         }
       }
     }
@@ -822,8 +864,21 @@ qSigmaAgent = R6::R6Class(public = list(
       keras::compile(model, loss = "mse", optimizer = keras::optimizer_sgd(lr = self$learning.rate))
       self$Q1 = model
 
+      if (eligibility) {
+        stop("Eligibility traces are not supported for fun.approx = neural network!")
+      }
+
+      if (double.learning) {
+        stop("Not implemented yet!")
+      }
+
+      if (experience.replay) {
+        stop("Not implemented yet!")
+      }
+
+      # no experience replay, no double learning
       if (!experience.replay) {
-        if (!eligibility) {
+        if (!double.learning)
           self$runEpisode = function(envir, i) {
             envir$reset()
             s = self$preprocessState(envir$state)
@@ -863,14 +918,9 @@ qSigmaAgent = R6::R6Class(public = list(
               }
             }
           }
-        }
       }
     }
   }
-
-  # fixme:
-  # linear fun approx.: no list in replay memory?
-  # replace apply / vapply in linear fun approx. with matrix multiplication?
 )
 )
 
