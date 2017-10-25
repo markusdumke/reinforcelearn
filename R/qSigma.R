@@ -2,54 +2,37 @@
 #'
 #' Value-based reinforcement learning control algorithms.
 #'
-#' You must specify the reinforcement learning environment using the \code{envir} argument.
-#' It takes an \code{R6 class} created by \code{\link{makeEnvironment}} as input.
-#' See documentation there.
+#' Q(sigma), Q-Learning, Expected Sarsa and Sarsa build a family of temporal-difference learning
+#' algorithms, which can be used to find the optimal action value function using the principle
+#' of generalized policy iteration.
+#' Q(sigma) subsumes Q-Learning, Sarsa and Expected Sarsa as special cases.
+#' For more details on the algorithm read De Asis et al. (2017).
+#' Expected Sarsa can be used on-policy if \code{target.policy == "egreedy"} else it is identical
+#' to Q-Learning.
 #'
-#' The algorithms can be used to find the optimal action value function using the principle
-#' of generalized policy iteration. They all learn online using temporal-difference learning.
-#' Q(sigma) subsumes the well known Q-Learning, Sarsa and Expected Sarsa algorithms as special cases.
-#' The default call \code{qsigma()} is exactly equivalent to Sarsa(0). A weighted mean between sarsa
-#' and expected sarsa updates can be used by varying the parameter \code{sigma}.
-#' When \code{target.policy == "egreedy"} the policy used to compute the expected sarsa is the epsilon-greedy
-#' policy used for action selection, when \code{target.policy == "greedy"} a greedy target policy will be
-#' used as in Q-Learning. See De Asis et al. (2017) for more details.
+#' When \code{fun.approx == "table"} the action value function will be represented as a matrix,
+#' but you can also use a linear combination of features and a neural network for function approximation.
+#' For a neural network you need to pass on a keras model via the \code{model} argument.
 #'
-#' The functions \code{qlearning} and \code{sarsa} are there for convenience.
-#' They call the \code{qSigma} function with a special set of parameters.
-#'
-#' When \code{fun.approx == "table"} the action value function will be represented using a table,
-#' a linear combination of features and a neural network can also be used. For a neural network you
-#' need to pass on a keras model via the \code{model} argument. This way it is possible to
-#' construct a Deep Q-Network (DQN).
-#'
-#' The raw state observation returned from the environment can be preprocessed using
-#' the \code{preprocessState} function. This function takes the state observation as input and
+#' The raw state observation returned from the environment need to be preprocessed using
+#' the \code{preprocessState} argument. This function takes the state observation as input and
 #' returns a preprocessed state which can be directly used by the function approximator.
-#' This is especially important when using function approximation.
+#' To use a tabular value function \code{preprocessState} must return an integer value between
+#' [0, number of states - 1]. For linear function approximation the output of
+#' \code{preprocessState} must be a matrix with one row. For a neural network you have to make
+#' sure that the dimensions of the preprocessed state and the neural network match, so that
+#' \code{model$predict(preprocessState(envir$state))} works.
 #'
-#' Experience replay can be used by specifying a prefilled replay memory through the
+#' Experience replay can be used by specifying a prefilled replay memory using the
 #' \code{replay.memory} argument or by specifying the length of the replay memory,
-#' which will then be filled with random experience. Using the defaults experiences are sampled
-#' uniformly, a proportional prioritization proposed by Schaul et al. (2016) can also be used by
-#' varying the parameters \code{alpha} and \code{theta}.
+#' which is then filled with experience using a random uniform policy.
+#' Sampling can also be prioritized by the td error as proposed by
+#' Schaul et al. (2016).
 #'
-#' Using eligibility traces the one-step algorithms can be extended to multi-step algorithms. The
-#' parameter \code{lambda} controls the tradeoff between one-step and multi-step methods. Three
-#' different kinds of eligibility traces are implemented, accumulating, replacing and dutch traces.
-#' See Sutton and Barto (Book draft 2017, Chapter 12) for more details.
-#' This only works if no experience replay is used, i.e. \code{replay.memory.size == 1} and for a
-#' tabular value function.
-#'
-#' Double Learning can be used with all of the functions.
-#' Then two Q value functions are used, Q1 for action selection and
-#' Q2 for action evaluation. After a number of steps the weights of Q2 are replaced by the weights
-#' of Q1. See Hasselt et al. (2015) for details.
-#'
-#' The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{alpha}, \code{lambda} and
+#' The hyperparameters \code{epsilon}, \code{sigma}, \code{alpha}, \code{lambda} and
 #' \code{learning.rate} can be changed over time. Therefore pass on functions that return a new
 #' value of the hyperparameter. These updates will be applied after each episode. First argument of
-#' the function must be the parameter itself, the second argument is the current episode number.
+#' the function must be the parameter itself, the second argument the current episode number.
 #'
 #' @param envir [\code{R6 class}] \cr
 #'   The reinforcement learning environment created by \code{\link{makeEnvironment}}.
@@ -129,19 +112,16 @@
 #' @param preprocessState [\code{function}] \cr
 #'   A function that takes the state observation returned from the environment as an input and
 #'   preprocesses this in a way the algorithm can work with it.
-#' @param update.target.after [\code{integer(1)}] \cr
-#'   When using double learning the target network / table will be updated after
-#'   \code{update.target.after} steps.
 #' @param eligibility.type [\code{numeric(1)}] \cr
 #'   Type of eligibility trace, use \code{eligibility.type = 1} for replacing traces,
 #'   \code{eligibility.type = 0} for accumulating traces or intermediate values for a mixture between both.
 #' @rdname qSigma
 #' @return [\code{list(4)}] \cr
 #'   Returns the action value function or model parameters [\code{matrix}] and the
-#'   number of steps per episode [\code{numeric}]
-#'   and the sum of all rewards in the episode [\code{numeric}].
+#'   return and number of steps per episode [\code{numeric}].
+#'   For Double Learning both value functions will be returned.
 #' @references De Asis et al. (2017): Multi-step Reinforcement Learning: A Unifying Algorithm
-#' @references Hasselt et al. (2015): Deep Reinforcement Learning with Double Q-Learning
+#' @references Hasselt et al. (2012): Double Q-Learning
 #' @references Mnih et al. (2013): Playing Atari with Deep Reinforcement Learning
 #' @references Schaul et al. (2016): Prioritized Experience Replay
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
@@ -195,11 +175,11 @@
 #' print(res$returns)
 #'
 #' \dontrun{
-#' env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
+#' env = makeGridworld(c(3, 3), goal.states = 8, initial.state = 0)
 #'
 #' # Use a neural network as function approximator
 #' makeOneHot = function(state) {
-#'   one.hot = matrix(rep(0, 16), nrow = 1)
+#'   one.hot = matrix(rep(0, 9), nrow = 1)
 #'   one.hot[1, state + 1] = 1
 #'   one.hot
 #' }
@@ -207,7 +187,7 @@
 #' # Define keras model
 #' library(keras)
 #' model = keras_model_sequential()
-#' model %>% layer_dense(units = 4, activation = 'linear', input_shape = c(16))
+#' model %>% layer_dense(units = 4, activation = 'linear', input_shape = c(9))
 #'
 #' res = qSigma(env, fun.approx = "neural.network", model = model,
 #'   preprocessState = makeOneHot, n.episodes = 20)
@@ -216,7 +196,7 @@
 qSigma = function(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, sigma = 1,
   target.policy = "egreedy", lambda = 0, eligibility.type = 0, learning.rate = 0.1,
-  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
+  epsilon = 0.1, discount = 1, double.learning = FALSE,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = identity2, updateSigma = identity2, updateLambda = identity2,
   updateAlpha = identity2, updateLearningRate = identity2) {
@@ -225,7 +205,7 @@ qSigma = function(envir, fun.approx = "table", preprocessState = identity,
   checkArgs(envir, fun.approx, preprocessState,
     model, initial.value, n.states, n.episodes, sigma,
     target.policy, lambda, eligibility.type, learning.rate,
-    epsilon, discount, double.learning, update.target.after,
+    epsilon, discount, double.learning,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate)
@@ -234,13 +214,17 @@ qSigma = function(envir, fun.approx = "table", preprocessState = identity,
   agent = qSigmaAgent$new(envir, fun.approx, preprocessState,
     model, initial.value, n.states, n.episodes, sigma,
     target.policy, lambda, eligibility.type, learning.rate,
-    epsilon, discount, double.learning, update.target.after,
+    epsilon, discount, double.learning,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate)
 
   for (i in seq_len(n.episodes)) {
     agent$runEpisode(envir, i)
+  }
+  # close graphical representation of environment if existing
+  if (!is.null(envir$close)) {
+    envir$close()
   }
 
   list(Q1 = agent$Q1, Q2 = agent$Q2, steps = agent$episode.steps, returns = agent$returns)
@@ -251,7 +235,7 @@ qSigma = function(envir, fun.approx = "table", preprocessState = identity,
 checkArgs = function(envir, fun.approx, preprocessState,
   model, initial.value, n.states, n.episodes, sigma,
   target.policy, lambda, eligibility.type, learning.rate,
-  epsilon, discount, double.learning, update.target.after,
+  epsilon, discount, double.learning,
   replay.memory, replay.memory.size, batch.size, alpha, theta,
   updateEpsilon, updateSigma, updateLambda, updateAlpha,
   updateLearningRate) {
@@ -283,7 +267,6 @@ checkArgs = function(envir, fun.approx, preprocessState,
   checkmate::assertInt(n.episodes, lower = 1)
   checkmate::assertInt(replay.memory.size, lower = 1)
   checkmate::assertInt(batch.size, lower = 1)
-  checkmate::assertInt(update.target.after, lower = 1)
   checkmate::assertList(replay.memory, types = "list", null.ok = TRUE, any.missing = FALSE)
   if (!is.null(replay.memory)) {
     for (i in seq_along(replay.memory)) {
@@ -314,7 +297,7 @@ checkArgs = function(envir, fun.approx, preprocessState,
 qlearning = function(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   lambda = 0, eligibility.type = 0, learning.rate = 0.1,
-  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
+  epsilon = 0.1, discount = 1, double.learning = FALSE,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = identity2, updateSigma = identity2, updateLambda = identity2,
   updateAlpha = identity2, updateLearningRate = identity2) {
@@ -322,7 +305,7 @@ qlearning = function(envir, fun.approx = "table", preprocessState = identity,
   qSigma(envir, fun.approx, preprocessState,
     model, initial.value, n.states, n.episodes, sigma = 0,
     target.policy = "greedy", lambda, eligibility.type, learning.rate,
-    epsilon, discount, double.learning, update.target.after,
+    epsilon, discount, double.learning,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate)
@@ -334,7 +317,7 @@ qlearning = function(envir, fun.approx = "table", preprocessState = identity,
 sarsa = function(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   lambda = 0, eligibility.type = 0, learning.rate = 0.1,
-  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
+  epsilon = 0.1, discount = 1, double.learning = FALSE,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = identity2, updateSigma = identity2, updateLambda = identity2,
   updateAlpha = identity2, updateLearningRate = identity2) {
@@ -342,7 +325,7 @@ sarsa = function(envir, fun.approx = "table", preprocessState = identity,
   qSigma(envir, fun.approx, preprocessState,
     model, initial.value, n.states, n.episodes, sigma = 1,
     target.policy = "egreedy", lambda, eligibility.type, learning.rate,
-    epsilon, discount, double.learning, update.target.after,
+    epsilon, discount, double.learning,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate)
@@ -354,7 +337,7 @@ sarsa = function(envir, fun.approx = "table", preprocessState = identity,
 expectedSarsa = function(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100, target.policy = "egreedy",
   lambda = 0, eligibility.type = 0, learning.rate = 0.1,
-  epsilon = 0.1, discount = 1, double.learning = FALSE, update.target.after = 1,
+  epsilon = 0.1, discount = 1, double.learning = FALSE,
   replay.memory = NULL, replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
   updateEpsilon = identity2, updateSigma = identity2, updateLambda = identity2,
   updateAlpha = identity2, updateLearningRate = identity2) {
@@ -362,7 +345,7 @@ expectedSarsa = function(envir, fun.approx = "table", preprocessState = identity
   qSigma(envir, fun.approx, preprocessState,
     model, initial.value, n.states, n.episodes, sigma = 0, target.policy,
     lambda, eligibility.type, learning.rate,
-    epsilon, discount, double.learning, update.target.after,
+    epsilon, discount, double.learning,
     replay.memory, replay.memory.size, batch.size, alpha, theta,
     updateEpsilon, updateSigma, updateLambda, updateAlpha,
     updateLearningRate)

@@ -150,5 +150,10 @@ td = function(envir, policy, fun.approx = "table", preprocessState = identity,
   if (length(steps) == 0) {
     steps = step
   }
+
+  # close graphical representation of environment if existing
+  if (!is.null(envir$close)) {
+    envir$close()
+  }
   list(V = V, steps = steps, returns = returns)
 }

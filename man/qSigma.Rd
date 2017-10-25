@@ -11,39 +11,38 @@ qSigma(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   sigma = 1, target.policy = "egreedy", lambda = 0,
   eligibility.type = 0, learning.rate = 0.1, epsilon = 0.1,
-  discount = 1, double.learning = FALSE, update.target.after = 1,
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, updateEpsilon = identity2,
-  updateSigma = identity2, updateLambda = identity2,
-  updateAlpha = identity2, updateLearningRate = identity2)
+  discount = 1, double.learning = FALSE, replay.memory = NULL,
+  replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
+  updateEpsilon = identity2, updateSigma = identity2,
+  updateLambda = identity2, updateAlpha = identity2,
+  updateLearningRate = identity2)
 
 qlearning(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   lambda = 0, eligibility.type = 0, learning.rate = 0.1, epsilon = 0.1,
-  discount = 1, double.learning = FALSE, update.target.after = 1,
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, updateEpsilon = identity2,
-  updateSigma = identity2, updateLambda = identity2,
-  updateAlpha = identity2, updateLearningRate = identity2)
+  discount = 1, double.learning = FALSE, replay.memory = NULL,
+  replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
+  updateEpsilon = identity2, updateSigma = identity2,
+  updateLambda = identity2, updateAlpha = identity2,
+  updateLearningRate = identity2)
 
 sarsa(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   lambda = 0, eligibility.type = 0, learning.rate = 0.1, epsilon = 0.1,
-  discount = 1, double.learning = FALSE, update.target.after = 1,
-  replay.memory = NULL, replay.memory.size = 1, batch.size = 1,
-  alpha = 0, theta = 0.01, updateEpsilon = identity2,
-  updateSigma = identity2, updateLambda = identity2,
-  updateAlpha = identity2, updateLearningRate = identity2)
+  discount = 1, double.learning = FALSE, replay.memory = NULL,
+  replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
+  updateEpsilon = identity2, updateSigma = identity2,
+  updateLambda = identity2, updateAlpha = identity2,
+  updateLearningRate = identity2)
 
 expectedSarsa(envir, fun.approx = "table", preprocessState = identity,
   model = NULL, initial.value = NULL, n.states = NULL, n.episodes = 100,
   target.policy = "egreedy", lambda = 0, eligibility.type = 0,
   learning.rate = 0.1, epsilon = 0.1, discount = 1,
-  double.learning = FALSE, update.target.after = 1, replay.memory = NULL,
-  replay.memory.size = 1, batch.size = 1, alpha = 0, theta = 0.01,
-  updateEpsilon = identity2, updateSigma = identity2,
-  updateLambda = identity2, updateAlpha = identity2,
-  updateLearningRate = identity2)
+  double.learning = FALSE, replay.memory = NULL, replay.memory.size = 1,
+  batch.size = 1, alpha = 0, theta = 0.01, updateEpsilon = identity2,
+  updateSigma = identity2, updateLambda = identity2,
+  updateAlpha = identity2, updateLearningRate = identity2)
 }
 \arguments{
 \item{envir}{[\code{R6 class}] \cr
@@ -106,10 +105,6 @@ Discount factor.}
 \item{double.learning}{[\code{logical(1)}] \cr
 Should double learning be used?}
 
-\item{update.target.after}{[\code{integer(1)}] \cr
-When using double learning the target network / table will be updated after
-\code{update.target.after} steps.}
-
 \item{replay.memory}{[\code{list}] \cr
 Initial replay memory, which can be passed on.
 Each list element must be a list containing state, action,
@@ -159,61 +154,44 @@ and the current number of episodes which are finished, and returns the new
 \value{
 [\code{list(4)}] \cr
   Returns the action value function or model parameters [\code{matrix}] and the
-  number of steps per episode [\code{numeric}]
-  and the sum of all rewards in the episode [\code{numeric}].
+  return and number of steps per episode [\code{numeric}].
+  For Double Learning both value functions will be returned.
 }
 \description{
 Value-based reinforcement learning control algorithms.
 }
 \details{
-You must specify the reinforcement learning environment using the \code{envir} argument.
-It takes an \code{R6 class} created by \code{\link{makeEnvironment}} as input.
-See documentation there.
+Q(sigma), Q-Learning, Expected Sarsa and Sarsa build a family of temporal-difference learning
+algorithms, which can be used to find the optimal action value function using the principle
+of generalized policy iteration.
+Q(sigma) subsumes Q-Learning, Sarsa and Expected Sarsa as special cases.
+For more details on the algorithm read De Asis et al. (2017).
+Expected Sarsa can be used on-policy if \code{target.policy == "egreedy"} else it is identical
+to Q-Learning.
 
-The algorithms can be used to find the optimal action value function using the principle
-of generalized policy iteration. They all learn online using temporal-difference learning.
-Q(sigma) subsumes the well known Q-Learning, Sarsa and Expected Sarsa algorithms as special cases.
-The default call \code{qsigma()} is exactly equivalent to Sarsa(0). A weighted mean between sarsa
-and expected sarsa updates can be used by varying the parameter \code{sigma}.
-When \code{target.policy == "egreedy"} the policy used to compute the expected sarsa is the epsilon-greedy
-policy used for action selection, when \code{target.policy == "greedy"} a greedy target policy will be
-used as in Q-Learning. See De Asis et al. (2017) for more details.
+When \code{fun.approx == "table"} the action value function will be represented as a matrix,
+but you can also use a linear combination of features and a neural network for function approximation.
+For a neural network you need to pass on a keras model via the \code{model} argument.
 
-The functions \code{qlearning} and \code{sarsa} are there for convenience.
-They call the \code{qSigma} function with a special set of parameters.
-
-When \code{fun.approx == "table"} the action value function will be represented using a table,
-a linear combination of features and a neural network can also be used. For a neural network you
-need to pass on a keras model via the \code{model} argument. This way it is possible to
-construct a Deep Q-Network (DQN).
-
-The raw state observation returned from the environment can be preprocessed using
-the \code{preprocessState} function. This function takes the state observation as input and
+The raw state observation returned from the environment need to be preprocessed using
+the \code{preprocessState} argument. This function takes the state observation as input and
 returns a preprocessed state which can be directly used by the function approximator.
-This is especially important when using function approximation.
+To use a tabular value function \code{preprocessState} must return an integer value between
+[0, number of states - 1]. For linear function approximation the output of
+\code{preprocessState} must be a matrix with one row. For a neural network you have to make
+sure that the dimensions of the preprocessed state and the neural network match, so that
+\code{model$predict(preprocessState(envir$state))} works.
 
-Experience replay can be used by specifying a prefilled replay memory through the
+Experience replay can be used by specifying a prefilled replay memory using the
 \code{replay.memory} argument or by specifying the length of the replay memory,
-which will then be filled with random experience. Using the defaults experiences are sampled
-uniformly, a proportional prioritization proposed by Schaul et al. (2016) can also be used by
-varying the parameters \code{alpha} and \code{theta}.
+which is then filled with experience using a random uniform policy.
+Sampling can also be prioritized by the td error as proposed by
+Schaul et al. (2016).
 
-Using eligibility traces the one-step algorithms can be extended to multi-step algorithms. The
-parameter \code{lambda} controls the tradeoff between one-step and multi-step methods. Three
-different kinds of eligibility traces are implemented, accumulating, replacing and dutch traces.
-See Sutton and Barto (Book draft 2017, Chapter 12) for more details.
-This only works if no experience replay is used, i.e. \code{replay.memory.size == 1} and for a
-tabular value function.
-
-Double Learning can be used with all of the functions.
-Then two Q value functions are used, Q1 for action selection and
-Q2 for action evaluation. After a number of steps the weights of Q2 are replaced by the weights
-of Q1. See Hasselt et al. (2015) for details.
-
-The hyperparameters \code{epsilon}, \code{theta}, \code{sigma}, \code{alpha}, \code{lambda} and
+The hyperparameters \code{epsilon}, \code{sigma}, \code{alpha}, \code{lambda} and
 \code{learning.rate} can be changed over time. Therefore pass on functions that return a new
 value of the hyperparameter. These updates will be applied after each episode. First argument of
-the function must be the parameter itself, the second argument is the current episode number.
+the function must be the parameter itself, the second argument the current episode number.
 }
 \examples{
 # Solve Windy Gridworld
@@ -263,11 +241,11 @@ res = sarsa(m, fun.approx = "linear", preprocessState = gridTiling, n.episodes =
 print(res$returns)
 
 \dontrun{
-env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
+env = makeGridworld(c(3, 3), goal.states = 8, initial.state = 0)
 
 # Use a neural network as function approximator
 makeOneHot = function(state) {
-  one.hot = matrix(rep(0, 16), nrow = 1)
+  one.hot = matrix(rep(0, 9), nrow = 1)
   one.hot[1, state + 1] = 1
   one.hot
 }
@@ -275,7 +253,7 @@ makeOneHot = function(state) {
 # Define keras model
 library(keras)
 model = keras_model_sequential()
-model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(16))
+model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(9))
 
 res = qSigma(env, fun.approx = "neural.network", model = model,
   preprocessState = makeOneHot, n.episodes = 20)
@@ -285,7 +263,7 @@ res = qSigma(env, fun.approx = "neural.network", model = model,
 \references{
 De Asis et al. (2017): Multi-step Reinforcement Learning: A Unifying Algorithm
 
-Hasselt et al. (2015): Deep Reinforcement Learning with Double Q-Learning
+Hasselt et al. (2012): Double Q-Learning
 
 Mnih et al. (2013): Playing Atari with Deep Reinforcement Learning
 

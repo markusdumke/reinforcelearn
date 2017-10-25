@@ -8,14 +8,14 @@ identity2(x, ...)
 }
 \arguments{
 \item{x}{[\code{R object}] \cr
-Argument will be returned.}
+This argument will be returned.}
 
 \item{...}{Other arguments, which are not used.}
 }
 \description{
 A trivial identity function returning its argument.
 In comparison to \code{\link{identity}} it accepts more than one argument,
-but always returns the same argument.
+but always returns the first argument.
 }
 \examples{
 identity2(10, "a")

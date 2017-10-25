@@ -310,11 +310,17 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         }
       }
     }
+
     return(list(policy = list(mu = theta.mu, sigma = theta.sigma),
       v = w, steps = steps, returns = returns))
   }
+  # close graphical representation of environment if existing
+  if (!is.null(envir$close)) {
+    envir$close()
+  }
 }
 
+# works only for a matrix
 softmax = function(x) {
   exp(x) / rowSums(exp(x))
 }
@@ -324,10 +330,10 @@ softmax = function(x) {
 #'
 #' A trivial identity function returning its argument.
 #' In comparison to \code{\link{identity}} it accepts more than one argument,
-#' but always returns the same argument.
+#' but always returns the first argument.
 #'
 #' @param x [\code{R object}] \cr
-#'   Argument will be returned.
+#'   This argument will be returned.
 #' @param ... Other arguments, which are not used.
 #'
 #' @export

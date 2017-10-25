@@ -76,10 +76,6 @@ mountainCarDiscrete = R6::R6Class("mountainCar",
       invisible(self)
     },
 
-    close = function() {
-      invisible(self)
-    },
-
     print = function() {
       printEnvir(self)
     }
@@ -132,10 +128,6 @@ mountainCarContinuous = R6::R6Class("mountainCarContinuous",
         self$done = TRUE
         self$reward = 0
       }
-      invisible(self)
-    },
-
-    close = function() {
       invisible(self)
     },
 
