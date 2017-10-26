@@ -63,7 +63,7 @@ Q = matrix(100, nrow = env$n.states, ncol = env$n.actions)
 res = qlearning(env, n.episodes = 5, initial.value = Q)
 
 # After 5 episodes the Q values will still be similar to 100.
-print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
+print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 4, byrow = TRUE))
 
 ## ------------------------------------------------------------------------
 env = mountainCar()
@@ -197,7 +197,7 @@ print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 ## ------------------------------------------------------------------------
 # Find optimal policy using Value Iteration
 res = iterateValue(env, n.iter = 100)
-print(res$policy)
+print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 
 ## ------------------------------------------------------------------------
 env = mountainCar()
