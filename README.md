@@ -32,9 +32,9 @@ env = windyGridworld()
 # Solve environment using Sarsa
 res = sarsa(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  804 1886  660  249  415  273  215  276  277  280   80  355  190   44
-#> [15]  221  105  175   84  211  148   49  183   49  139  102  216  215  178
-#> [29]   39   95
+#>  [1]  830 1260 1110  253  767  152  175  273  388  116  358  197   40   79
+#> [15]  139  285  178   91   94  125   77  188  246   72  100  101  168   83
+#> [29]   84   54
 ```
 
 ------------------------------------------------------------------------
@@ -102,42 +102,42 @@ For more details on how to create an environment have a look at the vignette: [H
 
 ### Algorithms
 
-After you created an environment you can use various reinforcement learning algorithms to sovle this environment. For example, for a tabular environment like gridworld you can use tabular Q-Learning to solve it and find the optimal action value function *Q*\*. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.
+After you created an environment you can use various reinforcement learning algorithms to solve this environment. For example, for a tabular environment like gridworld you can use tabular Q-Learning to solve it and find the optimal action value function *Q*\*. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.
 
 ``` r
 # Create the windy gridworld environment.
 env = windyGridworld()
 res = qlearning(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  683 2095  513  269  635  375  131  221  461   43   66  150  277  186
-#> [15]  140   81  157  183  185  133   68  143   93  150   79  207  168  154
-#> [29]   98   35
+#>  [1]  797 1820  725  176  704   88  286  209   34  410  156  217  176  257
+#> [15]   86  173  174   97  196  182  121  165  126   46  110  107  188  122
+#> [29]   54  217
 
 # Show value of each state.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,] -4.8 -5.0 -5.5 -6.3 -7.0 -7.4 -7.3 -6.7 -6.0  -5.1
-#> [2,] -4.5 -4.6 -4.8 -5.1 -4.9 -4.0 -2.8 -3.8 -4.3  -4.2
-#> [3,] -4.2 -4.1 -4.1 -4.2 -3.3 -1.9 -1.2 -2.2 -3.2  -3.4
-#> [4,] -4.0 -3.7 -3.4 -3.1 -1.9 -0.8 -0.2  0.0 -2.2  -2.6
-#> [5,] -3.5 -3.2 -2.8 -2.3 -1.2 -0.4  0.0 -0.3 -0.9  -1.8
-#> [6,] -3.0 -2.7 -2.3 -1.7 -0.7  0.0  0.0  0.0 -0.7  -1.1
+#> [1,] -4.8 -5.0 -5.6 -6.4 -7.0 -7.4 -7.3 -6.7 -6.0  -5.1
+#> [2,] -4.6 -4.7 -4.9 -5.2 -5.1 -4.1 -3.0 -3.9 -4.4  -4.3
+#> [3,] -4.3 -4.2 -4.1 -4.3 -3.5 -1.9 -1.3 -2.4 -3.3  -3.4
+#> [4,] -4.0 -3.7 -3.5 -3.1 -2.0 -0.9 -0.2  0.0 -2.3  -2.6
+#> [5,] -3.4 -3.2 -2.8 -2.3 -1.2 -0.3  0.0 -0.3 -0.9  -1.8
+#> [6,] -3.0 -2.7 -2.2 -1.7 -0.7  0.0  0.0  0.0 -0.7  -1.1
 #> [7,] -2.7 -2.4 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7
 ```
 
-We can then get the optimal policy by taking the argmax over the action value function Q.
+We can then get the policy by taking the argmax over the action value function Q.
 
 ``` r
-optimal.policy = max.col(res$Q1) - 1L
-print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
+policy = max.col(res$Q1) - 1L
+print(matrix(policy, ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,]    3    2    0    0    3    0    2    1    1     3
-#> [2,]    1    0    0    3    3    2    1    2    2     3
-#> [3,]    3    1    3    1    3    1    1    1    1     1
-#> [4,]    0    3    1    1    1    3    3    2    0     3
-#> [5,]    3    2    1    2    1    0    0    3    0     0
-#> [6,]    3    1    1    1    2    0    2    3    0     3
-#> [7,]    1    1    1    2    3    1    1    2    3     0
+#> [1,]    3    0    0    2    0    2    0    1    1     3
+#> [2,]    1    2    3    0    0    2    2    0    2     0
+#> [3,]    1    3    2    1    1    3    1    0    3     3
+#> [4,]    1    3    3    3    1    3    3    1    0     1
+#> [5,]    3    3    0    3    3    0    1    0    0     0
+#> [6,]    3    3    1    0    2    2    3    3    3     0
+#> [7,]    2    1    1    2    1    2    3    3    0     1
 ```
 
 For more details on algorithms have a look at the vignette: [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)

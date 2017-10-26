@@ -24,7 +24,7 @@ Policy type, supported are \code{"softmax"} for a discrete action space and
 \code{"gaussian"} for a continuous action space using a normal distribution.}
 
 \item{critic.type}{[\code{character(1)}] \cr
-Type of the critic. Currently only advantage actor critic is supported, which is
+Type of the critic. Currently only an advantage actor critic is supported, which is
 approximated by the td error.}
 
 \item{preprocessState}{[\code{function}] \cr
@@ -79,10 +79,13 @@ and value function (the critic).
 When using a gaussian policy mean and variance will be parametrized
 as a linear combination of features mu = x * w_1 and sigma = exp(x * w_2).
 
-Eligibility traces are used for both policy parameters and value function parameters.
+For a softmax policy the action preferences are computed by a linear combination
+of features.
+
+Eligibility traces can be used for both policy parameters and value function parameters.
 }
 \examples{
-# Variant of cliff walking
+# Cliff walking gridworld
 rewardFun = function(state, action, n.state) {
   if (n.state \%in\% 37:46) {
     return(- 100)

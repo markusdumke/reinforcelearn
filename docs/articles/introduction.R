@@ -33,6 +33,6 @@ res$steps
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 
 ## ------------------------------------------------------------------------
-optimal.policy = max.col(res$Q1) - 1L
-print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
+policy = max.col(res$Q1) - 1L
+print(matrix(policy, ncol = 10, byrow = TRUE))
 

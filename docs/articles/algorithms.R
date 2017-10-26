@@ -3,25 +3,45 @@ knitr::opts_chunk$set(message = FALSE, eval = TRUE, collapse = TRUE, comment = "
 
 ## ------------------------------------------------------------------------
 library(reinforcelearn)
+set.seed(123)
 
 ## ------------------------------------------------------------------------
 # Windy gridworld environment
-env = windyGridworld()
+env = makeGridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
 
 res = qlearning(env, n.episodes = 20)
-# Note: to find a good policy we need to run at least 500 episodes.
+# Note: to find a good policy we need to run more episodes.
+
+## ------------------------------------------------------------------------
+print(res$Q)
+
+## ------------------------------------------------------------------------
+# Values of each grid cell
+state.values = matrix(apply(res$Q1, 1, max), ncol = 4, byrow = TRUE)
+print(round(state.values, 1))
+
+# Policy: Subtract 1 to be consistent with action numeration in env
+policy = max.col(res$Q1) - 1
+print(matrix(policy, ncol = 4, byrow = TRUE))
 
 ## ------------------------------------------------------------------------
 print(res$steps)
 
 ## ------------------------------------------------------------------------
-# Values of each grid cell
-state.values = matrix(apply(res$Q1, 1, max), ncol = 10, byrow = TRUE)
-print(round(state.values, 1))
+# This is equivalent to qlearning(env):
+res = expectedSarsa(env, target.policy = "greedy", n.episodes = 20)
 
-# Subtract 1 to be consistent with action numeration in env
-optimal.policy = max.col(res$Q1) - 1
-print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
+# Expected Sarsa with an epsilon-greedy target policy:
+res = expectedSarsa(env, target.policy = "egreedy", n.episodes = 20)
+
+## ------------------------------------------------------------------------
+res = qSigma(env, sigma = 0.5, n.episodes = 20)
+
+# This is equivalent to Sarsa:
+res = qSigma(env, sigma = 1, n.episodes = 20)
+
+# This is equivalent to Q-Learning:
+res = qSigma(env, sigma = 0, target.policy = "greedy", n.episodes = 20)
 
 ## ------------------------------------------------------------------------
 res = qlearning(env, epsilon = 0.2, learning.rate = 0.5, 
@@ -42,7 +62,7 @@ res = qlearning(env, epsilon = 0.5, n.episodes = 20,
 Q = matrix(100, nrow = env$n.states, ncol = env$n.actions)
 res = qlearning(env, n.episodes = 5, initial.value = Q)
 
-# After only 5 episodes the Q values will still be similar to the initial values.
+# After 5 episodes the Q values will still be similar to 100.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 
 ## ------------------------------------------------------------------------
@@ -77,32 +97,31 @@ gridTiling = function(state) {
 }
 
 ## ------------------------------------------------------------------------
-set.seed(123)
 res = qlearning(env, fun.approx = "linear", preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
 
-## ------------------------------------------------------------------------
-env = windyGridworld()
-res = sarsa(env, n.episodes = 20)
-print(res$steps)
+## ---- eval = FALSE-------------------------------------------------------
+#  env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
+#  
+#  # Use a neural network as function approximator
+#  makeOneHot = function(state) {
+#    one.hot = matrix(rep(0, env$n.states), nrow = 1)
+#    one.hot[1, state + 1] = 1
+#    one.hot
+#  }
+#  
+#  # Define keras model
+#  library(keras)
+#  model = keras_model_sequential()
+#  model %>% layer_dense(units = env$n.actions, activation = 'linear', input_shape = c(env$n.states))
+#  
+#  res = qSigma(env, fun.approx = "neural.network", model = model,
+#    preprocessState = makeOneHot, n.episodes = 20)
 
 ## ------------------------------------------------------------------------
-# This is equivalent to qlearning(env):
-res = expectedSarsa(env, target.policy = "greedy", n.episodes = 20)
+env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
 
-# Expected Sarsa with an epsilon-greedy target policy:
-res = expectedSarsa(env, target.policy = "egreedy", n.episodes = 20)
-
-## ------------------------------------------------------------------------
-res = qSigma(env, sigma = 0.5, n.episodes = 20)
-
-# This is equivalent to Sarsa:
-res = qSigma(env, sigma = 1, n.episodes = 20)
-
-# This is equivalent to Q-learning:
-res = qSigma(env, sigma = 0, target.policy = "greedy", n.episodes = 20)
-
-## ------------------------------------------------------------------------
+# Sarsa with replacing traces
 res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 20)
 print(res$steps)
 
@@ -111,10 +130,8 @@ res = expectedSarsa(env, double.learning = TRUE, n.episodes = 20)
 print(res$steps)
 
 ## ------------------------------------------------------------------------
-# Fill a replay memory of size 100 on the windy gridworld task.
-# We will use grid tiling as defined above.
+# Fill a replay memory of size 100 on the gridworld task.
 memory = vector("list", length = 100)
-env = windyGridworld()
 env$reset()
 for (i in 1:100) {
   if (env$done) {
@@ -129,16 +146,16 @@ print(memory[[1]])
 
 # Pass on replay memory.
 res = sarsa(env, replay.memory = memory, batch.size = 32, n.episodes = 20)
-print(res$steps)
 
 # Specify replay memory size, replay memory will be filled internally.
 res = sarsa(env, replay.memory.size = 100, batch.size = 32, n.episodes = 20)
+print(res$steps)
 
 ## ------------------------------------------------------------------------
 # Prioritized experience replay
 res = sarsa(env, replay.memory.size = 100, batch.size = 32, 
   n.episodes = 20, alpha = 0.5, theta = 0.01)
-print(res$returns)
+print(res$steps)
 
 ## ------------------------------------------------------------------------
 # Random Walk Task (Sutton & Barto Example 6.2)
@@ -201,7 +218,7 @@ res = actorCritic(env, fun.approx = "linear", policy = "gaussian",
 print(res$steps)
 
 ## ------------------------------------------------------------------------
-# Variant of cliff walking
+# Cliff walking environment
 rewardFun = function(state, action, n.state) {
   if (n.state %in% 37:46) {
     return(- 100)
@@ -235,36 +252,25 @@ rewardFun = function(action) {
 }
 
 ## ------------------------------------------------------------------------
+# Greedy action selection.
 bandit(rewardFun, n.actions = 4, n.episodes = 1000,
   action.selection = "greedy")
 
-## ------------------------------------------------------------------------
+# Epsilon-greedy action selection.
 bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
-  action.selection = "greedy", 
-  initial.value = 5, initial.visits = 100)
+  action.selection = "egreedy", epsilon = 0.2)
 
-## ------------------------------------------------------------------------
-bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
-  action.selection = "egreedy", epsilon = 0.5)
-
-## ------------------------------------------------------------------------
-# Decay epsilon every 5 episodes by a half.
-decayEpsilon = function(epsilon, i) {
-  if (i %% 5 == 0) {
-    epsilon = epsilon / 2
-  }
-  epsilon
-}
-
-bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
-  action.selection = "egreedy", epsilon = 0.5,
-  updateEpsilon = decayEpsilon)
-
-## ------------------------------------------------------------------------
+# Upper-confidence bound action selection.
 bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
   action.selection = "UCB", C = 2)
 
-## ------------------------------------------------------------------------
+# Gradient-bandit algorithm.
 bandit(rewardFun, n.actions = 4, n.episodes = 10000, 
   action.selection = "gradientbandit", alpha = 0.1)
+
+## ------------------------------------------------------------------------
+# Greedy action selection with optimistic initial values.
+bandit(rewardFun, n.actions = 4, n.episodes = 1000, 
+  action.selection = "greedy", 
+  initial.value = 5, initial.visits = 100)
 

@@ -74,6 +74,9 @@ env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15))
 print(env$states)
 print(env$actions)
 
+# Identical to the above call
+env = gridworld()
+
 # Same gridworld, but with diagonal moves
 env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), 
   diagonal.moves = TRUE)
@@ -88,22 +91,28 @@ knitr::include_graphics("cliff.JPG")
 
 ## ------------------------------------------------------------------------
 # Cliff Walking (Sutton & Barto (2017) Example 6.6)   
-cliff = makeGridworld(shape = c(4, 12), goal.states = 47, 
+env = makeGridworld(shape = c(4, 12), goal.states = 47, 
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100, 
   cliff.transition.states = 36, initial.state = 36)
+
+# Identical to the above call
+env = cliff()
 
 ## ---- out.width = "350px", fig.align = "center", echo = FALSE------------
 knitr::include_graphics("windygrid.PNG")
 
 ## ------------------------------------------------------------------------
 # Windy Gridworld (Sutton & Barto (2017) Example 6.5) 
-windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37, 
+env = makeGridworld(shape = c(7, 10), goal.states = 37, 
   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
+
+# Identical to the above call
+env = windyGridworld()
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # Create an OpenAI Gym environment.
 #  # Make sure you have Python and Gym installed.
-#  # Start server and create gym client.
+#  # Start server from within R.
 #  package.path = system.file(package = "reinforcelearn")
 #  path2pythonfile = paste0(package.path, "/gym_http_server.py")
 #  system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE, invisible = FALSE)
@@ -168,10 +177,6 @@ mountainCar = R6::R6Class("MountainCar",
         self$reward = 0
       }
       invisible(self)
-    },
-    
-    close = function() {
-      invisible(self)
     }
   )
 )
@@ -180,21 +185,21 @@ mountainCar = R6::R6Class("MountainCar",
 m = mountainCar$new()
 set.seed(123456)
 m$reset()
-while(!m$done) {
+while (!m$done) {
   action = sample(m$actions, 1)
   m$step(action)
 }
 print(paste("Episode finished after", m$n.steps, "steps."))
 
 ## ------------------------------------------------------------------------
-# Mountain Car with discrete action space
+# The classical mountain car problem.
 m = mountainCar()
 m$reset()
 m$step(1)
 print(m)
 
 ## ------------------------------------------------------------------------
-# Mountain Car with continuous action space
+# Mountain car with a continuous action space
 m = mountainCar(action.space = "Continuous")
 m$reset()
 print(m)

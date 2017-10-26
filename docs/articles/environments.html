@@ -163,7 +163,7 @@ P[, , <span class="dv">2</span>] =<span class="st"> </span><span class="kw">matr
 env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R)
 <span class="kw">print</span>(env<span class="op">$</span>terminal.states)
 <span class="co">#&gt; [1] 1</span></code></pre></div>
-<p>Every episode starts in some starting state. There are different ways to pass on the starting state in <code>makeEnvironment</code>. The simplest is to specify the <code>initial.state</code> argument with a scalar integer or an integer vector. When <code>initial.state</code> is a scalar, then every episode will start in this state. If <code>initial.state</code> is a vector then the starting state will be uniformly sampled from all elements of the vector. As a default the initial state will be sampled randomly from all non-terminal states.</p>
+<p>Every episode starts in some starting state. There are different ways to pass on the starting state in <code>makeEnvironment</code>. The simplest is to specify the <code>initial.state</code> argument with a scalar integer or an integer vector. When <code>initial.state</code> is a scalar every episode will start in this state. If <code>initial.state</code> is a vector then the starting state will be uniformly sampled from all elements of the vector. As a default the initial state will be sampled randomly from all non-terminal states.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R, <span class="dt">initial.state =</span> <span class="dv">0</span>)
 env<span class="op">$</span><span class="kw">reset</span>()
 <span class="kw">print</span>(env)
@@ -237,7 +237,7 @@ env<span class="op">$</span><span class="kw">step</span>(<span class="dv">0</spa
 <p>Gridworlds with different shapes, rewards and transition dynamics can be created with the function <code>makeGridworld</code>. It computes the state transition array and reward matrix of the specified gridworld (because a gridworld is a MDP) and then internally calls <code>makeEnvironment</code>. Arguments from <code>makeEnvironment</code> can be passed on via the <code>...</code> argument, e.g. <code>initial.state</code>.</p>
 <p>Here is an example of a 4x4 gridworld <span class="citation">(Sutton and Barto 2017, Example 4.1)</span> with the 4 standard actions and two terminal states in the lower right and upper left of the grid. Rewards are - 1 for every transition until reaching a terminal state.</p>
 <p><img src="gridworld.JPG" width="300px" style="display: block; margin: auto;"></p>
-<p>The following code creates this gridworld.</p>
+<p>The following code creates this gridworld. This example gridworld is already included in the package and can be created with <code><a href="../reference/gridworld.html">gridworld()</a></code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gridworld Environment (Sutton &amp; Barto (2017) Example 4.1)</span>
 env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>))
 <span class="kw">print</span>(env<span class="op">$</span>states)
@@ -245,42 +245,51 @@ env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridwor
 <span class="kw">print</span>(env<span class="op">$</span>actions)
 <span class="co">#&gt; [1] 0 1 2 3</span>
 
+<span class="co"># Identical to the above call</span>
+env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>()
+
 <span class="co"># Same gridworld, but with diagonal moves</span>
 env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>), 
   <span class="dt">diagonal.moves =</span> <span class="ot">TRUE</span>)
 <span class="kw">print</span>(env<span class="op">$</span>actions)
 <span class="co">#&gt; [1] 0 1 2 3 4 5 6 7</span></code></pre></div>
-<p>In the above gridworld actions will deterministically change the state, e.g. when going left from state 5 the new state will always be 4. A stochastic gridworld can be specified via the <code>stochasticity</code> argument. Then the next state will be randomly sampled from all eight successor state with a probability <code>stochasticity</code>.</p>
+<p>In this gridworld actions will deterministically change the state, e.g. when going left from state 5 the new state will always be 4. A stochastic gridworld can be specified via the <code>stochasticity</code> argument. Then the next state will be randomly sampled from all eight successor state with a probability <code>stochasticity</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gridworld with 10% random transitions</span>
 env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>), <span class="dt">stochasticity =</span> <span class="fl">0.1</span>)</code></pre></div>
 <p><img src="cliff.JPG" width="500px" style="display: block; margin: auto;"></p>
-<p>The cliff walking gridworld <span class="citation">(Sutton and Barto 2017, Example 6.6)</span> has a cliff in the lower part of the grid. Stepping into this cliff will result in a high negative reward of -100 and a transition back to the starting state in the lower left part of the grid. So the agent has to learn to avoid stepping into this cliff. Other transitions have the usual reward of -1. The optimal path is directly above the cliff, while the safe path runs at the top of the gridworld far away from the dangerous cliff. The optimal path has a length of 13 steps.</p>
-<p>In <code>makeGridworld</code> we can specify the cliff via the <code>cliff.states</code> argument and the reward when stepping into the cliff via <code>reward.cliff</code>. The states to which the agent transitions, when stepping into the cliff can be specified via <code>cliff.transition.states</code>.</p>
+<p>The cliff walking gridworld <span class="citation">(Sutton and Barto 2017, Example 6.6)</span> has a cliff in the lower part of the grid. Stepping into this cliff will result in a high negative reward of -100 and a transition back to the starting state in the lower left part of the grid. So the agent has to learn to avoid stepping into this cliff. Other transitions have the usual reward of -1. The optimal path is directly above the cliff, while the safe path runs at the top of the gridworld far away from the dangerous cliff.</p>
+<p>In <code>makeGridworld</code> we can specify a cliff via the <code>cliff.states</code> argument and the reward when stepping into the cliff via <code>reward.cliff</code>. The states to which the agent transitions, when stepping into the cliff can be specified via <code>cliff.transition.states</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Cliff Walking (Sutton &amp; Barto (2017) Example 6.6)   </span>
-cliff =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">12</span>), <span class="dt">goal.states =</span> <span class="dv">47</span>, 
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">12</span>), <span class="dt">goal.states =</span> <span class="dv">47</span>, 
   <span class="dt">cliff.states =</span> <span class="dv">37</span><span class="op">:</span><span class="dv">46</span>, <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">reward.cliff =</span> <span class="op">-</span><span class="st"> </span><span class="dv">100</span>, 
-  <span class="dt">cliff.transition.states =</span> <span class="dv">36</span>, <span class="dt">initial.state =</span> <span class="dv">36</span>)</code></pre></div>
+  <span class="dt">cliff.transition.states =</span> <span class="dv">36</span>, <span class="dt">initial.state =</span> <span class="dv">36</span>)
+
+<span class="co"># Identical to the above call</span>
+env =<span class="st"> </span><span class="kw"><a href="../reference/cliff.html">cliff</a></span>()</code></pre></div>
 <p><img src="windygrid.PNG" width="350px" style="display: block; margin: auto;"></p>
-<p>The windy gridworld <span class="citation">(Sutton and Barto 2017, Example 6.5)</span> is a gridworld with shape 7x10. The agent will be pushed up a number of cells when transitioning into a column with an upward wind. The <code>wind</code> argument specifies the strength of this wind. It is an integer vector with the same size as the number of columns in the grid. E.g. going right from the state directly left to the goal, will push the agent to a state two cells above the goal. The reward for each step is -1. The optimal path has a length of 15 steps.</p>
+<p>The windy gridworld <span class="citation">(Sutton and Barto 2017, Example 6.5)</span> is a gridworld with shape 7x10. The agent will be pushed up a number of cells when transitioning into a column with an upward wind. The <code>wind</code> argument specifies the strength of this wind. It is an integer vector with the same size as the number of columns in the grid. E.g. going right from the state directly left to the goal, will push the agent to a state two cells above the goal. The reward for each step is -1.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Windy Gridworld (Sutton &amp; Barto (2017) Example 6.5) </span>
-windy.gridworld =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">10</span>), <span class="dt">goal.states =</span> <span class="dv">37</span>, 
-  <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">wind =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="dt">initial.state =</span> <span class="dv">30</span>)</code></pre></div>
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">10</span>), <span class="dt">goal.states =</span> <span class="dv">37</span>, 
+  <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">wind =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="dt">initial.state =</span> <span class="dv">30</span>)
+
+<span class="co"># Identical to the above call</span>
+env =<span class="st"> </span><span class="kw"><a href="../reference/windyGridworld.html">windyGridworld</a></span>()</code></pre></div>
 <hr>
 </div>
 <div id="openai-gym-environments" class="section level3">
 <h3 class="hasAnchor">
 <a href="#openai-gym-environments" class="anchor"></a>OpenAI Gym Environments</h3>
-<p>OpenAI Gym <span class="citation">(Brockman et al. 2016)</span> is a toolkit for developing and comparing reinforcement learning algorithms. It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. Have a look at <a href="https://gym.openai.com/envs" class="uri">https://gym.openai.com/envs</a> for possible environments. To use this in R you need to install the dependencies listed <a href="https://github.com/openai/gym-http-api">here</a>. You also need to install the R package <code>gym</code> <span class="citation">(Hendricks 2016)</span>.</p>
-<p>Then it is simple to use one of the existing OpenAI Gym environments. First you need to start a server via the <code>gym</code> package.</p>
+<p>OpenAI Gym <span class="citation">(Brockman et al. 2016)</span> is a toolkit for developing and comparing reinforcement learning algorithms. It provides a set of environments, which can be used as benchmark problems. The environments are implemented in python and can be acessed via the OpenAI Gym API. Have a look at <a href="https://gym.openai.com/envs" class="uri">https://gym.openai.com/envs</a> for possible environments. To use this in R you need to install the dependencies listed <a href="https://github.com/openai/gym-http-api">here</a>. You also need to install the R package <code>gym</code> <span class="citation">(Hendricks 2016)</span>.</p>
+<p>Then it is simple to use one of the existing OpenAI Gym environments. First you need to start the python server. Open a terminal and manually start the file <code>gym_http_server.py</code> inside the gym_http_api folder. You can also start the python server from R, here using a copy of the file included in the <code>reinforcelearn</code> package.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create an OpenAI Gym environment.</span>
 <span class="co"># Make sure you have Python and Gym installed.</span>
-<span class="co"># Start server and create gym client.</span>
+<span class="co"># Start server from within R.</span>
 package.path =<span class="st"> </span><span class="kw">system.file</span>(<span class="dt">package =</span> <span class="st">"reinforcelearn"</span>)
 path2pythonfile =<span class="st"> </span><span class="kw">paste0</span>(package.path, <span class="st">"/gym_http_server.py"</span>)
 <span class="kw">system2</span>(<span class="st">"python"</span>, <span class="dt">args =</span> path2pythonfile, <span class="dt">stdout =</span> <span class="ot">NULL</span>, <span class="dt">wait =</span> <span class="ot">FALSE</span>, <span class="dt">invisible =</span> <span class="ot">FALSE</span>)
 
 env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"MountainCar-v0"</span>)</code></pre></div>
-<p>The <code>render</code> argument specifies whether to render the environment. If <code>render = TRUE</code> a Python window will open showing a graphical interface of the environment when calling the <code>step</code> method.</p>
+<p>The <code>render</code> argument specifies whether to render the environment. If <code>render = TRUE</code> a python window will open showing a graphical interface of the environment when calling the <code>step</code> method.</p>
 <p>The <code>reset</code>, <code>step</code> and <code>close</code> method can then be used to sample experience. Here is an example running a random agent for 200 steps on the mountain car task.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env<span class="op">$</span><span class="kw">reset</span>()
 <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">200</span>) {
@@ -336,7 +345,7 @@ env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
 \text{velocity}_{t+1} &amp;\leftarrow \text{bound}[\text{velocity}_t + 0.001 A_t - 0.0025 \cos(3 * \; \text{position}_t)].
 \end{align}\]</span>
 <p>The position is bounded in <span class="math inline">\([-1.2, 0.5]\)</span>, the velocity in <span class="math inline">\([-0.07, 0.07]\)</span>. When reaching the left position bound, the velocity will be set to 0. Each episode starts from a random position in the valley (position <span class="math inline">\(\in [-0.6, -0.4]\)</span>) and a velocity of 0.</p>
-<p>The original formulation of the problem has three actions: “push left”, “no push” and “push right”, which are coded as -1, 0 and 1. The reward for each step is - 1 until the terminal state at the right mountain summit is reached.</p>
+<p>The original formulation of the problem has three actions: “push left”, “no push” and “push right”, which are encoded as -1, 0 and 1. The reward for each step is - 1 until the terminal state at the right mountain summit is reached.</p>
 <p>Here is an example implementation of the mountain car environment.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mountainCar =<span class="st"> </span>R6<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/R6/topics/R6Class">R6Class</a></span>(<span class="st">"MountainCar"</span>, 
   <span class="dt">public =</span> <span class="kw">list</span>(
@@ -384,25 +393,21 @@ env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
         self<span class="op">$</span>reward =<span class="st"> </span><span class="dv">0</span>
       }
       <span class="kw">invisible</span>(self)
-    },
-    
-    <span class="dt">close =</span> <span class="cf">function</span>() {
-      <span class="kw">invisible</span>(self)
     }
   )
 )</code></pre></div>
-<p>Then we can use this to generate samples.</p>
+<p>We can then create a new instance of the mountain car class and pass this on the an algorithm. Here we will sample random actions and interact with the environment.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span>mountainCar<span class="op">$</span><span class="kw">new</span>()
 <span class="kw">set.seed</span>(<span class="dv">123456</span>)
 m<span class="op">$</span><span class="kw">reset</span>()
-<span class="cf">while</span>(<span class="op">!</span>m<span class="op">$</span>done) {
+<span class="cf">while</span> (<span class="op">!</span>m<span class="op">$</span>done) {
   action =<span class="st"> </span><span class="kw">sample</span>(m<span class="op">$</span>actions, <span class="dv">1</span>)
   m<span class="op">$</span><span class="kw">step</span>(action)
 }
 <span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">"Episode finished after"</span>, m<span class="op">$</span>n.steps, <span class="st">"steps."</span>))
 <span class="co">#&gt; [1] "Episode finished after 787 steps."</span></code></pre></div>
 <p>Note: The mountain car implementation above is already included in the package and can be called with the <code>mountainCar</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mountain Car with discrete action space</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The classical mountain car problem.</span>
 m =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>()
 m<span class="op">$</span><span class="kw">reset</span>()
 m<span class="op">$</span><span class="kw">step</span>(<span class="dv">1</span>)
@@ -412,7 +417,7 @@ m<span class="op">$</span><span class="kw">step</span>(<span class="dv">1</span>
 <span class="co">#&gt; Reward: -1 </span>
 <span class="co">#&gt; Done: FALSE</span></code></pre></div>
 <p>There is also a variant with a continuous action space (bounded in <span class="math inline">\([-1, 1]\)</span>)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mountain Car with continuous action space</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mountain car with a continuous action space</span>
 m =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>(<span class="dt">action.space =</span> <span class="st">"Continuous"</span>)
 m<span class="op">$</span><span class="kw">reset</span>()
 <span class="kw">print</span>(m)

@@ -112,9 +112,9 @@ env =<span class="st"> </span><span class="kw"><a href="reference/windyGridworld
 <span class="co"># Solve environment using Sarsa</span>
 res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">sarsa</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  728 2096  412  488  130  461  349  289   96  377  237   66  115  164</span>
-<span class="co">#&gt; [15]   37   85  372  117  133  169  259   73   82   38  163   34  205   42</span>
-<span class="co">#&gt; [29]  118   49</span></code></pre></div>
+<span class="co">#&gt;  [1]  767 1934  738  227  451   61  235  345  353  142   98  244  298  167</span>
+<span class="co">#&gt; [15]  156  259   70  177  156  208  132   59   62   37  222  104   74   71</span>
+<span class="co">#&gt; [29]   98   58</span></code></pre></div>
 <hr>
 </div>
 <div id="environments" class="section level3">
@@ -140,9 +140,9 @@ env<span class="op">$</span><span class="kw">reset</span>()
 env<span class="op">$</span><span class="kw">step</span>(<span class="dv">0</span>)
 <span class="kw">print</span>(env)
 <span class="co">#&gt; Number of steps: 1 </span>
-<span class="co">#&gt; State: 0 </span>
+<span class="co">#&gt; State: 1 </span>
 <span class="co">#&gt; Reward: 5 </span>
-<span class="co">#&gt; Done: FALSE</span></code></pre></div>
+<span class="co">#&gt; Done: TRUE</span></code></pre></div>
 <p>You can also create an environment from <a href="https://gym.openai.com/">OpenAI Gym</a> via the <code>gym</code> package. You need to install all dependencies listed <a href="https://github.com/openai/gym-http-api">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create an OpenAI Gym environment.</span>
 <span class="co"># Make sure you have Python and Gym installed.</span>
@@ -168,36 +168,36 @@ env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
 <div id="algorithms" class="section level3">
 <h3 class="hasAnchor">
 <a href="#algorithms" class="anchor"></a>Algorithms</h3>
-<p>After you created an environment you can use various reinforcement learning algorithms to sovle this environment. For example, for a tabular environment like gridworld you can use tabular Q-Learning to solve it and find the optimal action value function <span class="math inline">\(Q*\)</span>. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.</p>
+<p>After you created an environment you can use various reinforcement learning algorithms to solve this environment. For example, for a tabular environment like gridworld you can use tabular Q-Learning to solve it and find the optimal action value function <span class="math inline">\(Q*\)</span>. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create the windy gridworld environment.</span>
 env =<span class="st"> </span><span class="kw"><a href="reference/windyGridworld.html">windyGridworld</a></span>()
 res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1] 1021 1547  488  408  425  363  393  180  219  270  318   44  145  180</span>
-<span class="co">#&gt; [15]  114  260   43   70  262  197  193  128   55  153   45  221   83   41</span>
-<span class="co">#&gt; [29]  125  169</span>
+<span class="co">#&gt;  [1]  875 1883  574  170  599  376  149  196  201  316  192  304  231   60</span>
+<span class="co">#&gt; [15]  115  137   87   80  175  198   82   38  267   60   54   68  168  100</span>
+<span class="co">#&gt; [29]  324   78</span>
 
 <span class="co"># Show value of each state.</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -4.7 -5.0 -5.5 -6.3 -7.0 -7.4 -7.2 -6.7 -6.0  -5.1</span>
-<span class="co">#&gt; [2,] -4.5 -4.6 -4.8 -5.1 -4.9 -4.2 -3.0 -3.8 -4.4  -4.3</span>
-<span class="co">#&gt; [3,] -4.2 -4.2 -4.1 -4.1 -3.3 -2.1 -1.3 -2.3 -3.2  -3.5</span>
-<span class="co">#&gt; [4,] -3.9 -3.6 -3.4 -3.2 -2.0 -0.9 -0.2  0.0 -2.3  -2.6</span>
-<span class="co">#&gt; [5,] -3.4 -3.1 -2.7 -2.3 -1.1 -0.3  0.0 -0.2 -0.9  -1.8</span>
-<span class="co">#&gt; [6,] -3.0 -2.7 -2.3 -1.6 -0.6  0.0  0.0  0.0 -0.7  -1.2</span>
-<span class="co">#&gt; [7,] -2.7 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7</span></code></pre></div>
-<p>We can then get the optimal policy by taking the argmax over the action value function Q.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">optimal.policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span>1L
-<span class="kw">print</span>(<span class="kw">matrix</span>(optimal.policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
+<span class="co">#&gt; [1,] -4.8 -5.0 -5.5 -6.3 -6.9 -7.3 -7.2 -6.7 -6.0  -5.1</span>
+<span class="co">#&gt; [2,] -4.6 -4.6 -4.8 -5.1 -4.9 -3.7 -3.0 -3.9 -4.3  -4.3</span>
+<span class="co">#&gt; [3,] -4.2 -4.1 -4.1 -4.2 -3.1 -2.0 -1.2 -2.3 -3.4  -3.4</span>
+<span class="co">#&gt; [4,] -3.9 -3.7 -3.4 -3.2 -2.0 -0.9 -0.1  0.0 -2.2  -2.6</span>
+<span class="co">#&gt; [5,] -3.4 -3.2 -2.8 -2.4 -1.2 -0.3  0.0 -0.3 -0.9  -1.8</span>
+<span class="co">#&gt; [6,] -2.9 -2.7 -2.3 -1.7 -0.6  0.0  0.0  0.0 -0.7  -1.1</span>
+<span class="co">#&gt; [7,] -2.7 -2.4 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7</span></code></pre></div>
+<p>We can then get the policy by taking the argmax over the action value function Q.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span>1L
+<span class="kw">print</span>(<span class="kw">matrix</span>(policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    0    2    2    0    0    0    3    0    1     3</span>
-<span class="co">#&gt; [2,]    0    0    2    3    0    3    2    0    2     3</span>
-<span class="co">#&gt; [3,]    3    1    2    3    3    3    2    3    3     0</span>
-<span class="co">#&gt; [4,]    1    3    3    0    1    1    3    1    0     3</span>
-<span class="co">#&gt; [5,]    3    1    1    1    3    0    0    1    0     0</span>
-<span class="co">#&gt; [6,]    3    3    1    3    1    3    2    3    3     3</span>
-<span class="co">#&gt; [7,]    1    1    1    3    1    2    0    2    3     0</span></code></pre></div>
+<span class="co">#&gt; [1,]    1    3    3    0    0    3    0    1    1     3</span>
+<span class="co">#&gt; [2,]    2    1    3    2    3    3    2    0    1     3</span>
+<span class="co">#&gt; [3,]    0    3    1    0    3    1    1    0    2     2</span>
+<span class="co">#&gt; [4,]    3    2    2    1    2    1    0    0    1     3</span>
+<span class="co">#&gt; [5,]    3    3    3    1    1    1    3    3    1     0</span>
+<span class="co">#&gt; [6,]    3    1    3    1    1    3    2    3    0     0</span>
+<span class="co">#&gt; [7,]    1    1    1    1    2    2    3    3    0     1</span></code></pre></div>
 <p>For more details on algorithms have a look at the vignette: <a href="https://markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></p>
 <hr>
 </div>

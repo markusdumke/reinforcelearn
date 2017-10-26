@@ -139,7 +139,7 @@ Policy type, supported are <code>"softmax"</code> for a discrete action space an
     <tr>
       <th>critic.type</th>
       <td><p>[<code>character(1)</code>] 
-Type of the critic. Currently only advantage actor critic is supported, which is
+Type of the critic. Currently only an advantage actor critic is supported, which is
 approximated by the td error.</p></td>
     </tr>
     <tr>
@@ -215,7 +215,9 @@ steps and return per episode.</p>
 
     <p>When using a gaussian policy mean and variance will be parametrized
 as a linear combination of features mu = x * w_1 and sigma = exp(x * w_2).</p>
-<p>Eligibility traces are used for both policy parameters and value function parameters.</p>
+<p>For a softmax policy the action preferences are computed by a linear combination
+of features.</p>
+<p>Eligibility traces can be used for both policy parameters and value function parameters.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -223,7 +225,7 @@ as a linear combination of features mu = x * w_1 and sigma = exp(x * w_2).</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Variant of cliff walking</span>
+    <pre class="examples"><div class='input'><span class='co'># Cliff walking gridworld</span>
 <span class='no'>rewardFun</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>state</span>, <span class='no'>action</span>, <span class='no'>n.state</span>) {
   <span class='kw'>if</span> (<span class='no'>n.state</span> <span class='kw'>%in%</span> <span class='fl'>37</span>:<span class='fl'>46</span>) {
     <span class='fu'>return</span>(- <span class='fl'>100</span>)

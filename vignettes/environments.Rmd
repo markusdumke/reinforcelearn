@@ -87,7 +87,7 @@ env = makeEnvironment(transitions = P, rewards = R)
 print(env$terminal.states)
 ```
 
-Every episode starts in some starting state. There are different ways to pass on the starting state in `makeEnvironment`. The simplest is to specify the `initial.state` argument with a scalar integer or an integer vector. When `initial.state` is a scalar, then every episode will start in this state. If `initial.state` is a vector then the starting state will be uniformly sampled from all elements of the vector. As a default the initial state will be sampled randomly from all non-terminal states.
+Every episode starts in some starting state. There are different ways to pass on the starting state in `makeEnvironment`. The simplest is to specify the `initial.state` argument with a scalar integer or an integer vector. When `initial.state` is a scalar every episode will start in this state. If `initial.state` is a vector then the starting state will be uniformly sampled from all elements of the vector. As a default the initial state will be sampled randomly from all non-terminal states.
 
 ```{r}
 env = makeEnvironment(transitions = P, rewards = R, initial.state = 0)
@@ -155,7 +155,7 @@ Here is an example of a 4x4 gridworld [@sutton2017, Example 4.1] with the 4 stan
 knitr::include_graphics("gridworld.JPG")
 ```
 
-The following code creates this gridworld. 
+The following code creates this gridworld. This example gridworld is already included in the package and can be created with `gridworld()`.
 
 ```{r}
 # Gridworld Environment (Sutton & Barto (2017) Example 4.1)
@@ -163,13 +163,16 @@ env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15))
 print(env$states)
 print(env$actions)
 
+# Identical to the above call
+env = gridworld()
+
 # Same gridworld, but with diagonal moves
 env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), 
   diagonal.moves = TRUE)
 print(env$actions)
 ```
 
-In the above gridworld actions will deterministically change the state, e.g. when going left from state 5 the new state will always be 4. A stochastic gridworld can be specified via the `stochasticity` argument. Then the next state will be randomly sampled from all eight successor state with a probability `stochasticity`.
+In this gridworld actions will deterministically change the state, e.g. when going left from state 5 the new state will always be 4. A stochastic gridworld can be specified via the `stochasticity` argument. Then the next state will be randomly sampled from all eight successor state with a probability `stochasticity`.
 
 ```{r}
 # Gridworld with 10% random transitions
@@ -180,41 +183,47 @@ env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1
 knitr::include_graphics("cliff.JPG")
 ```
 
-The cliff walking gridworld [@sutton2017, Example 6.6] has a cliff in the lower part of the grid. Stepping into this cliff will result in a high negative reward of -100 and a transition back to the starting state in the lower left part of the grid. So the agent has to learn to avoid stepping into this cliff. Other transitions have the usual reward of -1.  The optimal path is directly above the cliff, while the safe path runs at the top of the gridworld far away from the dangerous cliff. The optimal path has a length of 13 steps.
+The cliff walking gridworld [@sutton2017, Example 6.6] has a cliff in the lower part of the grid. Stepping into this cliff will result in a high negative reward of -100 and a transition back to the starting state in the lower left part of the grid. So the agent has to learn to avoid stepping into this cliff. Other transitions have the usual reward of -1.  The optimal path is directly above the cliff, while the safe path runs at the top of the gridworld far away from the dangerous cliff.
 
-In `makeGridworld` we can specify the cliff via the `cliff.states` argument and the reward when stepping into the cliff via `reward.cliff`. The states to which the agent transitions, when stepping into the cliff can be specified via `cliff.transition.states`.
+In `makeGridworld` we can specify a cliff via the `cliff.states` argument and the reward when stepping into the cliff via `reward.cliff`. The states to which the agent transitions, when stepping into the cliff can be specified via `cliff.transition.states`.
 
 ```{r}
 # Cliff Walking (Sutton & Barto (2017) Example 6.6)   
-cliff = makeGridworld(shape = c(4, 12), goal.states = 47, 
+env = makeGridworld(shape = c(4, 12), goal.states = 47, 
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100, 
   cliff.transition.states = 36, initial.state = 36)
+
+# Identical to the above call
+env = cliff()
 ```
 
 ```{r, out.width = "350px", fig.align = "center", echo = FALSE}
 knitr::include_graphics("windygrid.PNG")
 ```
 
-The windy gridworld [@sutton2017, Example 6.5] is a gridworld with shape 7x10. The agent will be pushed up a number of cells when transitioning into a column with an upward wind. The `wind` argument specifies the strength of this wind. It is an integer vector with the same size as the number of columns in the grid. E.g. going right from the state directly left to the goal, will push the agent to a state two cells above the goal. The reward for each step is -1. The optimal path has a length of 15 steps.
+The windy gridworld [@sutton2017, Example 6.5] is a gridworld with shape 7x10. The agent will be pushed up a number of cells when transitioning into a column with an upward wind. The `wind` argument specifies the strength of this wind. It is an integer vector with the same size as the number of columns in the grid. E.g. going right from the state directly left to the goal, will push the agent to a state two cells above the goal. The reward for each step is -1.
 
 ```{r}
 # Windy Gridworld (Sutton & Barto (2017) Example 6.5) 
-windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37, 
+env = makeGridworld(shape = c(7, 10), goal.states = 37, 
   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
+
+# Identical to the above call
+env = windyGridworld()
 ```
 
 ---
 
 ### OpenAI Gym Environments
 
-OpenAI Gym [@gym_openai] is a toolkit for developing and comparing reinforcement learning algorithms.  It provides a set of environments, which can be used as benchmark problems. The environments are implemented in Python and can be acessed via the OpenAI Gym API. Have a look at [https://gym.openai.com/envs](https://gym.openai.com/envs) for possible environments. To use this in R you need to install the dependencies listed [here](https://github.com/openai/gym-http-api). You also need to install the R package `gym` [@gym].
+OpenAI Gym [@gym_openai] is a toolkit for developing and comparing reinforcement learning algorithms.  It provides a set of environments, which can be used as benchmark problems. The environments are implemented in python and can be acessed via the OpenAI Gym API. Have a look at [https://gym.openai.com/envs](https://gym.openai.com/envs) for possible environments. To use this in R you need to install the dependencies listed [here](https://github.com/openai/gym-http-api). You also need to install the R package `gym` [@gym].
 
-Then it is simple to use one of the existing OpenAI Gym environments. First you need to start a server via the `gym` package. 
+Then it is simple to use one of the existing OpenAI Gym environments. First you need to start the python server. Open a terminal and manually start the file `gym_http_server.py` inside the gym_http_api folder. You can also start the python server from R, here using a copy of the file included in the `reinforcelearn` package. 
 
 ```{r, eval = FALSE}
 # Create an OpenAI Gym environment.
 # Make sure you have Python and Gym installed.
-# Start server and create gym client.
+# Start server from within R.
 package.path = system.file(package = "reinforcelearn")
 path2pythonfile = paste0(package.path, "/gym_http_server.py")
 system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE, invisible = FALSE)
@@ -222,7 +231,7 @@ system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE, invisible
 env = makeEnvironment("MountainCar-v0")
 ```
 
-The `render` argument specifies whether to render the environment. If `render = TRUE` a Python window will open showing a graphical interface of the environment when calling the `step` method.
+The `render` argument specifies whether to render the environment. If `render = TRUE` a python window will open showing a graphical interface of the environment when calling the `step` method.
 
 The `reset`, `step` and `close` method can then be used to sample experience. Here is an example running a random agent for 200 steps on the mountain car task.
 
@@ -308,7 +317,7 @@ The Mountain Car problem [@sutton2017] is a simple episodic reinforcement learni
 
 The position is bounded in $[-1.2, 0.5]$, the velocity in $[-0.07, 0.07]$. When reaching the left position bound, the velocity will be set to 0. Each episode starts from a random position in the valley (position $\in [-0.6, -0.4]$) and a velocity of 0.
 
-The original formulation of the problem has three actions: "push left", "no push" and "push right", which are coded as -1, 0 and 1. The reward for each step is - 1 until the terminal state at the right mountain summit is reached.
+The original formulation of the problem has three actions: "push left", "no push" and "push right", which are encoded as -1, 0 and 1. The reward for each step is - 1 until the terminal state at the right mountain summit is reached.
 
 Here is an example implementation of the mountain car environment.
 
@@ -359,22 +368,18 @@ mountainCar = R6::R6Class("MountainCar",
         self$reward = 0
       }
       invisible(self)
-    },
-    
-    close = function() {
-      invisible(self)
     }
   )
 )
 ```
 
-Then we can use this to generate samples.
+We can then create a new instance of the mountain car class and pass this on the an algorithm. Here we will sample random actions and interact with the environment.
 
 ```{r}
 m = mountainCar$new()
 set.seed(123456)
 m$reset()
-while(!m$done) {
+while (!m$done) {
   action = sample(m$actions, 1)
   m$step(action)
 }
@@ -384,7 +389,7 @@ print(paste("Episode finished after", m$n.steps, "steps."))
 Note: The mountain car implementation above is already included in the package and can be called with the `mountainCar` function.
 
 ```{r}
-# Mountain Car with discrete action space
+# The classical mountain car problem.
 m = mountainCar()
 m$reset()
 m$step(1)
@@ -394,7 +399,7 @@ print(m)
 There is also a variant with a continuous action space (bounded in $[-1, 1]$)
 
 ```{r}
-# Mountain Car with continuous action space
+# Mountain car with a continuous action space
 m = mountainCar(action.space = "Continuous")
 m$reset()
 print(m)

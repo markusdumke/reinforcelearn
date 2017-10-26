@@ -6,7 +6,10 @@
 #' When using a gaussian policy mean and variance will be parametrized
 #' as a linear combination of features mu = x * w_1 and sigma = exp(x * w_2).
 #'
-#' Eligibility traces are used for both policy parameters and value function parameters.
+#' For a softmax policy the action preferences are computed by a linear combination
+#' of features.
+#'
+#' Eligibility traces can be used for both policy parameters and value function parameters.
 #'
 #' @inheritParams qSigma
 #' @param fun.approx [\code{character(1)}] \cr
@@ -17,7 +20,7 @@
 #'   Policy type, supported are \code{"softmax"} for a discrete action space and
 #'   \code{"gaussian"} for a continuous action space using a normal distribution.
 #' @param critic.type [\code{character(1)}] \cr
-#'   Type of the critic. Currently only advantage actor critic is supported, which is
+#'   Type of the critic. Currently only an advantage actor critic is supported, which is
 #'   approximated by the td error.
 #' @param alpha [\code{numeric(1)}] \cr
 #'   Learning rate (step size) for the policy.
@@ -50,7 +53,7 @@
 #'
 #' @export
 #' @examples
-#' # Variant of cliff walking
+#' # Cliff walking gridworld
 #' rewardFun = function(state, action, n.state) {
 #'   if (n.state %in% 37:46) {
 #'     return(- 100)

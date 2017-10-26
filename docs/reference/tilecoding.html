@@ -128,18 +128,18 @@ Number of tilings.</p></td>
     <tr>
       <th>state</th>
       <td><p>[<code>vector(2)</code>] 
-A two-dimensional state observation. 
+A two-dimensional state observation.
 Make sure to scale the observation to unit variance before.</p></td>
     </tr>
     <tr>
       <th>action</th>
       <td><p>[<code>integer(1)</code>] 
-Optional: If supplied the action space will also be tiled. 
+Optional: If supplied the action space will also be tiled.
 All distinct actions will result in different tiles.</p></td>
     </tr>
     <tr>
       <th>max.size</th>
-      <td><p>[<code>integer(1)</code>]  
+      <td><p>[<code>integer(1)</code>] 
 Maximal size of hash table.</p></td>
     </tr>
     </table>
@@ -151,18 +151,18 @@ Maximal size of hash table.</p></td>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Tile coding is a way of representing the values of a vector of continuous variables as a large 
-binary vector with few 1s and many 0s. The binary vector is not represented explicitly, 
-but as a list of the components that are 1s. The main step is to partition, or tile, 
-the continuous space multiple times and select one tile from each tiling, that corresponding 
-the the vector's value. Each tile is converted to an element in the big binary vector, 
+    <p>Tile coding is a way of representing the values of a vector of continuous variables as a large
+binary vector with few 1s and many 0s. The binary vector is not represented explicitly,
+but as a list of the components that are 1s. The main step is to partition, or tile,
+the continuous space multiple times and select one tile from each tiling, that corresponding
+the the vector's value. Each tile is converted to an element in the big binary vector,
 and the list of the tile (element) numbers is returned as the representation of the vector's value.
-Tile coding is recommended as a way of applying online learning methods to domains with continuous 
+Tile coding is recommended as a way of applying online learning methods to domains with continuous
 state or action variables. [copied from manual]</p>
-<p>See detailed manual at <a href='http://incompleteideas.net/sutton/tiles/tiles3.html'>http://incompleteideas.net/sutton/tiles/tiles3.html</a>. 
-In comparison to the Python implementation indices start with 1 instead of 0. The hash table is 
+<p>See detailed manual at <a href='http://incompleteideas.net/sutton/tiles/tiles3.html'>http://incompleteideas.net/sutton/tiles/tiles3.html</a>.
+In comparison to the Python implementation indices start with 1 instead of 0. The hash table is
 implemented as an environment, which is an attribute of an R6 class.</p>
-<p>Make sure that the size of the hash table is large enough, else an error will be triggered, 
+<p>Make sure that the size of the hash table is large enough, else an error will be triggered,
 when trying to assign a value to a full hash table.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>

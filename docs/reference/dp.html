@@ -106,7 +106,7 @@
 
     
     <p>These functions solve a Markov Decision Process using a model of the environment.
-<code>evaluatePolicy</code> evaluates a given policy, 
+<code>evaluatePolicy</code> evaluates a given policy,
 <code>iteratePolicy</code> and <code>iterateValue</code> can be used to find the optimal policy.</p>
     
 
@@ -129,17 +129,17 @@ The reinforcement learning environment created by <code><a href='makeEnvironment
     </tr>
     <tr>
       <th>policy</th>
-      <td><p>[<code>matrix(n.states x n.actions)</code>]  
+      <td><p>[<code>matrix(n.states x n.actions)</code>] 
 A policy specified as a probability matrix (states x actions).</p></td>
     </tr>
     <tr>
       <th>v</th>
-      <td><p>[<code>numeric(n.states)</code>]  
+      <td><p>[<code>numeric(n.states)</code>] 
 Initial state value function. Terminal states must have a value of 0!</p></td>
     </tr>
     <tr>
       <th>q</th>
-      <td><p>[<code>matrix(n.states x n.actions)</code>]  
+      <td><p>[<code>matrix(n.states x n.actions)</code>] 
 Initial action value function. Terminal states must have a value of 0!</p></td>
     </tr>
     <tr>
@@ -149,13 +149,13 @@ Discount factor.</p></td>
     </tr>
     <tr>
       <th>precision</th>
-      <td><p>[<code>numeric(1)</code>]  
+      <td><p>[<code>numeric(1)</code>] 
 Algorithm stops when improvement is
 smaller than precision.</p></td>
     </tr>
     <tr>
       <th>n.iter</th>
-      <td><p>[<code>integer(1)</code>]  
+      <td><p>[<code>integer(1)</code>] 
 Number of iterations. If supplied the <code>precision</code> argument will be ignored.</p></td>
     </tr>
     <tr>
@@ -173,28 +173,28 @@ Number of iterations per evaluation step.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>[<code>list(3)</code>] 
-Returns the state value function [<code>numeric</code>], the 
+Returns the state value function [<code>numeric</code>], the
 action value function [<code>matrix</code>]
 and the policy [<code>matrix</code>].</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>evaluatePolicy</code> runs until the improvement in the state value 
-function in two subsequent steps is smaller than the given precision in all states or if the 
+    <p><code>evaluatePolicy</code> runs until the improvement in the state value
+function in two subsequent steps is smaller than the given precision in all states or if the
 specified number of iterations is exhausted.</p>
-<p>Both <code>iteratePolicy</code> and <code>iterateValue</code> alternate between evaluating a policy and 
+<p>Both <code>iteratePolicy</code> and <code>iterateValue</code> alternate between evaluating a policy and
 improving the current policy by acting greedily with respect to the current policy's value function.
-The difference between these two algorithms is that 
-<code>iteratePolicy</code> evaluates the policy until some stop criterion is met, 
+The difference between these two algorithms is that
+<code>iteratePolicy</code> evaluates the policy until some stop criterion is met,
 while <code>iterateValue</code> evaluates each policy only one step and
 then immediately improves upon the current policy.</p>
 <p>When the <code>policy</code> argument is <code>NULL</code> the initial policy will be a uniform random policy.
-    <code>iteratePolicy</code> stops if the policy does not change in two subsequent iterations or if the 
-specified number of iterations is exhausted. For the policy evaluation step in policy iteration 
+    <code>iteratePolicy</code> stops if the policy does not change in two subsequent iterations or if the
+specified number of iterations is exhausted. For the policy evaluation step in policy iteration
 the same stop criteria mentioned above are applied.
-    <code>iterateValue</code> runs until the improvement in the value 
+    <code>iterateValue</code> runs until the improvement in the value
 function in two subsequent steps
-is smaller than the given precision in all states or if the 
+is smaller than the given precision in all states or if the
 specified number of iterations is exhausted.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>

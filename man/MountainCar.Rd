@@ -13,7 +13,7 @@ The classical Mountain Car task has three discrete actions,
 the continuous version one action in a box from -1 to 1.}
 }
 \description{
-Mountain Car
+The classical mountain car problem as described in the literature.
 }
 \examples{
 # Classic Mountain Car task

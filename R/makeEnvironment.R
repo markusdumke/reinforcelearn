@@ -7,7 +7,7 @@
 #'
 #' This function returns an R6 class with a \code{reset} and \code{step} method.
 #' Everytime when you start an episode call the \code{reset} method first.
-#' Use then the \code{step} method to interact with the environment.
+#' Use the \code{step} method to interact with the environment.
 #' Note that the methods do not return anything, but change the attributes of the R6 class,
 #' most importantly the \code{state}, \code{reward} and \code{done} attribute.
 #'
@@ -17,13 +17,19 @@
 #' and at the description of what requirements to install
 #' at \url{https://github.com/openai/gym-http-api}.
 #'
-#' For a detailed explanation have a look at the vignette "How to create an environment?".
+#' To use a gym environment please start the python server (\code{gym_http_server.py})
+#' in a terminal before calling \code{makeEnvironment}.
+#' You will find the file in your gym installation or also a copy in the `reinforcelearn`
+#' package library. You can also start the server using R code (see examples below).
+#'
+#' For a detailed explanation and more examples
+#' have a look at the vignette "How to create an environment?".
 #'
 #' @param gym [\code{character(1)}] \cr
 #'   Name of gym environment, e.g. \code{"CartPole-v0"}
 #' @param transitions [\code{array (n.states x n.states x n.actions)}] \cr
-#'   Transition array of Markov Decision Process: For each action specifying the probabilities for
-#'   transitions between states.
+#'   Transition array of Markov Decision Process.
+#'   For each action specifying the probabilities for transitions between states.
 #' @param rewards [\code{matrix (n.states x n.actions)} or \code{array (n.states x n.states x n.actions)}] \cr
 #'   Reward array: This can be a matrix (n.states x n.actions) or a 3-dimensional array
 #'   (n.states x n.states x n.actions). The reward will be sampled from the specified array
@@ -31,11 +37,11 @@
 #' @param initial.state [\code{integer}] \cr
 #'   The starting state if \code{reset} is \code{NULL} else this argument is unused.
 #'   If a vector is given a starting state will be
-#'   randomly sampled from this vector when \code{reset} is called.
+#'   randomly sampled from this vector whenever \code{reset} is called.
 #'   Note that states are numerated starting with
-#'   0. If \code{initial.state = NULL} all states are possible initial states.
+#'   0. If \code{initial.state = NULL} all non-terminal states are possible initial states.
 #' @param reset [\code{function}] \cr
-#'   Function that returns an initial state observation, takes no arguments.
+#'   Function that returns an initial state observation, it takes no arguments.
 #' @param sampleReward [\code{function}] \cr
 #'   Function that returns the next reward given the current state, action and next state.
 #'   Otherwise the reward will be sampled from the reward array of the MDP specified
@@ -63,36 +69,7 @@
 #' }
 #' @export
 #' @examples
-#' \dontrun{
-#' # Create an OpenAI Gym environment.
-#' # Make sure you have Python and Gym installed.
-#' # Start server.
-#' package.path = system.file(package = "reinforcelearn")
-#' path2pythonfile = paste0(package.path, "/gym_http_server.py")
-#' system2("python", args = path2pythonfile, stdout = NULL,
-#'   wait = FALSE, invisible = FALSE)
-#'
-#' env = makeEnvironment("CartPole-v0", render = FALSE)
-#' env$reset()
-#' env$step(action = 0)
-#' env$close()
-#' print(env)
-#'
-#' # Create the MountainCar environment which has a continuous state space.
-#' env = makeEnvironment("MountainCar-v0")
-#' env$state.space
-#' env$state.space.bounds
-#'
-#' # Take random actions for 200 steps.
-#' env$reset()
-#' for (i in 1:200) {
-#'   action = sample(env$actions, 1)
-#'   env$step(action)
-#' }
-#' env$close()
-#' }
-#'
-#' # Create an environment from a transition array and reward matrix.
+#' # Create a Markov Decision Process.
 #' P = array(0, c(2, 2, 2))
 #' P[, , 1] = matrix(c(0.5, 0.5, 0, 1), 2, 2, byrow = TRUE)
 #' P[, , 2] = matrix(c(0, 1, 0, 1), 2, 2, byrow = TRUE)
@@ -122,7 +99,34 @@
 #' print(env$reward)
 #'
 #' # Gridworld Environment
-#' grid = gridworld()
+#' grid = makeGridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
+#'
+#' \dontrun{
+#' # Create an OpenAI Gym environment.
+#' # Make sure you have Python and Gym installed.
+#' # Start server from within R.
+#' package.path = system.file(package = "reinforcelearn")
+#' path2pythonfile = paste0(package.path, "/gym_http_server.py")
+#' system2("python", args = path2pythonfile, stdout = NULL,
+#'   wait = FALSE, invisible = FALSE)
+#'
+#' env = makeEnvironment("CartPole-v0", render = FALSE)
+#' env$reset()
+#' print(env)
+#'
+#' # Create the MountainCar environment which has a continuous state space.
+#' env = makeEnvironment("MountainCar-v0")
+#' env$state.space
+#' env$state.space.bounds
+#'
+#' # Take random actions for 200 steps.
+#' env$reset()
+#' for (i in 1:200) {
+#'   action = sample(env$actions, 1)
+#'   env$step(action)
+#' }
+#' env$close()
+#' }
 #'
 makeEnvironment = function(gym = NULL, transitions = NULL, rewards = NULL,
   initial.state = NULL, reset = NULL, sampleReward = NULL, render = TRUE) {
@@ -174,9 +178,9 @@ envir = R6::R6Class("envir",
         Also make sure you have the requirements installed: https://github.com/openai/gym-http-api",
           call. = FALSE)
       }
+      checkmate::assertCharacter(gym, len = 1)
       client = gym::create_GymClient("http://127.0.0.1:5000")
       instance.id = gym::env_create(client, gym)
-      # checkmate::assertList(gym, len = 2)
       checkmate::assertFlag(render)
       self$render = render
       outdir = "/tmp/random-agent-results"

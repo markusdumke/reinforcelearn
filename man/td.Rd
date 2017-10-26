@@ -45,7 +45,8 @@ Eligibility trace decay parameter.}
 
 \item{eligibility.type}{[\code{numeric(1)}] \cr
 Type of eligibility trace, use \code{eligibility.type = 1} for replacing traces,
-\code{eligibility.type = 0} for accumulating traces or intermediate values for a mixture between both.}
+\code{eligibility.type = 0} for accumulating traces or
+intermediate values for a mixture between both.}
 
 \item{learning.rate}{[\code{numeric(1)}] \cr
 Learning rate used for gradient descent.}

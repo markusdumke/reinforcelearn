@@ -57,14 +57,16 @@ for gradient-bandit action selection, the probabilities for
 each action.
 }
 \description{
+Different solution methods for multi-armed bandits.
+}
+\details{
 Multi-armed bandits are a simplified reinforcement learning problem,
 each arm of the bandit pays off a reward and the goal is to maximize
 this reward, i.e. to choose the best arm. The arms of the bandit
 can be seen as actions, after each action the episode ends (there
 are no states). To find the best action, the algorithm is faced with
 a tradeoff between exploration and exploitation.
-}
-\details{
+
 Actions are numerated starting with 0!
 }
 \examples{

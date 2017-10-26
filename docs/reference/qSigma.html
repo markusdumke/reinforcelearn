@@ -112,39 +112,38 @@
   <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>initial.value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n.states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>target.policy</span> <span class='kw'>=</span> <span class='st'>"egreedy"</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>eligibility.type</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>learning.rate</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>double.learning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>update.target.after</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>replay.memory.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.01</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
-  <span class='kw'>updateSigma</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateLambda</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
-  <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateLearningRate</span> <span class='kw'>=</span> <span class='no'>identity2</span>)
+  <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>double.learning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>replay.memory.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
+  <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateSigma</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
+  <span class='kw'>updateLambda</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
+  <span class='kw'>updateLearningRate</span> <span class='kw'>=</span> <span class='no'>identity2</span>)
 
 <span class='fu'>qlearning</span>(<span class='no'>envir</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"table"</span>, <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>identity</span>,
   <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>initial.value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n.states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eligibility.type</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>learning.rate</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>double.learning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>update.target.after</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>replay.memory.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.01</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
-  <span class='kw'>updateSigma</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateLambda</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
-  <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateLearningRate</span> <span class='kw'>=</span> <span class='no'>identity2</span>)
+  <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>double.learning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>replay.memory.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
+  <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateSigma</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
+  <span class='kw'>updateLambda</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
+  <span class='kw'>updateLearningRate</span> <span class='kw'>=</span> <span class='no'>identity2</span>)
 
 <span class='fu'>sarsa</span>(<span class='no'>envir</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"table"</span>, <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>identity</span>,
   <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>initial.value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n.states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eligibility.type</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>learning.rate</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.1</span>,
-  <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>double.learning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>update.target.after</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>replay.memory.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.01</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
-  <span class='kw'>updateSigma</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateLambda</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
-  <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateLearningRate</span> <span class='kw'>=</span> <span class='no'>identity2</span>)
+  <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>double.learning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>replay.memory.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
+  <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateSigma</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
+  <span class='kw'>updateLambda</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
+  <span class='kw'>updateLearningRate</span> <span class='kw'>=</span> <span class='no'>identity2</span>)
 
 <span class='fu'>expectedSarsa</span>(<span class='no'>envir</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"table"</span>, <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>identity</span>,
   <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>initial.value</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n.states</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>100</span>,
   <span class='kw'>target.policy</span> <span class='kw'>=</span> <span class='st'>"egreedy"</span>, <span class='kw'>lambda</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eligibility.type</span> <span class='kw'>=</span> <span class='fl'>0</span>,
   <span class='kw'>learning.rate</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.1</span>, <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>double.learning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>update.target.after</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>replay.memory.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.01</span>,
-  <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateSigma</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
-  <span class='kw'>updateLambda</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
-  <span class='kw'>updateLearningRate</span> <span class='kw'>=</span> <span class='no'>identity2</span>)</pre>
+  <span class='kw'>double.learning</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>replay.memory.size</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>theta</span> <span class='kw'>=</span> <span class='fl'>0.01</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
+  <span class='kw'>updateSigma</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateLambda</span> <span class='kw'>=</span> <span class='no'>identity2</span>,
+  <span class='kw'>updateAlpha</span> <span class='kw'>=</span> <span class='no'>identity2</span>, <span class='kw'>updateLearningRate</span> <span class='kw'>=</span> <span class='no'>identity2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -169,8 +168,7 @@ preprocesses this in a way the algorithm can work with it.</p></td>
     <tr>
       <th>model</th>
       <td><p>[<code>keras model</code>] 
-A neural network model specified using the <code>keras</code> package.
-See Details for more information.</p></td>
+A neural network model specified using the <code>keras</code> package.</p></td>
     </tr>
     <tr>
       <th>initial.value</th>
@@ -185,7 +183,7 @@ Only used for tabular or linear function approximation.</p></td>
 Number of states for tabular value function.
 Only needed if the state space is continuous, but
 will be transformed by <code>preprocessState</code>, so that a single integer value is returned.
-Else the number of states is accessed from the <code>envir</code> argument.</p></td>
+Else the number of states is accessed from the <code>envir$n.states</code> argument.</p></td>
     </tr>
     <tr>
       <th>n.episodes</th>
@@ -203,10 +201,9 @@ between the two targets is used.</p></td>
     <tr>
       <th>target.policy</th>
       <td><p>[<code>character(1)</code>] 
-Should the temporal-difference target be computed on-policy
+Should the expected sarsa target be computed on-policy
 using the epsilon-greedy behavior policy (<code>target.policy = "egreedy"</code>)
-or off-policy using a greedy policy in the
-expected sarsa part of the update (<code>target.policy = "greedy"</code>)?</p></td>
+or off-policy using a greedy target policy (<code>target.policy = "greedy"</code>)?</p></td>
     </tr>
     <tr>
       <th>lambda</th>
@@ -217,7 +214,8 @@ Eligibility trace decay parameter.</p></td>
       <th>eligibility.type</th>
       <td><p>[<code>numeric(1)</code>] 
 Type of eligibility trace, use <code>eligibility.type = 1</code> for replacing traces,
-<code>eligibility.type = 0</code> for accumulating traces or intermediate values for a mixture between both.</p></td>
+<code>eligibility.type = 0</code> for accumulating traces or
+intermediate values for a mixture between both.</p></td>
     </tr>
     <tr>
       <th>learning.rate</th>
@@ -240,17 +238,11 @@ Discount factor.</p></td>
 Should double learning be used?</p></td>
     </tr>
     <tr>
-      <th>update.target.after</th>
-      <td><p>[<code>integer(1)</code>] 
-When using double learning the target network / table will be updated after
-<code>update.target.after</code> steps.</p></td>
-    </tr>
-    <tr>
       <th>replay.memory</th>
       <td><p>[<code>list</code>] 
 Initial replay memory, which can be passed on.
-Each list element must be a list containing state, action,
-reward and next.state.</p></td>
+Each list element must be a list containing <code>state</code>, <code>action</code>,
+<code>reward</code> and <code>next.state</code>.</p></td>
     </tr>
     <tr>
       <th>replay.memory.size</th>
@@ -267,14 +259,14 @@ Must be smaller than the size of the replay memory!</p></td>
     <tr>
       <th>alpha</th>
       <td><p>[<code>numeric(1) in [0, 1]</code>] 
-If <code>alpha = 0</code> sampling from replay memory will be uniform, otherwise observations with
-high temporal-difference error will be proportionally prioritized.</p></td>
+If <code>alpha = 0</code> sampling from the replay memory will be uniform,
+otherwise observations with a high error will be proportionally prioritized.</p></td>
     </tr>
     <tr>
       <th>theta</th>
       <td><p>[<code>numeric(1) in (0, 1]</code>] 
 <code>theta</code> is a small positive constant that prevents the edge-case of transitions
-in the replay memory not being revisited once their TD error is zero.</p></td>
+in the replay memory not being revisited once their error is zero.</p></td>
     </tr>
     <tr>
       <th>updateEpsilon</th>
@@ -317,56 +309,46 @@ and the current number of episodes which are finished, and returns the new
 
     <p>[<code>list(4)</code>] 
   Returns the action value function or model parameters [<code>matrix</code>] and the
-  number of steps per episode [<code>numeric</code>]
-  and the sum of all rewards in the episode [<code>numeric</code>].</p>
+  return and number of steps per episode [<code>numeric</code>].
+  For Double Learning both value functions will be returned.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>You must specify the reinforcement learning environment using the <code>envir</code> argument.
-It takes an <code>R6 class</code> created by <code><a href='makeEnvironment.html'>makeEnvironment</a></code> as input.
-See documentation there.</p>
-<p>The algorithms can be used to find the optimal action value function using the principle
-of generalized policy iteration. They all learn online using temporal-difference learning.
-Q(sigma) subsumes the well known Q-Learning, Sarsa and Expected Sarsa algorithms as special cases.
-The default call <code>qsigma()</code> is exactly equivalent to Sarsa(0). A weighted mean between sarsa
-and expected sarsa updates can be used by varying the parameter <code>sigma</code>.
-When <code>target.policy == "egreedy"</code> the policy used to compute the expected sarsa is the epsilon-greedy
-policy used for action selection, when <code>target.policy == "greedy"</code> a greedy target policy will be
-used as in Q-Learning. See De Asis et al. (2017) for more details.</p>
-<p>The functions <code>qlearning</code> and <code>sarsa</code> are there for convenience.
-They call the <code>qSigma</code> function with a special set of parameters.</p>
-<p>When <code>fun.approx == "table"</code> the action value function will be represented using a table,
-a linear combination of features and a neural network can also be used. For a neural network you
-need to pass on a keras model via the <code>model</code> argument. This way it is possible to
-construct a Deep Q-Network (DQN).</p>
-<p>The raw state observation returned from the environment can be preprocessed using
-the <code>preprocessState</code> function. This function takes the state observation as input and
+    <p>Q(sigma), Q-Learning, Expected Sarsa and Sarsa build a family of temporal-difference learning
+algorithms, which can be used to find the optimal action value function using the principle
+of generalized policy iteration.
+Q(sigma) subsumes Q-Learning, Sarsa and Expected Sarsa as special cases.
+For more details on the algorithm read De Asis et al. (2017).
+Expected Sarsa can be used on-policy if <code>target.policy == "egreedy"</code> else it is identical
+to Q-Learning.</p>
+<p>When <code>fun.approx == "table"</code> the action value function will be represented as a matrix,
+but you can also use a linear combination of features or a neural network
+for function approximation.
+For a neural network you need to pass on a keras model via the <code>model</code> argument.</p>
+<p>The raw state observation returned from the environment must be preprocessed using
+the <code>preprocessState</code> argument. This function takes the state observation as input and
 returns a preprocessed state which can be directly used by the function approximator.
-This is especially important when using function approximation.</p>
-<p>Experience replay can be used by specifying a prefilled replay memory through the
+To use a tabular value function <code>preprocessState</code> must return an integer value between
+[0, number of states - 1]. For linear function approximation the output of
+<code>preprocessState</code> must be a matrix with one row. For a neural network you have to make
+sure that the dimensions of the preprocessed state and the neural network match, so that
+<code>model$predict(preprocessState(envir$state))</code> works.</p>
+<p>Experience replay can be used by specifying a prefilled replay memory using the
 <code>replay.memory</code> argument or by specifying the length of the replay memory,
-which will then be filled with random experience. Using the defaults experiences are sampled
-uniformly, a proportional prioritization proposed by Schaul et al. (2016) can also be used by
-varying the parameters <code>alpha</code> and <code>theta</code>.</p>
-<p>Using eligibility traces the one-step algorithms can be extended to multi-step algorithms. The
-parameter <code>lambda</code> controls the tradeoff between one-step and multi-step methods. Three
-different kinds of eligibility traces are implemented, accumulating, replacing and dutch traces.
-See Sutton and Barto (Book draft 2017, Chapter 12) for more details.
-This only works if no experience replay is used, i.e. <code>replay.memory.size == 1</code> and for a
-tabular value function.</p>
-<p>Double Learning can be used with all of the functions.
-Then two Q value functions are used, Q1 for action selection and
-Q2 for action evaluation. After a number of steps the weights of Q2 are replaced by the weights
-of Q1. See Hasselt et al. (2015) for details.</p>
-<p>The hyperparameters <code>epsilon</code>, <code>theta</code>, <code>sigma</code>, <code>alpha</code>, <code>lambda</code> and
+which is then filled with experience using a random uniform policy.
+Sampling can also be prioritized by the error as proposed by Schaul et al. (2016).</p>
+<p>Note that eligibility traces cannot be used with experience replay.</p>
+<p>The hyperparameters <code>epsilon</code>, <code>sigma</code>, <code>alpha</code>, <code>lambda</code> and
 <code>learning.rate</code> can be changed over time. Therefore pass on functions that return a new
 value of the hyperparameter. These updates will be applied after each episode. First argument of
-the function must be the parameter itself, the second argument is the current episode number.</p>
+the function must be the parameter itself, the second argument the current episode number.</p>
+<p>For neural networks the options experience replay, eligibility traces and double learning
+are currently not available.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>De Asis et al. (2017): Multi-step Reinforcement Learning: A Unifying Algorithm</p>
-<p>Hasselt et al. (2015): Deep Reinforcement Learning with Double Q-Learning</p>
+<p>Hasselt et al. (2010): Double Q-Learning</p>
 <p>Mnih et al. (2013): Playing Atari with Deep Reinforcement Learning</p>
 <p>Schaul et al. (2016): Prioritized Experience Replay</p>
 <p>Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction</p>
@@ -376,15 +358,27 @@ the function must be the parameter itself, the second argument is the current ep
     <pre class="examples"><div class='input'><span class='co'># Solve Windy Gridworld</span>
 <span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='windyGridworld.html'>windyGridworld</a></span>()
 
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>qSigma</span>(<span class='no'>env</span>, <span class='kw'>sigma</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 719 steps with a return of -719</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 1823 steps with a return of -1823</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 644 steps with a return of -644</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 586 steps with a return of -586</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 264 steps with a return of -264</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 389 steps with a return of -389</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 299 steps with a return of -299</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 96 steps with a return of -96</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 252 steps with a return of -252</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 223 steps with a return of -223</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 117 steps with a return of -117</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 301 steps with a return of -301</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 146 steps with a return of -146</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 92 steps with a return of -92</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 409 steps with a return of -409</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 161 steps with a return of -161</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 168 steps with a return of -168</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 69 steps with a return of -69</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 122 steps with a return of -122</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 151 steps with a return of -151</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>res</span>$<span class='no'>steps</span>)</div><div class='output co'>#&gt;  [1]  719 1823  644  586  264  389  299   96  252  223  117  301  146   92  409
-#&gt; [16]  161  168   69  122  151</div><div class='input'><span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>qlearning</span>(<span class='no'>env</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 883 steps with a return of -883</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 1547 steps with a return of -1547</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 1014 steps with a return of -1014</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 131 steps with a return of -131</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 582 steps with a return of -582</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 340 steps with a return of -340</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 225 steps with a return of -225</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 243 steps with a return of -243</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 96 steps with a return of -96</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 258 steps with a return of -258</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 97 steps with a return of -97</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 419 steps with a return of -419</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 107 steps with a return of -107</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 181 steps with a return of -181</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 91 steps with a return of -91</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 226 steps with a return of -226</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 222 steps with a return of -222</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 99 steps with a return of -99</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 104 steps with a return of -104</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 94 steps with a return of -94</span></div><div class='input'><span class='fu'>print</span>(<span class='fu'>matrix</span>(<span class='fu'>round</span>(<span class='fu'>apply</span>(<span class='no'>res</span>$<span class='no'>Q1</span>, <span class='fl'>1</span>, <span class='no'>max</span>), <span class='fl'>1</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,] -4.2 -4.4 -4.9 -5.7 -6.3 -6.8 -6.8 -6.3 -5.5  -4.7
-#&gt; [2,] -4.0 -4.0 -4.2 -4.5 -4.2 -3.2 -1.9 -3.4 -3.8  -3.9
-#&gt; [3,] -3.7 -3.6 -3.5 -3.5 -2.6 -1.3 -0.5 -1.9 -2.7  -3.1
-#&gt; [4,] -3.3 -3.1 -2.9 -2.5 -1.4 -0.5  0.0  0.0 -2.0  -2.2
-#&gt; [5,] -2.8 -2.7 -2.3 -1.8 -0.8  0.0  0.0 -0.2 -0.8  -1.5
-#&gt; [6,] -2.5 -2.3 -1.8 -1.3 -0.3  0.0  0.0  0.0 -0.6  -0.9
-#&gt; [7,] -2.2 -2.0 -1.4 -0.7  0.0  0.0  0.0  0.0 -0.1  -0.5</div><div class='input'>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>qlearning</span>(<span class='no'>env</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 794 steps with a return of -794</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 1701 steps with a return of -1701</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 746 steps with a return of -746</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 468 steps with a return of -468</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 319 steps with a return of -319</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 352 steps with a return of -352</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 366 steps with a return of -366</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 256 steps with a return of -256</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 131 steps with a return of -131</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 136 steps with a return of -136</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 172 steps with a return of -172</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 232 steps with a return of -232</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 219 steps with a return of -219</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 202 steps with a return of -202</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 40 steps with a return of -40</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 85 steps with a return of -85</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 158 steps with a return of -158</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 200 steps with a return of -200</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 120 steps with a return of -120</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 140 steps with a return of -140</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>res</span>$<span class='no'>steps</span>)</div><div class='output co'>#&gt;  [1]  794 1701  746  468  319  352  366  256  131  136  172  232  219  202   40
+#&gt; [16]   85  158  200  120  140</div><div class='input'>
+<span class='co'># State value function</span>
+<span class='fu'>print</span>(<span class='fu'>matrix</span>(<span class='fu'>round</span>(<span class='fu'>apply</span>(<span class='no'>res</span>$<span class='no'>Q1</span>, <span class='fl'>1</span>, <span class='no'>max</span>), <span class='fl'>1</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+#&gt; [1,] -4.2 -4.4 -4.8 -5.6 -6.3 -6.7 -6.7 -6.2 -5.5  -4.7
+#&gt; [2,] -3.9 -4.0 -4.1 -4.4 -4.0 -3.4 -1.8 -3.4 -3.8  -3.8
+#&gt; [3,] -3.6 -3.5 -3.4 -3.3 -2.6 -1.3 -0.3 -1.8 -2.7  -3.0
+#&gt; [4,] -3.3 -3.1 -2.8 -2.5 -1.4 -0.4  0.0  0.0 -1.8  -2.2
+#&gt; [5,] -2.8 -2.6 -2.2 -1.7 -0.7 -0.2  0.0 -0.2 -0.8  -1.5
+#&gt; [6,] -2.5 -2.2 -1.7 -1.2 -0.4  0.0  0.0  0.0 -0.5  -0.9
+#&gt; [7,] -2.2 -1.9 -1.4 -0.8  0.0  0.0  0.0  0.0 -0.1  -0.5</div><div class='input'>
+<span class='co'># Policy</span>
+<span class='no'>policy</span> <span class='kw'>=</span> <span class='fu'>max.col</span>(<span class='no'>res</span>$<span class='no'>Q1</span>) - <span class='fl'>1L</span>
+<span class='fu'>print</span>(<span class='fu'>matrix</span>(<span class='no'>policy</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+#&gt; [1,]    3    0    3    1    1    0    0    1    1     3
+#&gt; [2,]    3    0    3    3    3    0    2    1    0     3
+#&gt; [3,]    2    1    3    3    2    1    0    3    3     3
+#&gt; [4,]    3    3    1    0    1    1    3    2    2     2
+#&gt; [5,]    2    1    3    2    3    2    0    0    0     2
+#&gt; [6,]    3    0    0    0    3    3    0    3    3     1
+#&gt; [7,]    1    0    1    0    2    2    3    2    2     1</div><div class='input'>
 <span class='co'># Decay epsilon over time. Each 10 episodes epsilon will be halfed.</span>
 <span class='no'>decayEpsilon</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>epsilon</span>, <span class='no'>i</span>) {
   <span class='kw'>if</span> (<span class='no'>i</span> <span class='kw'>%%</span> <span class='fl'>10</span> <span class='kw'>==</span> <span class='fl'>0</span>) {
@@ -393,15 +387,7 @@ the function must be the parameter itself, the second argument is the current ep
   <span class='no'>epsilon</span>
 }
 
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>expectedSarsa</span>(<span class='no'>env</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>decayEpsilon</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 892 steps with a return of -892</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 2211 steps with a return of -2211</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 1916 steps with a return of -1916</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 481 steps with a return of -481</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 92 steps with a return of -92</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 313 steps with a return of -313</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 134 steps with a return of -134</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 451 steps with a return of -451</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 141 steps with a return of -141</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 141 steps with a return of -141</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 145 steps with a return of -145</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 28 steps with a return of -28</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 147 steps with a return of -147</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 21 steps with a return of -21</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 182 steps with a return of -182</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 92 steps with a return of -92</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 121 steps with a return of -121</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 100 steps with a return of -100</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 161 steps with a return of -161</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 83 steps with a return of -83</span></div><div class='input'><span class='no'>optimal.policy</span> <span class='kw'>=</span> <span class='fu'>max.col</span>(<span class='no'>res</span>$<span class='no'>Q1</span>) - <span class='fl'>1L</span>
-<span class='fu'>print</span>(<span class='fu'>matrix</span>(<span class='no'>optimal.policy</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,]    3    3    0    0    0    2    3    1    1     3
-#&gt; [2,]    1    3    3    3    0    3    0    1    3     3
-#&gt; [3,]    2    0    0    0    3    1    3    0    3     3
-#&gt; [4,]    1    2    3    3    1    3    3    0    1     3
-#&gt; [5,]    1    1    3    1    2    3    1    0    0     3
-#&gt; [6,]    3    3    1    3    3    2    0    2    3     0
-#&gt; [7,]    1    2    1    2    1    2    0    2    3     1</div><div class='input'>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>expectedSarsa</span>(<span class='no'>env</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>decayEpsilon</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 478 steps with a return of -478</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 2727 steps with a return of -2727</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 884 steps with a return of -884</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 365 steps with a return of -365</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 530 steps with a return of -530</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 312 steps with a return of -312</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 353 steps with a return of -353</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 210 steps with a return of -210</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 242 steps with a return of -242</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 293 steps with a return of -293</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 100 steps with a return of -100</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 140 steps with a return of -140</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 87 steps with a return of -87</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 146 steps with a return of -146</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 79 steps with a return of -79</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 84 steps with a return of -84</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 156 steps with a return of -156</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 99 steps with a return of -99</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 226 steps with a return of -226</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 74 steps with a return of -74</span></div><div class='input'>
 <span class='co'># Solve the Mountain Car problem using linear function approximation</span>
 <span class='no'>m</span> <span class='kw'>=</span> <span class='fu'><a href='mountainCar.html'>mountainCar</a></span>()
 
@@ -428,11 +414,11 @@ the function must be the parameter itself, the second argument is the current ep
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>sarsa</span>(<span class='no'>m</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"linear"</span>, <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>gridTiling</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 840 steps with a return of -839</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 784 steps with a return of -783</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 684 steps with a return of -683</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 694 steps with a return of -693</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 318 steps with a return of -317</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 475 steps with a return of -474</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 270 steps with a return of -269</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 274 steps with a return of -273</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 235 steps with a return of -234</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 199 steps with a return of -198</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 276 steps with a return of -275</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 160 steps with a return of -159</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 213 steps with a return of -212</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 304 steps with a return of -303</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 216 steps with a return of -215</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 235 steps with a return of -234</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 224 steps with a return of -223</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 180 steps with a return of -179</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 153 steps with a return of -152</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 222 steps with a return of -221</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>res</span>$<span class='no'>returns</span>)</div><div class='output co'>#&gt;  [1] -839 -783 -683 -693 -317 -474 -269 -273 -234 -198 -275 -159 -212 -303 -215
 #&gt; [16] -234 -223 -179 -152 -221</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeGridworld.html'>makeGridworld</a></span>(<span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>4</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeGridworld.html'>makeGridworld</a></span>(<span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)
 
 <span class='co'># Use a neural network as function approximator</span>
 <span class='no'>makeOneHot</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>state</span>) {
-  <span class='no'>one.hot</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>16</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+  <span class='no'>one.hot</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>9</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>)
   <span class='no'>one.hot</span>[<span class='fl'>1</span>, <span class='no'>state</span> + <span class='fl'>1</span>] <span class='kw'>=</span> <span class='fl'>1</span>
   <span class='no'>one.hot</span>
 }
@@ -440,7 +426,7 @@ the function must be the parameter itself, the second argument is the current ep
 <span class='co'># Define keras model</span>
 <span class='fu'>library</span>(<span class='no'>keras</span>)
 <span class='no'>model</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/keras_model_sequential'>keras_model_sequential</a></span>()
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/layer_dense'>layer_dense</a></span>(<span class='kw'>units</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>activation</span> <span class='kw'>=</span> <span class='st'>'linear'</span>, <span class='kw'>input_shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>16</span>))
+<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/layer_dense'>layer_dense</a></span>(<span class='kw'>units</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>activation</span> <span class='kw'>=</span> <span class='st'>'linear'</span>, <span class='kw'>input_shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>9</span>))
 
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>qSigma</span>(<span class='no'>env</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"neural.network"</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>model</span>,
   <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>makeOneHot</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)

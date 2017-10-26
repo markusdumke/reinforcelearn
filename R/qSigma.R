@@ -11,10 +11,11 @@
 #' to Q-Learning.
 #'
 #' When \code{fun.approx == "table"} the action value function will be represented as a matrix,
-#' but you can also use a linear combination of features and a neural network for function approximation.
+#' but you can also use a linear combination of features or a neural network
+#' for function approximation.
 #' For a neural network you need to pass on a keras model via the \code{model} argument.
 #'
-#' The raw state observation returned from the environment need to be preprocessed using
+#' The raw state observation returned from the environment must be preprocessed using
 #' the \code{preprocessState} argument. This function takes the state observation as input and
 #' returns a preprocessed state which can be directly used by the function approximator.
 #' To use a tabular value function \code{preprocessState} must return an integer value between
@@ -26,13 +27,17 @@
 #' Experience replay can be used by specifying a prefilled replay memory using the
 #' \code{replay.memory} argument or by specifying the length of the replay memory,
 #' which is then filled with experience using a random uniform policy.
-#' Sampling can also be prioritized by the td error as proposed by
-#' Schaul et al. (2016).
+#' Sampling can also be prioritized by the error as proposed by Schaul et al. (2016).
+#'
+#' Note that eligibility traces cannot be used with experience replay.
 #'
 #' The hyperparameters \code{epsilon}, \code{sigma}, \code{alpha}, \code{lambda} and
 #' \code{learning.rate} can be changed over time. Therefore pass on functions that return a new
 #' value of the hyperparameter. These updates will be applied after each episode. First argument of
 #' the function must be the parameter itself, the second argument the current episode number.
+#'
+#' For neural networks the options experience replay, eligibility traces and double learning
+#' are currently not available.
 #'
 #' @param envir [\code{R6 class}] \cr
 #'   The reinforcement learning environment created by \code{\link{makeEnvironment}}.
@@ -80,20 +85,19 @@
 #'   Number of states for tabular value function.
 #'   Only needed if the state space is continuous, but
 #'   will be transformed by \code{preprocessState}, so that a single integer value is returned.
-#'   Else the number of states is accessed from the \code{envir} argument.
+#'   Else the number of states is accessed from the \code{envir$n.states} argument.
 #' @param discount [\code{numeric(1) in [0, 1]}] \cr
 #'   Discount factor.
 #' @param target.policy [\code{character(1)}] \cr
-#'   Should the temporal-difference target be computed on-policy
+#'   Should the expected sarsa target be computed on-policy
 #'   using the epsilon-greedy behavior policy (\code{target.policy = "egreedy"})
-#'   or off-policy using a greedy policy in the
-#'   expected sarsa part of the update (\code{target.policy = "greedy"})?
+#'   or off-policy using a greedy target policy (\code{target.policy = "greedy"})?
 #' @param double.learning [\code{logical(1)}] \cr
 #'   Should double learning be used?
 #' @param replay.memory [\code{list}] \cr
 #'   Initial replay memory, which can be passed on.
-#'   Each list element must be a list containing state, action,
-#'   reward and next.state.
+#'   Each list element must be a list containing \code{state}, \code{action},
+#'   \code{reward} and \code{next.state}.
 #' @param replay.memory.size [\code{integer(1)}] \cr
 #'   Size of the replay memory. Only used if \code{replay.memory} is \code{NULL}. Then
 #'   the replay memory will be initially filled with experiences following a uniform random policy.
@@ -101,27 +105,27 @@
 #'   Batch size, how many experiences are sampled from the replay memory at each step?
 #'   Must be smaller than the size of the replay memory!
 #' @param alpha [\code{numeric(1) in [0, 1]}] \cr
-#'   If \code{alpha = 0} sampling from replay memory will be uniform, otherwise observations with
-#'   high temporal-difference error will be proportionally prioritized.
+#'   If \code{alpha = 0} sampling from the replay memory will be uniform,
+#'   otherwise observations with a high error will be proportionally prioritized.
 #' @param theta [\code{numeric(1) in (0, 1]}] \cr
 #'   \code{theta} is a small positive constant that prevents the edge-case of transitions
-#'   in the replay memory not being revisited once their TD error is zero.
+#'   in the replay memory not being revisited once their error is zero.
 #' @param model [\code{keras model}] \cr
 #'   A neural network model specified using the \code{keras} package.
-#'   See Details for more information.
 #' @param preprocessState [\code{function}] \cr
 #'   A function that takes the state observation returned from the environment as an input and
 #'   preprocesses this in a way the algorithm can work with it.
 #' @param eligibility.type [\code{numeric(1)}] \cr
 #'   Type of eligibility trace, use \code{eligibility.type = 1} for replacing traces,
-#'   \code{eligibility.type = 0} for accumulating traces or intermediate values for a mixture between both.
+#'   \code{eligibility.type = 0} for accumulating traces or
+#'   intermediate values for a mixture between both.
 #' @rdname qSigma
 #' @return [\code{list(4)}] \cr
 #'   Returns the action value function or model parameters [\code{matrix}] and the
 #'   return and number of steps per episode [\code{numeric}].
 #'   For Double Learning both value functions will be returned.
 #' @references De Asis et al. (2017): Multi-step Reinforcement Learning: A Unifying Algorithm
-#' @references Hasselt et al. (2012): Double Q-Learning
+#' @references Hasselt et al. (2010): Double Q-Learning
 #' @references Mnih et al. (2013): Playing Atari with Deep Reinforcement Learning
 #' @references Schaul et al. (2016): Prioritized Experience Replay
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
@@ -131,10 +135,15 @@
 #' # Solve Windy Gridworld
 #' env = windyGridworld()
 #'
-#' res = qSigma(env, sigma = 0.5, n.episodes = 20)
-#' print(res$steps)
 #' res = qlearning(env, n.episodes = 20)
+#' print(res$steps)
+#'
+#' # State value function
 #' print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
+#'
+#' # Policy
+#' policy = max.col(res$Q1) - 1L
+#' print(matrix(policy, ncol = 10, byrow = TRUE))
 #'
 #' # Decay epsilon over time. Each 10 episodes epsilon will be halfed.
 #' decayEpsilon = function(epsilon, i) {
@@ -145,8 +154,6 @@
 #' }
 #'
 #' res = expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon, n.episodes = 20)
-#' optimal.policy = max.col(res$Q1) - 1L
-#' print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
 #'
 #' # Solve the Mountain Car problem using linear function approximation
 #' m = mountainCar()

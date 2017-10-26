@@ -1,5 +1,7 @@
 #' Multi-armed bandit
 #'
+#' Different solution methods for multi-armed bandits.
+#'
 #' Multi-armed bandits are a simplified reinforcement learning problem,
 #' each arm of the bandit pays off a reward and the goal is to maximize
 #' this reward, i.e. to choose the best arm. The arms of the bandit

@@ -199,20 +199,10 @@ if (requireNamespace("keras", quietly = TRUE)) {
   })
 }
 
-test_that("qSigma returns action value function and steps and returns per episode", {
+test_that("qSigma returns action value function, steps and returns per episode", {
   res = qSigma(env, n.episodes = 2)
   expect_equal(class(res), "list")
   expect_equal(dim(res$Q1), c(env$n.states, env$n.actions))
   expect_equal(length(res$steps), 2)
   expect_equal(length(res$returns), 2)
 })
-
-# test return
-
-# sampleBatch else
-
-# Fixme:
-# test that q sigma target is computed the right way
-# test that double learning works
-# test that eligibility trace update is correct
-# test that predictQ works

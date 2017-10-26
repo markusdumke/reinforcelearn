@@ -74,11 +74,11 @@ The algorithms return the state or action value function, sometimes also the pol
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 ```
 
-We can then get the optimal policy by taking the argmax over the action value function Q.
+We can then get the policy by taking the argmax over the action value function Q.
 
 ```{r}
-optimal.policy = max.col(res$Q1) - 1L
-print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
+policy = max.col(res$Q1) - 1L
+print(matrix(policy, ncol = 10, byrow = TRUE))
 ```
 
 To learn more about algorithms implemented in `reinforcelearn` have a look at the [How to solve an environment?](algorithms.html) vignette.

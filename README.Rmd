@@ -105,7 +105,7 @@ For more details on how to create an environment have a look at the vignette: [H
 
 ### Algorithms
 
-After you created an environment you can use various reinforcement learning algorithms to sovle this environment. For example, for a tabular environment like  gridworld you can use tabular Q-Learning to solve it and find the optimal action value function $Q*$. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.
+After you created an environment you can use various reinforcement learning algorithms to solve this environment. For example, for a tabular environment like gridworld you can use tabular Q-Learning to solve it and find the optimal action value function $Q*$. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.
 
 ```{r}
 # Create the windy gridworld environment.
@@ -117,11 +117,11 @@ print(res$steps)
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 ```
 
-We can then get the optimal policy by taking the argmax over the action value function Q.
+We can then get the policy by taking the argmax over the action value function Q.
 
 ```{r}
-optimal.policy = max.col(res$Q1) - 1L
-print(matrix(optimal.policy, ncol = 10, byrow = TRUE))
+policy = max.col(res$Q1) - 1L
+print(matrix(policy, ncol = 10, byrow = TRUE))
 ```
 
 For more details on algorithms have a look at the vignette: [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)

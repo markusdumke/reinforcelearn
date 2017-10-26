@@ -1,5 +1,7 @@
 #' Mountain Car
 #'
+#' The classical mountain car problem as described in the literature.
+#'
 #' @param action.space [\code{character(1)}] \cr
 #'   Can be \code{"Discrete"} or \code{"Continuous"}.
 #'   The classical Mountain Car task has three discrete actions,
