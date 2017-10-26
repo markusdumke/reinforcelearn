@@ -143,7 +143,7 @@ and updated by gradient descent. There is a distinct weight vector per action.
 
 #### Preprocessing the state
 
-The raw state observation returned from the environment must be preprocessed using the \code{preprocessState} argument. This function takes the state observation as input and returns a preprocessed state which can be directly used by the function approximator. To use a tabular value function \code{preprocessState} must return an integer value between [0, number of states - 1]. For linear function approximation the output of \code{preprocessState} must be a matrix with one row. For a neural network you have to make sure that the dimensions of the preprocessed state and the neural network match, so that \code{model$predict(preprocessState(envir$state))} works.
+The raw state observation returned from the environment must be preprocessed using the `preprocessState` argument. This function takes the state observation as input and returns a preprocessed state which can be directly used by the function approximator. To use a tabular value function `preprocessState` must return an integer value between [0, number of states - 1]. For linear function approximation the output of `preprocessState` must be a matrix with one row. For a neural network you have to make sure that the dimensions of the preprocessed state and the neural network match, so that `model$predict(preprocessState(envir$state))` works.
 
 But how to get a good feature vector from the state observation? One idea is to use grid tiling [@sutton2017] to aggregate the state space. Each tiling is a grid which overlays the state space. A state observation then falls into one tile per tiling and we will use as many weights as there are tiles. The feature vector is then just a one-hot vector of all active tiles.
 
@@ -183,7 +183,7 @@ print(res$steps)
 
 #### Neural Network
 
-To use a neural network you have to specify a \code{keras} model. Here is an example:
+To use a neural network you have to specify a `keras` model. Here is an example:
 
 ```{r, eval = FALSE}
 env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)

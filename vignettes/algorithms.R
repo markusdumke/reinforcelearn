@@ -174,7 +174,7 @@ random.policy = matrix(1 / env$n.actions, nrow = env$n.states,
   ncol = env$n.actions)
 
 # Estimate state value function with TD(0)
-res = td(env, random.policy, n.episodes = 100, lambda = 0.5)
+res = td(env, random.policy, n.episodes = 20, lambda = 0.5)
 print(res$V)
 
 ## ------------------------------------------------------------------------

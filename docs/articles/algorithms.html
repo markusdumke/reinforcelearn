@@ -195,7 +195,7 @@ env<span class="op">$</span><span class="kw">reset</span>()
 <div id="preprocessing-the-state" class="section level4">
 <h4 class="hasAnchor">
 <a href="#preprocessing-the-state" class="anchor"></a>Preprocessing the state</h4>
-<p>The raw state observation returned from the environment must be preprocessed using the  argument. This function takes the state observation as input and returns a preprocessed state which can be directly used by the function approximator. To use a tabular value function  must return an integer value between [0, number of states - 1]. For linear function approximation the output of  must be a matrix with one row. For a neural network you have to make sure that the dimensions of the preprocessed state and the neural network match, so that  works.</p>
+<p>The raw state observation returned from the environment must be preprocessed using the <code>preprocessState</code> argument. This function takes the state observation as input and returns a preprocessed state which can be directly used by the function approximator. To use a tabular value function <code>preprocessState</code> must return an integer value between [0, number of states - 1]. For linear function approximation the output of <code>preprocessState</code> must be a matrix with one row. For a neural network you have to make sure that the dimensions of the preprocessed state and the neural network match, so that <code>model$predict(preprocessState(envir$state))</code> works.</p>
 <p>But how to get a good feature vector from the state observation? One idea is to use grid tiling <span class="citation">(Sutton and Barto 2017)</span> to aggregate the state space. Each tiling is a grid which overlays the state space. A state observation then falls into one tile per tiling and we will use as many weights as there are tiles. The feature vector is then just a one-hot vector of all active tiles.</p>
 <p><img src="gridtiling.JPG" width="300px" style="display: block; margin: auto;"></p>
 <p>We can define a function, which takes the original state observation as an input and returns a preprocessed state observation.</p>
@@ -226,7 +226,7 @@ gridTiling =<span class="st"> </span><span class="cf">function</span>(state) {
 <div id="neural-network" class="section level4">
 <h4 class="hasAnchor">
 <a href="#neural-network" class="anchor"></a>Neural Network</h4>
-<p>To use a neural network you have to specify a  model. Here is an example:</p>
+<p>To use a neural network you have to specify a <code>keras</code> model. Here is an example:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="dv">15</span>, <span class="dt">initial.state =</span> <span class="dv">0</span>)
 
 <span class="co"># Use a neural network as function approximator</span>

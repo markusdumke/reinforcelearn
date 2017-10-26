@@ -133,36 +133,36 @@ env<span class="op">$</span><span class="kw">step</span>(<span class="dv">1</spa
 env =<span class="st"> </span><span class="kw"><a href="../reference/windyGridworld.html">windyGridworld</a></span>()
 res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env)
 res<span class="op">$</span>steps
-<span class="co">#&gt;   [1] 1672 1004  699  354  582  194  209  159  335  154   41  177  309  204</span>
-<span class="co">#&gt;  [15]   67  131  196  247  190   59  182  102   47   24   77  204  117  218</span>
-<span class="co">#&gt;  [29]  146   64   61   53  197  104  225   25   64   62  119   91  145   20</span>
-<span class="co">#&gt;  [43]  113   50  111   46   40  175   34   65  117   79  174   39   33   70</span>
-<span class="co">#&gt;  [57]   80  104   76  139   25  118   34  155   74   28   33   38   41   55</span>
-<span class="co">#&gt;  [71]   33   71  110   80   32   31  141   58   85   82   46   64   42   65</span>
-<span class="co">#&gt;  [85]  130   32   25   88   84  119   24   43   33   46   25   41  158   46</span>
-<span class="co">#&gt;  [99]   85   22</span></code></pre></div>
+<span class="co">#&gt;   [1]  912 1626  695  354  562   65  347  344  213   71  208  422  149   39</span>
+<span class="co">#&gt;  [15]  191   85  140  343  101  188   70  178  178   65  103   83   50  146</span>
+<span class="co">#&gt;  [29]  102  123  107  124   68  109   85  297   36   36   41   82   29  190</span>
+<span class="co">#&gt;  [43]  205   44   75  116   61   48   24  123   64   77   31  103   69   97</span>
+<span class="co">#&gt;  [57]  120   54  146  149  103   37   86   48   85   32   54   30   28   31</span>
+<span class="co">#&gt;  [71]   38  108   71   48  208   26   35   32   79   53   90   72   45   91</span>
+<span class="co">#&gt;  [85]   64   54   65   48   72   97   35   22  110   70   31   67   24   45</span>
+<span class="co">#&gt;  [99]   53  108</span></code></pre></div>
 <p>The algorithms return the state or action value function, sometimes also the policy and some statistics about learning behaviour, e.g. the number of steps per episode.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Show value of each state.</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -7.2 -7.5 -7.9 -8.6 -9.2 -9.4 -8.8 -7.9 -6.9  -6.0</span>
-<span class="co">#&gt; [2,] -7.0 -7.1 -7.2 -7.7 -7.8 -7.4 -6.2 -5.2 -5.3  -5.0</span>
-<span class="co">#&gt; [3,] -6.8 -6.6 -6.5 -6.8 -6.4 -5.5 -4.5 -3.0 -4.1  -4.0</span>
-<span class="co">#&gt; [4,] -6.6 -6.2 -5.9 -5.9 -5.1 -3.6 -2.7  0.0 -2.8  -3.0</span>
-<span class="co">#&gt; [5,] -6.0 -5.6 -5.2 -5.1 -3.7 -2.6  0.0 -0.5 -1.0  -2.0</span>
-<span class="co">#&gt; [6,] -5.4 -5.1 -4.6 -4.1 -2.8  0.0  0.0 -0.1 -0.9  -1.4</span>
-<span class="co">#&gt; [7,] -5.1 -4.7 -4.1 -3.4  0.0  0.0  0.0  0.0 -0.3  -0.9</span></code></pre></div>
+<span class="co">#&gt; [1,] -7.2 -7.4 -7.9 -8.6 -9.2 -9.4 -8.8 -7.9 -6.9  -6.0</span>
+<span class="co">#&gt; [2,] -7.0 -7.1 -7.2 -7.8 -7.7 -7.4 -6.3 -5.2 -5.1  -5.0</span>
+<span class="co">#&gt; [3,] -6.8 -6.7 -6.6 -6.9 -6.5 -5.3 -4.6 -3.0 -4.0  -4.0</span>
+<span class="co">#&gt; [4,] -6.6 -6.2 -6.0 -5.9 -5.2 -3.7 -2.8  0.0 -2.8  -3.0</span>
+<span class="co">#&gt; [5,] -6.0 -5.7 -5.3 -5.1 -3.8 -2.6  0.0 -0.4 -1.0  -2.0</span>
+<span class="co">#&gt; [6,] -5.4 -5.1 -4.7 -4.2 -2.9  0.0  0.0 -0.1 -0.9  -1.4</span>
+<span class="co">#&gt; [7,] -5.1 -4.7 -4.1 -3.4  0.0  0.0  0.0  0.0 -0.3  -0.8</span></code></pre></div>
 <p>We can then get the policy by taking the argmax over the action value function Q.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span>1L
 <span class="kw">print</span>(<span class="kw">matrix</span>(policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    0    3    2    0    1    0    1    2    1     3</span>
-<span class="co">#&gt; [2,]    0    3    3    1    3    2    1    1    2     3</span>
-<span class="co">#&gt; [3,]    1    2    1    2    3    1    3    3    1     3</span>
-<span class="co">#&gt; [4,]    2    3    1    0    0    3    3    0    1     3</span>
-<span class="co">#&gt; [5,]    3    3    0    3    1    1    3    3    0     0</span>
-<span class="co">#&gt; [6,]    3    1    3    1    2    1    3    0    0     3</span>
-<span class="co">#&gt; [7,]    1    1    1    1    1    2    3    2    0     0</span></code></pre></div>
+<span class="co">#&gt; [1,]    3    0    0    0    1    3    1    1    1     3</span>
+<span class="co">#&gt; [2,]    3    1    3    0    3    0    1    3    0     3</span>
+<span class="co">#&gt; [3,]    1    1    2    1    2    3    2    0    1     3</span>
+<span class="co">#&gt; [4,]    3    3    3    1    1    3    1    0    0     3</span>
+<span class="co">#&gt; [5,]    1    3    3    1    1    2    2    3    0     0</span>
+<span class="co">#&gt; [6,]    0    1    3    1    1    2    1    0    1     3</span>
+<span class="co">#&gt; [7,]    2    0    1    0    2    3    3    1    0     1</span></code></pre></div>
 <p>To learn more about algorithms implemented in <code>reinforcelearn</code> have a look at the <a href="algorithms.html">How to solve an environment?</a> vignette.</p>
 <hr>
 <p>Also have a look at the other vignettes:</p>
