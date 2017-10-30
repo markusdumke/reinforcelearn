@@ -6,14 +6,14 @@ library(reinforcelearn)
 set.seed(123)
 
 ## ------------------------------------------------------------------------
-# Windy gridworld environment
+# Gridworld environment
 env = makeGridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
 
 res = qlearning(env, n.episodes = 20)
 # Note: to find a good policy we need to run more episodes.
 
 ## ------------------------------------------------------------------------
-print(res$Q)
+print(round(res$Q1, 2))
 
 ## ------------------------------------------------------------------------
 # Values of each grid cell
@@ -63,7 +63,7 @@ Q = matrix(100, nrow = env$n.states, ncol = env$n.actions)
 res = qlearning(env, n.episodes = 5, initial.value = Q)
 
 # After 5 episodes the Q values will still be similar to 100.
-print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
+print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 4, byrow = TRUE))
 
 ## ------------------------------------------------------------------------
 env = mountainCar()
@@ -103,7 +103,7 @@ print(res$steps)
 ## ---- eval = FALSE-------------------------------------------------------
 #  env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
 #  
-#  # Use a neural network as function approximator
+#  # A one-hot feature vector
 #  makeOneHot = function(state) {
 #    one.hot = matrix(rep(0, env$n.states), nrow = 1)
 #    one.hot[1, state + 1] = 1
@@ -197,7 +197,7 @@ print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 ## ------------------------------------------------------------------------
 # Find optimal policy using Value Iteration
 res = iterateValue(env, n.iter = 100)
-print(res$policy)
+print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 
 ## ------------------------------------------------------------------------
 env = mountainCar()
@@ -231,7 +231,6 @@ env = makeGridworld(shape = c(4, 12), goal.states = 47,
   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 
 res = actorCritic(env, n.episodes = 20, lambda.actor = 0.5, lambda.critic = 0.8)
-print(res$returns)
 
 ## ------------------------------------------------------------------------
 # Define reward function

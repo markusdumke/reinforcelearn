@@ -19,7 +19,7 @@ h1.title {
 knitr::opts_chunk$set(message = FALSE, eval = TRUE, collapse = TRUE, comment = "#>")
 ```
 
-This vignette explains the reinforcement learning algorithms implemented in `reinforcelearn`. 
+This vignette explains how to use the reinforcement learning algorithms implemented in `reinforcelearn`. 
 For details of how to create an environment have a look at the [How to create an environment?](environments.html) vignette.
 
 ```{r}
@@ -36,7 +36,7 @@ Q(sigma), Q-Learning, Expected Sarsa and Sarsa build a family of reinforcement l
 In `reinforcelearn` you can use the `qlearning`, `sarsa`, `expectedSarsa` and `qSigma` functions. In the following we will train on a simple gridworld navigation task. The first argument of these algorithms is called `envir`, where the environment can be specified. The number of episodes can be specified via `n.episodes`.
 
 ```{r}
-# Windy gridworld environment
+# Gridworld environment
 env = makeGridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
 
 res = qlearning(env, n.episodes = 20)
@@ -46,7 +46,7 @@ res = qlearning(env, n.episodes = 20)
 These functions return the action value function $Q$ (here a matrix).
 
 ```{r}
-print(res$Q)
+print(round(res$Q1, 2))
 ```
 
 We can then find a policy by acting greedily with respect to the action value function.
@@ -120,7 +120,7 @@ print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 4, byrow = TRUE))
 ### Function Approximation
 
 So far the value function has been represented as a table (number of states x number of actions).
-In many interesting problems there are lots of states and actions or the space is continuous. Then it is inpractical to store a tabular value function and to slow to update state-action pairs individually. The solution is to approximate the value function with a function approximator, e.g. a linear combination of features.
+In many interesting problems there are lots of states and actions or the space is continuous. Then it is impractical to store a tabular value function and to slow to update state-action pairs individually. The solution is to approximate the value function with a function approximator, e.g. a linear combination of features.
 
 In the following we will have a look at the mountain car problem, where the goal is to drive an underpowered car up a steep hill. The state space is continuous in two dimensions, the position and velocity of the car, each bounded in some interval. There are three different actions: push back (0), do nothing (1) and push forward (2).
 
@@ -188,7 +188,7 @@ To use a neural network you have to specify a `keras` model. Here is an example:
 ```{r, eval = FALSE}
 env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
 
-# Use a neural network as function approximator
+# A one-hot feature vector
 makeOneHot = function(state) {
   one.hot = matrix(rep(0, env$n.states), nrow = 1)
   one.hot[1, state + 1] = 1
@@ -269,7 +269,7 @@ print(res$steps)
 As a default experiences will be randomly sampled from the replay memory. A prioritized experience replay prioritizes experiences with a high error [@schaul2015].
 
 When $\alpha = 0$ (the default) experiences are sampled with equal probability else experiences with a high error have a higher probability of being sampled.
-To each priority a small positive constant $\theta$ is added to prevent that experiences with an error of 0 are never replayed.
+A small positive constant $\theta$ is added to each priority to prevent that experiences with an error of 0 are never replayed.
 
 ```{r}
 # Prioritized experience replay
@@ -278,7 +278,7 @@ res = sarsa(env, replay.memory.size = 100, batch.size = 32,
 print(res$steps)
 ```
 
-----
+---
 
 There are other algorithms implemented in the package which will be described in the following.
 
@@ -311,7 +311,7 @@ res = td(env, random.policy, n.episodes = 20, lambda = 0.5)
 print(res$V)
 ```
 
-----
+---
 
 ### Dynamic Programming
 
@@ -358,7 +358,7 @@ print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 
 `evaluatePolicy`, `iteratePolicy` and `iterateValue` return a list with state value function, action value function and policy.
 
-----
+---
 
 ### Actor Critic
 
@@ -408,10 +408,9 @@ env = makeGridworld(shape = c(4, 12), goal.states = 47,
   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 
 res = actorCritic(env, n.episodes = 20, lambda.actor = 0.5, lambda.critic = 0.8)
-print(res$returns)
 ```
 
-----
+---
 
 ### Multi-armed Bandit
 
@@ -479,4 +478,6 @@ Have a look at the other vignettes:
 
 - [How to create an environment?](environments.html)
 
-----
+---
+
+### References
