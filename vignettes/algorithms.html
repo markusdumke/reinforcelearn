@@ -265,7 +265,8 @@ gridTiling = function(state) {
   makeNHot(active.tiles, max.size, out = &quot;vector&quot;)
 }</code></pre>
 <p>We can then pass this function to the <code>preprocessState</code> argument in <code>qlearning</code>. Via the <code>fun.approx</code> argument we tell the algorithm to use a linear combination of features to approximate the value function. Currently <code>fun.approx</code> supports <code>table</code>, <code>linear</code> and <code>neural.network</code>.</p>
-<pre class="r"><code>res = qlearning(env, fun.approx = &quot;linear&quot;, preprocessState = gridTiling, n.episodes = 20)
+<pre class="r"><code>res = qlearning(env, fun.approx = &quot;linear&quot;, 
+  preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
 #&gt;  [1] 1315  838  584  529  369  322  242  233  302  272  235  277  238  200
 #&gt; [15]  278  244  299  163  240  191</code></pre>
@@ -285,7 +286,8 @@ makeOneHot = function(state) {
 # Define keras model
 library(keras)
 model = keras_model_sequential()
-model %&gt;% layer_dense(units = env$n.actions, activation = 'linear', input_shape = c(env$n.states))
+model %&gt;% layer_dense(units = env$n.actions, activation = 'linear', 
+  input_shape = c(env$n.states))
 
 res = qSigma(env, fun.approx = &quot;neural.network&quot;, model = model,
   preprocessState = makeOneHot, n.episodes = 20)</code></pre>

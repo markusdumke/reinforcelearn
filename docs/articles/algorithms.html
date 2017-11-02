@@ -233,7 +233,8 @@ gridTiling =<span class="st"> </span><span class="cf">function</span>(state) {
   <span class="kw"><a href="../reference/makeNHot.html">makeNHot</a></span>(active.tiles, max.size, <span class="dt">out =</span> <span class="st">"vector"</span>)
 }</code></pre></div>
 <p>We can then pass this function to the <code>preprocessState</code> argument in <code>qlearning</code>. Via the <code>fun.approx</code> argument we tell the algorithm to use a linear combination of features to approximate the value function. Currently <code>fun.approx</code> supports <code>table</code>, <code>linear</code> and <code>neural.network</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">fun.approx =</span> <span class="st">"linear"</span>, <span class="dt">preprocessState =</span> gridTiling, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">fun.approx =</span> <span class="st">"linear"</span>, 
+  <span class="dt">preprocessState =</span> gridTiling, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
 <span class="co">#&gt;  [1] 1315  838  584  529  369  322  242  233  302  272  235  277  238  200</span>
 <span class="co">#&gt; [15]  278  244  299  163  240  191</span></code></pre></div>
@@ -254,7 +255,8 @@ makeOneHot =<span class="st"> </span><span class="cf">function</span>(state) {
 <span class="co"># Define keras model</span>
 <span class="kw">library</span>(keras)
 model =<span class="st"> </span><span class="kw">keras_model_sequential</span>()
-model <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">layer_dense</span>(<span class="dt">units =</span> env<span class="op">$</span>n.actions, <span class="dt">activation =</span> <span class="st">'linear'</span>, <span class="dt">input_shape =</span> <span class="kw">c</span>(env<span class="op">$</span>n.states))
+model <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">layer_dense</span>(<span class="dt">units =</span> env<span class="op">$</span>n.actions, <span class="dt">activation =</span> <span class="st">'linear'</span>, 
+  <span class="dt">input_shape =</span> <span class="kw">c</span>(env<span class="op">$</span>n.states))
 
 res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qSigma</a></span>(env, <span class="dt">fun.approx =</span> <span class="st">"neural.network"</span>, <span class="dt">model =</span> model,
   <span class="dt">preprocessState =</span> makeOneHot, <span class="dt">n.episodes =</span> <span class="dv">20</span>)</code></pre></div>

@@ -115,7 +115,8 @@ env = windyGridworld()
 #  # Start server from within R.
 #  package.path = system.file(package = "reinforcelearn")
 #  path2pythonfile = paste0(package.path, "/gym_http_server.py")
-#  system2("python", args = path2pythonfile, stdout = NULL, wait = FALSE, invisible = FALSE)
+#  system2("python", args = path2pythonfile, stdout = NULL,
+#    wait = FALSE, invisible = FALSE)
 #  
 #  env = makeEnvironment("MountainCar-v0")
 

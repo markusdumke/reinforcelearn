@@ -97,7 +97,8 @@ gridTiling = function(state) {
 }
 
 ## ------------------------------------------------------------------------
-res = qlearning(env, fun.approx = "linear", preprocessState = gridTiling, n.episodes = 20)
+res = qlearning(env, fun.approx = "linear", 
+  preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
 
 ## ---- eval = FALSE-------------------------------------------------------
@@ -113,7 +114,8 @@ print(res$steps)
 #  # Define keras model
 #  library(keras)
 #  model = keras_model_sequential()
-#  model %>% layer_dense(units = env$n.actions, activation = 'linear', input_shape = c(env$n.states))
+#  model %>% layer_dense(units = env$n.actions, activation = 'linear',
+#    input_shape = c(env$n.states))
 #  
 #  res = qSigma(env, fun.approx = "neural.network", model = model,
 #    preprocessState = makeOneHot, n.episodes = 20)

@@ -32,9 +32,9 @@ env = windyGridworld()
 # Solve environment using Sarsa
 res = sarsa(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  862 1908  752   81  452  273  421   82  158  322   94  223  251  110
-#> [15]  203   39  133  157   32  322  180  104   85   91  146   61  147  203
-#> [29]   76  168
+#>  [1]  780 1670 1010  305  384  157  212   82  260  250  379   85  248  319
+#> [15]   74  117   51  390  147   93   98  126   48  115  155  188  156  175
+#> [29]   35   74
 ```
 
 ------------------------------------------------------------------------
@@ -67,9 +67,9 @@ print(env)
 env$step(0)
 print(env)
 #> Number of steps: 1 
-#> State: 1 
+#> State: 0 
 #> Reward: 5 
-#> Done: TRUE
+#> Done: FALSE
 ```
 
 You can also create an environment from [OpenAI Gym](https://gym.openai.com/) via the `gym` package. You need to install all dependencies listed [here](https://github.com/openai/gym-http-api).
@@ -109,20 +109,20 @@ After you created an environment you can use various reinforcement learning algo
 env = windyGridworld()
 res = qlearning(env, n.episodes = 30)
 print(res$steps)
-#>  [1]  836 1799  690  271  476  220  690  208  248  125  143  327  125   51
-#> [15]  223   93  137  215  109  111   81   77  110  111  163  191   47  118
-#> [29]   43   59
+#>  [1]  970 1604  768  354  140  464  332  117  189  290  394  112  160  250
+#> [15]  138  269   44   81   88  129  218   43  115  108  122  144  120  197
+#> [29]  114   92
 
 # Show value of each state.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,] -4.7 -4.9 -5.4 -6.2 -6.9 -7.3 -7.3 -6.7 -5.9  -5.1
-#> [2,] -4.5 -4.5 -4.7 -5.0 -4.9 -3.7 -3.0 -3.9 -4.3  -4.3
-#> [3,] -4.2 -4.1 -4.0 -4.1 -3.3 -2.2 -1.2 -2.2 -3.2  -3.4
-#> [4,] -3.9 -3.6 -3.4 -3.0 -2.0 -0.8  0.0  0.0 -2.2  -2.6
-#> [5,] -3.4 -3.1 -2.7 -2.3 -1.1 -0.3  0.0 -0.3 -0.9  -1.8
-#> [6,] -2.9 -2.7 -2.2 -1.7 -0.7  0.0  0.0  0.0 -0.6  -1.1
-#> [7,] -2.7 -2.4 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7
+#> [1,] -4.8 -5.0 -5.6 -6.3 -7.0 -7.5 -7.4 -6.7 -5.9  -5.1
+#> [2,] -4.5 -4.6 -4.8 -5.2 -4.8 -4.1 -3.0 -3.8 -4.2  -4.2
+#> [3,] -4.3 -4.1 -4.1 -4.2 -3.4 -2.0 -1.1 -2.4 -3.3  -3.4
+#> [4,] -4.0 -3.7 -3.4 -3.1 -2.0 -0.8 -0.2  0.0 -2.2  -2.6
+#> [5,] -3.4 -3.2 -2.8 -2.3 -1.1 -0.3  0.0 -0.3 -0.9  -1.8
+#> [6,] -3.0 -2.7 -2.2 -1.7 -0.6  0.0  0.0  0.0 -0.7  -1.1
+#> [7,] -2.7 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7
 ```
 
 We can then get the policy by taking the argmax over the action value function Q.
@@ -131,13 +131,13 @@ We can then get the policy by taking the argmax over the action value function Q
 policy = max.col(res$Q1) - 1L
 print(matrix(policy, ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,]    1    3    3    0    0    0    0    1    1     2
-#> [2,]    0    1    3    3    3    3    2    0    3     1
-#> [3,]    1    3    3    1    0    3    1    3    0     0
-#> [4,]    3    0    3    3    2    3    3    0    0     0
-#> [5,]    3    3    0    2    3    3    0    3    0     0
-#> [6,]    3    2    2    1    1    2    1    3    3     0
-#> [7,]    2    1    2    2    0    3    2    2    3     0
+#> [1,]    3    0    3    3    1    0    1    1    1     3
+#> [2,]    1    1    0    0    3    3    2    2    2     3
+#> [3,]    1    3    3    2    0    3    1    0    3     3
+#> [4,]    1    0    3    1    2    3    0    2    1     3
+#> [5,]    3    0    3    0    3    0    1    3    0     3
+#> [6,]    3    3    3    0    1    1    2    3    0     3
+#> [7,]    2    3    3    1    3    1    1    1    3     0
 ```
 
 For more details on algorithms have a look at the vignette: [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
