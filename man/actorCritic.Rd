@@ -93,7 +93,7 @@ rewardFun = function(state, action, n.state) {
     return(- 1)
   }
 }
-env = makeGridworld(shape = c(4, 12), goal.states = 47,
+env = gridworld(shape = c(4, 12), goal.states = 47,
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 
@@ -119,7 +119,7 @@ velocity.scale = n.tilings / (velocity.max - velocity.min)
 gridTiling = function(state) {
   state = c(position.scale * state[1], velocity.scale * state[2])
   active.tiles = tiles(iht, 8, state)
-  makeNHot(active.tiles, max.size, out = "vector")
+  nHot(active.tiles, max.size, out = "vector")
 }
 
 # Linear function approximation and softmax policy

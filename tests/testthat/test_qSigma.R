@@ -21,7 +21,7 @@ test_that("Test sampleActionFromPolicy", {
   expect_error(sampleActionFromPolicy(matrix(0, 0, 1)))
 })
 
-env = gridworld()
+env = smallGridworld()
 x = initializeReplayMemory(env, len = 1, identity)
 x2 = initializeReplayMemory(env, len = 1, preprocessState = function(x) 100)
 test_that("initializeReplayMemory works", {
@@ -156,7 +156,7 @@ test_that("unprioritized experience replay works", {
 
 # to see if it converges, test with n.episodes = 500,
 # then episodes should finish close the optimal solution of -4
-env = makeGridworld(shape = c(3, 3), goal.states = 8, initial.state = 0)
+env = gridworld(shape = c(3, 3), goal.states = 8, initial.state = 0)
 test_that("runEpisode works without errors for tabular value function", {
   expect_error(qSigma(env, n.episodes = 2), NA)
   expect_error(qSigma(env, n.episodes = 2, double.learning = TRUE), NA)
@@ -167,7 +167,7 @@ test_that("runEpisode works without errors for tabular value function", {
     batch.size = 5, double.learning = TRUE), NA)
 })
 
-makeOneHot = function(state) {
+oneHot = function(state) {
   one.hot = matrix(rep(0, env$n.states), nrow = 1)
   one.hot[1, state + 1] = 1
   one.hot
@@ -175,17 +175,17 @@ makeOneHot = function(state) {
 
 test_that("runEpisode works without errors for linear value function", {
   expect_error(qSigma(env, n.episodes = 2, fun.approx = "linear",
-    preprocessState = makeOneHot), NA)
+    preprocessState = oneHot), NA)
   expect_error(qSigma(env, n.episodes = 2, fun.approx = "linear",
-    preprocessState = makeOneHot, double.learning = TRUE), NA)
+    preprocessState = oneHot, double.learning = TRUE), NA)
   expect_error(qSigma(env, n.episodes = 2, fun.approx = "linear",
-    preprocessState = makeOneHot, lambda = 0.7), NA)
+    preprocessState = oneHot, lambda = 0.7), NA)
   expect_error(qSigma(env, n.episodes = 2, fun.approx = "linear",
-    preprocessState = makeOneHot, lambda = 0.7, double.learning = TRUE), NA)
+    preprocessState = oneHot, lambda = 0.7, double.learning = TRUE), NA)
   expect_error(qSigma(env, n.episodes = 2, fun.approx = "linear",
-    preprocessState = makeOneHot, replay.memory.size = 10, batch.size = 5), NA)
+    preprocessState = oneHot, replay.memory.size = 10, batch.size = 5), NA)
   expect_error(qSigma(env, n.episodes = 2, fun.approx = "linear", double.learning = TRUE,
-    preprocessState = makeOneHot, replay.memory.size = 10, batch.size = 5), NA)
+    preprocessState = oneHot, replay.memory.size = 10, batch.size = 5), NA)
 })
 
 if (requireNamespace("keras", quietly = TRUE)) {
@@ -195,7 +195,7 @@ if (requireNamespace("keras", quietly = TRUE)) {
 
   test_that("runEpisode works without errors for neural network value function", {
     expect_error(qSigma(env, n.episodes = 2, fun.approx = "neural.network",
-      model = model, preprocessState = makeOneHot), NA)
+      model = model, preprocessState = oneHot), NA)
   })
 }
 

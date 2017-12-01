@@ -107,7 +107,7 @@ print(env$state)
 
 # Specify a custom reward function.
 sampleReward = function(state, action, n.state) {
-  if (state == 2 & action == 1L) {
+  if (state == 2 && action == 1L) {
     rexp(1)
   } else {
     rnorm(1)
@@ -119,7 +119,7 @@ env$step(1)
 print(env$reward)
 
 # Gridworld Environment
-grid = makeGridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
+grid = gridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
 
 \dontrun{
 # Create an OpenAI Gym environment.
@@ -150,6 +150,6 @@ env$close()
 
 }
 \seealso{
-Create gridworlds with \code{\link{makeGridworld}}.
+Create gridworlds with \code{\link{gridworld}}.
 For the mountain car environment have a look at \code{\link{mountainCar}}.
 }

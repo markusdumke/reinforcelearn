@@ -2,33 +2,112 @@
 % Please edit documentation in R/makeGridworld.R
 \name{gridworld}
 \alias{gridworld}
-\title{Example Gridworld}
+\title{Create Gridworld}
 \usage{
-gridworld()
+gridworld(shape = NULL, goal.states = NULL, cliff.states = NULL,
+  reward.step = -1, reward.cliff = -100, diagonal.moves = FALSE,
+  wind = rep(0, shape[2]), cliff.transition.states = NULL,
+  cliff.transition.done = FALSE, stochasticity = 0, ...)
+}
+\arguments{
+\item{shape}{[\code{integer(2)}] \cr
+Shape of the gridworld (number of rows x number of columns).}
+
+\item{goal.states}{[\code{integer}] \cr
+Goal states in the gridworld.}
+
+\item{cliff.states}{[\code{integer}] \cr
+Cliff states in the gridworld.}
+
+\item{reward.step}{[\code{integer(1)}] \cr
+Reward for taking a step.}
+
+\item{reward.cliff}{[\code{integer(1)}] \cr
+Reward for taking a step in the cliff state.}
+
+\item{diagonal.moves}{[\code{logical(1)}] \cr
+Should diagonal moves be allowed?}
+
+\item{wind}{[\code{integer}] \cr
+Strength of the upward wind in each cell.}
+
+\item{cliff.transition.states}{[\code{integer}] \cr
+States to which the environment transitions if stepping into the cliff.
+If it is a vector, all states will have equal probability.
+Only used when \code{cliff.transition.done == FALSE},
+else specify the \code{initial.state} argument.}
+
+\item{cliff.transition.done}{[\code{logical(1)}] \cr
+Should the episode end after stepping into the cliff?}
+
+\item{stochasticity}{[\code{numeric(1)}] \cr
+Probability of random transition to any of the neighboring states when taking any action.}
+
+\item{...}{Arguments passed on to \code{\link{makeEnvironment}}.}
 }
 \value{
 [\code{R6 Class}] \cr
-Reinforcement Learning environment.
+  \code{gridworld} computes the state transition array and reward matrix and passes these arguments
+  on to \code{\link{makeEnvironment}}. The output is an R6 class, the reinforcement learning environment.
 }
 \description{
-Simple gridworld environment for reinforcement learning.
-Grid of shape 4x4 with two goal states in the upper left and
-bottom right of the grid. Episodes start in any of the other
-states. Possible actions include going left, right, up and down.
+\code{gridworld} creates gridworld environments.
 }
 \details{
-This is the gridworld (goal state denoted G):
+A gridworld is an episodic navigation task, the goal is to get from start state to goal state.
+
+Possible actions include going left, right, up or down. If \code{diagonal.moves = TRUE} diagonal
+moves are also possible, leftup, leftdown, rightup and rightdown.
+
+When stepping into a cliff state you get a reward of \code{reward.cliff},
+usually a high negative reward and transition to a state specified by \code{cliff.transition.states}.
+
+In each column a deterministic wind specified via \code{wind} pushes you up a specific number of
+grid cells (for the next action).
+
+A stochastic gridworld is a gridworld where with probability \code{stochasticity} the next state
+is chosen at random from all neighbor states independent of the actual action.
+
+If an action would take you off the grid, the new state is the nearest cell inside the grid.
+For each step you get a reward of \code{reward.step}, until you reach a goal state,
+then the episode is done.
+
+States are enumerated row-wise and numeration starts with 0.
+Here is an example 4x4 grid:
 \tabular{rrrr}{
- G \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab G \cr
+ 0 \tab 1 \tab 2 \tab 3 \cr
+ 4 \tab 5 \tab 6 \tab 7 \cr
+ 8 \tab 9 \tab 10 \tab 11 \cr
+ 12 \tab 13 \tab 14 \tab 15 \cr
 }
+So a board position could look like this (G: goal state, x: current state, C: cliff state):
+\tabular{rrrr}{
+ G \tab o \tab o \tab o \cr
+ o \tab o \tab o \tab o \cr
+ o \tab x \tab o \tab o \cr
+ o \tab o \tab o \tab C \cr
+}
+
+A few gridworlds are already included in the package and can be loaded by typing
+\code{\link{gridworld}}, \code{\link{windyGridworld}} and \code{\link{cliff}}.
 }
 \examples{
-env = gridworld()
+# Gridworld Environment (Sutton & Barto Example 4.1)
+simple.gridworld = gridworld(shape = c(4, 4), goal.states = c(0, 15))
+
+# Windy Gridworld (Sutton & Barto Example 6.5)
+windy.gridworld = gridworld(shape = c(7, 10), goal.states = 37,
+  reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
+
+# Cliff Walking (Sutton & Barto Example 6.6)
+cliff = gridworld(shape = c(4, 12), goal.states = 47,
+  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
+  cliff.transition.states = 36, initial.state = 36)
 
 }
 \references{
-Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 4.1
+Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction
+}
+\seealso{
+\code{\link{makeEnvironment}}
 }

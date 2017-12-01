@@ -12,10 +12,10 @@ reference:
     desc: Creation of reinforcement learning environments and example environments.
     contents:
     - makeEnvironment
-    - makeGridworld
+    - gridworld
     - mountainCar
     - windyGridworld
-    - gridworld
+    - smallGridworld
     - cliff
   - title: Algorithms
     desc: Reinforcement learning algorithms, dynamic programming, value- and policy-based methods, actor critic, monte carlo and temporal-difference learning.
@@ -29,6 +29,6 @@ reference:
     contents:
     - tiles
     - IHT
-    - makeNHot
+    - nHot
     - identity2
 

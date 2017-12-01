@@ -240,7 +240,7 @@ velocity.scale = n.tilings / (velocity.max - velocity.min)
 gridTiling = function(state) {
   state = c(position.scale * state[1], velocity.scale * state[2])
   active.tiles = tiles(iht, 8, state)
-  makeNHot(active.tiles, max.size, out = "vector")
+  nHot(active.tiles, max.size, out = "vector")
 }
 
 set.seed(123)
@@ -248,10 +248,10 @@ res = sarsa(m, fun.approx = "linear", preprocessState = gridTiling, n.episodes =
 print(res$returns)
 
 \dontrun{
-env = makeGridworld(c(3, 3), goal.states = 8, initial.state = 0)
+env = gridworld(c(3, 3), goal.states = 8, initial.state = 0)
 
 # Use a neural network as function approximator
-makeOneHot = function(state) {
+oneHot = function(state) {
   one.hot = matrix(rep(0, 9), nrow = 1)
   one.hot[1, state + 1] = 1
   one.hot
@@ -263,7 +263,7 @@ model = keras_model_sequential()
 model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(9))
 
 res = qSigma(env, fun.approx = "neural.network", model = model,
-  preprocessState = makeOneHot, n.episodes = 20)
+  preprocessState = oneHot, n.episodes = 20)
 }
 
 }

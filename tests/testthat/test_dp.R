@@ -14,7 +14,7 @@ test_that("getActionValue does the right thing", {
   expect_equal(res, matrix(c(0, 0.5, 0, 0.8, 0, 0.6), nrow = 2, ncol = 3))
 })
 
-grid = gridworld()
+grid = smallGridworld()
 
 random.policy = matrix(1 / grid$n.actions, nrow = grid$n.states,
   ncol = grid$n.actions)

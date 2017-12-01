@@ -61,7 +61,7 @@
 #'     return(- 1)
 #'   }
 #' }
-#' env = makeGridworld(shape = c(4, 12), goal.states = 47,
+#' env = gridworld(shape = c(4, 12), goal.states = 47,
 #'   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
 #'   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 #'
@@ -87,7 +87,7 @@
 #' gridTiling = function(state) {
 #'   state = c(position.scale * state[1], velocity.scale * state[2])
 #'   active.tiles = tiles(iht, 8, state)
-#'   makeNHot(active.tiles, max.size, out = "vector")
+#'   nHot(active.tiles, max.size, out = "vector")
 #' }
 #'
 #' # Linear function approximation and softmax policy
@@ -124,20 +124,20 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
   checkmate::assertFunction(updateBeta)
   checkmate::assertFunction(updateLambdaActor)
   checkmate::assertFunction(updateLambdaCritic)
-  if (fun.approx == "table" & policy == "gaussian") {
+  if (fun.approx == "table" && policy == "gaussian") {
     warning("Function approximation needs to be linear when using gaussian policy!")
   }
-  if (policy == "softmax" & envir$action.space != "Discrete") {
+  if (policy == "softmax" && envir$action.space != "Discrete") {
     stop("When using a softmax policy the action space must be 'Discrete'.")
   }
-  if (policy == "gaussian" & envir$action.space == "Discrete") {
+  if (policy == "gaussian" && envir$action.space == "Discrete") {
     stop("When using a gaussian policy the action space must be continuous.")
   }
 
   steps = rep(0, n.episodes)
   returns = rep(0, n.episodes)
 
-  if (fun.approx == "table" & policy == "softmax") {
+  if (fun.approx == "table" && policy == "softmax") {
     policy = matrix(1 / envir$n.actions, nrow = envir$n.states, ncol = envir$n.actions)
     h = matrix(0, nrow = envir$n.states, ncol = envir$n.actions)
     v = rep(0, envir$n.states)
@@ -160,7 +160,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
           delta = r - v[s + 1]
         }
         e.critic[s + 1] = e.critic[s + 1] + j
-        e.actor[s + 1, ] = e.actor[s + 1, ] + j * (makeNHot(a + 1, envir$n.actions) - policy[s + 1, ])
+        e.actor[s + 1, ] = e.actor[s + 1, ] + j * (nHot(a + 1, envir$n.actions) - policy[s + 1, ])
 
         v = v + beta * delta * e.critic
         h = h + alpha * j * delta * e.actor
@@ -186,7 +186,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
     return(list(policy = policy, v = v, steps = steps, returns = returns))
   }
 
-  if (fun.approx == "linear" & policy == "softmax") {
+  if (fun.approx == "linear" && policy == "softmax") {
     envir$reset()
     n.weights = length(preprocessState(envir$state))
     theta = matrix(0, nrow = n.weights, ncol = envir$n.actions)

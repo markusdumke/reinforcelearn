@@ -49,7 +49,7 @@
 #' @param render [\code{logical(1)}] \cr
 #'   Whether to render the OpenAI Gym environment. If \code{TRUE} a python window
 #'   with a graphical interface opens whenever the step method is called.
-#' @seealso Create gridworlds with \code{\link{makeGridworld}}.
+#' @seealso Create gridworlds with \code{\link{gridworld}}.
 #' For the mountain car environment have a look at \code{\link{mountainCar}}.
 #' @return [\code{R6 class}] \cr
 #'   Reinforcement Learning Environment.
@@ -87,7 +87,7 @@
 #'
 #' # Specify a custom reward function.
 #' sampleReward = function(state, action, n.state) {
-#'   if (state == 2 & action == 1L) {
+#'   if (state == 2 && action == 1L) {
 #'     rexp(1)
 #'   } else {
 #'     rnorm(1)
@@ -99,7 +99,7 @@
 #' print(env$reward)
 #'
 #' # Gridworld Environment
-#' grid = makeGridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
+#' grid = gridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
 #'
 #' \dontrun{
 #' # Create an OpenAI Gym environment.
@@ -303,7 +303,7 @@ envir = R6::R6Class("envir",
 
       if (is.null(reset)) {
         self$reset = function() {
-          self$n.steps = 0
+          self$n.steps = 0L
           self$state = ifelse(length(self$initial.state) > 1,
             sample(self$initial.state, size = 1), self$initial.state)
           self$previous.state = NULL

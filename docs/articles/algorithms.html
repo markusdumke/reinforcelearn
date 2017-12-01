@@ -59,14 +59,7 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/markdumke/reinforcelearn">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -100,7 +93,7 @@ h1.title {
 <p>Q(sigma), Q-Learning, Expected Sarsa and Sarsa build a family of reinforcement learning algorithms, which can be used to find the optimal action value function using the principle of generalized policy iteration.</p>
 <p>In <code>reinforcelearn</code> you can use the <code>qlearning</code>, <code>sarsa</code>, <code>expectedSarsa</code> and <code>qSigma</code> functions. In the following we will train on a simple gridworld navigation task. The first argument of these algorithms is called <code>envir</code>, where the environment can be specified. The number of episodes can be specified via <code>n.episodes</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gridworld environment</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="dv">15</span>, <span class="dt">initial.state =</span> <span class="dv">0</span>)
+env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="dv">15</span>, <span class="dt">initial.state =</span> <span class="dv">0</span>)
 
 res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
 <span class="co"># Note: to find a good policy we need to run more episodes.</span></code></pre></div>
@@ -230,7 +223,7 @@ velocity.scale =<span class="st"> </span>n.tilings <span class="op">/</span><spa
 gridTiling =<span class="st"> </span><span class="cf">function</span>(state) {
   state =<span class="st"> </span><span class="kw">c</span>(position.scale <span class="op">*</span><span class="st"> </span>state[<span class="dv">1</span>], velocity.scale <span class="op">*</span><span class="st"> </span>state[<span class="dv">2</span>])
   active.tiles =<span class="st"> </span><span class="kw"><a href="../reference/tilecoding.html">tiles</a></span>(iht, <span class="dv">8</span>, state)
-  <span class="kw"><a href="../reference/makeNHot.html">makeNHot</a></span>(active.tiles, max.size, <span class="dt">out =</span> <span class="st">"vector"</span>)
+  <span class="kw"><a href="../reference/nHot.html">nHot</a></span>(active.tiles, max.size, <span class="dt">out =</span> <span class="st">"vector"</span>)
 }</code></pre></div>
 <p>We can then pass this function to the <code>preprocessState</code> argument in <code>qlearning</code>. Via the <code>fun.approx</code> argument we tell the algorithm to use a linear combination of features to approximate the value function. Currently <code>fun.approx</code> supports <code>table</code>, <code>linear</code> and <code>neural.network</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qlearning</a></span>(env, <span class="dt">fun.approx =</span> <span class="st">"linear"</span>, 
@@ -243,10 +236,10 @@ gridTiling =<span class="st"> </span><span class="cf">function</span>(state) {
 <h4 class="hasAnchor">
 <a href="#neural-network" class="anchor"></a>Neural Network</h4>
 <p>To use a neural network you have to specify a <code>keras</code> model. Here is an example:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="dv">15</span>, <span class="dt">initial.state =</span> <span class="dv">0</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="dv">15</span>, <span class="dt">initial.state =</span> <span class="dv">0</span>)
 
 <span class="co"># A one-hot feature vector</span>
-makeOneHot =<span class="st"> </span><span class="cf">function</span>(state) {
+oneHot =<span class="st"> </span><span class="cf">function</span>(state) {
   one.hot =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rep</span>(<span class="dv">0</span>, env<span class="op">$</span>n.states), <span class="dt">nrow =</span> <span class="dv">1</span>)
   one.hot[<span class="dv">1</span>, state <span class="op">+</span><span class="st"> </span><span class="dv">1</span>] =<span class="st"> </span><span class="dv">1</span>
   one.hot
@@ -259,7 +252,7 @@ model <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">la
   <span class="dt">input_shape =</span> <span class="kw">c</span>(env<span class="op">$</span>n.states))
 
 res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">qSigma</a></span>(env, <span class="dt">fun.approx =</span> <span class="st">"neural.network"</span>, <span class="dt">model =</span> model,
-  <span class="dt">preprocessState =</span> makeOneHot, <span class="dt">n.episodes =</span> <span class="dv">20</span>)</code></pre></div>
+  <span class="dt">preprocessState =</span> oneHot, <span class="dt">n.episodes =</span> <span class="dv">20</span>)</code></pre></div>
 <p>Note that neural network training can be slow because at each step the Keras API is called.</p>
 </div>
 </div>
@@ -272,7 +265,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html
 <a href="#eligibility-traces" class="anchor"></a>Eligibility Traces</h4>
 <p>Eligibility traces assign credit for the error back to all previously visited states and actions <span class="citation">(Sutton and Barto 2017)</span>. The trace decay parameter <span class="math inline">\(\lambda\)</span> and the type of the eligibility trace can be specified as arguments.</p>
 <p>If <code>eligibility.type = 1</code> a replacing trace is used, if <code>eligibility.type = 0</code> an accumulating trace <span class="citation">(Singh and Sutton 1996)</span>. Intermediate values are also possible.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="dv">15</span>, <span class="dt">initial.state =</span> <span class="dv">0</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="dv">15</span>, <span class="dt">initial.state =</span> <span class="dv">0</span>)
 
 <span class="co"># Sarsa with replacing traces</span>
 res =<span class="st"> </span><span class="kw"><a href="../reference/qSigma.html">sarsa</a></span>(env, <span class="dt">lambda =</span> <span class="fl">0.9</span>, <span class="dt">eligibility.type =</span> <span class="dv">1</span>, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
@@ -371,7 +364,7 @@ res =<span class="st"> </span><span class="kw"><a href="../reference/td.html">td
 <p>Dynamic programming <span class="citation">(Sutton and Barto 2017)</span> is a class of solution methods solving a MDP not by interaction but by iterative computations using the state transition array and reward matrix. It can therefore only be applied when the model of the MDP is known.</p>
 <p>In R we can evaluate a policy with dynamic programming with the following code:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set up gridworld problem</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>()
+env =<span class="st"> </span><span class="kw"><a href="../reference/smallGridworld.html">smallGridworld</a></span>()
   
 <span class="co"># Define uniform random policy, take each action with equal probability</span>
 random.policy =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span>env<span class="op">$</span>n.actions, <span class="dt">nrow =</span> env<span class="op">$</span>n.states, 
@@ -445,7 +438,7 @@ rewardFun =<span class="st"> </span><span class="cf">function</span>(state, acti
     <span class="kw">return</span>(<span class="op">-</span><span class="st"> </span><span class="dv">1</span>)
   }
 }
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">12</span>), <span class="dt">goal.states =</span> <span class="dv">47</span>,
+env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">12</span>), <span class="dt">goal.states =</span> <span class="dv">47</span>,
   <span class="dt">cliff.states =</span> <span class="dv">37</span><span class="op">:</span><span class="dv">46</span>, <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">reward.cliff =</span> <span class="op">-</span><span class="st"> </span><span class="dv">100</span>,
   <span class="dt">cliff.transition.done =</span> <span class="ot">TRUE</span>, <span class="dt">initial.state =</span> <span class="dv">36</span>, <span class="dt">sampleReward =</span> rewardFun)
 

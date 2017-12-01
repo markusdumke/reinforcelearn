@@ -134,7 +134,7 @@ set.seed(123)</code></pre>
 <p>Q(sigma), Q-Learning, Expected Sarsa and Sarsa build a family of reinforcement learning algorithms, which can be used to find the optimal action value function using the principle of generalized policy iteration.</p>
 <p>In <code>reinforcelearn</code> you can use the <code>qlearning</code>, <code>sarsa</code>, <code>expectedSarsa</code> and <code>qSigma</code> functions. In the following we will train on a simple gridworld navigation task. The first argument of these algorithms is called <code>envir</code>, where the environment can be specified. The number of episodes can be specified via <code>n.episodes</code>.</p>
 <pre class="r"><code># Gridworld environment
-env = makeGridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
+env = gridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
 
 res = qlearning(env, n.episodes = 20)
 # Note: to find a good policy we need to run more episodes.</code></pre>
@@ -262,7 +262,7 @@ velocity.scale = n.tilings / (velocity.max - velocity.min)
 gridTiling = function(state) {
   state = c(position.scale * state[1], velocity.scale * state[2])
   active.tiles = tiles(iht, 8, state)
-  makeNHot(active.tiles, max.size, out = &quot;vector&quot;)
+  nHot(active.tiles, max.size, out = &quot;vector&quot;)
 }</code></pre>
 <p>We can then pass this function to the <code>preprocessState</code> argument in <code>qlearning</code>. Via the <code>fun.approx</code> argument we tell the algorithm to use a linear combination of features to approximate the value function. Currently <code>fun.approx</code> supports <code>table</code>, <code>linear</code> and <code>neural.network</code>.</p>
 <pre class="r"><code>res = qlearning(env, fun.approx = &quot;linear&quot;, 
@@ -274,10 +274,10 @@ print(res$steps)
 <div id="neural-network" class="section level4">
 <h4>Neural Network</h4>
 <p>To use a neural network you have to specify a <code>keras</code> model. Here is an example:</p>
-<pre class="r"><code>env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
+<pre class="r"><code>env = gridworld(c(4, 4), goal.states = 15, initial.state = 0)
 
 # A one-hot feature vector
-makeOneHot = function(state) {
+oneHot = function(state) {
   one.hot = matrix(rep(0, env$n.states), nrow = 1)
   one.hot[1, state + 1] = 1
   one.hot
@@ -290,7 +290,7 @@ model %&gt;% layer_dense(units = env$n.actions, activation = 'linear',
   input_shape = c(env$n.states))
 
 res = qSigma(env, fun.approx = &quot;neural.network&quot;, model = model,
-  preprocessState = makeOneHot, n.episodes = 20)</code></pre>
+  preprocessState = oneHot, n.episodes = 20)</code></pre>
 <p>Note that neural network training can be slow because at each step the Keras API is called.</p>
 </div>
 </div>
@@ -301,7 +301,7 @@ res = qSigma(env, fun.approx = &quot;neural.network&quot;, model = model,
 <h4>Eligibility Traces</h4>
 <p>Eligibility traces assign credit for the error back to all previously visited states and actions <span class="citation">(Sutton and Barto 2017)</span>. The trace decay parameter <span class="math inline">\(\lambda\)</span> and the type of the eligibility trace can be specified as arguments.</p>
 <p>If <code>eligibility.type = 1</code> a replacing trace is used, if <code>eligibility.type = 0</code> an accumulating trace <span class="citation">(Singh and Sutton 1996)</span>. Intermediate values are also possible.</p>
-<pre class="r"><code>env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
+<pre class="r"><code>env = gridworld(c(4, 4), goal.states = 15, initial.state = 0)
 
 # Sarsa with replacing traces
 res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 20)
@@ -396,7 +396,7 @@ print(res$V)
 <p>Dynamic programming <span class="citation">(Sutton and Barto 2017)</span> is a class of solution methods solving a MDP not by interaction but by iterative computations using the state transition array and reward matrix. It can therefore only be applied when the model of the MDP is known.</p>
 <p>In R we can evaluate a policy with dynamic programming with the following code:</p>
 <pre class="r"><code># Set up gridworld problem
-env = gridworld()
+env = smallGridworld()
   
 # Define uniform random policy, take each action with equal probability
 random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
@@ -469,7 +469,7 @@ rewardFun = function(state, action, n.state) {
     return(- 1)
   }
 }
-env = makeGridworld(shape = c(4, 12), goal.states = 47,
+env = gridworld(shape = c(4, 12), goal.states = 47,
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 

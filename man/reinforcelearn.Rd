@@ -12,8 +12,8 @@ Implementations of reinforcement learning algorithms and environments.
 
 \itemize{
 \item \link{makeEnvironment}
-\item \link{makeGridworld}
 \item \link{gridworld}
+\item \link{smallGridworld}
 \item \link{windyGridworld}
 \item \link{cliff}
 \item \link{mountainCar}

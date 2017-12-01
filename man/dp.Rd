@@ -80,7 +80,7 @@ specified number of iterations is exhausted.
 }
 \examples{
 # Set up gridworld problem
-env = gridworld()
+env = smallGridworld()
 
 # Define uniform random policy, take each action with equal probability
 random.policy = matrix(1 / env$n.actions, nrow = env$n.states,

@@ -84,12 +84,7 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/markdumke/reinforcelearn">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -407,17 +402,17 @@ are currently not available.</p>
 <span class='no'>gridTiling</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>state</span>) {
   <span class='no'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='no'>position.scale</span> * <span class='no'>state</span>[<span class='fl'>1</span>], <span class='no'>velocity.scale</span> * <span class='no'>state</span>[<span class='fl'>2</span>])
   <span class='no'>active.tiles</span> <span class='kw'>=</span> <span class='fu'><a href='tilecoding.html'>tiles</a></span>(<span class='no'>iht</span>, <span class='fl'>8</span>, <span class='no'>state</span>)
-  <span class='fu'><a href='makeNHot.html'>makeNHot</a></span>(<span class='no'>active.tiles</span>, <span class='no'>max.size</span>, <span class='kw'>out</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)
+  <span class='fu'><a href='nHot.html'>nHot</a></span>(<span class='no'>active.tiles</span>, <span class='no'>max.size</span>, <span class='kw'>out</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)
 }
 
 <span class='fu'>set.seed</span>(<span class='fl'>123</span>)
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>sarsa</span>(<span class='no'>m</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"linear"</span>, <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>gridTiling</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 840 steps with a return of -839</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 784 steps with a return of -783</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 684 steps with a return of -683</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 694 steps with a return of -693</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 318 steps with a return of -317</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 475 steps with a return of -474</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 270 steps with a return of -269</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 274 steps with a return of -273</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 235 steps with a return of -234</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 199 steps with a return of -198</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 276 steps with a return of -275</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 160 steps with a return of -159</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 213 steps with a return of -212</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 304 steps with a return of -303</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 216 steps with a return of -215</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 235 steps with a return of -234</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 224 steps with a return of -223</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 180 steps with a return of -179</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 153 steps with a return of -152</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 222 steps with a return of -221</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>res</span>$<span class='no'>returns</span>)</div><div class='output co'>#&gt;  [1] -839 -783 -683 -693 -317 -474 -269 -273 -234 -198 -275 -159 -212 -303 -215
 #&gt; [16] -234 -223 -179 -152 -221</div><div class='input'>
 </div><span class='co'># NOT RUN {</span>
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeGridworld.html'>makeGridworld</a></span>(<span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='gridworld.html'>gridworld</a></span>(<span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)
 
 <span class='co'># Use a neural network as function approximator</span>
-<span class='no'>makeOneHot</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>state</span>) {
+<span class='no'>oneHot</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>state</span>) {
   <span class='no'>one.hot</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>9</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>)
   <span class='no'>one.hot</span>[<span class='fl'>1</span>, <span class='no'>state</span> + <span class='fl'>1</span>] <span class='kw'>=</span> <span class='fl'>1</span>
   <span class='no'>one.hot</span>
@@ -429,7 +424,7 @@ are currently not available.</p>
 <span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/layer_dense'>layer_dense</a></span>(<span class='kw'>units</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>activation</span> <span class='kw'>=</span> <span class='st'>'linear'</span>, <span class='kw'>input_shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>9</span>))
 
 <span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>qSigma</span>(<span class='no'>env</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"neural.network"</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>model</span>,
-  <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>makeOneHot</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)
+  <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>oneHot</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)
 <span class='co'># }</span><div class='input'>
 </div></pre>
   </div>

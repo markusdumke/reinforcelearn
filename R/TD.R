@@ -55,7 +55,7 @@ td = function(envir, policy, fun.approx = "table", preprocessState = identity,
   checkmate::assertVector(initial.value, null.ok = TRUE)
   checkmate::assertFunction(updateLambda)
   checkmate::assertFunction(updateLearningRate)
-  if (is.null(n.steps) & is.null(n.episodes)) {
+  if (is.null(n.steps) && is.null(n.episodes)) {
     stop("Please specify either a maximal number of steps or episodes!")
   }
   if (fun.approx == "table") {
@@ -106,7 +106,7 @@ td = function(envir, policy, fun.approx = "table", preprocessState = identity,
   }
 
   while (TRUE) {
-    if (episode >= n.episodes | step >= n.steps) {
+    if (episode >= n.episodes || step >= n.steps) {
       break
     }
     action = getAction(state)

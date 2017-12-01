@@ -84,12 +84,7 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/markdumke/reinforcelearn">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -202,7 +197,7 @@ have a look at the vignette "How to create an environment?".</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Create gridworlds with <code><a href='makeGridworld.html'>makeGridworld</a></code>.
+    <p>Create gridworlds with <code><a href='gridworld.html'>gridworld</a></code>.
 For the mountain car environment have a look at <code><a href='mountainCar.html'>mountainCar</a></code>.</p>
     
 
@@ -223,7 +218,7 @@ For the mountain car environment have a look at <code><a href='mountainCar.html'
 <span class='no'>env</span>$<span class='fu'>reset</span>()</div><div class='output co'>#&gt; <span class='warning'>Warning: The starting state is a terminal state!</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>env</span>$<span class='no'>state</span>)</div><div class='output co'>#&gt; [1] 1</div><div class='input'>
 <span class='co'># Specify a custom reward function.</span>
 <span class='no'>sampleReward</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>state</span>, <span class='no'>action</span>, <span class='no'>n.state</span>) {
-  <span class='kw'>if</span> (<span class='no'>state</span> <span class='kw'>==</span> <span class='fl'>2</span> <span class='kw'>&amp;</span> <span class='no'>action</span> <span class='kw'>==</span> <span class='fl'>1L</span>) {
+  <span class='kw'>if</span> (<span class='no'>state</span> <span class='kw'>==</span> <span class='fl'>2</span> <span class='kw'>&amp;&amp;</span> <span class='no'>action</span> <span class='kw'>==</span> <span class='fl'>1L</span>) {
     <span class='fu'>rexp</span>(<span class='fl'>1</span>)
   } <span class='kw'>else</span> {
     <span class='fu'>rnorm</span>(<span class='fl'>1</span>)
@@ -234,7 +229,7 @@ For the mountain car environment have a look at <code><a href='mountainCar.html'
 <span class='no'>env</span>$<span class='fu'>step</span>(<span class='fl'>1</span>)
 <span class='fu'>print</span>(<span class='no'>env</span>$<span class='no'>reward</span>)</div><div class='output co'>#&gt; [1] -0.2713959</div><div class='input'>
 <span class='co'># Gridworld Environment</span>
-<span class='no'>grid</span> <span class='kw'>=</span> <span class='fu'><a href='makeGridworld.html'>makeGridworld</a></span>(<span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>4</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)</div><span class='co'># NOT RUN {</span>
+<span class='no'>grid</span> <span class='kw'>=</span> <span class='fu'><a href='gridworld.html'>gridworld</a></span>(<span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>4</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)</div><span class='co'># NOT RUN {</span>
 <span class='co'># Create an OpenAI Gym environment.</span>
 <span class='co'># Make sure you have Python and Gym installed.</span>
 <span class='co'># Start server from within R.</span>

@@ -1,6 +1,6 @@
-#' Make Gridworld
+#' Create Gridworld
 #'
-#' \code{makeGridworld} creates gridworld environments.
+#' \code{gridworld} creates gridworld environments.
 #'
 #' @param shape [\code{integer(2)}] \cr
 #'   Shape of the gridworld (number of rows x number of columns).
@@ -28,7 +28,7 @@
 #' @param ...
 #'   Arguments passed on to \code{\link{makeEnvironment}}.
 #' @return [\code{R6 Class}] \cr
-#'   \code{makeGridworld} computes the state transition array and reward matrix and passes these arguments
+#'   \code{gridworld} computes the state transition array and reward matrix and passes these arguments
 #'   on to \code{\link{makeEnvironment}}. The output is an R6 class, the reinforcement learning environment.
 #' @details
 #' A gridworld is an episodic navigation task, the goal is to get from start state to goal state.
@@ -73,18 +73,18 @@
 #' @export
 #' @examples
 #' # Gridworld Environment (Sutton & Barto Example 4.1)
-#' gridworld = makeGridworld(shape = c(4, 4), goal.states = c(0, 15))
+#' simple.gridworld = gridworld(shape = c(4, 4), goal.states = c(0, 15))
 #'
 #' # Windy Gridworld (Sutton & Barto Example 6.5)
-#' windy.gridworld = makeGridworld(shape = c(7, 10), goal.states = 37,
+#' windy.gridworld = gridworld(shape = c(7, 10), goal.states = 37,
 #'   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
 #'
 #' # Cliff Walking (Sutton & Barto Example 6.6)
-#' cliff = makeGridworld(shape = c(4, 12), goal.states = 47,
+#' cliff = gridworld(shape = c(4, 12), goal.states = 47,
 #'   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
 #'   cliff.transition.states = 36, initial.state = 36)
 #'
-makeGridworld = function(shape = NULL, goal.states = NULL, cliff.states = NULL,
+gridworld = function(shape = NULL, goal.states = NULL, cliff.states = NULL,
   reward.step = - 1, reward.cliff = - 100, diagonal.moves = FALSE, wind = rep(0, shape[2]),
   cliff.transition.states = NULL, cliff.transition.done = FALSE, stochasticity = 0, ...) {
 
@@ -102,7 +102,7 @@ makeGridworld = function(shape = NULL, goal.states = NULL, cliff.states = NULL,
   if (!is.null(cliff.transition.states)) {
     cliff.transition.states = cliff.transition.states + 1
   }
-  if (any(goal.states > prod(shape)) | any(cliff.states > prod(shape)) |
+  if (any(goal.states > prod(shape)) || any(cliff.states > prod(shape)) |
       any(cliff.transition.states > prod(shape))) {
     stop("All states must be inside the grid! States are numerated row-wise starting with 0, check Details!")
   }
@@ -270,10 +270,10 @@ getIntoBounds = function(new.states, n.col) {
 #' Reinforcement Learning environment.
 #' @export
 #' @examples
-#' env = gridworld()
+#' env = smallGridworld()
 #'
-gridworld = function() {
-  makeGridworld(shape = c(4, 4), goal.states = c(0, 15))
+smallGridworld = function() {
+  gridworld(shape = c(4, 4), goal.states = c(0, 15))
 }
 
 #' Windy Gridworld
@@ -308,7 +308,7 @@ gridworld = function() {
 #' env = windyGridworld()
 #'
 windyGridworld = function() {
-  makeGridworld(shape = c(7, 10), goal.states = 37,
+  gridworld(shape = c(7, 10), goal.states = 37,
     reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
 }
 
@@ -338,7 +338,7 @@ windyGridworld = function() {
 #' env = cliff()
 #'
 cliff = function() {
-  makeGridworld(shape = c(4, 12), goal.states = 47,
+  gridworld(shape = c(4, 12), goal.states = 47,
     cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
     cliff.transition.states = 36, initial.state = 36)
 }

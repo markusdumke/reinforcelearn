@@ -5,8 +5,8 @@
 #' @md
 #' @section Environments:
 #' * [makeEnvironment]
-#' * [makeGridworld]
 #' * [gridworld]
+#' * [smallGridworld]
 #' * [windyGridworld]
 #' * [cliff]
 #' * [mountainCar]

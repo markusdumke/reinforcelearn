@@ -125,9 +125,9 @@ IHTClass = R6::R6Class("IHT", public = list(
 #'   except the columns specified by \code{x}.
 #' @export
 #' @examples
-#' makeNHot(c(1, 3), 5)
-#' makeNHot(c(1, 3), 5, out = "vector")
-makeNHot = function(x, len, out = "matrix") {
+#' nHot(c(1, 3), 5)
+#' nHot(c(1, 3), 5, out = "vector")
+nHot = function(x, len, out = "matrix") {
   checkmate::assertIntegerish(x, max.len = len)
   checkmate::assertInt(len)
   if (out == "matrix") {

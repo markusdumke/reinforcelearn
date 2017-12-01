@@ -72,7 +72,7 @@ qSigmaAgent = R6::R6Class(public = list(
     self$episode.steps = rep(0, n.episodes)
     self$returns = rep(0, n.episodes)
 
-    if (replay.memory.size > 1 | !is.null(replay.memory)) {
+    if (replay.memory.size > 1 || !is.null(replay.memory)) {
       experience.replay = TRUE
     } else {
       experience.replay = FALSE
@@ -88,12 +88,12 @@ qSigmaAgent = R6::R6Class(public = list(
     }
 
     # eligibility only used if no experience replay is used
-    if (lambda > 0 & experience.replay == FALSE) {
+    if (lambda > 0 && experience.replay == FALSE) {
       eligibility = TRUE
     } else {
       eligibility = FALSE
     }
-    if (lambda > 0 & experience.replay) {
+    if (lambda > 0 && experience.replay) {
       warning("Eligibility traces are not used when training with experience replay!")
     }
 

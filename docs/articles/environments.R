@@ -54,7 +54,7 @@ print(env)
 
 ## ------------------------------------------------------------------------
 sampleReward = function(state, action, n.state) {
-  if (n.state == 0 & action == 1L) {
+  if (n.state == 0 && action == 1L) {
     0
   } else {
     rnorm(1)
@@ -70,28 +70,28 @@ knitr::include_graphics("gridworld.JPG")
 
 ## ------------------------------------------------------------------------
 # Gridworld Environment (Sutton & Barto (2017) Example 4.1)
-env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15))
+env = gridworld(shape = c(4, 4), goal.states = c(0, 15))
 print(env$states)
 print(env$actions)
 
 # Identical to the above call
-env = gridworld()
+env = smallGridworld()
 
 # Same gridworld, but with diagonal moves
-env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), 
+env = gridworld(shape = c(4, 4), goal.states = c(0, 15), 
   diagonal.moves = TRUE)
 print(env$actions)
 
 ## ------------------------------------------------------------------------
 # Gridworld with 10% random transitions
-env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
+env = gridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
 
 ## ---- out.width = "500px", fig.align = "center", echo = FALSE------------
 knitr::include_graphics("cliff.JPG")
 
 ## ------------------------------------------------------------------------
 # Cliff Walking (Sutton & Barto (2017) Example 6.6)   
-env = makeGridworld(shape = c(4, 12), goal.states = 47, 
+env = gridworld(shape = c(4, 12), goal.states = 47, 
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100, 
   cliff.transition.states = 36, initial.state = 36)
 
@@ -103,7 +103,7 @@ knitr::include_graphics("windygrid.PNG")
 
 ## ------------------------------------------------------------------------
 # Windy Gridworld (Sutton & Barto (2017) Example 6.5) 
-env = makeGridworld(shape = c(7, 10), goal.states = 37, 
+env = gridworld(shape = c(7, 10), goal.states = 37, 
   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
 
 # Identical to the above call

@@ -13,7 +13,7 @@ test_that("identity2 returns its first argument", {
 })
 
 
-test_that("makeNHot returns n hot vector", {
-  expect_equal(makeNHot(2, 4, out = "matrix"), matrix(c(0, 1, 0, 0), ncol = 4))
-  expect_equal(makeNHot(1, 2, out = "vector"), c(1, 0))
+test_that("nHot returns n hot vector", {
+  expect_equal(nHot(2, 4, out = "matrix"), matrix(c(0, 1, 0, 0), ncol = 4))
+  expect_equal(nHot(1, 2, out = "vector"), c(1, 0))
 })

@@ -84,12 +84,7 @@
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/markdumke/reinforcelearn">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -233,7 +228,7 @@ of features.</p>
     <span class='fu'>return</span>(- <span class='fl'>1</span>)
   }
 }
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeGridworld.html'>makeGridworld</a></span>(<span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>12</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>47</span>,
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='gridworld.html'>gridworld</a></span>(<span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>12</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>47</span>,
   <span class='kw'>cliff.states</span> <span class='kw'>=</span> <span class='fl'>37</span>:<span class='fl'>46</span>, <span class='kw'>reward.step</span> <span class='kw'>=</span> - <span class='fl'>1</span>, <span class='kw'>reward.cliff</span> <span class='kw'>=</span> - <span class='fl'>100</span>,
   <span class='kw'>cliff.transition.done</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>36</span>, <span class='kw'>sampleReward</span> <span class='kw'>=</span> <span class='no'>rewardFun</span>)
 
@@ -258,7 +253,7 @@ of features.</p>
 <span class='no'>gridTiling</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>state</span>) {
   <span class='no'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='no'>position.scale</span> * <span class='no'>state</span>[<span class='fl'>1</span>], <span class='no'>velocity.scale</span> * <span class='no'>state</span>[<span class='fl'>2</span>])
   <span class='no'>active.tiles</span> <span class='kw'>=</span> <span class='fu'><a href='tilecoding.html'>tiles</a></span>(<span class='no'>iht</span>, <span class='fl'>8</span>, <span class='no'>state</span>)
-  <span class='fu'><a href='makeNHot.html'>makeNHot</a></span>(<span class='no'>active.tiles</span>, <span class='no'>max.size</span>, <span class='kw'>out</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)
+  <span class='fu'><a href='nHot.html'>nHot</a></span>(<span class='no'>active.tiles</span>, <span class='no'>max.size</span>, <span class='kw'>out</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)
 }
 
 <span class='co'># Linear function approximation and softmax policy</span>

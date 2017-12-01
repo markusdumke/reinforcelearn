@@ -127,7 +127,7 @@ Instead of specifying a reward array you can also pass on a function `sampleRewa
 
 ```{r}
 sampleReward = function(state, action, n.state) {
-  if (n.state == 0 & action == 1L) {
+  if (n.state == 0 && action == 1L) {
     0
   } else {
     rnorm(1)
@@ -147,7 +147,7 @@ A gridworld is a simple navigation task with a discrete state and action space. 
 
 If an action would take the agent off the grid, the next state will be the nearest cell inside the grid. For each step the agent gets a reward, e.g. - 1, until it reaches a goal state, then the episode is done.
 
-Gridworlds with different shapes, rewards and transition dynamics can be created with the function `makeGridworld`. It computes the state transition array and reward matrix of the specified gridworld (because a gridworld is a MDP) and then internally calls `makeEnvironment`. Arguments from `makeEnvironment` can be passed on via the `...` argument, e.g. `initial.state`.
+Gridworlds with different shapes, rewards and transition dynamics can be created with the function `gridworld`. It computes the state transition array and reward matrix of the specified gridworld (because a gridworld is a MDP) and then internally calls `makeEnvironment`. Arguments from `makeEnvironment` can be passed on via the `...` argument, e.g. `initial.state`.
 
 Here is an example of a 4x4 gridworld [@sutton2017, Example 4.1] with the 4 standard actions and two terminal states in the lower right and upper left of the grid. Rewards are - 1 for every transition until reaching a terminal state. 
 
@@ -159,15 +159,15 @@ The following code creates this gridworld. This example gridworld is already inc
 
 ```{r}
 # Gridworld Environment (Sutton & Barto (2017) Example 4.1)
-env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15))
+env = gridworld(shape = c(4, 4), goal.states = c(0, 15))
 print(env$states)
 print(env$actions)
 
 # Identical to the above call
-env = gridworld()
+env = smallGridworld()
 
 # Same gridworld, but with diagonal moves
-env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), 
+env = gridworld(shape = c(4, 4), goal.states = c(0, 15), 
   diagonal.moves = TRUE)
 print(env$actions)
 ```
@@ -176,7 +176,7 @@ In this gridworld actions will deterministically change the state, e.g. when goi
 
 ```{r}
 # Gridworld with 10% random transitions
-env = makeGridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
+env = gridworld(shape = c(4, 4), goal.states = c(0, 15), stochasticity = 0.1)
 ```
 
 ```{r, out.width = "500px", fig.align = "center", echo = FALSE}
@@ -185,11 +185,11 @@ knitr::include_graphics("cliff.JPG")
 
 The cliff walking gridworld [@sutton2017, Example 6.6] has a cliff in the lower part of the grid. Stepping into this cliff will result in a high negative reward of -100 and a transition back to the starting state in the lower left part of the grid. So the agent has to learn to avoid stepping into this cliff. Other transitions have the usual reward of -1.  The optimal path is directly above the cliff, while the safe path runs at the top of the gridworld far away from the dangerous cliff.
 
-In `makeGridworld` we can specify a cliff via the `cliff.states` argument and the reward when stepping into the cliff via `reward.cliff`. The states to which the agent transitions, when stepping into the cliff can be specified via `cliff.transition.states`.
+In `gridworld` we can specify a cliff via the `cliff.states` argument and the reward when stepping into the cliff via `reward.cliff`. The states to which the agent transitions, when stepping into the cliff can be specified via `cliff.transition.states`.
 
 ```{r}
 # Cliff Walking (Sutton & Barto (2017) Example 6.6)   
-env = makeGridworld(shape = c(4, 12), goal.states = 47, 
+env = gridworld(shape = c(4, 12), goal.states = 47, 
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100, 
   cliff.transition.states = 36, initial.state = 36)
 
@@ -205,7 +205,7 @@ The windy gridworld [@sutton2017, Example 6.5] is a gridworld with shape 7x10. T
 
 ```{r}
 # Windy Gridworld (Sutton & Barto (2017) Example 6.5) 
-env = makeGridworld(shape = c(7, 10), goal.states = 37, 
+env = gridworld(shape = c(7, 10), goal.states = 37, 
   reward.step = - 1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0), initial.state = 30)
 
 # Identical to the above call

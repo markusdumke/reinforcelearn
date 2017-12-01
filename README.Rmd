@@ -155,7 +155,7 @@ preprocessState = function(state) {
   # get active tiles
   active.tiles = tiles(iht, 8, state)
   # return n hot vector with 1 at the position of each active tile
-  makeNHot(active.tiles, max.size)
+  nHot(active.tiles, max.size)
 }
 
 set.seed(123)

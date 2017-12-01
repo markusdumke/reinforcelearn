@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reinforcement Learning in R • reinforcelearn</title>
+<title>Reinforcement Learning • reinforcelearn</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
@@ -59,14 +59,7 @@
   <a href="news/index.html">News</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/markdumke/reinforcelearn">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -112,9 +105,9 @@ env =<span class="st"> </span><span class="kw"><a href="reference/windyGridworld
 <span class="co"># Solve environment using Sarsa</span>
 res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">sarsa</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  808 1839  742  423  129  219  512  246   54  169  110  419   42  287</span>
-<span class="co">#&gt; [15]  145  149  136   71  132  224   70  198  174   52  115  160  151  143</span>
-<span class="co">#&gt; [29]  105  144</span></code></pre></div>
+<span class="co">#&gt;  [1]  702 2061  483  315  583  276  143  270  334  175  107  226  343  134</span>
+<span class="co">#&gt; [15]  201   46   52  194   87  146  165  110  154   56   61  219   64  211</span>
+<span class="co">#&gt; [29]  109  101</span></code></pre></div>
 <hr>
 </div>
 <div id="environments" class="section level3">
@@ -173,31 +166,31 @@ env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
 env =<span class="st"> </span><span class="kw"><a href="reference/windyGridworld.html">windyGridworld</a></span>()
 res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
 <span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  791 1915  793   84  492   99  196  607  144  461   76  129  318  112</span>
-<span class="co">#&gt; [15]   75   66  327  220   44   42  116   38   82  159   89  280   81  166</span>
-<span class="co">#&gt; [29]   42  190</span>
+<span class="co">#&gt;  [1]  839 1802  913  220  291  298  139  314  217  165  116  300  315   80</span>
+<span class="co">#&gt; [15]  242  100   92  195   64  105   62  332   71  161  128   51   31  204</span>
+<span class="co">#&gt; [29]   47  220</span>
 
 <span class="co"># Show value of each state.</span>
 <span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -4.8 -5.0 -5.5 -6.3 -7.0 -7.4 -7.3 -6.8 -6.0  -5.2</span>
-<span class="co">#&gt; [2,] -4.6 -4.7 -4.8 -5.2 -4.8 -4.2 -2.9 -3.9 -4.4  -4.3</span>
-<span class="co">#&gt; [3,] -4.3 -4.2 -4.1 -4.2 -3.3 -1.9 -1.4 -2.4 -3.3  -3.5</span>
-<span class="co">#&gt; [4,] -4.0 -3.8 -3.4 -3.2 -2.0 -1.0 -0.2  0.0 -2.2  -2.6</span>
-<span class="co">#&gt; [5,] -3.4 -3.2 -2.8 -2.3 -1.3 -0.4  0.0 -0.3 -0.9  -1.8</span>
-<span class="co">#&gt; [6,] -3.0 -2.7 -2.3 -1.7 -0.6  0.0  0.0  0.0 -0.7  -1.1</span>
-<span class="co">#&gt; [7,] -2.7 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7</span></code></pre></div>
+<span class="co">#&gt; [1,] -4.7 -5.0 -5.4 -6.2 -6.9 -7.3 -7.3 -6.8 -6.0  -5.1</span>
+<span class="co">#&gt; [2,] -4.5 -4.5 -4.7 -5.0 -4.9 -4.1 -2.8 -3.9 -4.4  -4.3</span>
+<span class="co">#&gt; [3,] -4.2 -4.1 -4.0 -4.1 -3.3 -1.9 -1.1 -2.4 -3.4  -3.5</span>
+<span class="co">#&gt; [4,] -3.9 -3.6 -3.3 -3.1 -1.9 -0.8 -0.2  0.0 -2.3  -2.6</span>
+<span class="co">#&gt; [5,] -3.3 -3.1 -2.7 -2.2 -1.1 -0.3  0.0 -0.3 -0.9  -1.8</span>
+<span class="co">#&gt; [6,] -2.9 -2.6 -2.2 -1.6 -0.6  0.0  0.0  0.0 -0.7  -1.1</span>
+<span class="co">#&gt; [7,] -2.6 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7</span></code></pre></div>
 <p>We can then get the policy by taking the argmax over the action value function Q.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span>1L
 <span class="kw">print</span>(<span class="kw">matrix</span>(policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
 <span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    2    1    3    0    0    1    3    1    3     3</span>
-<span class="co">#&gt; [2,]    2    2    3    0    3    3    0    3    1     3</span>
-<span class="co">#&gt; [3,]    0    3    3    2    0    1    3    0    0     0</span>
-<span class="co">#&gt; [4,]    3    0    1    1    1    3    3    3    0     3</span>
-<span class="co">#&gt; [5,]    3    0    1    3    0    1    0    3    1     3</span>
-<span class="co">#&gt; [6,]    0    3    3    2    3    3    1    3    0     1</span>
-<span class="co">#&gt; [7,]    1    1    1    2    1    1    2    2    0     1</span></code></pre></div>
+<span class="co">#&gt; [1,]    2    1    2    0    3    3    1    1    1     3</span>
+<span class="co">#&gt; [2,]    1    1    3    0    0    0    0    0    2     3</span>
+<span class="co">#&gt; [3,]    3    1    0    3    1    0    3    0    3     3</span>
+<span class="co">#&gt; [4,]    1    0    1    1    1    3    3    0    0     3</span>
+<span class="co">#&gt; [5,]    1    0    1    1    1    2    0    3    0     0</span>
+<span class="co">#&gt; [6,]    1    3    1    1    1    1    1    3    0     2</span>
+<span class="co">#&gt; [7,]    3    3    1    3    2    0    2    2    0     0</span></code></pre></div>
 <p>For more details on algorithms have a look at the vignette: <a href="https://markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></p>
 <hr>
 </div>
@@ -226,7 +219,7 @@ preprocessState =<span class="st"> </span><span class="cf">function</span>(state
   <span class="co"># get active tiles</span>
   active.tiles =<span class="st"> </span><span class="kw"><a href="reference/tilecoding.html">tiles</a></span>(iht, <span class="dv">8</span>, state)
   <span class="co"># return n hot vector with 1 at the position of each active tile</span>
-  <span class="kw"><a href="reference/makeNHot.html">makeNHot</a></span>(active.tiles, max.size)
+  <span class="kw"><a href="reference/nHot.html">nHot</a></span>(active.tiles, max.size)
 }
 
 <span class="kw">set.seed</span>(<span class="dv">123</span>)
@@ -257,8 +250,6 @@ res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">q
     <h2 class="hasAnchor">
 <a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/markdumke/reinforcelearn">https://​github.com/​markdumke/​reinforcelearn</a>
-</li>
 <li>Report a bug at <br><a href="https://github.com/markdumke/reinforcelearn/issues">https://​github.com/​markdumke/​reinforcelearn/​issues</a>
 </li>
 </ul>

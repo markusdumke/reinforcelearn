@@ -48,7 +48,7 @@
 #' @export
 #' @examples
 #' # Set up gridworld problem
-#' env = gridworld()
+#' env = smallGridworld()
 #'
 #' # Define uniform random policy, take each action with equal probability
 #' random.policy = matrix(1 / env$n.actions, nrow = env$n.states,
@@ -62,7 +62,7 @@ evaluatePolicy = function(envir, policy, v = NULL, q = NULL,
   discount = 1, precision = 0.0001, n.iter = NULL) {
 
   checkmate::assertClass(envir, "R6")
-  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+  stopifnot(envir$state.space == "Discrete" && envir$action.space == "Discrete")
   checkmate::assertMatrix(policy, nrows = envir$n.states,
     ncols = envir$n.actions, any.missing = FALSE)
   if (any(rowSums(policy) != 1)) {
@@ -139,7 +139,7 @@ iteratePolicy = function(envir, policy = NULL, discount = 1,
   n.iter = NULL, precision.eval = 0.0001, n.iter.eval = NULL) {
 
   checkmate::assertClass(envir, "R6")
-  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+  stopifnot(envir$state.space == "Discrete" && envir$action.space == "Discrete")
   checkmate::assertMatrix(policy, nrows = envir$n.states,
     ncols = envir$n.actions, any.missing = FALSE, null.ok = TRUE)
   checkmate::assertNumber(discount, lower = 0, upper = 1)
@@ -192,7 +192,7 @@ iterateValue = function(envir, v = NULL, q = NULL, discount = 1,
   precision = 0.0001, n.iter = NULL) {
 
   checkmate::assertClass(envir, "R6")
-  stopifnot(envir$state.space == "Discrete" & envir$action.space == "Discrete")
+  stopifnot(envir$state.space == "Discrete" && envir$action.space == "Discrete")
   checkmate::assertNumber(discount, lower = 0, upper = 1)
   checkmate::assertNumber(precision, lower = 0)
   checkmate::assertInt(n.iter, null.ok = TRUE)

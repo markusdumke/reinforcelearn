@@ -7,7 +7,7 @@ set.seed(123)
 
 ## ------------------------------------------------------------------------
 # Gridworld environment
-env = makeGridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
+env = gridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
 
 res = qlearning(env, n.episodes = 20)
 # Note: to find a good policy we need to run more episodes.
@@ -93,7 +93,7 @@ velocity.scale = n.tilings / (velocity.max - velocity.min)
 gridTiling = function(state) {
   state = c(position.scale * state[1], velocity.scale * state[2])
   active.tiles = tiles(iht, 8, state)
-  makeNHot(active.tiles, max.size, out = "vector")
+  nHot(active.tiles, max.size, out = "vector")
 }
 
 ## ------------------------------------------------------------------------
@@ -102,10 +102,10 @@ res = qlearning(env, fun.approx = "linear",
 print(res$steps)
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
+#  env = gridworld(c(4, 4), goal.states = 15, initial.state = 0)
 #  
 #  # A one-hot feature vector
-#  makeOneHot = function(state) {
+#  oneHot = function(state) {
 #    one.hot = matrix(rep(0, env$n.states), nrow = 1)
 #    one.hot[1, state + 1] = 1
 #    one.hot
@@ -118,10 +118,10 @@ print(res$steps)
 #    input_shape = c(env$n.states))
 #  
 #  res = qSigma(env, fun.approx = "neural.network", model = model,
-#    preprocessState = makeOneHot, n.episodes = 20)
+#    preprocessState = oneHot, n.episodes = 20)
 
 ## ------------------------------------------------------------------------
-env = makeGridworld(c(4, 4), goal.states = 15, initial.state = 0)
+env = gridworld(c(4, 4), goal.states = 15, initial.state = 0)
 
 # Sarsa with replacing traces
 res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 20)
@@ -181,7 +181,7 @@ print(res$V)
 
 ## ------------------------------------------------------------------------
 # Set up gridworld problem
-env = gridworld()
+env = smallGridworld()
   
 # Define uniform random policy, take each action with equal probability
 random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
@@ -228,7 +228,7 @@ rewardFun = function(state, action, n.state) {
     return(- 1)
   }
 }
-env = makeGridworld(shape = c(4, 12), goal.states = 47,
+env = gridworld(shape = c(4, 12), goal.states = 47,
   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
 

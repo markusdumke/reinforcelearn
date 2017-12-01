@@ -59,14 +59,7 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/markdumke/reinforcelearn">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -213,7 +206,7 @@ env<span class="op">$</span><span class="kw">step</span>(<span class="dv">1</spa
 <span class="co">#&gt; Done: TRUE</span></code></pre></div>
 <p>Instead of specifying a reward array you can also pass on a function <code>sampleReward</code>, which takes three arguments, the current state, action and next state and returns a scalar numeric reward. This way the reward of taking an action can be stochastic. Here is a simple example, where the reward is either 0 or sampled from a normal distribution depending on the next state and action.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sampleReward =<span class="st"> </span><span class="cf">function</span>(state, action, n.state) {
-  <span class="cf">if</span> (n.state <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>action <span class="op">==</span><span class="st"> </span>1L) {
+  <span class="cf">if</span> (n.state <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;&amp;</span><span class="st"> </span>action <span class="op">==</span><span class="st"> </span>1L) {
     <span class="dv">0</span>
   } <span class="cf">else</span> {
     <span class="kw">rnorm</span>(<span class="dv">1</span>)
@@ -234,33 +227,33 @@ env<span class="op">$</span><span class="kw">step</span>(<span class="dv">0</spa
 <a href="#gridworlds" class="anchor"></a>Gridworlds</h3>
 <p>A gridworld is a simple navigation task with a discrete state and action space. The agent has to move through a grid from a start state to a goal state. Each episode starts in the start state and terminates if the agent reaches a goal state. States are always numerated row-wise starting with 0. Possible actions are the standard moves (left, right, up, down) or could also include the diagonal moves (leftup, leftdown, rightup, rightdown).</p>
 <p>If an action would take the agent off the grid, the next state will be the nearest cell inside the grid. For each step the agent gets a reward, e.g. - 1, until it reaches a goal state, then the episode is done.</p>
-<p>Gridworlds with different shapes, rewards and transition dynamics can be created with the function <code>makeGridworld</code>. It computes the state transition array and reward matrix of the specified gridworld (because a gridworld is a MDP) and then internally calls <code>makeEnvironment</code>. Arguments from <code>makeEnvironment</code> can be passed on via the <code>...</code> argument, e.g. <code>initial.state</code>.</p>
+<p>Gridworlds with different shapes, rewards and transition dynamics can be created with the function <code>gridworld</code>. It computes the state transition array and reward matrix of the specified gridworld (because a gridworld is a MDP) and then internally calls <code>makeEnvironment</code>. Arguments from <code>makeEnvironment</code> can be passed on via the <code>...</code> argument, e.g. <code>initial.state</code>.</p>
 <p>Here is an example of a 4x4 gridworld <span class="citation">(Sutton and Barto 2017, Example 4.1)</span> with the 4 standard actions and two terminal states in the lower right and upper left of the grid. Rewards are - 1 for every transition until reaching a terminal state.</p>
 <p><img src="gridworld.JPG" width="300px" style="display: block; margin: auto;"></p>
 <p>The following code creates this gridworld. This example gridworld is already included in the package and can be created with <code><a href="../reference/gridworld.html">gridworld()</a></code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gridworld Environment (Sutton &amp; Barto (2017) Example 4.1)</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>))
+env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>))
 <span class="kw">print</span>(env<span class="op">$</span>states)
 <span class="co">#&gt;  [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15</span>
 <span class="kw">print</span>(env<span class="op">$</span>actions)
 <span class="co">#&gt; [1] 0 1 2 3</span>
 
 <span class="co"># Identical to the above call</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>()
+env =<span class="st"> </span><span class="kw"><a href="../reference/smallGridworld.html">smallGridworld</a></span>()
 
 <span class="co"># Same gridworld, but with diagonal moves</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>), 
+env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>), 
   <span class="dt">diagonal.moves =</span> <span class="ot">TRUE</span>)
 <span class="kw">print</span>(env<span class="op">$</span>actions)
 <span class="co">#&gt; [1] 0 1 2 3 4 5 6 7</span></code></pre></div>
 <p>In this gridworld actions will deterministically change the state, e.g. when going left from state 5 the new state will always be 4. A stochastic gridworld can be specified via the <code>stochasticity</code> argument. Then the next state will be randomly sampled from all eight successor state with a probability <code>stochasticity</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gridworld with 10% random transitions</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>), <span class="dt">stochasticity =</span> <span class="fl">0.1</span>)</code></pre></div>
+env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>), <span class="dt">stochasticity =</span> <span class="fl">0.1</span>)</code></pre></div>
 <p><img src="cliff.JPG" width="500px" style="display: block; margin: auto;"></p>
 <p>The cliff walking gridworld <span class="citation">(Sutton and Barto 2017, Example 6.6)</span> has a cliff in the lower part of the grid. Stepping into this cliff will result in a high negative reward of -100 and a transition back to the starting state in the lower left part of the grid. So the agent has to learn to avoid stepping into this cliff. Other transitions have the usual reward of -1. The optimal path is directly above the cliff, while the safe path runs at the top of the gridworld far away from the dangerous cliff.</p>
-<p>In <code>makeGridworld</code> we can specify a cliff via the <code>cliff.states</code> argument and the reward when stepping into the cliff via <code>reward.cliff</code>. The states to which the agent transitions, when stepping into the cliff can be specified via <code>cliff.transition.states</code>.</p>
+<p>In <code>gridworld</code> we can specify a cliff via the <code>cliff.states</code> argument and the reward when stepping into the cliff via <code>reward.cliff</code>. The states to which the agent transitions, when stepping into the cliff can be specified via <code>cliff.transition.states</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Cliff Walking (Sutton &amp; Barto (2017) Example 6.6)   </span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">12</span>), <span class="dt">goal.states =</span> <span class="dv">47</span>, 
+env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">12</span>), <span class="dt">goal.states =</span> <span class="dv">47</span>, 
   <span class="dt">cliff.states =</span> <span class="dv">37</span><span class="op">:</span><span class="dv">46</span>, <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">reward.cliff =</span> <span class="op">-</span><span class="st"> </span><span class="dv">100</span>, 
   <span class="dt">cliff.transition.states =</span> <span class="dv">36</span>, <span class="dt">initial.state =</span> <span class="dv">36</span>)
 
@@ -269,7 +262,7 @@ env =<span class="st"> </span><span class="kw"><a href="../reference/cliff.html"
 <p><img src="windygrid.PNG" width="350px" style="display: block; margin: auto;"></p>
 <p>The windy gridworld <span class="citation">(Sutton and Barto 2017, Example 6.5)</span> is a gridworld with shape 7x10. The agent will be pushed up a number of cells when transitioning into a column with an upward wind. The <code>wind</code> argument specifies the strength of this wind. It is an integer vector with the same size as the number of columns in the grid. E.g. going right from the state directly left to the goal, will push the agent to a state two cells above the goal. The reward for each step is -1.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Windy Gridworld (Sutton &amp; Barto (2017) Example 6.5) </span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeGridworld.html">makeGridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">10</span>), <span class="dt">goal.states =</span> <span class="dv">37</span>, 
+env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">10</span>), <span class="dt">goal.states =</span> <span class="dv">37</span>, 
   <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">wind =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="dt">initial.state =</span> <span class="dv">30</span>)
 
 <span class="co"># Identical to the above call</span>
