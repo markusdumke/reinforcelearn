@@ -1,13 +1,9 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning
-Version: 0.0.0.9112
+Version: 0.1.0
 Authors@R: person("Markus", "Dumke", email = {"markusdumke@gmail.com"}, role = c("aut", "cre"))
-Description: Reinforcement learning environments and algorithms from the field 
-    of dynamic programming and temporal-difference learning, including 
-    TD(lambda), Q-Learning, Sarsa and actor critic. The algorithms can be used 
-    with function approximation, eligibility traces, double learning and 
-    experience replay.
+Description: Reinforcement learning environments and algorithms.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -20,7 +16,7 @@ Imports:
     checkmate (>= 1.8.4),
     R6 (>= 2.2.2)
 Suggests:
-    gym,
+    reticulate,
     knitr,
     rmarkdown,
     testthat,

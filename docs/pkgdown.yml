@@ -1,8 +1,5 @@
 urls:
   reference: http://markdumke.github.io/reinforcelearn/reference
   article: http://markdumke.github.io/reinforcelearn/articles
-articles:
-  algorithms: algorithms.html
-  environments: environments.html
-  introduction: introduction.html
+articles: {}
 

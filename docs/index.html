@@ -29,31 +29,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="/index.html">
+  <a href="index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
-      <a href="articles/environments.html">How to create an environment?</a>
-    </li>
-    <li>
-      <a href="articles/introduction.html">Introduction to reinforcelearn</a>
-    </li>
-  </ul>
 </li>
 <li>
   <a href="news/index.html">News</a>
@@ -75,172 +57,82 @@
     
     
 <div class="contents">
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 <div id="reinforcement-learning-in-r" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#reinforcement-learning-in-r" class="anchor"></a>Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="36">
 </h1></div>
-
+<!--
+[![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn)
+[![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
+-->
 <div id="documentation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#documentation" class="anchor"></a>Documentation</h3>
-<p><a href="https://markdumke.github.io/reinforcelearn">Website</a></p>
+
 <hr>
 </div>
-<div id="installation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h3>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install reinforcelearn from github with:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"markdumke/reinforcelearn"</span>)</code></pre></div>
 <hr>
-</div>
-<div id="get-started" class="section level3">
+<div id="sessioninfo" class="section level3">
 <h3 class="hasAnchor">
-<a href="#get-started" class="anchor"></a>Get started</h3>
-<p>Reinforcement Learning with the package <code>reinforcelearn</code> is as easy as</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(reinforcelearn)
-
-<span class="co"># Create gridworld environment</span>
-env =<span class="st"> </span><span class="kw"><a href="reference/windyGridworld.html">windyGridworld</a></span>()
-
-<span class="co"># Solve environment using Sarsa</span>
-res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">sarsa</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
-<span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  702 2061  483  315  583  276  143  270  334  175  107  226  343  134</span>
-<span class="co">#&gt; [15]  201   46   52  194   87  146  165  110  154   56   61  219   64  211</span>
-<span class="co">#&gt; [29]  109  101</span></code></pre></div>
-<hr>
-</div>
-<div id="environments" class="section level3">
-<h3 class="hasAnchor">
-<a href="#environments" class="anchor"></a>Environments</h3>
-<p>With <code>makeEnvironment</code> you can create a reinforcement learning environment from a Markov Decision Process.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create environment from MDP.</span>
-P =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>, <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>))
-P[, , <span class="dv">1</span>] =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
-P[, , <span class="dv">2</span>] =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
-R =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)  
-env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R)</code></pre></div>
-<p>The environment is an <code>R6</code> class with a set of attributes and methods. You can interact with the environment via the <code>reset</code> and <code>step</code> method.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Reset environment.</span>
-env<span class="op">$</span><span class="kw">reset</span>()
-<span class="kw">print</span>(env)
-<span class="co">#&gt; Number of steps: 0 </span>
-<span class="co">#&gt; State: 0 </span>
-<span class="co">#&gt; Reward:  </span>
-<span class="co">#&gt; Done: FALSE</span>
-
-<span class="co"># Take action 0.</span>
-env<span class="op">$</span><span class="kw">step</span>(<span class="dv">0</span>)
-<span class="kw">print</span>(env)
-<span class="co">#&gt; Number of steps: 1 </span>
-<span class="co">#&gt; State: 1 </span>
-<span class="co">#&gt; Reward: 5 </span>
-<span class="co">#&gt; Done: TRUE</span></code></pre></div>
-<p>You can also create an environment from <a href="https://gym.openai.com/">OpenAI Gym</a> via the <code>gym</code> package. You need to install all dependencies listed <a href="https://github.com/openai/gym-http-api">here</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create an OpenAI Gym environment.</span>
-<span class="co"># Make sure you have Python and Gym installed.</span>
-<span class="co"># Start server.</span>
-package.path =<span class="st"> </span><span class="kw">system.file</span>(<span class="dt">package =</span> <span class="st">"reinforcelearn"</span>)
-path2pythonfile =<span class="st"> </span><span class="kw">paste0</span>(package.path, <span class="st">"/gym_http_server.py"</span>)
-<span class="kw">system2</span>(<span class="st">"python"</span>, <span class="dt">args =</span> path2pythonfile, <span class="dt">stdout =</span> <span class="ot">NULL</span>,
-  <span class="dt">wait =</span> <span class="ot">FALSE</span>, <span class="dt">invisible =</span> <span class="ot">FALSE</span>)
-
-env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"MountainCar-v0"</span>)
-
-<span class="co"># Take random actions for 200 steps.</span>
-env<span class="op">$</span><span class="kw">reset</span>()
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">200</span>) {
-  action =<span class="st"> </span><span class="kw">sample</span>(env<span class="op">$</span>actions, <span class="dv">1</span>)
-  env<span class="op">$</span><span class="kw">step</span>(action)
-}
-env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
-<p>This should open a Python window showing the interaction with the environment.</p>
-<p>For more details on how to create an environment have a look at the vignette: <a href="https://markdumke.github.io/reinforcelearn/articles/environments.html">How to create an environment?</a></p>
-<hr>
-</div>
-<div id="algorithms" class="section level3">
-<h3 class="hasAnchor">
-<a href="#algorithms" class="anchor"></a>Algorithms</h3>
-<p>After you created an environment you can use various reinforcement learning algorithms to solve this environment. For example, for a tabular environment like gridworld you can use tabular Q-Learning to solve it and find the optimal action value function <span class="math inline">\(Q*\)</span>. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create the windy gridworld environment.</span>
-env =<span class="st"> </span><span class="kw"><a href="reference/windyGridworld.html">windyGridworld</a></span>()
-res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
-<span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  839 1802  913  220  291  298  139  314  217  165  116  300  315   80</span>
-<span class="co">#&gt; [15]  242  100   92  195   64  105   62  332   71  161  128   51   31  204</span>
-<span class="co">#&gt; [29]   47  220</span>
-
-<span class="co"># Show value of each state.</span>
-<span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
-<span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -4.7 -5.0 -5.4 -6.2 -6.9 -7.3 -7.3 -6.8 -6.0  -5.1</span>
-<span class="co">#&gt; [2,] -4.5 -4.5 -4.7 -5.0 -4.9 -4.1 -2.8 -3.9 -4.4  -4.3</span>
-<span class="co">#&gt; [3,] -4.2 -4.1 -4.0 -4.1 -3.3 -1.9 -1.1 -2.4 -3.4  -3.5</span>
-<span class="co">#&gt; [4,] -3.9 -3.6 -3.3 -3.1 -1.9 -0.8 -0.2  0.0 -2.3  -2.6</span>
-<span class="co">#&gt; [5,] -3.3 -3.1 -2.7 -2.2 -1.1 -0.3  0.0 -0.3 -0.9  -1.8</span>
-<span class="co">#&gt; [6,] -2.9 -2.6 -2.2 -1.6 -0.6  0.0  0.0  0.0 -0.7  -1.1</span>
-<span class="co">#&gt; [7,] -2.6 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7</span></code></pre></div>
-<p>We can then get the policy by taking the argmax over the action value function Q.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span>1L
-<span class="kw">print</span>(<span class="kw">matrix</span>(policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
-<span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    2    1    2    0    3    3    1    1    1     3</span>
-<span class="co">#&gt; [2,]    1    1    3    0    0    0    0    0    2     3</span>
-<span class="co">#&gt; [3,]    3    1    0    3    1    0    3    0    3     3</span>
-<span class="co">#&gt; [4,]    1    0    1    1    1    3    3    0    0     3</span>
-<span class="co">#&gt; [5,]    1    0    1    1    1    2    0    3    0     0</span>
-<span class="co">#&gt; [6,]    1    3    1    1    1    1    1    3    0     2</span>
-<span class="co">#&gt; [7,]    3    3    1    3    2    0    2    2    0     0</span></code></pre></div>
-<p>For more details on algorithms have a look at the vignette: <a href="https://markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></p>
-<hr>
-</div>
-<div id="value-function-approximation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#value-function-approximation" class="anchor"></a>Value function approximation</h3>
-<p>When the state space is large or even continuous tabular solution methods cannot be applied. Then it is better to approximate the value function using a function approximator. We need to define a function, which preprocesses the state observation, so that the function approximator can work with it. Here is an example solving the mountain car problem using linear function approximation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set up the Mountain Car problem</span>
-m =<span class="st"> </span><span class="kw"><a href="reference/mountainCar.html">mountainCar</a></span>()
-
-<span class="co"># Define preprocessing function (here grid tiling)</span>
-n.tilings =<span class="st"> </span><span class="dv">8</span>
-max.size =<span class="st"> </span><span class="dv">4096</span>
-iht =<span class="st"> </span><span class="kw"><a href="reference/tilecoding.html">IHT</a></span>(max.size)
-
-position.max =<span class="st"> </span>m<span class="op">$</span>state.space.bounds[[<span class="dv">1</span>]][<span class="dv">2</span>]
-position.min =<span class="st"> </span>m<span class="op">$</span>state.space.bounds[[<span class="dv">1</span>]][<span class="dv">1</span>]
-velocity.max =<span class="st"> </span>m<span class="op">$</span>state.space.bounds[[<span class="dv">2</span>]][<span class="dv">2</span>]
-velocity.min =<span class="st"> </span>m<span class="op">$</span>state.space.bounds[[<span class="dv">2</span>]][<span class="dv">1</span>]
-position.scale =<span class="st"> </span>n.tilings <span class="op">/</span><span class="st"> </span>(position.max <span class="op">-</span><span class="st"> </span>position.min)
-velocity.scale =<span class="st"> </span>n.tilings <span class="op">/</span><span class="st"> </span>(velocity.max <span class="op">-</span><span class="st"> </span>velocity.min)
-
-preprocessState =<span class="st"> </span><span class="cf">function</span>(state) {
-  <span class="co"># scale state observation</span>
-  state =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(position.scale <span class="op">*</span><span class="st"> </span>state[<span class="dv">1</span>], velocity.scale <span class="op">*</span><span class="st"> </span>state[<span class="dv">2</span>]), <span class="dt">ncol =</span> <span class="dv">2</span>)
-  <span class="co"># get active tiles</span>
-  active.tiles =<span class="st"> </span><span class="kw"><a href="reference/tilecoding.html">tiles</a></span>(iht, <span class="dv">8</span>, state)
-  <span class="co"># return n hot vector with 1 at the position of each active tile</span>
-  <span class="kw"><a href="reference/nHot.html">nHot</a></span>(active.tiles, max.size)
-}
-
-<span class="kw">set.seed</span>(<span class="dv">123</span>)
-res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">qlearning</a></span>(m, <span class="dt">fun.approx =</span> <span class="st">"linear"</span>, 
-  <span class="dt">preprocessState =</span> preprocessState, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
-<span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1] 1211  903  536  420  406  241  241  239  233  232  204  241  194  235</span>
-<span class="co">#&gt; [15]  233  167  198  165  234  162</span></code></pre></div>
-<hr>
-</div>
-<div id="vignettes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#vignettes" class="anchor"></a>Vignettes</h3>
-<p>Also have a look at the vignettes for further examples.</p>
-<ul>
-<li><a href="https://markdumke.github.io/reinforcelearn/articles/introduction.html">Introduction to reinforcelearn</a></li>
-<li><a href="https://markdumke.github.io/reinforcelearn/articles/environments.html">How to create an environment?</a></li>
-<li><a href="https://markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></li>
-</ul>
+<a href="#sessioninfo" class="anchor"></a>SessionInfo</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/session_info">session_info</a></span>()
+<span class="co">#&gt; - Session info ----------------------------------------------------------</span>
+<span class="co">#&gt;  setting  value                       </span>
+<span class="co">#&gt;  version  R version 3.4.3 (2017-11-30)</span>
+<span class="co">#&gt;  os       Windows 10 x64              </span>
+<span class="co">#&gt;  system   x86_64, mingw32             </span>
+<span class="co">#&gt;  ui       RTerm                       </span>
+<span class="co">#&gt;  language (EN)                        </span>
+<span class="co">#&gt;  collate  German_Germany.1252         </span>
+<span class="co">#&gt;  tz       Europe/Berlin               </span>
+<span class="co">#&gt;  date     2017-12-11                  </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; - Packages --------------------------------------------------------------</span>
+<span class="co">#&gt;  package     * version     date       source                             </span>
+<span class="co">#&gt;  assertthat    0.2.0       2017-04-11 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  backports     1.1.1       2017-09-25 CRAN (R 3.4.1)                     </span>
+<span class="co">#&gt;  cli           1.0.0       2017-12-11 Github (r-lib/cli@ab1c3aa)         </span>
+<span class="co">#&gt;  clisymbols    1.2.0       2017-05-21 CRAN (R 3.4.2)                     </span>
+<span class="co">#&gt;  commonmark    1.4         2017-09-01 CRAN (R 3.4.1)                     </span>
+<span class="co">#&gt;  crayon        1.3.4       2017-09-16 CRAN (R 3.4.1)                     </span>
+<span class="co">#&gt;  desc          1.1.1       2017-08-03 CRAN (R 3.4.1)                     </span>
+<span class="co">#&gt;  devtools      1.13.3.9000 2017-12-11 Github (hadley/devtools@4783902)   </span>
+<span class="co">#&gt;  digest        0.6.12      2017-01-27 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  evaluate      0.10.1      2017-06-24 CRAN (R 3.4.1)                     </span>
+<span class="co">#&gt;  htmltools     0.3.6       2017-04-28 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  knitr         1.17        2017-08-10 CRAN (R 3.4.1)                     </span>
+<span class="co">#&gt;  magrittr      1.5         2014-11-22 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  MASS          7.3-47      2017-02-26 CRAN (R 3.4.3)                     </span>
+<span class="co">#&gt;  memoise       1.1.0       2017-04-21 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  pkgbuild      0.0.0.9000  2017-12-11 Github (r-lib/pkgbuild@ce7f6d1)    </span>
+<span class="co">#&gt;  pkgdown       0.1.0.9000  2017-12-11 Github (hadley/pkgdown@d436a0a)    </span>
+<span class="co">#&gt;  pkgload       0.0.0.9000  2017-12-11 Github (r-lib/pkgload@70eaef8)     </span>
+<span class="co">#&gt;  R6            2.2.2       2017-06-17 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  Rcpp          0.12.14     2017-11-23 CRAN (R 3.4.2)                     </span>
+<span class="co">#&gt;  rlang         0.1.4.9000  2017-12-11 Github (tidyverse/rlang@5ebcf24)   </span>
+<span class="co">#&gt;  rmarkdown     1.8         2017-11-17 CRAN (R 3.4.3)                     </span>
+<span class="co">#&gt;  roxygen2      6.0.1       2017-02-06 CRAN (R 3.4.2)                     </span>
+<span class="co">#&gt;  rprojroot     1.2         2017-01-16 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  rstudioapi    0.7.0-9000  2017-12-11 Github (rstudio/rstudioapi@335f257)</span>
+<span class="co">#&gt;  sessioninfo   1.0.1.9000  2017-12-11 Github (r-lib/sessioninfo@c871d01) </span>
+<span class="co">#&gt;  stringi       1.1.5       2017-04-07 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  stringr       1.2.0       2017-02-18 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  testthat      1.0.2       2016-04-23 CRAN (R 3.4.0)                     </span>
+<span class="co">#&gt;  usethis       1.1.0.9000  2017-12-11 Github (r-lib/usethis@3de3ac7)     </span>
+<span class="co">#&gt;  withr         2.1.0       2017-11-01 CRAN (R 3.4.2)                     </span>
+<span class="co">#&gt;  xml2          1.1.9000    2017-12-11 Github (hadley/xml2@8bb2348)       </span>
+<span class="co">#&gt;  yaml          2.1.15      2017-12-01 CRAN (R 3.4.3)</span></code></pre></div>
 <hr>
 <p>Logo is a modification of <a href="https://www.r-project.org/logo/" class="uri">https://www.r-project.org/logo/</a>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -255,19 +147,13 @@ res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">q
 </ul>
 <h2>License</h2>
 <p><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE.html">LICENSE</a></p>
-<h2>Citation</h2>
-<ul class="list-unstyled">
-<li><a href="authors.html">Citing reinforcelearn</a></li>
-</ul>
 <h2>Developers</h2>
 <ul class="list-unstyled">
 <li>Markus Dumke <br><small class="roles"> Author, maintainer </small> </li>
 </ul>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/markdumke/reinforcelearn"><img src="https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master" alt="Travis-CI Build Status"></a></li>
-<li><a href="https://cran.r-project.org/package=reinforcelearn"><img src="http://www.r-pkg.org/badges/version/reinforcelearn" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://codecov.io/github/markdumke/reinforcelearn?branch=master"><img src="https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600" alt="Coverage Status"></a></li>
+<li><a href="https://markdumke.github.io/reinforcelearn">Website</a></li>
 </ul>
 </div>
 

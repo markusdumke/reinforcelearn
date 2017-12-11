@@ -1,6 +1,5 @@
 ## Test environments
-* local x86_64-w64-mingw32/x64 (64-bit), R 3.4.2
-* ubuntu 12.04 (on travis-ci), R 3.4.2
+* local x86_64-w64-mingw32/x64 (64-bit), R 3.4.3
 
 ## R CMD check results
 

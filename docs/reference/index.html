@@ -52,31 +52,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
-      <a href="../articles/environments.html">How to create an environment?</a>
-    </li>
-    <li>
-      <a href="../articles/introduction.html">Introduction to reinforcelearn</a>
-    </li>
-  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -98,7 +80,7 @@
     <div class="page-header">
       <h1>
         Reference
-        <small>version&nbsp;0.0.0.9112</small>
+        <small>version&nbsp;0.1.0</small>
       </h1>
     </div>
 
@@ -122,115 +104,57 @@
           <td>
             <p><code><a href="reinforcelearn.html">reinforcelearn</a></code> </p>
           </td>
-          <td><p>Reinforcement Learning in R.</p></td>
+          <td><p>Reinforcement Learning.</p></td>
         </tr>
       </tbody><tbody>
         <tr>
           <th colspan="2">
             <h2 id="section-environments" class="hasAnchor"><a href="#section-environments" class="anchor"></a>Environments</h2>
-            <p class="section-desc"><p>Creation of reinforcement learning environments and example environments.</p></p>
+            <p class="section-desc"><p>Creation of reinforcement learning environments.</p></p>
           </th>
         </tr>
         <tr>
           <!--  -->
           <td>
-            <p><code><a href="makeEnvironment.html">makeEnvironment</a></code> </p>
+            <p><code><a href="Environment.html">Environment</a></code> </p>
           </td>
-          <td><p>Make Reinforcement Learning Environment</p></td>
+          <td><p>Reinforcement Learning Environment</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="gridworld.html">gridworld</a></code> </p>
+            <p><code><a href="MdpEnvironment.html">MdpEnvironment</a></code> </p>
           </td>
-          <td><p>Create Gridworld</p></td>
+          <td><p>MDP Environment</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="mountainCar.html">mountainCar</a></code> </p>
+            <p><code><a href="Gridworld.html">Gridworld</a></code> </p>
           </td>
-          <td><p>Mountain Car</p></td>
+          <td><p>Gridworld</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="windyGridworld.html">windyGridworld</a></code> </p>
+            <p><code><a href="WindyGridworld.html">WindyGridworld</a></code> </p>
           </td>
           <td><p>Windy Gridworld</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="smallGridworld.html">smallGridworld</a></code> </p>
-          </td>
-          <td><p>Example Gridworld</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cliff.html">cliff</a></code> </p>
+            <p><code><a href="CliffWalking.html">CliffWalking</a></code> </p>
           </td>
           <td><p>Cliff Walking</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-algorithms" class="hasAnchor"><a href="#section-algorithms" class="anchor"></a>Algorithms</h2>
-            <p class="section-desc"><p>Reinforcement learning algorithms, dynamic programming, value- and policy-based methods, actor critic, monte carlo and temporal-difference learning.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="qSigma.html">qSigma</a></code> <code><a href="qSigma.html">qlearning</a></code> <code><a href="qSigma.html">sarsa</a></code> <code><a href="qSigma.html">expectedSarsa</a></code> </p>
-          </td>
-          <td><p>Q(sigma) / Q-Learning / Sarsa / Expected Sarsa</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="td.html">td</a></code> </p>
+            <p><code><a href="MountainCar.html">MountainCar</a></code> </p>
           </td>
-          <td><p>TD(lambda)</p></td>
+          <td><p>Mountain Car</p></td>
         </tr><tr>
           <!--  -->
           <td>
-            <p><code><a href="actorCritic.html">actorCritic</a></code> </p>
+            <p><code><a href="GymEnvironment.html">GymEnvironment</a></code> </p>
           </td>
-          <td><p>Actor Critic</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="dp.html">evaluatePolicy</a></code> <code><a href="dp.html">iteratePolicy</a></code> <code><a href="dp.html">iterateValue</a></code> </p>
-          </td>
-          <td><p>Dynamic Programming</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="bandit.html">bandit</a></code> </p>
-          </td>
-          <td><p>Multi-armed bandit</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-state-preprocessing-and-helper-functions" class="hasAnchor"><a href="#section-state-preprocessing-and-helper-functions" class="anchor"></a>State preprocessing and helper functions</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="tilecoding.html">tiles</a></code> <code><a href="tilecoding.html">IHT</a></code> </p>
-          </td>
-          <td><p>Tile Coding</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="nHot.html">nHot</a></code> </p>
-          </td>
-          <td><p>Make n hot vector.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="identity2.html">identity2</a></code> </p>
-          </td>
-          <td><p>Identity Function</p></td>
+          <td><p>Gym Environment</p></td>
         </tr>
       </tbody>
       </table>
@@ -242,8 +166,6 @@
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-package-help-page">Package help page</a></li>
       <li><a href="#section-environments">Environments</a></li>
-      <li><a href="#section-algorithms">Algorithms</a></li>
-      <li><a href="#section-state-preprocessing-and-helper-functions">State preprocessing and helper functions</a></li>
     </ul>
   </div>
 </div>

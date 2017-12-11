@@ -9,26 +9,12 @@ reference:
     contents:
     - reinforcelearn
   - title: Environments
-    desc: Creation of reinforcement learning environments and example environments.
+    desc: Creation of reinforcement learning environments.
     contents:
-    - makeEnvironment
-    - gridworld
-    - mountainCar
-    - windyGridworld
-    - smallGridworld
-    - cliff
-  - title: Algorithms
-    desc: Reinforcement learning algorithms, dynamic programming, value- and policy-based methods, actor critic, monte carlo and temporal-difference learning.
-    contents:
-    - qSigma
-    - td
-    - actorCritic
-    - evaluatePolicy
-    - bandit
-  - title: State preprocessing and helper functions
-    contents:
-    - tiles
-    - IHT
-    - nHot
-    - identity2
-
+    - Environment
+    - MdpEnvironment
+    - Gridworld
+    - WindyGridworld
+    - CliffWalking
+    - MountainCar
+    - GymEnvironment
