@@ -45,31 +45,35 @@ NULL
 #' @export
 Environment = R6::R6Class("Environment",
   public = list(
-    n.steps = 0L,
-    n.episodes = 0L,
+    n.step = 0L,
+    episode = 0L,
+    episode.step = 0L,
+    episode.return = 0,
     state = NULL,
     reward = NULL,
     done = FALSE,
+    discount = NULL,
 
     reset = function() {
-      self$n.steps = 0
+      self$episode.step = 0L
+      self$episode.return = 0
       self$done = FALSE
-      # reset_: custom reset method depending on problem that returns state
       self$state = private$reset_()
       self$state
     },
 
     step = function(action) {
-      self$n.steps = self$n.steps + 1L
-      # step_: custom step method depending on problem that returns list with
-      #   next state, reward, done
+      self$n.step = self$n.step + 1L
+      self$episode.step = self$episode.step + 1L
       res = private$step_(self, action)
+      self$episode.return = self$episode.return +
+        self$discount ^ self$episode.step * res[[2]]
       self$state = res[[1]]
       self$reward = res[[2]]
       self$done = res[[3]]
-      # if (self$done) {
-      #   self$n.episodes = self$n.episodes + 1L
-      # }
+      if (self$done) {
+        self$episode = self$episode + 1L
+      }
       list(state = res[[1]], reward = res[[2]], done = res[[3]])
     },
 
@@ -78,9 +82,10 @@ Environment = R6::R6Class("Environment",
       private$visualize_(self)
     },
 
-    initialize = function(step, reset, visualize) {
+    initialize = function(step, reset, visualize, discount = 1) {
       private$step_ = step
       private$reset_ = reset
+      self$discount = discount
       if (!missing(visualize)) {
         private$visualize_ = visualize
       }
@@ -88,7 +93,10 @@ Environment = R6::R6Class("Environment",
   ),
 
   private = list(
+    # step_: custom step method depending on problem that returns list with
+    #   next state, reward, done
     step_ = NULL,
+    # reset_: custom reset method depending on problem that returns state
     reset_ = NULL,
     visualize_ = NULL
   )
