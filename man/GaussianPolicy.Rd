@@ -11,3 +11,12 @@ Gaussian Policy
 \code{GaussianPolicy$new()}
 }
 
+\section{Methods}{
+
+\code{$sampleAction(policy)} Sample action from policy probabilities.
+}
+
+\examples{
+pol = GaussianPolicy$new()
+pol$sampleAction(mean = 10, sd = 1)
+}

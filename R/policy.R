@@ -1,3 +1,22 @@
+#' Policy
+#'
+#' Reinforcement learning policies.
+#'
+#' @md
+#'
+#' @section Policies:
+#' * [RandomPolicy]
+#' * [EpsilonGreedyPolicy]
+#' * [GaussianPolicy]
+#' * [SoftmaxPolicy]
+#'
+#' @section Methods:
+#' \code{$sampleAction(policy)} Sample action from policy probabilities.
+#'
+#' @name Policy
+#' @export
+NULL
+
 Policy = R6::R6Class("Policy",
   public = list(
     sampleAction = function(policy) {
@@ -12,8 +31,17 @@ Policy = R6::R6Class("Policy",
 #'
 #' @export
 #' @section Usage:
-#' \code{EpsilonGreedyPolicy$new()}
+#' \code{EpsilonGreedyPolicy$new(epsilon)}
+#'
+#' @param epsilon [\code{numeric(1) in [0, 1]}] \cr
+#'   Ratio of random exploration in epsilon-greedy action selection.
+#'
+#' @inheritSection Policy Methods
 #' @name EpsilonGreedyPolicy
+#' @examples
+#' pol = EpsilonGreedyPolicy$new(epsilon = 0.1)
+#' (probs = pol$getActionProbs(matrix(c(1:3), ncol = 3), n.actions = 3))
+#' pol$sampleAction(probs)
 NULL
 
 #' @export
@@ -22,7 +50,7 @@ EpsilonGreedyPolicy = R6::R6Class("EpsilonGreedyPolicy",
   public = list(
     epsilon = NULL,
     getActionProbs = function(Q, n.actions) { # fixme: break ties
-      greedy.action = which.max(Q)
+      greedy.action = nnet::which.is.max(Q)
       policy = matrix(0, nrow = 1, ncol = n.actions)
       policy[, greedy.action] = 1 - self$epsilon
       policy = policy + self$epsilon / n.actions
@@ -39,7 +67,14 @@ EpsilonGreedyPolicy = R6::R6Class("EpsilonGreedyPolicy",
 #' @export
 #' @section Usage:
 #' \code{RandomPolicy$new()}
+#'
+#' @inheritSection Policy Methods
 #' @name RandomPolicy
+#' @examples
+#' pol = RandomPolicy$new()
+#' (probs = pol$getActionProbs(n.actions = 4))
+#' (probs = pol$getActionProbs(n.actions = 5))
+#' pol$sampleAction(probs)
 NULL
 
 #' @export
@@ -58,7 +93,12 @@ RandomPolicy = R6::R6Class("RandomPolicy",
 #' @export
 #' @section Usage:
 #' \code{GaussianPolicy$new()}
+#'
+#' @inheritSection Policy Methods
 #' @name GaussianPolicy
+#' @examples
+#' pol = GaussianPolicy$new()
+#' pol$sampleAction(mean = 10, sd = 1)
 NULL
 
 #' @export
@@ -76,7 +116,13 @@ GaussianPolicy = R6::R6Class("GaussianPolicy",
 #' @export
 #' @section Usage:
 #' \code{SoftmaxPolicy$new()}
+#'
+#' @inheritSection Policy Methods
 #' @name SoftmaxPolicy
+#' @examples
+#' pol = SoftmaxPolicy$new()
+#' (probs = pol$getActionProbs(matrix(c(1:3), ncol = 3)))
+#' pol$sampleAction(probs)
 NULL
 
 #' @export

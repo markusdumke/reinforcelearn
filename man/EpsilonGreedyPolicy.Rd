@@ -3,11 +3,25 @@
 \name{EpsilonGreedyPolicy}
 \alias{EpsilonGreedyPolicy}
 \title{Epsilon Greedy Policy}
+\arguments{
+\item{epsilon}{[\code{numeric(1) in [0, 1]}] \cr
+Ratio of random exploration in epsilon-greedy action selection.}
+}
 \description{
 Epsilon Greedy Policy
 }
 \section{Usage}{
 
-\code{EpsilonGreedyPolicy$new()}
+\code{EpsilonGreedyPolicy$new(epsilon)}
 }
 
+\section{Methods}{
+
+\code{$sampleAction(policy)} Sample action from policy probabilities.
+}
+
+\examples{
+pol = EpsilonGreedyPolicy$new(epsilon = 0.1)
+(probs = pol$getActionProbs(matrix(c(1:3), ncol = 3), n.actions = 3))
+pol$sampleAction(probs)
+}

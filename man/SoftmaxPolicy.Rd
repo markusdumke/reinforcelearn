@@ -11,3 +11,13 @@ Softmax Policy
 \code{SoftmaxPolicy$new()}
 }
 
+\section{Methods}{
+
+\code{$sampleAction(policy)} Sample action from policy probabilities.
+}
+
+\examples{
+pol = SoftmaxPolicy$new()
+(probs = pol$getActionProbs(matrix(c(1:3), ncol = 3)))
+pol$sampleAction(probs)
+}

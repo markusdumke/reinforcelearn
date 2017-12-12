@@ -11,3 +11,14 @@ Random Policy
 \code{RandomPolicy$new()}
 }
 
+\section{Methods}{
+
+\code{$sampleAction(policy)} Sample action from policy probabilities.
+}
+
+\examples{
+pol = RandomPolicy$new()
+(probs = pol$getActionProbs(n.actions = 4))
+(probs = pol$getActionProbs(n.actions = 5))
+pol$sampleAction(probs)
+}
