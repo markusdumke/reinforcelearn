@@ -1,54 +1,75 @@
-# fixme: logging
-# fixme: control when to learn
-# fixme: save all states, actions, rewards ...
-# fixme: return number of steps, returns etc
-# fixme: print out average return of last n episodes ...
-interact = function(environment, agent, n.steps = 1L, n.episodes = Inf,
-  max.steps.per.episode = 1000L, learn = TRUE, visualize = FALSE) {
+#' @export
+interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
+  max.steps.per.episode = Inf, visualize = FALSE) {
 
-  episode.return = 0
-  episode = 0L
-  step = 0L
-  step.in.episode = 0L
+  # one of steps, episodes must be finite!
+  if (is.infinite(n.steps) && is.infinite(n.episodes)) {
+    stop("Specify finite number of steps or number of episodes!")
+  }
 
-  if (is.null(environment$state)) {
-    state = environment$reset()
-    environment$visualize()
+  # preallocation if number of episodes is known in advance
+  if (n.episodes < Inf) {
+    episode.returns = rep(NA_real_, n.episodes)
   } else {
-    state = environment$state
+    episode.returns = vector(mode = "double")
+  }
+  if (n.episodes < Inf) {
+    episode.steps = rep(NA_integer_, n.episodes)
+  } else {
+    episode.steps = vector(mode = "integer")
+  }
+
+  episode = 0L
+
+  # stop if specified episode or step is reached
+  stop.step = env$n.step + n.steps
+  stop.episode = env$episode + n.episodes
+
+  if (is.null(env$state)) {
+    message("Reset environment.")
+    state = env$reset()
+    if (visualize) {
+      env$visualize()
+    }
+  } else {
+    state = env$state
   }
 
   while (TRUE) {
-    step = step + 1L
-    step.in.episode = step.in.episode + 1L
-
+    # agent$observe() # observe before act
     action = agent$act(state) # fixme: store action also in agent attribute
-    res = environment$step(action)
+    res = env$step(action)
     if (visualize) {
-      environment$visualize()
+      env$visualize()
     }
-    episode.return = episode.return + res$reward # no discounting here yet
-    if (learn) {
+
+    if (agent$learn.logical) {
       agent$learn(state, action, res$state, res$reward)
     }
     state = res$state # set state to next state for new iteration
 
-    if (res$done || step.in.episode  == max.steps.per.episode) {
-      step.in.episode = 0L
+    if (res$done || env$episode.step == max.steps.per.episode) {
+      if (!res$done) {
+        env$episode = env$episode + 1L
+      }
+      message(paste("Episode", env$episode, "finished after",
+        env$episode.step, "steps with a return of", env$episode.return))
       episode = episode + 1L
-      environment$n.episodes = environment$n.episodes + 1L
-      message(paste("Episode", environment$n.episodes, "finished after",
-        environment$n.steps, "steps with a return of", episode.return))
-      episode.return = 0
-      #if (learn) {
-      state = environment$reset()
-      #}
+      episode.returns[episode] = env$episode.return
+      episode.steps[episode] = env$episode.step
+      state = env$reset()
+      # agent$reset()
     }
 
     # stop criteria
-    if (step == n.steps || episode == n.episodes) {
+    if (env$n.step == stop.step || env$episode == stop.episode) {
       break
     }
   }
-  # list(returns = episode.returns)
+  list(returns = episode.returns, steps = episode.steps)
 }
+# fixme: logging
+# fixme: control when to learn
+# fixme: save history of all states, actions, rewards ...
+# fixme: return number of steps, returns etc
+# fixme: print out average return of last n episodes ...

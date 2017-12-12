@@ -9,12 +9,11 @@ library(knitr)
 opts_chunk$set(comment = "#>", collapse = FALSE, message = FALSE)
 
 #'
-# Switch to branch "markus"
 devtools::load_all()
 library(keras)
 set.seed(1)
 
-env = GridworldEnvironment$new(shape = c(4, 4), goal.states = 0, initial.state = 15)
+env = Gridworld$new(shape = c(4, 4), goal.states = 0, initial.state = 15)
 
 #' ----
 #'
@@ -33,7 +32,7 @@ env = GridworldEnvironment$new(shape = c(4, 4), goal.states = 0, initial.state =
 #'
 #' - transform the state observation so that the agent can learn on this
 preprocess = function(state) {
-  reinforcelearn::nHot(state + 1, env$n.states)
+  nHot(state + 1, env$n.states)
 }
 
 (s = env$reset())

@@ -1,5 +1,5 @@
 #' ---
-#' title: "Reinforcement Learning API"
+#' title: "Reinforcement Learning User API"
 #' author: Markus Dumke
 #' output: github_document
 #' ---
@@ -9,46 +9,32 @@ library(knitr)
 opts_chunk$set(comment = "#>", collapse = FALSE, message = TRUE)
 
 #'
-# Switch to branch "markus"
 devtools::load_all()
-library(keras)
 
 #' Environment
-env = GridworldEnvironment$new(shape = c(4, 4), goal.states = c(0), initial.state = 15)
+env = WindyGridworld$new()
 
-#' State Preprocessor
-preprocessState = function(state) {
-  reinforcelearn::nHot(state + 1, env$n.states)
-}
+#' State preprocessing
 
-(s = env$reset())
-(s = preprocessState(s))
-
-#' ActionValueNetwork
-model.keras = keras_model_sequential()
-model.keras %>% layer_dense(units = 4, activation = "linear", input_shape = c(16),
-  use_bias = FALSE, kernel_initializer = "zeros")
-keras::compile(model.keras, loss = "mae", optimizer = keras::optimizer_sgd(lr = 0.4))
-
-action.vals = ActionValueNetwork$new(model.keras, preprocessState)
-action.vals$model
-(Q = action.vals$predictQ(s))
-# action.vals$train(state, target)
+#' ActionValueTable
+action.vals = ActionValueTable$new(n.states = env$n.states, n.actions = env$n.actions)
 
 #' Policy
 policy = EpsilonGreedyPolicy$new(epsilon = 0.1)
-policy$epsilon
-(probs = policy$getActionProbs(Q))
-(action = policy$sampleAction(probs))
 
-#' Learner
-learner = QLearning$new()
+#' Algorithm
+algorithm = QLearning$new()
+
+#' Experience Replay
+replay = ExperienceReplay$new(size = 10L)
 
 #' Agent
-agent = Agent$new(learner, action.vals, policy)
+agent = Agent$new(algorithm, action.vals, policy, replay)
 
 #' Interaction
-interaction(env, agent, n.steps = 200)
+interact(env, agent, n.steps = 2000L)
+interact(env, agent, n.episodes = 10L)
 
-#' Get Action Value Function
-agent$action.value$model %>% get_weights()
+# to reset the counters we have to create a new copy of the environment
+env = WindyGridworld$new()
+interact(env, agent, n.episodes = 10L, max.steps.per.episode = 20L)

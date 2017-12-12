@@ -9,7 +9,6 @@ library(knitr)
 opts_chunk$set(comment = "#>", collapse = FALSE, message = FALSE)
 
 #'
-# Switch to branch "markus"
 devtools::load_all()
 
 #' ----
@@ -47,7 +46,7 @@ devtools::load_all()
 #'       - subclass of `Environment`
 #'       - can be called with `MdpEnvironment$new(transitions, rewards, ...)`
 #'
-#' - GridworldEnvironment
+#' - Gridworld
 #'       - subclass of `MdpEnvironment`
 #'       - can be called with `GridworldEnvironment$new(shape, goal.states, ...)`
 #'
@@ -70,7 +69,7 @@ mdp$step(1)
 #'
 
 #' ### Gridworld
-grid = GridworldEnvironment$new(shape = c(4, 4), goal.states = c(0), initial.state = 15)
+grid = Gridworld$new(shape = c(4, 4), goal.states = c(0), initial.state = 15)
 grid$reset()
 grid$visualize()
 grid$step(0L)
