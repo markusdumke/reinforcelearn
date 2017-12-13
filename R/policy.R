@@ -6,6 +6,7 @@
 #'
 #' @section Policies:
 #' * [RandomPolicy]
+#' * [GreedyPolicy]
 #' * [EpsilonGreedyPolicy]
 #' * [GaussianPolicy]
 #' * [SoftmaxPolicy]
@@ -14,7 +15,6 @@
 #' \code{$sampleAction(policy)} Sample action from policy probabilities.
 #'
 #' @name Policy
-#' @export
 NULL
 
 Policy = R6::R6Class("Policy",
@@ -31,7 +31,8 @@ Policy = R6::R6Class("Policy",
 #'
 #' @export
 #' @section Usage:
-#' \code{EpsilonGreedyPolicy$new(epsilon)}
+#' \code{EpsilonGreedyPolicy$new(epsilon)} \cr
+#' \code{GreedyPolicy$new()}
 #'
 #' @param epsilon [\code{numeric(1) in [0, 1]}] \cr
 #'   Ratio of random exploration in epsilon-greedy action selection.
@@ -58,6 +59,21 @@ EpsilonGreedyPolicy = R6::R6Class("EpsilonGreedyPolicy",
     },
     initialize = function(epsilon) {
       self$epsilon = epsilon
+    }
+  )
+)
+
+#' @export
+#' @rdname EpsilonGreedyPolicy
+#' @usage NULL
+GreedyPolicy = R6::R6Class("GreedyPolicy",
+  # inherit = EpsilonGreedyPolicy,
+  public = list(
+    getActionProbs = function(Q, n.actions) {
+      greedy.action = nnet::which.is.max(Q) # this is duplicate code!
+      policy = matrix(0, nrow = 1, ncol = n.actions)
+      policy[, greedy.action] = 1
+      policy
     }
   )
 )
@@ -135,3 +151,5 @@ SoftmaxPolicy = R6::R6Class("SoftmaxPolicy",
     }
   )
 )
+
+# ideas: DiscretePolicy class

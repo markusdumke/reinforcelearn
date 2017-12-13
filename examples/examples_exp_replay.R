@@ -12,7 +12,7 @@ opts_chunk$set(comment = "#>", collapse = FALSE, message = FALSE)
 devtools::load_all()
 
 #' replay memory class
-replay = ExperienceReplay$new(size = 2)
+replay = ExperienceReplay$new(size = 2, batch.size = 1L)
 
 replay$size
 replay$memory
@@ -27,6 +27,8 @@ replay$observe(state, action, reward, next.state)
 replay$memory
 
 replay$isFull()
+
+replay$sampleBatch(batch.size = 2L)
 
 #' add second observation
 state = 7.3

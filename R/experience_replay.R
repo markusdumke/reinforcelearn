@@ -1,13 +1,16 @@
 #' @export
-ExperienceReplay = R6::R6Class("ExperienceReplay",
+ExperienceReplay = R6::R6Class("ExperienceReplay", # alternative name: ReplayMemory
   public = list(
     memory = NULL,
     size = NULL,
+    batch.size = NULL,
     index = 0L,
+    index.full = 0L,
 
     # fixme allow growing replay memory?
-    initialize = function(size) {
+    initialize = function(size, batch.size) {
       self$size = size
+      self$batch.size = batch.size
       self$memory = vector("list", length = self$size)
     },
 
@@ -23,6 +26,8 @@ ExperienceReplay = R6::R6Class("ExperienceReplay",
 
     observe = function(state, action, reward, next.state) {
       self$index = self$index + 1L
+      self$index.full = self$index.full + 1L
+      self$index.full = min(self$size, self$index.full)
       index = self$getReplacementIndex()
       obs = self$getReplayObservation(state, action, reward, next.state)
       self$add(obs, index)
@@ -44,9 +49,9 @@ ExperienceReplay = R6::R6Class("ExperienceReplay",
       self$memory[[index]] = observation
     },
 
-    isFull = function() {
+    isFull = function(memory = self$memory) {
       # maybe it is enough to check the last entry
-      full = !(any(purrr::map_lgl(self$memory, is.null)))
+      full = !(any(purrr::map_lgl(memory, is.null)))
       full
     },
 
@@ -55,10 +60,22 @@ ExperienceReplay = R6::R6Class("ExperienceReplay",
       states
     },
 
-    sampleBatch = function(memory = self$memory, batch.size) {
-      indices = self$getIndices(length(memory), batch.size)
-      batch = memory[indices]
-      purrr::transpose(batch)
+    # checkMemory = function(memory = self$memory, batch.size = self$batch.size) {
+    #   if (!self$isFull()) {
+    #     if (self$index < batch.size) {
+    #       return(FALSE)
+    #     }
+    #   }
+    # },
+
+    sampleBatch = function(memory = self$memory[seq_len(self$index.full)], batch.size = self$batch.size) {
+      if (length(memory) >= batch.size) {
+        indices = self$getIndices(length(memory), batch.size)
+        batch = memory[indices]
+        return(purrr::transpose(batch))
+      } else {
+        message("Cannot sample from replay memory because batch size > number of non-empty entries in replay memory.")
+      }
     },
 
     getIndices = function(memory.size, batch.size) {
@@ -69,5 +86,6 @@ ExperienceReplay = R6::R6Class("ExperienceReplay",
 )
 
 # ideas: maybe replay memory in future not list but hash table / dictionary etc
+# data frame with list columns?
 # fixme allow dynamic change of replay memory length
 # store preprocessed state?

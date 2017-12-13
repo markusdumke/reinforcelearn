@@ -10,6 +10,7 @@ Reinforcement learning policies.
 
 \itemize{
 \item \link{RandomPolicy}
+\item \link{GreedyPolicy}
 \item \link{EpsilonGreedyPolicy}
 \item \link{GaussianPolicy}
 \item \link{SoftmaxPolicy}
