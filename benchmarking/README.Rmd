@@ -1,0 +1,11 @@
+---
+title: "Benchmarking"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here we will add examples that show that the implemented algorithms work
+on a set of benchmarking problems.
