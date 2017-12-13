@@ -21,6 +21,14 @@
 #'
 #' \code{$visualize()} Visualizes environment.
 #'
+#' @section Environments:
+#' \itemize{
+#'   \item{\code{\link{GymEnvironment}}}
+#'   \item{\code{\link{MdpEnvironment}}}
+#'   \item{\code{\link{Gridworld}}}
+#'   \item{\code{\link{MountainCar}}}
+#' }
+#'
 #' @name Environment
 #' @export
 #'
@@ -88,6 +96,8 @@ Environment = R6::R6Class("Environment",
       self$discount = discount
       if (!missing(visualize)) {
         private$visualize_ = visualize
+      } else {
+        private$visualize_ = function() {}
       }
     }
   ),

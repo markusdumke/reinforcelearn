@@ -1,6 +1,6 @@
 #' Gridworld
 #'
-#' \code{gridworld} creates gridworld environments.
+#' \code{Gridworld} creates gridworld environments.
 #'
 #' A gridworld is an episodic navigation task, the goal is to get from start state to goal state.
 #'
@@ -228,42 +228,42 @@ go = function(x, ...) {
   UseMethod("go", x)
 }
 
-
+#' @export
 go.left = function(x, states, border.states, ...) {
   ifelse(states %in% border.states[["left"]], states, states - 1)
 }
 
-
+#' @export
 go.right = function(x, states, border.states, ...) {
   ifelse(states %in% border.states[["right"]], states, states + 1)
 }
 
-
+#' @export
 go.up = function(x, states, border.states, n.col) {
   ifelse(states %in% border.states[["up"]], states, states - n.col)
 }
 
-
+#' @export
 go.down = function(x, states, border.states, n.col) {
   ifelse(states %in% border.states[["down"]], states, states + n.col)
 }
 
-
+#' @export
 go.leftup = function(x, states, border.states, n.col) {
   go.left(x, go.up(x, states, border.states, n.col), border.states)
 }
 
-
+#' @export
 go.leftdown = function(x, states, border.states, n.col) {
   go.left(x, go.down(x, states, border.states, n.col), border.states)
 }
 
-
+#' @export
 go.rightup = function(x, states, border.states, n.col) {
   go.right(x, go.up(x, states, border.states, n.col), border.states)
 }
 
-
+#' @export
 go.rightdown = function(x, states, border.states, n.col) {
   go.right(x, go.down(x, states, border.states, n.col), border.states)
 }

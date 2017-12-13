@@ -40,7 +40,7 @@ Probability of random transition to any of the neighboring states when taking an
 \item{...}{Arguments passed on to \code{\link{MdpEnvironment}}.}
 }
 \description{
-\code{gridworld} creates gridworld environments.
+\code{Gridworld} creates gridworld environments.
 }
 \details{
 A gridworld is an episodic navigation task, the goal is to get from start state to goal state.

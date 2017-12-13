@@ -34,6 +34,16 @@ Returns a list with \code{state}, \code{reward}, \code{done}.
 \code{$visualize()} Visualizes environment.
 }
 
+\section{Environments}{
+
+\itemize{
+  \item{\code{\link{GymEnvironment}}}
+  \item{\code{\link{MdpEnvironment}}}
+  \item{\code{\link{Gridworld}}}
+  \item{\code{\link{MountainCar}}}
+}
+}
+
 \examples{
 step = function(self, action) {
   state = list(mean = action + rnorm(1), sd = runif(1))

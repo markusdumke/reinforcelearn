@@ -15,8 +15,9 @@ library(keras)
 model = keras_model_sequential()
 model %>%
   layer_dense(units = 64L, activation = 'relu', input_shape = c(2L)) %>%
+  #layer_dense(units = 100L, activation = 'relu', input_shape = c(2L)) %>%
   layer_dense(units = 3L, activation = 'linear')
-model$compile(loss = 'mse', optimizer = optimizer_rmsprop(lr = 0.0025))
+model$compile(loss = 'mse', optimizer = optimizer_rmsprop(lr = 0.00025))
 
 # needed for gym
 preprocess = function(state) {
@@ -57,16 +58,21 @@ val = ActionValueNetwork$new(model, preprocess)
 # ----
 # epsilon greedy policy with exp. replay
 policy = EpsilonGreedyPolicy$new(epsilon = 0.1)
-memory = ExperienceReplay$new(size = 1000L, batch.size = 100L)
+memory = ExperienceReplay$new(size = 500L, batch.size = 100L)
 
 alg = QLearning$new()
 agent = Agent$new(alg, val, policy, memory)
 
 # learn every 100 steps
 agent$learn.logical = FALSE
-for (i in 1:1000) {
-  interact(env, agent, n.steps = 100L, visualize = FALSE)
-  print("L")
+for (i in 1:100000) {
+  interact(env, agent, n.steps = 10L, visualize = FALSE)
   agent$learn()
 }
 env$gym.env$close()
+
+
+l = vector(mode = "list", 1000)
+for (i in 1:1000) {
+  l[[i]] = matrix(1, ncol = 2)
+}

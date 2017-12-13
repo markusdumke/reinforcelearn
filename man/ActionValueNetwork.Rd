@@ -7,6 +7,7 @@
 Neural network representing the action value function Q.
 }
 \examples{
+\dontrun{
 library(keras)
 model = keras_model_sequential()
 model \%>\% layer_dense(20, input_shape = 10, activation = "relu")
@@ -16,4 +17,5 @@ keras::compile(model, loss = "mae", optimizer = keras::optimizer_sgd(lr = 0.4))
 val = ActionValueNetwork$new(model)
 val$predictQ(matrix(1, ncol = 10))
 val$train(matrix(1, ncol = 10), target = matrix(c(-1, 2, 4, -3), ncol = 4))
+}
 }

@@ -17,6 +17,7 @@ NULL
 #' @name ActionValueNetwork
 #'
 #' @examples
+#' \dontrun{
 #' library(keras)
 #' model = keras_model_sequential()
 #' model %>% layer_dense(20, input_shape = 10, activation = "relu")
@@ -26,6 +27,7 @@ NULL
 #' val = ActionValueNetwork$new(model)
 #' val$predictQ(matrix(1, ncol = 10))
 #' val$train(matrix(1, ncol = 10), target = matrix(c(-1, 2, 4, -3), ncol = 4))
+#' }
 NULL
 
 #' @export
@@ -52,7 +54,7 @@ ActionValueNetwork = R6::R6Class("ActionValueNetwork",
 
     processBatch = function(batch) {
       data = list(
-        state = purrr::reduce(batch[["state"]], rbind), # problematic for matrix with many columns
+        state = do.call(rbind, batch[["state"]]), # problematic for matrix with many columns, purrr::reduce
         action = unlist(batch[["action"]]),
         reward = unlist(batch[["reward"]]),
         next.state = purrr::reduce(batch[["next.state"]], rbind)

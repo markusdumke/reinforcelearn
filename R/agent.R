@@ -102,6 +102,10 @@ Agent = R6::R6Class("Agent",
 
     getWeights = function() {
       self$action.value$getWeights()
+    },
+
+    getMemory = function() {
+      agent$exp.replay$memory
     }
 
     # setLearningRate
@@ -139,11 +143,11 @@ QLearning = R6::R6Class("QLearning",
   )
 )
 
-PolicyGradientAgent = R6::R6Class("ValueAgent",
-  #inherit = Agent,
-  public = list(
-    act = function(state) {
-
-    }
-  )
-)
+# PolicyGradientAgent = R6::R6Class("ValueAgent",
+#   #inherit = Agent,
+#   public = list(
+#     act = function(state) {
+#
+#     }
+#   )
+# )

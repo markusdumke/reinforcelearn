@@ -37,6 +37,7 @@ Policy = R6::R6Class("Policy",
 #' @param epsilon [\code{numeric(1) in [0, 1]}] \cr
 #'   Ratio of random exploration in epsilon-greedy action selection.
 #'
+#' @importFrom nnet which.is.max
 #' @inheritSection Policy Methods
 #' @name EpsilonGreedyPolicy
 #' @examples
