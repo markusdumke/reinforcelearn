@@ -220,7 +220,7 @@ checkArgs = function(envir, fun.approx, preprocessState,
   updateEpsilon, updateSigma, updateLambda, updateAlpha,
   updateLearningRate) {
 
-  checkmate::assertClass(envir, "R6")
+  checkmate::assertClass(envir, "Environment")
   stopifnot(envir$action.space == "Discrete")
   checkmate::assertChoice(fun.approx, c("table", "linear"))
   checkmate::assertNumber(discount, lower = 0, upper = 1)

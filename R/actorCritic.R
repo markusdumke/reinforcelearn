@@ -94,7 +94,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
   lambda.actor = 0, lambda.critic = 0, updateAlpha = identity2,
   updateBeta = identity2, updateLambdaActor = identity2, updateLambdaCritic = identity2) {
 
-  checkmate::assertClass(envir, "R6")
+  checkmate::assertClass(envir, "Environment")
   checkmate::assertFunction(preprocessState)
   checkmate::assertChoice(critic.type, "advantage")
   checkmate::assertChoice(fun.approx, c("table", "linear"))

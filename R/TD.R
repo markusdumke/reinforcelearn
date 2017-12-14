@@ -43,7 +43,7 @@ td = function(envir, policy, fun.approx = "table", preprocessState = identity,
   lambda = 0, eligibility.type = 0, learning.rate = 0.1,
   updateLambda = identity2, updateLearningRate = identity2) {
 
-  checkmate::assertClass(envir, "R6")
+  checkmate::assertClass(envir, "Environment")
   checkmate::assertChoice(fun.approx, c("table", "linear"))
   checkmate::assertFunction(preprocessState)
   stopifnot(envir$action.space == "Discrete")
