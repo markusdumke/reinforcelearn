@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make n hot vector. — nHot â€¢ reinforcelearn</title>
+<title>MDP Environment — MdpEnvironment â€¢ reinforcelearn</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -93,48 +93,80 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Make n hot vector.</h1>
+    <h1>MDP Environment</h1>
     </div>
 
     
-    <p>Make n hot vector.</p>
+    <p>Markov Decision Process environment.</p>
     
 
-    <pre class="usage"><span class='fu'>nHot</span>(<span class='no'>x</span>, <span class='no'>len</span>, <span class='kw'>out</span> <span class='kw'>=</span> <span class='st'>"matrix"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>[<code>integer</code>]  Which features are active?</p></td>
+      <th>transitions</th>
+      <td><p>[<code>array (n.states x n.states x n.actions)</code>] 
+State transition array.</p></td>
     </tr>
     <tr>
-      <th>len</th>
-      <td><p>[<code>integer(1)</code>]  Length of the feature vector.</p></td>
+      <th>rewards</th>
+      <td><p>[<code>matrix (n.states x n.actions)</code>] 
+Reward array.</p></td>
     </tr>
     <tr>
-      <th>out</th>
-      <td><p>[<code>character(1)</code>]  Format of the output. Can be a vector or a matrix.</p></td>
+      <th>initial.state</th>
+      <td><p>[<code>integer</code>] 
+Optional starting state.
+If a vector is given a starting state will be
+randomly sampled from this vector whenever <code>reset</code> is called.
+Note that states are numerated starting with
+0. If <code>initial.state = NULL</code> all non-terminal states are
+possible starting states.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
-    <p>[<code>matrix(1, len)</code>] A one-row matrix with <code>len</code> columns with every entry 0
-  except the columns specified by <code>x</code>.</p>
+    <p><code><a href='makeEnvironment.html'>makeEnvironment("MDP", transitions, rewards, initial.state, visualize)</a></code></p>
+    
+    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
+
+    
+    <dl class='dl-horizontal'>
+<dt><code>$step(action)</code></dt><dd><p>Take action in environment.
+Returns a list with <code>state</code>, <code>reward</code>, <code>done</code>.</p></dd>
+<dt><code>$reset()</code></dt><dd><p>Resets the <code>done</code> flag of the environment and returns an initial state.
+  Useful when starting a new episode.</p></dd>
+<dt><code>$visualize()</code></dt><dd><p>Visualizes the environment (if there is a visualization function).</p></dd>
+</dl>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>nHot</span>(<span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>3</span>), <span class='fl'>5</span>)</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5]
-#&gt; [1,]    1    0    1    0    0</div><div class='input'><span class='fu'>nHot</span>(<span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>3</span>), <span class='fl'>5</span>, <span class='kw'>out</span> <span class='kw'>=</span> <span class='st'>"vector"</span>)</div><div class='output co'>#&gt; [1] 1 0 1 0 0</div></pre>
+    <pre class="examples"><div class='input'><span class='co'># Create a Markov Decision Process.</span>
+<span class='no'>P</span> <span class='kw'>=</span> <span class='fu'>array</span>(<span class='fl'>0</span>, <span class='fu'>c</span>(<span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>2</span>))
+<span class='no'>P</span>[, , <span class='fl'>1</span>] <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='fl'>0</span>, <span class='fl'>1</span>), <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>P</span>[, , <span class='fl'>2</span>] <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>), <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>R</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>5</span>, <span class='fl'>10</span>, -<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"MDP"</span>, <span class='kw'>transitions</span> <span class='kw'>=</span> <span class='no'>P</span>, <span class='kw'>rewards</span> <span class='kw'>=</span> <span class='no'>R</span>)
+<span class='no'>env</span>$<span class='fu'>reset</span>()</div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='no'>env</span>$<span class='fu'>step</span>(<span class='fl'>1L</span>)</div><div class='output co'>#&gt; $state
+#&gt; [1] 1
+#&gt; 
+#&gt; $reward
+#&gt; [1] 10
+#&gt; 
+#&gt; $done
+#&gt; [1] TRUE
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
+      <li><a href="#usage">Usage</a></li>
+
+      <li><a href="#methods">Methods</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

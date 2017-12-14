@@ -52,7 +52,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -72,9 +72,6 @@
     </li>
     <li>
       <a href="../articles/environments.html">How to create an environment?</a>
-    </li>
-    <li>
-      <a href="../articles/introduction.html">Introduction to reinforcelearn</a>
     </li>
   </ul>
 </li>
@@ -151,8 +148,7 @@ The reinforcement learning environment created by <code><a href='makeEnvironment
     <tr>
       <th>fun.approx</th>
       <td><p>[<code>character(1)</code>] 
-How to represent the value function? Currently <code>"table"</code>, <code>"linear"</code>
-and <code>"neural.network"</code> are supported.</p></td>
+How to represent the value function? Currently <code>"table"</code> and <code>"linear"</code> are supported.</p></td>
     </tr>
     <tr>
       <th>preprocessState</th>
@@ -162,8 +158,8 @@ preprocesses this in a way the algorithm can work with it.</p></td>
     </tr>
     <tr>
       <th>model</th>
-      <td><p>[<code>keras model</code>] 
-A neural network model specified using the <code>keras</code> package.</p></td>
+      <td><p>[<code>any</code>] 
+Currently unused parameter.</p></td>
     </tr>
     <tr>
       <th>initial.value</th>
@@ -317,17 +313,13 @@ For more details on the algorithm read De Asis et al. (2017).
 Expected Sarsa can be used on-policy if <code>target.policy == "egreedy"</code> else it is identical
 to Q-Learning.</p>
 <p>When <code>fun.approx == "table"</code> the action value function will be represented as a matrix,
-but you can also use a linear combination of features or a neural network
-for function approximation.
-For a neural network you need to pass on a keras model via the <code>model</code> argument.</p>
+but you can also use a linear combination of features for function approximation.</p>
 <p>The raw state observation returned from the environment must be preprocessed using
 the <code>preprocessState</code> argument. This function takes the state observation as input and
 returns a preprocessed state which can be directly used by the function approximator.
 To use a tabular value function <code>preprocessState</code> must return an integer value between
 [0, number of states - 1]. For linear function approximation the output of
-<code>preprocessState</code> must be a matrix with one row. For a neural network you have to make
-sure that the dimensions of the preprocessed state and the neural network match, so that
-<code>model$predict(preprocessState(envir$state))</code> works.</p>
+<code>preprocessState</code> must be a matrix with one row.</p>
 <p>Experience replay can be used by specifying a prefilled replay memory using the
 <code>replay.memory</code> argument or by specifying the length of the replay memory,
 which is then filled with experience using a random uniform policy.
@@ -337,8 +329,6 @@ Sampling can also be prioritized by the error as proposed by Schaul et al. (2016
 <code>learning.rate</code> can be changed over time. Therefore pass on functions that return a new
 value of the hyperparameter. These updates will be applied after each episode. First argument of
 the function must be the parameter itself, the second argument the current episode number.</p>
-<p>For neural networks the options experience replay, eligibility traces and double learning
-are currently not available.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -351,29 +341,29 @@ are currently not available.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Solve Windy Gridworld</span>
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='windyGridworld.html'>windyGridworld</a></span>()
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"WindyGridworld"</span>)
 
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>qlearning</span>(<span class='no'>env</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 794 steps with a return of -794</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 1701 steps with a return of -1701</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 746 steps with a return of -746</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 468 steps with a return of -468</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 319 steps with a return of -319</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 352 steps with a return of -352</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 366 steps with a return of -366</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 256 steps with a return of -256</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 131 steps with a return of -131</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 136 steps with a return of -136</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 172 steps with a return of -172</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 232 steps with a return of -232</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 219 steps with a return of -219</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 202 steps with a return of -202</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 40 steps with a return of -40</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 85 steps with a return of -85</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 158 steps with a return of -158</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 200 steps with a return of -200</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 120 steps with a return of -120</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 140 steps with a return of -140</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>res</span>$<span class='no'>steps</span>)</div><div class='output co'>#&gt;  [1]  794 1701  746  468  319  352  366  256  131  136  172  232  219  202   40
-#&gt; [16]   85  158  200  120  140</div><div class='input'>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>qlearning</span>(<span class='no'>env</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 1909 steps with a return of -1909</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 370 steps with a return of -370</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 907 steps with a return of -907</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 432 steps with a return of -432</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 542 steps with a return of -542</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 288 steps with a return of -288</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 136 steps with a return of -136</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 194 steps with a return of -194</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 298 steps with a return of -298</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 238 steps with a return of -238</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 121 steps with a return of -121</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 177 steps with a return of -177</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 210 steps with a return of -210</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 152 steps with a return of -152</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 428 steps with a return of -428</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 94 steps with a return of -94</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 59 steps with a return of -59</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 86 steps with a return of -86</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 165 steps with a return of -165</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 237 steps with a return of -237</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>res</span>$<span class='no'>steps</span>)</div><div class='output co'>#&gt;  [1] 1909  370  907  432  542  288  136  194  298  238  121  177  210  152  428
+#&gt; [16]   94   59   86  165  237</div><div class='input'>
 <span class='co'># State value function</span>
 <span class='fu'>print</span>(<span class='fu'>matrix</span>(<span class='fu'>round</span>(<span class='fu'>apply</span>(<span class='no'>res</span>$<span class='no'>Q1</span>, <span class='fl'>1</span>, <span class='no'>max</span>), <span class='fl'>1</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,] -4.2 -4.4 -4.8 -5.6 -6.3 -6.7 -6.7 -6.2 -5.5  -4.7
-#&gt; [2,] -3.9 -4.0 -4.1 -4.4 -4.0 -3.4 -1.8 -3.4 -3.8  -3.8
-#&gt; [3,] -3.6 -3.5 -3.4 -3.3 -2.6 -1.3 -0.3 -1.8 -2.7  -3.0
-#&gt; [4,] -3.3 -3.1 -2.8 -2.5 -1.4 -0.4  0.0  0.0 -1.8  -2.2
-#&gt; [5,] -2.8 -2.6 -2.2 -1.7 -0.7 -0.2  0.0 -0.2 -0.8  -1.5
-#&gt; [6,] -2.5 -2.2 -1.7 -1.2 -0.4  0.0  0.0  0.0 -0.5  -0.9
-#&gt; [7,] -2.2 -1.9 -1.4 -0.8  0.0  0.0  0.0  0.0 -0.1  -0.5</div><div class='input'>
+#&gt; [1,] -4.3 -4.5 -5.0 -5.8 -6.4 -6.9 -6.8 -6.3 -5.5  -4.7
+#&gt; [2,] -4.0 -4.1 -4.3 -4.6 -4.2 -3.2 -2.3 -3.5 -3.9  -3.9
+#&gt; [3,] -3.7 -3.6 -3.6 -3.5 -2.6 -1.3 -0.7 -2.0 -2.8  -3.1
+#&gt; [4,] -3.4 -3.2 -2.9 -2.6 -1.4 -0.5  0.0  0.0 -1.9  -2.2
+#&gt; [5,] -2.9 -2.7 -2.3 -1.8 -0.8 -0.2  0.0 -0.2 -0.8  -1.5
+#&gt; [6,] -2.5 -2.3 -1.8 -1.3 -0.4  0.0  0.0  0.0 -0.5  -0.9
+#&gt; [7,] -2.2 -2.0 -1.5 -0.8  0.0  0.0  0.0  0.0 -0.1  -0.5</div><div class='input'>
 <span class='co'># Policy</span>
 <span class='no'>policy</span> <span class='kw'>=</span> <span class='fu'>max.col</span>(<span class='no'>res</span>$<span class='no'>Q1</span>) - <span class='fl'>1L</span>
 <span class='fu'>print</span>(<span class='fu'>matrix</span>(<span class='no'>policy</span>, <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#&gt; [1,]    3    0    3    1    1    0    0    1    1     3
-#&gt; [2,]    3    0    3    3    3    0    2    1    0     3
-#&gt; [3,]    2    1    3    3    2    1    0    3    3     3
-#&gt; [4,]    3    3    1    0    1    1    3    2    2     2
-#&gt; [5,]    2    1    3    2    3    2    0    0    0     2
-#&gt; [6,]    3    0    0    0    3    3    0    3    3     1
-#&gt; [7,]    1    0    1    0    2    2    3    2    2     1</div><div class='input'>
+#&gt; [1,]    3    0    3    0    0    0    1    1    1     1
+#&gt; [2,]    1    0    3    1    3    3    3    3    1     3
+#&gt; [3,]    1    3    3    0    1    0    2    0    3     3
+#&gt; [4,]    1    3    3    1    3    1    2    3    3     0
+#&gt; [5,]    2    3    3    1    0    1    3    3    0     1
+#&gt; [6,]    2    3    1    2    3    3    0    0    0     3
+#&gt; [7,]    0    2    0    1    2    1    2    3    3     0</div><div class='input'>
 <span class='co'># Decay epsilon over time. Each 10 episodes epsilon will be halfed.</span>
 <span class='no'>decayEpsilon</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>epsilon</span>, <span class='no'>i</span>) {
   <span class='kw'>if</span> (<span class='no'>i</span> <span class='kw'>%%</span> <span class='fl'>10</span> <span class='kw'>==</span> <span class='fl'>0</span>) {
@@ -382,9 +372,9 @@ are currently not available.</p>
   <span class='no'>epsilon</span>
 }
 
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>expectedSarsa</span>(<span class='no'>env</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>decayEpsilon</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 478 steps with a return of -478</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 2727 steps with a return of -2727</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 884 steps with a return of -884</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 365 steps with a return of -365</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 530 steps with a return of -530</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 312 steps with a return of -312</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 353 steps with a return of -353</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 210 steps with a return of -210</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 242 steps with a return of -242</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 293 steps with a return of -293</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 100 steps with a return of -100</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 140 steps with a return of -140</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 87 steps with a return of -87</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 146 steps with a return of -146</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 79 steps with a return of -79</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 84 steps with a return of -84</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 156 steps with a return of -156</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 99 steps with a return of -99</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 226 steps with a return of -226</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 74 steps with a return of -74</span></div><div class='input'>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>expectedSarsa</span>(<span class='no'>env</span>, <span class='kw'>epsilon</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>updateEpsilon</span> <span class='kw'>=</span> <span class='no'>decayEpsilon</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 2478 steps with a return of -2478</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 1214 steps with a return of -1214</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 895 steps with a return of -895</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 719 steps with a return of -719</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 87 steps with a return of -87</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 295 steps with a return of -295</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 175 steps with a return of -175</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 694 steps with a return of -694</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 50 steps with a return of -50</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 148 steps with a return of -148</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 126 steps with a return of -126</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 54 steps with a return of -54</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 48 steps with a return of -48</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 95 steps with a return of -95</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 229 steps with a return of -229</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 207 steps with a return of -207</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 216 steps with a return of -216</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 119 steps with a return of -119</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 54 steps with a return of -54</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 127 steps with a return of -127</span></div><div class='input'>
 <span class='co'># Solve the Mountain Car problem using linear function approximation</span>
-<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'><a href='mountainCar.html'>mountainCar</a></span>()
+<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"MountainCar"</span>)
 
 <span class='co'># Define preprocessing function (we use grid tiling)</span>
 <span class='no'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>
@@ -406,26 +396,8 @@ are currently not available.</p>
 }
 
 <span class='fu'>set.seed</span>(<span class='fl'>123</span>)
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>sarsa</span>(<span class='no'>m</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"linear"</span>, <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>gridTiling</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 840 steps with a return of -839</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 784 steps with a return of -783</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 684 steps with a return of -683</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 694 steps with a return of -693</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 318 steps with a return of -317</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 475 steps with a return of -474</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 270 steps with a return of -269</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 274 steps with a return of -273</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 235 steps with a return of -234</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 199 steps with a return of -198</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 276 steps with a return of -275</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 160 steps with a return of -159</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 213 steps with a return of -212</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 304 steps with a return of -303</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 216 steps with a return of -215</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 235 steps with a return of -234</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 224 steps with a return of -223</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 180 steps with a return of -179</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 153 steps with a return of -152</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 222 steps with a return of -221</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>res</span>$<span class='no'>returns</span>)</div><div class='output co'>#&gt;  [1] -839 -783 -683 -693 -317 -474 -269 -273 -234 -198 -275 -159 -212 -303 -215
-#&gt; [16] -234 -223 -179 -152 -221</div><div class='input'>
-</div><span class='co'># NOT RUN {</span>
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='gridworld.html'>gridworld</a></span>(<span class='fu'>c</span>(<span class='fl'>3</span>, <span class='fl'>3</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)
-
-<span class='co'># Use a neural network as function approximator</span>
-<span class='no'>oneHot</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>state</span>) {
-  <span class='no'>one.hot</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>9</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-  <span class='no'>one.hot</span>[<span class='fl'>1</span>, <span class='no'>state</span> + <span class='fl'>1</span>] <span class='kw'>=</span> <span class='fl'>1</span>
-  <span class='no'>one.hot</span>
-}
-
-<span class='co'># Define keras model</span>
-<span class='fu'>library</span>(<span class='no'>keras</span>)
-<span class='no'>model</span> <span class='kw'>=</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/keras_model_sequential'>keras_model_sequential</a></span>()
-<span class='no'>model</span> <span class='kw'>%&gt;%</span> <span class='fu'><a href='http://www.rdocumentation.org/packages/keras/topics/layer_dense'>layer_dense</a></span>(<span class='kw'>units</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>activation</span> <span class='kw'>=</span> <span class='st'>'linear'</span>, <span class='kw'>input_shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>9</span>))
-
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>qSigma</span>(<span class='no'>env</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"neural.network"</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>model</span>,
-  <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>oneHot</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)
-<span class='co'># }</span><div class='input'>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>sarsa</span>(<span class='no'>m</span>, <span class='kw'>fun.approx</span> <span class='kw'>=</span> <span class='st'>"linear"</span>, <span class='kw'>preprocessState</span> <span class='kw'>=</span> <span class='no'>gridTiling</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 1036 steps with a return of -1035</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 712 steps with a return of -711</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 564 steps with a return of -563</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 394 steps with a return of -393</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 485 steps with a return of -484</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 322 steps with a return of -321</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 427 steps with a return of -426</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 321 steps with a return of -320</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 232 steps with a return of -231</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 288 steps with a return of -287</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 192 steps with a return of -191</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 236 steps with a return of -235</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 302 steps with a return of -301</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 234 steps with a return of -233</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 198 steps with a return of -197</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 198 steps with a return of -197</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 249 steps with a return of -248</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 317 steps with a return of -316</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 258 steps with a return of -257</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 241 steps with a return of -240</span></div><div class='input'><span class='fu'>print</span>(<span class='no'>res</span>$<span class='no'>returns</span>)</div><div class='output co'>#&gt;  [1] -1035  -711  -563  -393  -484  -321  -426  -320  -231  -287  -191  -235
+#&gt; [13]  -301  -233  -197  -197  -248  -316  -257  -240</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

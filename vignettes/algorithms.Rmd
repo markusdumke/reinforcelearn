@@ -37,7 +37,7 @@ In `reinforcelearn` you can use the `qlearning`, `sarsa`, `expectedSarsa` and `q
 
 ```{r}
 # Gridworld environment
-env = gridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
+env = makeEnvironment("Gridworld", shape = c(4, 4), goal.states = 15, initial.state = 0)
 
 res = qlearning(env, n.episodes = 20)
 # Note: to find a good policy we need to run more episodes.
@@ -125,7 +125,7 @@ In many interesting problems there are lots of states and actions or the space i
 In the following we will have a look at the mountain car problem, where the goal is to drive an underpowered car up a steep hill. The state space is continuous in two dimensions, the position and velocity of the car, each bounded in some interval. There are three different actions: push back (0), do nothing (1) and push forward (2).
 
 ```{r}
-env = mountainCar()
+env = makeEnvironment("MountainCar")
 print(env$state.space)
 print(env$state.space.bounds)
 
@@ -187,7 +187,7 @@ print(res$steps)
 To use a neural network you have to specify a `keras` model. Here is an example:
 
 ```{r, eval = FALSE}
-env = gridworld(c(4, 4), goal.states = 15, initial.state = 0)
+env = makeEnvironment("Gridworld", c(4, 4), goal.states = 15, initial.state = 0)
 
 # A one-hot feature vector
 oneHot = function(state) {
@@ -219,7 +219,7 @@ Eligibility traces assign credit for the error back to all previously visited st
 If `eligibility.type = 1` a replacing trace is used, if `eligibility.type = 0` an accumulating trace [@eligibility]. Intermediate values are also possible.
 
 ```{r}
-env = gridworld(c(4, 4), goal.states = 15, initial.state = 0)
+env = makeEnvironment("Gridworld", c(4, 4), goal.states = 15, initial.state = 0)
 
 # Sarsa with replacing traces
 res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 20)
@@ -302,7 +302,7 @@ P[, , 2] = matrix(c(c(1, rep(0, 6)), c(0, 0, 1, rep(0, 4)),
   c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)), 
   c(rep(0, 5), 1, 0), c(rep(0, 6), 1), c(rep(0, 6), 1)), ncol = 7, byrow = TRUE)
 R = matrix(c(rep(0, 12), 1, 0), ncol = 2)
-env = makeEnvironment(transitions = P, rewards = R, initial.state = 3)
+env = makeEnvironment("MDP", transitions = P, rewards = R, initial.state = 3)
 
 # Uniform random policy
 random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
@@ -323,7 +323,7 @@ In R we can evaluate a policy with dynamic programming with the following code:
 
 ```{r}
 # Set up gridworld problem
-env = smallGridworld()
+env = makeEnvironment("Gridworld", shape = c(4, 4), goal.states = c(0, 15))
   
 # Define uniform random policy, take each action with equal probability
 random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
@@ -371,7 +371,7 @@ The policy can be a softmax policy for discrete actions or a gaussian policy for
 There are now two learning rates $\alpha$ and $\beta$, one for the critic and one for the actor.
 
 ```{r}
-env = mountainCar()
+env = makeEnvironment("MountainCar")
 
 # Linear function approximation and softmax policy
 res = actorCritic(env, fun.approx = "linear", 
@@ -385,7 +385,7 @@ Here we will solve a continuous version of the mountain car problem, where the a
 
 ```{r}
 # Mountain Car with continuous action space
-env = mountainCar(action.space = "Continuous")
+env = makeEnvironment("MountainCarContinuous")
 
 # Linear function approximation and gaussian policy
 set.seed(123)
@@ -395,22 +395,6 @@ print(res$steps)
 ```
 
 The actor critic can be used with eligibility traces, then there are separate eligibility traces for the policy parameters and the value function parameters, which can be decayed by a different factor $\lambda$.
-
-```{r}
-# Cliff walking environment
-rewardFun = function(state, action, n.state) {
-  if (n.state %in% 37:46) {
-    return(- 100)
-  } else {
-    return(- 1)
-  }
-}
-env = gridworld(shape = c(4, 12), goal.states = 47,
-  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
-  cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
-
-res = actorCritic(env, n.episodes = 20, lambda.actor = 0.5, lambda.critic = 0.8)
-```
 
 ---
 
@@ -475,8 +459,6 @@ bandit(rewardFun, n.actions = 4, n.episodes = 1000,
 ### Other vignettes
 
 Have a look at the other vignettes: 
-
-- [Introduction to reinforcelearn](introduction.html)
 
 - [How to create an environment?](environments.html)
 

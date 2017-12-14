@@ -52,7 +52,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -72,9 +72,6 @@
     </li>
     <li>
       <a href="../articles/environments.html">How to create an environment?</a>
-    </li>
-    <li>
-      <a href="../articles/introduction.html">Introduction to reinforcelearn</a>
     </li>
   </ul>
 </li>
@@ -126,8 +123,7 @@ a function returning an action given a preprocessed state observation
     <tr>
       <th>fun.approx</th>
       <td><p>[<code>character(1)</code>] 
-How to represent the value function? Currently <code>"table"</code>, <code>"linear"</code>
-and <code>"neural.network"</code> are supported.</p></td>
+How to represent the value function? Currently <code>"table"</code> and <code>"linear"</code> are supported.</p></td>
     </tr>
     <tr>
       <th>preprocessState</th>
@@ -216,14 +212,14 @@ steps or a maximum number of episodes.</p>
   <span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>3</span>), <span class='fl'>1</span>, <span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>3</span>)), <span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>4</span>), <span class='fl'>1</span>, <span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>2</span>)),
   <span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>5</span>), <span class='fl'>1</span>, <span class='fl'>0</span>), <span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>6</span>), <span class='fl'>1</span>), <span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>6</span>), <span class='fl'>1</span>)), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>R</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>0</span>, <span class='fl'>12</span>), <span class='fl'>1</span>, <span class='fl'>0</span>), <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>2</span>)
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='kw'>transitions</span> <span class='kw'>=</span> <span class='no'>P</span>, <span class='kw'>rewards</span> <span class='kw'>=</span> <span class='no'>R</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>3</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"MDP"</span>, <span class='kw'>transitions</span> <span class='kw'>=</span> <span class='no'>P</span>, <span class='kw'>rewards</span> <span class='kw'>=</span> <span class='no'>R</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>3</span>)
 
 <span class='co'># Uniform random policy</span>
 <span class='no'>random.policy</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fl'>1</span> / <span class='no'>env</span>$<span class='no'>n.actions</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>env</span>$<span class='no'>n.states</span>,
   <span class='kw'>ncol</span> <span class='kw'>=</span> <span class='no'>env</span>$<span class='no'>n.actions</span>)
 
 <span class='co'># Estimate state value function with TD(0)</span>
-<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>td</span>(<span class='no'>env</span>, <span class='no'>random.policy</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 13 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 35 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 5 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 3 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 7 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 7 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 7 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 21 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 3 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 15 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 37 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 5 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 9 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 9 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 7 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 9 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 37 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 3 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 3 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 3 steps with a return of 0</span></div><div class='input'>
+<span class='no'>res</span> <span class='kw'>=</span> <span class='fu'>td</span>(<span class='no'>env</span>, <span class='no'>random.policy</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 19 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 17 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 3 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 3 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 3 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 3 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 9 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 9 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 37 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 3 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 11 finished after 11 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 12 finished after 7 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 13 finished after 15 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 14 finished after 7 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 15 finished after 7 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 16 finished after 7 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 17 finished after 11 steps with a return of 1</span></div><div class='output co'>#&gt; <span class='message'>Episode 18 finished after 5 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 19 finished after 7 steps with a return of 0</span></div><div class='output co'>#&gt; <span class='message'>Episode 20 finished after 11 steps with a return of 1</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -101,7 +101,7 @@ qSigmaAgent = R6::R6Class(public = list(
     self$preprocessState = preprocessState
 
     self$done = function(envir, i) {
-      self$episode.steps[i] = envir$n.steps
+      self$episode.steps[i] = envir$episode.step
       self$epsilon = self$updateEpsilon(self$epsilon, i)
       if (target.policy == "egreedy") {
         self$epsilon.target = self$epsilon
@@ -110,7 +110,7 @@ qSigmaAgent = R6::R6Class(public = list(
       self$learning.rate = self$updateLearningRate(self$learning.rate, i)
       self$sigma = self$updateSigma(self$sigma, i)
       self$alpha = self$updateAlpha(self$alpha, i)
-      message(paste("Episode", i, "finished after", envir$n.steps,
+      message(paste("Episode", i, "finished after", envir$episode.step,
         "steps with a return of", self$returns[i]))
     }
 
@@ -232,7 +232,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
@@ -271,7 +271,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
               policy = getPolicy(Q.n, self$epsilon)
@@ -325,7 +325,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
@@ -376,7 +376,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
@@ -436,7 +436,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q, self$epsilon)
               a = sampleActionFromPolicy(policy)
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
               batch = self$sampleBatch()
@@ -476,7 +476,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q, self$epsilon)
               a = sampleActionFromPolicy(policy)
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
               batch = self$sampleBatch()
@@ -553,7 +553,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
@@ -592,7 +592,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1, s.n)
@@ -647,7 +647,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
@@ -698,7 +698,7 @@ qSigmaAgent = R6::R6Class(public = list(
 
             while (envir$done == FALSE) {
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               s.n = self$preprocessState(envir$state)
               Q.n = self$predictQ(self$Q1 + self$Q2, s.n)
@@ -758,7 +758,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q, self$epsilon)
               a = sampleActionFromPolicy(policy)
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
               batch = self$sampleBatch()
@@ -801,7 +801,7 @@ qSigmaAgent = R6::R6Class(public = list(
               policy = getPolicy(Q, self$epsilon)
               a = sampleActionFromPolicy(policy)
               envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
+              self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
 
               self$replay.memory = self$add2ReplayMemory(envir, a)
               batch = self$sampleBatch()
@@ -855,78 +855,77 @@ qSigmaAgent = R6::R6Class(public = list(
       }
     }
 
-    # ---- Neural Network Function Approximation
-    if (fun.approx == "neural.network") {
-      self$predictQ = function(Q, state) {
-        predict(Q, state)
-      }
-
-      keras::compile(model, loss = "mse", optimizer = keras::optimizer_sgd(lr = self$learning.rate))
-      self$Q1 = model
-
-      if (eligibility) {
-        stop("Eligibility traces are not supported for fun.approx = neural network!")
-      }
-
-      if (double.learning) {
-        stop("Not implemented yet!")
-      }
-
-      if (experience.replay) {
-        stop("Not implemented yet!")
-      }
-
-      # no experience replay, no double learning
-      if (!experience.replay) {
-        if (!double.learning)
-          self$runEpisode = function(envir, i) {
-            envir$reset()
-            s = self$preprocessState(envir$state)
-            Q = self$predictQ(self$Q1, s)
-            policy = getPolicy(Q, self$epsilon)
-            a = sampleActionFromPolicy(policy)
-
-            while (envir$done == FALSE) {
-              envir$step(a)
-              self$returns[i] = self$returns[i] + discount ^ (envir$n.steps - 1) * envir$reward
-
-              s.n = self$preprocessState(envir$state)
-              Q.n = self$predictQ(self$Q1, s.n)
-              policy = getPolicy(Q.n, self$epsilon)
-              a.n = sampleActionFromPolicy(policy)
-
-              if (target.policy == "greedy") {
-                policy = getPolicy(Q.n, self$epsilon.target)
-              }
-
-              sarsa.target = Q.n[a.n + 1]
-              exp.sarsa.target = sum(policy * Q.n)
-              td.target = envir$reward + discount * (self$sigma * sarsa.target +
-                  (1 - self$sigma) * exp.sarsa.target)
-              x = s
-              y = Q
-              y[a + 1] = td.target
-              keras::fit(self$Q1, x, y, verbose = 0, epochs = 1)
-
-              s = s.n
-              a = a.n
-              Q = Q.n
-
-              if (envir$done) {
-                self$done(envir, i)
-                break
-              }
-            }
-          }
-      }
-    }
+    # # ---- Neural Network Function Approximation
+    # if (fun.approx == "neural.network") {
+    #   self$predictQ = function(Q, state) {
+    #     predict(Q, state)
+    #   }
+    #
+    #   keras::compile(model, loss = "mse", optimizer = keras::optimizer_sgd(lr = self$learning.rate))
+    #   self$Q1 = model
+    #
+    #   if (eligibility) {
+    #     stop("Eligibility traces are not supported for fun.approx = neural network!")
+    #   }
+    #
+    #   if (double.learning) {
+    #     stop("Not implemented yet!")
+    #   }
+    #
+    #   if (experience.replay) {
+    #     stop("Not implemented yet!")
+    #   }
+    #   # no experience replay, no double learning
+    #   if (!experience.replay) {
+    #     if (!double.learning)
+    #       self$runEpisode = function(envir, i) {
+    #         envir$reset()
+    #         s = self$preprocessState(envir$state)
+    #         Q = self$predictQ(self$Q1, s)
+    #         policy = getPolicy(Q, self$epsilon)
+    #         a = sampleActionFromPolicy(policy)
+    #
+    #         while (envir$done == FALSE) {
+    #           envir$step(a)
+    #           self$returns[i] = self$returns[i] + discount ^ (envir$episode.step - 1) * envir$reward
+    #
+    #           s.n = self$preprocessState(envir$state)
+    #           Q.n = self$predictQ(self$Q1, s.n)
+    #           policy = getPolicy(Q.n, self$epsilon)
+    #           a.n = sampleActionFromPolicy(policy)
+    #
+    #           if (target.policy == "greedy") {
+    #             policy = getPolicy(Q.n, self$epsilon.target)
+    #           }
+    #
+    #           sarsa.target = Q.n[a.n + 1]
+    #           exp.sarsa.target = sum(policy * Q.n)
+    #           td.target = envir$reward + discount * (self$sigma * sarsa.target +
+    #               (1 - self$sigma) * exp.sarsa.target)
+    #           x = s
+    #           y = Q
+    #           y[a + 1] = td.target
+    #           keras::fit(self$Q1, x, y, verbose = 0, epochs = 1)
+    #
+    #           s = s.n
+    #           a = a.n
+    #           Q = Q.n
+    #
+    #           if (envir$done) {
+    #             self$done(envir, i)
+    #             break
+    #           }
+    #         }
+    #       }
+    #   }
+    # }
   }
 )
 )
 
 # get epsilon-greedy policy with respect to Q
 getPolicy = function(Q, epsilon) {
-  greedy.action = which.max(Q)
+  greedy.action = nnet::which.is.max(Q)
   n.actions = length(Q)
   policy = matrix(0, nrow = 1, ncol = n.actions)
   policy[, greedy.action] = 1 - epsilon

@@ -52,7 +52,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -72,9 +72,6 @@
     </li>
     <li>
       <a href="../articles/environments.html">How to create an environment?</a>
-    </li>
-    <li>
-      <a href="../articles/introduction.html">Introduction to reinforcelearn</a>
     </li>
   </ul>
 </li>
@@ -199,7 +196,7 @@ specified number of iterations is exhausted.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Set up gridworld problem</span>
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='smallGridworld.html'>smallGridworld</a></span>()
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"Gridworld"</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>4</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>15</span>))
 
 <span class='co'># Define uniform random policy, take each action with equal probability</span>
 <span class='no'>random.policy</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fl'>1</span> / <span class='no'>env</span>$<span class='no'>n.actions</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>env</span>$<span class='no'>n.states</span>,

@@ -49,15 +49,14 @@ expectedSarsa(envir, fun.approx = "table", preprocessState = identity,
 The reinforcement learning environment created by \code{\link{makeEnvironment}}.}
 
 \item{fun.approx}{[\code{character(1)}] \cr
-How to represent the value function? Currently \code{"table"}, \code{"linear"}
-and \code{"neural.network"} are supported.}
+How to represent the value function? Currently \code{"table"} and \code{"linear"} are supported.}
 
 \item{preprocessState}{[\code{function}] \cr
 A function that takes the state observation returned from the environment as an input and
 preprocesses this in a way the algorithm can work with it.}
 
-\item{model}{[\code{keras model}] \cr
-A neural network model specified using the \code{keras} package.}
+\item{model}{[\code{any}] \cr
+Currently unused parameter.}
 
 \item{initial.value}{[\code{numeric}] \cr
 Initial value function matrix or weight matrix.
@@ -169,18 +168,14 @@ Expected Sarsa can be used on-policy if \code{target.policy == "egreedy"} else i
 to Q-Learning.
 
 When \code{fun.approx == "table"} the action value function will be represented as a matrix,
-but you can also use a linear combination of features or a neural network
-for function approximation.
-For a neural network you need to pass on a keras model via the \code{model} argument.
+but you can also use a linear combination of features for function approximation.
 
 The raw state observation returned from the environment must be preprocessed using
 the \code{preprocessState} argument. This function takes the state observation as input and
 returns a preprocessed state which can be directly used by the function approximator.
 To use a tabular value function \code{preprocessState} must return an integer value between
 [0, number of states - 1]. For linear function approximation the output of
-\code{preprocessState} must be a matrix with one row. For a neural network you have to make
-sure that the dimensions of the preprocessed state and the neural network match, so that
-\code{model$predict(preprocessState(envir$state))} works.
+\code{preprocessState} must be a matrix with one row.
 
 Experience replay can be used by specifying a prefilled replay memory using the
 \code{replay.memory} argument or by specifying the length of the replay memory,
@@ -193,13 +188,10 @@ The hyperparameters \code{epsilon}, \code{sigma}, \code{alpha}, \code{lambda} an
 \code{learning.rate} can be changed over time. Therefore pass on functions that return a new
 value of the hyperparameter. These updates will be applied after each episode. First argument of
 the function must be the parameter itself, the second argument the current episode number.
-
-For neural networks the options experience replay, eligibility traces and double learning
-are currently not available.
 }
 \examples{
 # Solve Windy Gridworld
-env = windyGridworld()
+env = makeEnvironment("WindyGridworld")
 
 res = qlearning(env, n.episodes = 20)
 print(res$steps)
@@ -222,7 +214,7 @@ decayEpsilon = function(epsilon, i) {
 res = expectedSarsa(env, epsilon = 0.5, updateEpsilon = decayEpsilon, n.episodes = 20)
 
 # Solve the Mountain Car problem using linear function approximation
-m = mountainCar()
+m = makeEnvironment("MountainCar")
 
 # Define preprocessing function (we use grid tiling)
 n.tilings = 8
@@ -246,25 +238,6 @@ gridTiling = function(state) {
 set.seed(123)
 res = sarsa(m, fun.approx = "linear", preprocessState = gridTiling, n.episodes = 20)
 print(res$returns)
-
-\dontrun{
-env = gridworld(c(3, 3), goal.states = 8, initial.state = 0)
-
-# Use a neural network as function approximator
-oneHot = function(state) {
-  one.hot = matrix(rep(0, 9), nrow = 1)
-  one.hot[1, state + 1] = 1
-  one.hot
-}
-
-# Define keras model
-library(keras)
-model = keras_model_sequential()
-model \%>\% layer_dense(units = 4, activation = 'linear', input_shape = c(9))
-
-res = qSigma(env, fun.approx = "neural.network", model = model,
-  preprocessState = oneHot, n.episodes = 20)
-}
 
 }
 \references{

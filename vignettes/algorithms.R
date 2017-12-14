@@ -7,7 +7,7 @@ set.seed(123)
 
 ## ------------------------------------------------------------------------
 # Gridworld environment
-env = gridworld(shape = c(4, 4), goal.states = 15, initial.state = 0)
+env = makeEnvironment("Gridworld", shape = c(4, 4), goal.states = 15, initial.state = 0)
 
 res = qlearning(env, n.episodes = 20)
 # Note: to find a good policy we need to run more episodes.
@@ -66,7 +66,7 @@ res = qlearning(env, n.episodes = 5, initial.value = Q)
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 4, byrow = TRUE))
 
 ## ------------------------------------------------------------------------
-env = mountainCar()
+env = makeEnvironment("MountainCar")
 print(env$state.space)
 print(env$state.space.bounds)
 
@@ -102,7 +102,7 @@ res = qlearning(env, fun.approx = "linear",
 print(res$steps)
 
 ## ---- eval = FALSE-------------------------------------------------------
-#  env = gridworld(c(4, 4), goal.states = 15, initial.state = 0)
+#  env = makeEnvironment("Gridworld", c(4, 4), goal.states = 15, initial.state = 0)
 #  
 #  # A one-hot feature vector
 #  oneHot = function(state) {
@@ -121,7 +121,7 @@ print(res$steps)
 #    preprocessState = oneHot, n.episodes = 20)
 
 ## ------------------------------------------------------------------------
-env = gridworld(c(4, 4), goal.states = 15, initial.state = 0)
+env = makeEnvironment("Gridworld", c(4, 4), goal.states = 15, initial.state = 0)
 
 # Sarsa with replacing traces
 res = sarsa(env, lambda = 0.9, eligibility.type = 1, n.episodes = 20)
@@ -169,7 +169,7 @@ P[, , 2] = matrix(c(c(1, rep(0, 6)), c(0, 0, 1, rep(0, 4)),
   c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)), 
   c(rep(0, 5), 1, 0), c(rep(0, 6), 1), c(rep(0, 6), 1)), ncol = 7, byrow = TRUE)
 R = matrix(c(rep(0, 12), 1, 0), ncol = 2)
-env = makeEnvironment(transitions = P, rewards = R, initial.state = 3)
+env = makeEnvironment("MDP", transitions = P, rewards = R, initial.state = 3)
 
 # Uniform random policy
 random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
@@ -181,7 +181,7 @@ print(res$V)
 
 ## ------------------------------------------------------------------------
 # Set up gridworld problem
-env = smallGridworld()
+env = makeEnvironment("Gridworld", shape = c(4, 4), goal.states = c(0, 15))
   
 # Define uniform random policy, take each action with equal probability
 random.policy = matrix(1 / env$n.actions, nrow = env$n.states, 
@@ -202,7 +202,7 @@ res = iterateValue(env, n.iter = 100)
 print(round(matrix(res$v, ncol = 4, byrow = TRUE)))
 
 ## ------------------------------------------------------------------------
-env = mountainCar()
+env = makeEnvironment("MountainCar")
 
 # Linear function approximation and softmax policy
 res = actorCritic(env, fun.approx = "linear", 
@@ -211,28 +211,13 @@ print(res$steps)
 
 ## ------------------------------------------------------------------------
 # Mountain Car with continuous action space
-env = mountainCar(action.space = "Continuous")
+env = makeEnvironment("MountainCarContinuous")
 
 # Linear function approximation and gaussian policy
 set.seed(123)
 res = actorCritic(env, fun.approx = "linear", policy = "gaussian", 
   preprocessState = gridTiling, n.episodes = 20)
 print(res$steps)
-
-## ------------------------------------------------------------------------
-# Cliff walking environment
-rewardFun = function(state, action, n.state) {
-  if (n.state %in% 37:46) {
-    return(- 100)
-  } else {
-    return(- 1)
-  }
-}
-env = gridworld(shape = c(4, 12), goal.states = 47,
-  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
-  cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
-
-res = actorCritic(env, n.episodes = 20, lambda.actor = 0.5, lambda.critic = 0.8)
 
 ## ------------------------------------------------------------------------
 # Define reward function

@@ -26,7 +26,10 @@ knitr::opts_chunk$set(
 ### Installation
 
 ```{r, eval = FALSE}
-# install.packages("devtools")
+# install from CRAN
+install.packages("reinforcelearn")
+
+# install development version from github
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
@@ -40,7 +43,7 @@ Reinforcement Learning with the package `reinforcelearn` is as easy as
 library(reinforcelearn)
 
 # Create gridworld environment
-env = windyGridworld()
+env = makeEnvironment("WindyGridworld")
 
 # Solve environment using Sarsa
 res = sarsa(env, n.episodes = 30)
@@ -51,15 +54,23 @@ print(res$steps)
 
 ### Environments
 
-With `makeEnvironment` you can create a reinforcement learning environment from a Markov Decision Process.
+With `makeEnvironment` you can create reinforcement learning environments.
 
 ```{r}
-# Create environment from MDP.
-P = array(0, c(2,2,2))
-P[, , 1] = matrix(c(0.2, 0.8, 0, 1), 2, 2, byrow = TRUE)
-P[, , 2] = matrix(c(0.1, 0.9, 0, 1), 2, 2, byrow = TRUE)
-R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
-env = makeEnvironment(transitions = P, rewards = R)
+# Create environment.
+step = function(self, action) {
+  state = list(mean = action + rnorm(1), sd = runif(1))
+  reward = rnorm(1, state[[1]], state[[2]])
+  done = FALSE
+  list(state, reward, done)
+}
+
+reset = function() {
+  state = list(mean = 0, sd = 1)
+  state
+}
+
+env = makeEnvironment("custom", step = step, reset = reset)
 ```
 
 The environment is an `R6` class with a set of attributes and methods.
@@ -68,31 +79,23 @@ You can interact with the environment via the `reset` and `step` method.
 ```{r}
 # Reset environment.
 env$reset()
-print(env)
-
-# Take action 0.
-env$step(0)
-print(env)
+# Take action.
+env$step(100)
 ```
 
-You can also create an environment from [OpenAI Gym](https://gym.openai.com/) via the `gym` package. You need to install all dependencies listed [here](https://github.com/openai/gym-http-api).
+There are some predefined environment classes, e.g. `MDPEnvironment`, which allows you to create a Markov Decision Process by passing on state transition array and reward matrix, or `GymEnvironment`, where you can use toy problems from [OpenAI Gym](https://gym.openai.com/).
 
 ```{r, eval = FALSE}
 # Create an OpenAI Gym environment.
-# Make sure you have Python and Gym installed.
-# Start server.
-package.path = system.file(package = "reinforcelearn")
-path2pythonfile = paste0(package.path, "/gym_http_server.py")
-system2("python", args = path2pythonfile, stdout = NULL,
-  wait = FALSE, invisible = FALSE)
-
-env = makeEnvironment("MountainCar-v0")
+# Make sure you have Python, gym and reticulate installed.
+env = makeEnvironment("Gym", "MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
 for (i in 1:200) {
-  action = sample(env$actions, 1)
+  action = sample(0:2, 1)
   env$step(action)
+  env$visualize()
 }
 env$close()
 ```
@@ -109,8 +112,9 @@ After you created an environment you can use various reinforcement learning algo
 
 ```{r}
 # Create the windy gridworld environment.
-env = windyGridworld()
+env = makeEnvironment("WindyGridworld")
 res = qlearning(env, n.episodes = 30)
+
 print(res$steps)
 
 # Show value of each state.
@@ -134,10 +138,10 @@ When the state space is large or even continuous tabular solution methods cannot
 Here is an example solving the mountain car problem using linear function approximation. 
 
 ```{r}
-# Set up the Mountain Car problem
-m = mountainCar()
+# Set up the Mountain Car problem.
+m = makeEnvironment("MountainCar")
 
-# Define preprocessing function (here grid tiling)
+# Define preprocessing function (here grid tiling).
 n.tilings = 8
 max.size = 4096
 iht = IHT(max.size)
@@ -170,7 +174,6 @@ print(res$steps)
 
 Also have a look at the vignettes for further examples.
 
-- [Introduction to reinforcelearn](https://markdumke.github.io/reinforcelearn/articles/introduction.html)
 - [How to create an environment?](https://markdumke.github.io/reinforcelearn/articles/environments.html)
 - [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
 

@@ -53,23 +53,8 @@
 #'
 #' @export
 #' @examples
-#' # Cliff walking gridworld
-#' rewardFun = function(state, action, n.state) {
-#'   if (n.state %in% 37:46) {
-#'     return(- 100)
-#'   } else {
-#'     return(- 1)
-#'   }
-#' }
-#' env = gridworld(shape = c(4, 12), goal.states = 47,
-#'   cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
-#'   cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
-#'
-#' res = actorCritic(env, n.episodes = 20)
-#'
-#' #----------------
 #' # Mountain Car
-#' m = mountainCar()
+#' m = makeEnvironment("MountainCar")
 #'
 #' # Define preprocessing function (we use grid tiling)
 #' n.tilings = 8
@@ -96,7 +81,7 @@
 #'
 #' #----------------
 #' # Mountain Car with continuous action space
-#' m = mountainCar(action.space = "Continuous")
+#' m = makeEnvironment("MountainCarContinuous")
 #'
 #' # Linear function approximation and gaussian policy
 #' set.seed(123)
@@ -152,7 +137,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         a = sampleActionFromPolicy(policy[s + 1, ])
         envir$step(a)
         r = envir$reward
-        returns[i] = returns[i] + discount ^ (envir$n.steps - 1) * r
+        returns[i] = returns[i] + discount ^ (envir$episode.step - 1) * r
         s.n = preprocessState(envir$state)
 
         delta = r + discount * v[s.n + 1] - v[s + 1]
@@ -172,9 +157,9 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         j = discount * j
 
         if (envir$done) {
-          message(paste("Episode", i, "finished after", envir$n.steps,
+          message(paste("Episode", i, "finished after", envir$episode.step,
             "steps with a return of", returns[i]))
-          steps[i] = envir$n.steps
+          steps[i] = envir$episode.step
           alpha = updateAlpha(alpha, i)
           beta = updateBeta(beta, i)
           lambda.actor = updateLambdaActor(lambda.actor, i)
@@ -213,7 +198,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         action = sampleActionFromPolicy(policy)
         envir$step(action)
         r = envir$reward
-        returns[i] = returns[i] + discount ^ (envir$n.steps - 1) * r
+        returns[i] = returns[i] + discount ^ (envir$episode.step - 1) * r
         s.n = preprocessState(envir$state)
         v = predictV(s)
         v.n = predictV(s.n)
@@ -238,9 +223,9 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         j = discount * j
 
         if (envir$done) {
-          message(paste("Episode", i, "finished after", envir$n.steps,
+          message(paste("Episode", i, "finished after", envir$episode.step,
             "steps with a return of", returns[i]))
-          steps[i] = envir$n.steps
+          steps[i] = envir$episode.step
           alpha = updateAlpha(alpha, i)
           beta = updateBeta(beta, i)
           lambda.actor = updateLambdaActor(lambda.actor, i)
@@ -278,7 +263,7 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         action = rnorm(1, mean = mu, sd = sigma)
         envir$step(action)
         r = envir$reward
-        returns[i] = returns[i] + discount ^ (envir$n.steps - 1) * r
+        returns[i] = returns[i] + discount ^ (envir$episode.step - 1) * r
         s.n = preprocessState(envir$state)
         v = predictV(s)
         v.n = predictV(s.n)
@@ -302,9 +287,9 @@ actorCritic = function(envir, fun.approx = "table", policy = "softmax",
         j = discount * j
 
         if (envir$done) {
-          message(paste("Episode", i, "finished after", envir$n.steps,
+          message(paste("Episode", i, "finished after", envir$episode.step,
             "steps with a return of", returns[i]))
-          steps[i] = envir$n.steps
+          steps[i] = envir$episode.step
           alpha = updateAlpha(alpha, i)
           beta = updateBeta(beta, i)
           lambda.actor = updateLambdaActor(lambda.actor, i)

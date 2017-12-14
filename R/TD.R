@@ -29,7 +29,7 @@
 #'   c(rep(0, 3), 1, rep(0, 3)), c(rep(0, 4), 1, rep(0, 2)),
 #'   c(rep(0, 5), 1, 0), c(rep(0, 6), 1), c(rep(0, 6), 1)), ncol = 7, byrow = TRUE)
 #' R = matrix(c(rep(0, 12), 1, 0), ncol = 2)
-#' env = makeEnvironment(transitions = P, rewards = R, initial.state = 3)
+#' env = makeEnvironment("MDP", transitions = P, rewards = R, initial.state = 3)
 #'
 #' # Uniform random policy
 #' random.policy = matrix(1 / env$n.actions, nrow = env$n.states,
@@ -131,9 +131,9 @@ td = function(envir, policy, fun.approx = "table", preprocessState = identity,
 
     if (envir$done == TRUE) {
       episode = episode + 1
-      message(paste("Episode", episode, "finished after", envir$n.steps,
+      message(paste("Episode", episode, "finished after", envir$episode.step,
         "steps with a return of", return.ep))
-      steps = append(steps, envir$n.steps)
+      steps = append(steps, envir$episode.step)
       returns = append(returns, return.ep)
       return.ep = 0
       envir$reset()

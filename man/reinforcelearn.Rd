@@ -4,7 +4,7 @@
 \name{reinforcelearn}
 \alias{reinforcelearn}
 \alias{reinforcelearn-package}
-\title{Reinforcement Learning in R.}
+\title{Reinforcement Learning.}
 \description{
 Implementations of reinforcement learning algorithms and environments.
 }
@@ -12,11 +12,14 @@ Implementations of reinforcement learning algorithms and environments.
 
 \itemize{
 \item \link{makeEnvironment}
-\item \link{gridworld}
-\item \link{smallGridworld}
-\item \link{windyGridworld}
-\item \link{cliff}
-\item \link{mountainCar}
+\item \link{Environment}
+\item \link{GymEnvironment}
+\item \link{MdpEnvironment}
+\item \link{Gridworld}
+\item \link{WindyGridworld}
+\item \link{CliffWalking}
+\item \link{MountainCar}
+\item \link{MountainCarContinuous}
 }
 }
 

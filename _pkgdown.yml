@@ -9,14 +9,17 @@ reference:
     contents:
     - reinforcelearn
   - title: Environments
-    desc: Creation of reinforcement learning environments and example environments.
+    desc: Creation of reinforcement learning environments.
     contents:
     - makeEnvironment
-    - gridworld
-    - mountainCar
-    - windyGridworld
-    - smallGridworld
-    - cliff
+    - Environment
+    - GymEnvironment
+    - MdpEnvironment
+    - Gridworld
+    - CliffWalking
+    - WindyGridworld
+    - MountainCar
+    - MountainCarContinuous
   - title: Algorithms
     desc: Reinforcement learning algorithms, dynamic programming, value- and policy-based methods, actor critic, monte carlo and temporal-difference learning.
     contents:

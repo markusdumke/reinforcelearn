@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mountain Car — mountainCar â€¢ reinforcelearn</title>
+<title>Mountain Car — MountainCar â€¢ reinforcelearn</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -52,7 +52,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -72,9 +72,6 @@
     </li>
     <li>
       <a href="../articles/environments.html">How to create an environment?</a>
-    </li>
-    <li>
-      <a href="../articles/introduction.html">Introduction to reinforcelearn</a>
     </li>
   </ul>
 </li>
@@ -100,53 +97,76 @@
     </div>
 
     
-    <p>The classical mountain car problem as described in the literature.</p>
+    <p>The classical mountain car problem for reinforcement learning.</p>
     
 
-    <pre class="usage"><span class='fu'>mountainCar</span>(<span class='kw'>action.space</span> <span class='kw'>=</span> <span class='st'>"Discrete"</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>action.space</th>
-      <td><p>[<code>character(1)</code>] 
-Can be <code>"Discrete"</code> or <code>"Continuous"</code>.
-The classical Mountain Car task has three discrete actions,
-the continuous version one action in a box from -1 to 1.</p></td>
-    </tr>
-    </table>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+    <pre class="usage"><span class='no'>MountainCar</span>
 
-    <p>Sutton and Barto (2017): Reinforcement Learning: An Introduction</p>
+<span class='no'>MountainCarContinuous</span></pre>
+        
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>An object of class <code>R6ClassGenerator</code> of length 24.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The classical Mountain Car task the action is one of {0, 1, 2},
+in the continuous version the action is in [-1, 1].</p>
+    
+    <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
+
+    <p><code><a href='makeEnvironment.html'>makeEnvironment("MountainCar")</a></code> 
+<code><a href='makeEnvironment.html'>makeEnvironment("MountainCarContinuous")</a></code></p>
+    
+    <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
+
+    
+    <dl class='dl-horizontal'>
+<dt><code>$step(action)</code></dt><dd><p>Take action in environment.
+Returns a list with <code>state</code>, <code>reward</code>, <code>done</code>.</p></dd>
+<dt><code>$reset()</code></dt><dd><p>Resets the <code>done</code> flag of the environment and returns an initial state.
+  Useful when starting a new episode.</p></dd>
+<dt><code>$visualize()</code></dt><dd><p>Visualizes the environment (if there is a visualization function).</p></dd>
+</dl>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Classic Mountain Car task</span>
-<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'>mountainCar</span>()
-<span class='no'>m</span>$<span class='fu'>reset</span>()
-<span class='no'>m</span>$<span class='fu'>step</span>(<span class='fl'>1</span>)
-<span class='fu'>print</span>(<span class='no'>m</span>)</div><div class='output co'>#&gt; Number of steps: 1 
-#&gt; State: -0.509341345535583 -0.000107705168417485 
-#&gt; Reward: -1 
-#&gt; Done: FALSE </div><div class='input'>
-<span class='co'># Mountain Car with continuous action space</span>
-<span class='no'>m</span> <span class='kw'>=</span> <span class='fu'>mountainCar</span>(<span class='kw'>action.space</span> <span class='kw'>=</span> <span class='st'>"Continuous"</span>)
-<span class='no'>m</span>$<span class='fu'>reset</span>()
-<span class='no'>m</span>$<span class='fu'>step</span>(<span class='fl'>0.27541</span>)
-<span class='fu'>print</span>(<span class='no'>m</span>)</div><div class='output co'>#&gt; Number of steps: 1 
-#&gt; State: -0.573403745543772 0.000791130281424752 
-#&gt; Reward: -1 
-#&gt; Done: FALSE </div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"MountainCar"</span>)
+<span class='no'>env</span>$<span class='fu'>reset</span>()</div><div class='output co'>#&gt;            [,1] [,2]
+#&gt; [1,] -0.4520213    0</div><div class='input'><span class='no'>env</span>$<span class='fu'>step</span>(<span class='fl'>1L</span>)</div><div class='output co'>#&gt; $state
+#&gt;           [,1]          [,2]
+#&gt; [1,] -0.452554 -0.0005327148
+#&gt; 
+#&gt; $reward
+#&gt; [1] -1
+#&gt; 
+#&gt; $done
+#&gt; [1] FALSE
+#&gt; </div><div class='input'>
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"MountainCarContinuous"</span>)
+<span class='no'>env</span>$<span class='fu'>reset</span>()</div><div class='output co'>#&gt;            [,1] [,2]
+#&gt; [1,] -0.5169617    0</div><div class='input'><span class='no'>env</span>$<span class='fu'>step</span>(<span class='fl'>0.62</span>)</div><div class='output co'>#&gt; $state
+#&gt;            [,1]         [,2]
+#&gt; [1,] -0.5160814 0.0008802249
+#&gt; 
+#&gt; $reward
+#&gt; [1] -1
+#&gt; 
+#&gt; $done
+#&gt; [1] FALSE
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#references">References</a></li>
+      <li><a href="#format">Format</a></li>
+
+      <li><a href="#details">Details</a></li>
+
+      <li><a href="#usage">Usage</a></li>
+
+      <li><a href="#methods">Methods</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

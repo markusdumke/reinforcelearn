@@ -85,23 +85,8 @@ of features.
 Eligibility traces can be used for both policy parameters and value function parameters.
 }
 \examples{
-# Cliff walking gridworld
-rewardFun = function(state, action, n.state) {
-  if (n.state \%in\% 37:46) {
-    return(- 100)
-  } else {
-    return(- 1)
-  }
-}
-env = gridworld(shape = c(4, 12), goal.states = 47,
-  cliff.states = 37:46, reward.step = - 1, reward.cliff = - 100,
-  cliff.transition.done = TRUE, initial.state = 36, sampleReward = rewardFun)
-
-res = actorCritic(env, n.episodes = 20)
-
-#----------------
 # Mountain Car
-m = mountainCar()
+m = makeEnvironment("MountainCar")
 
 # Define preprocessing function (we use grid tiling)
 n.tilings = 8
@@ -128,7 +113,7 @@ res = actorCritic(m, fun.approx = "linear",
 
 #----------------
 # Mountain Car with continuous action space
-m = mountainCar(action.space = "Continuous")
+m = makeEnvironment("MountainCarContinuous")
 
 # Linear function approximation and gaussian policy
 set.seed(123)

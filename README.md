@@ -13,7 +13,10 @@ Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="
 ### Installation
 
 ``` r
-# install.packages("devtools")
+# install from CRAN
+install.packages("reinforcelearn")
+
+# install development version from github
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
@@ -27,29 +30,37 @@ Reinforcement Learning with the package `reinforcelearn` is as easy as
 library(reinforcelearn)
 
 # Create gridworld environment
-env = windyGridworld()
+env = makeEnvironment("WindyGridworld")
 
 # Solve environment using Sarsa
 res = sarsa(env, n.episodes = 30)
 print(res$steps)
-#>  [1] 1096 1749  515  258  586   96  337   56  349  311  108   61  401  174
-#> [15]  103  307  151  176   62   56  236   87   55   83  180  112   96  135
-#> [29]   88  118
+#>  [1]  625 2176  177  514  306  450   73  246  254  112  301  114  267  370
+#> [15]  155  221  153  216  118  188  117   46  107   46  183  155   63   68
+#> [29]  127   73
 ```
 
 ------------------------------------------------------------------------
 
 ### Environments
 
-With `makeEnvironment` you can create a reinforcement learning environment from a Markov Decision Process.
+With `makeEnvironment` you can create reinforcement learning environments.
 
 ``` r
-# Create environment from MDP.
-P = array(0, c(2,2,2))
-P[, , 1] = matrix(c(0.2, 0.8, 0, 1), 2, 2, byrow = TRUE)
-P[, , 2] = matrix(c(0.1, 0.9, 0, 1), 2, 2, byrow = TRUE)
-R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
-env = makeEnvironment(transitions = P, rewards = R)
+# Create environment.
+step = function(self, action) {
+  state = list(mean = action + rnorm(1), sd = runif(1))
+  reward = rnorm(1, state[[1]], state[[2]])
+  done = FALSE
+  list(state, reward, done)
+}
+
+reset = function() {
+  state = list(mean = 0, sd = 1)
+  state
+}
+
+env = makeEnvironment("custom", step = step, reset = reset)
 ```
 
 The environment is an `R6` class with a set of attributes and methods. You can interact with the environment via the `reset` and `step` method.
@@ -57,39 +68,41 @@ The environment is an `R6` class with a set of attributes and methods. You can i
 ``` r
 # Reset environment.
 env$reset()
-print(env)
-#> Number of steps: 0 
-#> State: 0 
-#> Reward:  
-#> Done: FALSE
-
-# Take action 0.
-env$step(0)
-print(env)
-#> Number of steps: 1 
-#> State: 1 
-#> Reward: 5 
-#> Done: TRUE
+#> $mean
+#> [1] 0
+#> 
+#> $sd
+#> [1] 1
+# Take action.
+env$step(100)
+#> $state
+#> $state$mean
+#> [1] 101.5775
+#> 
+#> $state$sd
+#> [1] 0.529583
+#> 
+#> 
+#> $reward
+#> [1] 101.0788
+#> 
+#> $done
+#> [1] FALSE
 ```
 
-You can also create an environment from [OpenAI Gym](https://gym.openai.com/) via the `gym` package. You need to install all dependencies listed [here](https://github.com/openai/gym-http-api).
+There are some predefined environment classes, e.g. `MDPEnvironment`, which allows you to create a Markov Decision Process by passing on state transition array and reward matrix, or `GymEnvironment`, where you can use toy problems from [OpenAI Gym](https://gym.openai.com/).
 
 ``` r
 # Create an OpenAI Gym environment.
-# Make sure you have Python and Gym installed.
-# Start server.
-package.path = system.file(package = "reinforcelearn")
-path2pythonfile = paste0(package.path, "/gym_http_server.py")
-system2("python", args = path2pythonfile, stdout = NULL,
-  wait = FALSE, invisible = FALSE)
-
-env = makeEnvironment("MountainCar-v0")
+# Make sure you have Python, gym and reticulate installed.
+env = makeEnvironment("Gym", "MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
 for (i in 1:200) {
-  action = sample(env$actions, 1)
+  action = sample(0:2, 1)
   env$step(action)
+  env$visualize()
 }
 env$close()
 ```
@@ -106,23 +119,24 @@ After you created an environment you can use various reinforcement learning algo
 
 ``` r
 # Create the windy gridworld environment.
-env = windyGridworld()
+env = makeEnvironment("WindyGridworld")
 res = qlearning(env, n.episodes = 30)
+
 print(res$steps)
-#>  [1]  832 1709  871  480  222  407  183  117   74  419   77  240  311  285
-#> [15]   76  157   95   67  451  114   59  236  109   24  117   80   34  165
-#> [29]   94  134
+#>  [1] 1955  769  471  445  538  152  458  146  244  211  251  215  132   43
+#> [15]  222  171   61   94  351   89   94   28   72  186  164  119  181  157
+#> [29]  155  164
 
 # Show value of each state.
 print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,] -4.8 -5.0 -5.5 -6.3 -7.0 -7.6 -7.4 -6.7 -5.9  -5.1
-#> [2,] -4.5 -4.6 -4.8 -5.2 -5.1 -4.3 -3.0 -3.8 -4.2  -4.3
-#> [3,] -4.2 -4.2 -4.1 -4.2 -3.4 -1.9 -1.3 -2.2 -3.3  -3.4
-#> [4,] -4.0 -3.7 -3.5 -3.3 -2.0 -1.0 -0.2  0.0 -2.2  -2.6
-#> [5,] -3.5 -3.2 -2.8 -2.4 -1.2 -0.4  0.0 -0.3 -0.9  -1.8
-#> [6,] -3.0 -2.7 -2.3 -1.7 -0.7  0.0  0.0  0.0 -0.7  -1.1
-#> [7,] -2.7 -2.4 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7
+#> [1,] -4.9 -5.1 -5.6 -6.4 -7.1 -7.5 -7.4 -6.8 -6.0  -5.1
+#> [2,] -4.6 -4.7 -4.9 -5.2 -5.1 -4.0 -3.2 -3.7 -4.3  -4.3
+#> [3,] -4.3 -4.2 -4.2 -4.2 -3.5 -2.1 -1.2 -2.1 -3.4  -3.4
+#> [4,] -4.0 -3.7 -3.5 -3.3 -2.1 -1.0 -0.3  0.0 -2.2  -2.6
+#> [5,] -3.5 -3.2 -2.9 -2.4 -1.2 -0.4  0.0 -0.3 -0.9  -1.8
+#> [6,] -3.0 -2.7 -2.3 -1.7 -0.6  0.0  0.0  0.0 -0.7  -1.1
+#> [7,] -2.7 -2.4 -1.9 -1.2  0.0  0.0  0.0  0.0 -0.3  -0.7
 ```
 
 We can then get the policy by taking the argmax over the action value function Q.
@@ -131,13 +145,13 @@ We can then get the policy by taking the argmax over the action value function Q
 policy = max.col(res$Q1) - 1L
 print(matrix(policy, ncol = 10, byrow = TRUE))
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,]    3    0    0    1    0    0    1    1    1     2
-#> [2,]    1    0    1    1    2    3    2    1    3     3
-#> [3,]    1    2    0    2    3    3    3    3    1     3
-#> [4,]    1    3    2    0    1    1    3    3    0     3
-#> [5,]    2    0    3    1    1    1    1    2    0     0
-#> [6,]    1    0    1    0    0    0    0    3    3     2
-#> [7,]    2    3    3    1    3    0    1    1    0     1
+#> [1,]    3    2    1    0    1    3    1    1    1     3
+#> [2,]    3    1    2    0    2    3    0    2    1     3
+#> [3,]    2    3    3    3    0    3    2    3    0     3
+#> [4,]    1    2    2    1    1    2    3    2    2     3
+#> [5,]    2    3    2    3    1    1    0    3    0     3
+#> [6,]    2    3    2    1    2    1    1    1    2     2
+#> [7,]    0    1    1    1    1    0    0    1    0     3
 ```
 
 For more details on algorithms have a look at the vignette: [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
@@ -149,10 +163,10 @@ For more details on algorithms have a look at the vignette: [How to solve an env
 When the state space is large or even continuous tabular solution methods cannot be applied. Then it is better to approximate the value function using a function approximator. We need to define a function, which preprocesses the state observation, so that the function approximator can work with it. Here is an example solving the mountain car problem using linear function approximation.
 
 ``` r
-# Set up the Mountain Car problem
-m = mountainCar()
+# Set up the Mountain Car problem.
+m = makeEnvironment("MountainCar")
 
-# Define preprocessing function (here grid tiling)
+# Define preprocessing function (here grid tiling).
 n.tilings = 8
 max.size = 4096
 iht = IHT(max.size)
@@ -177,8 +191,8 @@ set.seed(123)
 res = qlearning(m, fun.approx = "linear", 
   preprocessState = preprocessState, n.episodes = 20)
 print(res$steps)
-#>  [1] 1211  903  536  420  406  241  241  239  233  232  204  241  194  235
-#> [15]  233  167  198  165  234  162
+#>  [1] 911 760 614 398 407 463 324 309 238 194 313 282 203 220 196 278 190
+#> [18] 193 191 185
 ```
 
 ------------------------------------------------------------------------
@@ -187,7 +201,6 @@ print(res$steps)
 
 Also have a look at the vignettes for further examples.
 
--   [Introduction to reinforcelearn](https://markdumke.github.io/reinforcelearn/articles/introduction.html)
 -   [How to create an environment?](https://markdumke.github.io/reinforcelearn/articles/environments.html)
 -   [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
 

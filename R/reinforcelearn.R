@@ -1,15 +1,18 @@
-#' Reinforcement Learning in R.
+#' Reinforcement Learning.
 #'
 #' Implementations of reinforcement learning algorithms and environments.
 #'
 #' @md
 #' @section Environments:
 #' * [makeEnvironment]
-#' * [gridworld]
-#' * [smallGridworld]
-#' * [windyGridworld]
-#' * [cliff]
-#' * [mountainCar]
+#' * [Environment]
+#' * [GymEnvironment]
+#' * [MdpEnvironment]
+#' * [Gridworld]
+#' * [WindyGridworld]
+#' * [CliffWalking]
+#' * [MountainCar]
+#' * [MountainCarContinuous]
 #'
 #' @section Bandits:
 #' * [bandit]
