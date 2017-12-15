@@ -1,4 +1,4 @@
-^.*\.Rproj$
+﻿^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^README\.Rmd$
@@ -9,4 +9,4 @@
 ^docs$
 ^_pkgdown\.yml$
 ^reinforcelearn\.png$
-§ examples$
+^examples$
