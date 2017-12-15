@@ -23,12 +23,10 @@
 makePolicy = function(class = "random", ...) {
   checkmate::assertChoice(class,
     c("random", "epsilon.greedy", "greedy", "softmax")) #, "gaussian"))
-  switch(class,
-    random = RandomPolicy$new(...), # default
-    epsilon.greedy = EpsilonGreedyPolicy$new(...),
-    greedy = GreedyPolicy$new(...),
-    softmax = SoftmaxPolicy$new(...)
-  )
+  # fixme: check arguments of policy here
+  x = list(name = class, args = list(...)) # get properties
+  class(x) = "Policy"
+  x
 }
 
 
