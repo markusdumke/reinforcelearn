@@ -4,48 +4,44 @@
 \alias{GymEnvironment}
 \title{Gym Environment}
 \arguments{
-\item{gym}{[\code{character(1)}] \cr
+\item{gym.name}{\code{\link{character(1)}} \cr
 Name of gym environment, e.g. \code{"CartPole-v0"}.}
 }
 \description{
 Reinforcement learning environment from OpenAI Gym.
 }
 \details{
-For OpenAI gym environments have a look at \url{https://gym.openai.com/envs}.
+For available gym environments take a look at https://gym.openai.com/envs.
 }
-\section{Installation}{
-
-For installation of the python package \code{gym} see
-\url{https://github.com/openai/gym#installation}.
-Then install the R package \code{reticulate}.
-}
-
 \section{Usage}{
 
 \code{makeEnvironment("Gym", gym.name)}
 }
 
+\section{Installation}{
+
+For installation of the python package \code{gym} see
+https://github.com/openai/gym#installation.
+Then install the R package \code{reticulate}.
+}
+
 \section{Methods}{
 
- \describe{
-\item{\code{$close()}}{
+\itemize{
+\item \code{$close()}
 Close visualization window.
- }
- }
+}
 
 
-\describe{
-\item{\code{$step(action)}}{
+\itemize{
+\item \code{$step(action)} \cr
 Take action in environment.
 Returns a list with \code{state}, \code{reward}, \code{done}.
- }
-\item{\code{$reset()}}{
-  Resets the \code{done} flag of the environment and returns an initial state.
-  Useful when starting a new episode.
-}
-\item{\code{$visualize()}}{
-  Visualizes the environment (if there is a visualization function).
-}
+\item \code{$reset()} \cr
+Resets the \code{done} flag of the environment and returns an initial state.
+Useful when starting a new episode.
+\item \code{$visualize()} \cr
+Visualizes the environment (if there is a visualization function).
 }
 }
 

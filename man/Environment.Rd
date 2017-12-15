@@ -23,18 +23,15 @@ Custom Reinforcement Learning Environment
 
 \section{Methods}{
 
-\describe{
-\item{\code{$step(action)}}{
+\itemize{
+\item \code{$step(action)} \cr
 Take action in environment.
 Returns a list with \code{state}, \code{reward}, \code{done}.
- }
-\item{\code{$reset()}}{
-  Resets the \code{done} flag of the environment and returns an initial state.
-  Useful when starting a new episode.
-}
-\item{\code{$visualize()}}{
-  Visualizes the environment (if there is a visualization function).
-}
+\item \code{$reset()} \cr
+Resets the \code{done} flag of the environment and returns an initial state.
+Useful when starting a new episode.
+\item \code{$visualize()} \cr
+Visualizes the environment (if there is a visualization function).
 }
 }
 

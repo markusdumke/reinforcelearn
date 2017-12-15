@@ -16,7 +16,7 @@ MountainCarContinuous
 The classical mountain car problem for reinforcement learning.
 }
 \details{
-The classical Mountain Car task the action is one of \{0, 1, 2\},
+The classical Mountain Car task the action is one of {0, 1, 2},
 in the continuous version the action is in [-1, 1].
 }
 \section{Usage}{
@@ -27,18 +27,15 @@ in the continuous version the action is in [-1, 1].
 
 \section{Methods}{
 
-\describe{
-\item{\code{$step(action)}}{
+\itemize{
+\item \code{$step(action)} \cr
 Take action in environment.
 Returns a list with \code{state}, \code{reward}, \code{done}.
- }
-\item{\code{$reset()}}{
-  Resets the \code{done} flag of the environment and returns an initial state.
-  Useful when starting a new episode.
-}
-\item{\code{$visualize()}}{
-  Visualizes the environment (if there is a visualization function).
-}
+\item \code{$reset()} \cr
+Resets the \code{done} flag of the environment and returns an initial state.
+Useful when starting a new episode.
+\item \code{$visualize()} \cr
+Visualizes the environment (if there is a visualization function).
 }
 }
 

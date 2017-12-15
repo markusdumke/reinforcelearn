@@ -4,18 +4,18 @@
 \alias{makeEnvironment}
 \title{Make Reinforcement Learning Environment}
 \usage{
-makeEnvironment(type = "custom", ...)
+makeEnvironment(class = "custom", ...)
 }
 \arguments{
-\item{type}{[\code{character(1)}] \cr
-Type of environment. There are several prebuild environments.
+\item{class}{[\code{character(1)}] \cr
+Class of environment. There are several prebuild environments.
 See also here Section Environments.}
 
 \item{...}{[\code{any}] \cr Arguments passed on to the specific environment.}
 }
 \value{
 [\code{R6 class}] \cr
-  Reinforcement Learning Environment.
+Reinforcement Learning Environment.
 }
 \description{
 This function creates an environment for reinforcement learning.
@@ -30,32 +30,27 @@ have a look at the vignette "How to create an environment?".
 }
 \section{Methods}{
 
-\describe{
-\item{\code{$step(action)}}{
+\itemize{
+\item \code{$step(action)} \cr
 Take action in environment.
 Returns a list with \code{state}, \code{reward}, \code{done}.
- }
-\item{\code{$reset()}}{
-  Resets the \code{done} flag of the environment and returns an initial state.
-  Useful when starting a new episode.
-}
-\item{\code{$visualize()}}{
-  Visualizes the environment (if there is a visualization function).
-}
+\item \code{$reset()} \cr
+Resets the \code{done} flag of the environment and returns an initial state.
+Useful when starting a new episode.
+\item \code{$visualize()} \cr
+Visualizes the environment (if there is a visualization function).
 }
 }
 
 \section{Environments}{
 
 \itemize{
-  \item{\code{\link{Environment}}}
-  \item{\code{\link{GymEnvironment}}}
-  \item{\code{\link{MdpEnvironment}}}
-  \item{\code{\link{Gridworld}}}
-  \item{\code{\link{MountainCar}}}
+\item \link{Environment}
+\item \link{GymEnvironment}
+\item \link{MdpEnvironment}
+\item \link{Gridworld}
+\item \link{MountainCar}
 }
-
-
 }
 
 \examples{

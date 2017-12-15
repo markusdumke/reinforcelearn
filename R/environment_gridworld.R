@@ -1,23 +1,23 @@
 #' Gridworld
 #'
-#' \code{Gridworld} creates gridworld environments.
+#' Creates gridworld environments.
 #'
 #' A gridworld is an episodic navigation task, the goal is to get from start state to goal state.
 #'
-#' Possible actions include going left, right, up or down. If \code{diagonal.moves = TRUE} diagonal
+#' Possible actions include going left, right, up or down. If `diagonal.moves = TRUE` diagonal
 #' moves are also possible, leftup, leftdown, rightup and rightdown.
 #'
-#' When stepping into a cliff state you get a reward of \code{reward.cliff},
-#' usually a high negative reward and transition to a state specified by \code{cliff.transition.states}.
+#' When stepping into a cliff state you get a reward of `reward.cliff`,
+#' usually a high negative reward and transition to a state specified by `cliff.transition.states`.
 #'
-#' In each column a deterministic wind specified via \code{wind} pushes you up a specific number of
+#' In each column a deterministic wind specified via `wind` pushes you up a specific number of
 #' grid cells (for the next action).
 #'
-#' A stochastic gridworld is a gridworld where with probability \code{stochasticity} the next state
+#' A stochastic gridworld is a gridworld where with probability `stochasticity` the next state
 #' is chosen at random from all neighbor states independent of the actual action.
 #'
 #' If an action would take you off the grid, the new state is the nearest cell inside the grid.
-#' For each step you get a reward of \code{reward.step}, until you reach a goal state,
+#' For each step you get a reward of `reward.step`, until you reach a goal state,
 #' then the episode is done.
 #'
 #' States are enumerated row-wise and numeration starts with 0.
@@ -37,37 +37,38 @@
 #' }
 #'
 #' @section Usage:
-#' \code{makeEnvironment("Gridworld", shape = NULL, goal.states = NULL, cliff.states = NULL,
+#' `makeEnvironment("Gridworld", shape = NULL, goal.states = NULL, cliff.states = NULL,
 #'   reward.step = -1, reward.cliff = -100, diagonal.moves = FALSE, wind = rep(0, shape[2]),
-#'   cliff.transition.states = NULL, cliff.transition.done = FALSE, stochasticity = 0, ...)}
+#'   cliff.transition.states = NULL, cliff.transition.done = FALSE, stochasticity = 0, ...)`
 #'
-#' @param shape [\code{integer(2)}] \cr
+#' @param shape \[`integer(2)`] \cr
 #'   Shape of the gridworld (number of rows x number of columns).
-#' @param goal.states [\code{integer}] \cr
+#' @param goal.states \[`integer`] \cr
 #'   Goal states in the gridworld.
-#' @param cliff.states [\code{integer}] \cr
+#' @param cliff.states \[`integer`] \cr
 #'   Cliff states in the gridworld.
-#' @param reward.step [\code{integer(1)}] \cr
+#' @param reward.step \[`integer(1)`] \cr
 #'   Reward for taking a step.
-#' @param cliff.transition.states [\code{integer}] \cr
+#' @param cliff.transition.states \[`integer`] \cr
 #'   States to which the environment transitions if stepping into the cliff.
 #'   If it is a vector, all states will have equal probability.
-#'   Only used when \code{cliff.transition.done == FALSE},
-#'   else specify the \code{initial.state} argument.
-#' @param reward.cliff [\code{integer(1)}] \cr
+#'   Only used when `cliff.transition.done == FALSE`,
+#'   else specify the `initial.state` argument.
+#' @param reward.cliff \[`integer(1)`] \cr
 #'   Reward for taking a step in the cliff state.
-#' @param diagonal.moves [\code{logical(1)}] \cr
+#' @param diagonal.moves \[`logical(1)`] \cr
 #'   Should diagonal moves be allowed?
-#' @param wind [\code{integer}] \cr
+#' @param wind \[`integer`] \cr
 #'   Strength of the upward wind in each cell.
-#' @param cliff.transition.done [\code{logical(1)}] \cr
+#' @param cliff.transition.done \[`logical(1)`] \cr
 #'   Should the episode end after stepping into the cliff?
-#' @param stochasticity [\code{numeric(1)}] \cr
+#' @param stochasticity \[`numeric(1)`] \cr
 #'   Probability of random transition to any of the neighboring states when taking any action.
-#' @param ...
-#'   Arguments passed on to \code{\link{MdpEnvironment}}.
+#' @param ... \[`any`] \cr
+#'   Arguments passed on to [MdpEnvironment].
 #'
 #' @name Gridworld
+#' @md
 #' @inheritSection Environment Methods
 #' @export
 #'
@@ -304,7 +305,7 @@ getIntoBounds = function(new.states, n.col) {
 #' }
 #'
 #' @section Usage:
-#' \code{makeEnvironment("CliffWalking")}
+#' `makeEnvironment("CliffWalking")`
 #'
 #' @name CliffWalking
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.6
@@ -350,7 +351,7 @@ CliffWalking = R6::R6Class("CliffWalking",
 #' }
 #'
 #' @section Usage:
-#' \code{makeEnvironment("WindyGridworld")}
+#' `makeEnvironment("WindyGridworld")`
 #'
 #' @name WindyGridworld
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.5

@@ -37,10 +37,11 @@ Should the episode end after stepping into the cliff?}
 \item{stochasticity}{[\code{numeric(1)}] \cr
 Probability of random transition to any of the neighboring states when taking any action.}
 
-\item{...}{Arguments passed on to \code{\link{MdpEnvironment}}.}
+\item{...}{[\code{any}] \cr
+Arguments passed on to \link{MdpEnvironment}.}
 }
 \description{
-\code{Gridworld} creates gridworld environments.
+Creates gridworld environments.
 }
 \details{
 A gridworld is an episodic navigation task, the goal is to get from start state to goal state.
@@ -64,40 +65,35 @@ then the episode is done.
 States are enumerated row-wise and numeration starts with 0.
 Here is an example 4x4 grid:
 \tabular{rrrr}{
- 0 \tab 1 \tab 2 \tab 3 \cr
- 4 \tab 5 \tab 6 \tab 7 \cr
- 8 \tab 9 \tab 10 \tab 11 \cr
- 12 \tab 13 \tab 14 \tab 15 \cr
+0 \tab 1 \tab 2 \tab 3 \cr
+4 \tab 5 \tab 6 \tab 7 \cr
+8 \tab 9 \tab 10 \tab 11 \cr
+12 \tab 13 \tab 14 \tab 15 \cr
 }
 So a board position could look like this (G: goal state, x: current state, C: cliff state):
 \tabular{rrrr}{
- G \tab o \tab o \tab o \cr
- o \tab o \tab o \tab o \cr
- o \tab x \tab o \tab o \cr
- o \tab o \tab o \tab C \cr
+G \tab o \tab o \tab o \cr
+o \tab o \tab o \tab o \cr
+o \tab x \tab o \tab o \cr
+o \tab o \tab o \tab C \cr
 }
 }
 \section{Usage}{
 
-\code{makeEnvironment("Gridworld", shape = NULL, goal.states = NULL, cliff.states = NULL,
-  reward.step = -1, reward.cliff = -100, diagonal.moves = FALSE, wind = rep(0, shape[2]),
-  cliff.transition.states = NULL, cliff.transition.done = FALSE, stochasticity = 0, ...)}
+\code{makeEnvironment("Gridworld", shape = NULL, goal.states = NULL, cliff.states = NULL, reward.step = -1, reward.cliff = -100, diagonal.moves = FALSE, wind = rep(0, shape[2]), cliff.transition.states = NULL, cliff.transition.done = FALSE, stochasticity = 0, ...)}
 }
 
 \section{Methods}{
 
-\describe{
-\item{\code{$step(action)}}{
+\itemize{
+\item \code{$step(action)} \cr
 Take action in environment.
 Returns a list with \code{state}, \code{reward}, \code{done}.
- }
-\item{\code{$reset()}}{
-  Resets the \code{done} flag of the environment and returns an initial state.
-  Useful when starting a new episode.
-}
-\item{\code{$visualize()}}{
-  Visualizes the environment (if there is a visualization function).
-}
+\item \code{$reset()} \cr
+Resets the \code{done} flag of the environment and returns an initial state.
+Useful when starting a new episode.
+\item \code{$visualize()} \cr
+Visualizes the environment (if there is a visualization function).
 }
 }
 

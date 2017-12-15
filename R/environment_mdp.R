@@ -3,21 +3,21 @@
 #' Markov Decision Process environment.
 #'
 #' @section Usage:
-#' \code{makeEnvironment("MDP", transitions, rewards, initial.state, visualize)}
+#' `makeEnvironment("MDP", transitions, rewards, initial.state, visualize)`
 #'
-#' @param transitions [\code{array (n.states x n.states x n.actions)}] \cr
+#' @param transitions \[`array (n.states x n.states x n.actions)`] \cr
 #'   State transition array.
-#' @param rewards [\code{matrix (n.states x n.actions)}] \cr
+#' @param rewards \[`matrix (n.states x n.actions)`] \cr
 #'   Reward array.
-#' @param initial.state [\code{integer}] \cr
+#' @param initial.state \[`integer`] \cr
 #'   Optional starting state.
 #'   If a vector is given a starting state will be
-#'   randomly sampled from this vector whenever \code{reset} is called.
+#'   randomly sampled from this vector whenever `reset` is called.
 #'   Note that states are numerated starting with
-#'   0. If \code{initial.state = NULL} all non-terminal states are
+#'   0. If `initial.state = NULL` all non-terminal states are
 #'   possible starting states.
 #'
-#' @inheritParams Environment
+#' @md
 #'
 #' @name MdpEnvironment
 #' @inheritSection Environment Methods

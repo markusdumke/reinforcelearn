@@ -2,47 +2,39 @@
 #'
 #' This function creates an environment for reinforcement learning.
 #'
-#' Use the \code{step} method to interact with the environment.
+#' Use the `step` method to interact with the environment.
 #'
 #' Note that all states and actions are numerated starting with 0!
 #'
 #' For a detailed explanation and more examples
 #' have a look at the vignette "How to create an environment?".
 #'
-#' @param type [\code{character(1)}] \cr
-#'   Type of environment. There are several prebuild environments.
+#' @param class \[`character(1)`] \cr
+#'   Class of environment. There are several prebuild environments.
 #'   See also here Section Environments.
-#' @param ... [\code{any}] \cr Arguments passed on to the specific environment.
+#' @param ... \[`any`] \cr Arguments passed on to the specific environment.
 #'
-#' @return [\code{R6 class}] \cr
+#' @return \[`R6 class`] \cr
 #'   Reinforcement Learning Environment.
 #'
+#' @md
+#'
 #' @section Methods:
-#' \describe{
-#' \item{\code{$step(action)}}{
-#' Take action in environment.
-#' Returns a list with \code{state}, \code{reward}, \code{done}.
-#'  }
-#' \item{\code{$reset()}}{
-#'   Resets the \code{done} flag of the environment and returns an initial state.
+#' * `$step(action)` \cr
+#'   Take action in environment.
+#'   Returns a list with `state`, `reward`, `done`.
+#' * `$reset()` \cr
+#'   Resets the `done` flag of the environment and returns an initial state.
 #'   Useful when starting a new episode.
-#' }
-#' \item{\code{$visualize()}}{
+#' * `$visualize()` \cr
 #'   Visualizes the environment (if there is a visualization function).
-#' }
-#' }
 #'
 #' @section Environments:
-#' \itemize{
-#'   \item{\code{\link{Environment}}}
-#'   \item{\code{\link{GymEnvironment}}}
-#'   \item{\code{\link{MdpEnvironment}}}
-#'   \item{\code{\link{Gridworld}}}
-#'   \item{\code{\link{MountainCar}}}
-#' }
-#'
-#' @section Environments:
-#'
+#' * [Environment]
+#' * [GymEnvironment]
+#' * [MdpEnvironment]
+#' * [Gridworld]
+#' * [MountainCar]
 #'
 #' @export
 #' @examples
@@ -89,11 +81,11 @@
 #' }
 #' env$close()
 #' }
-makeEnvironment = function(type = "custom", ...) {
-  checkmate::assertChoice(type,
+makeEnvironment = function(class = "custom", ...) {
+  checkmate::assertChoice(class,
     c("custom", "MDP", "Gym", "Gridworld", "WindyGridworld", "CliffWalking",
       "MountainCar", "MountainCarContinuous"))
-  switch(type,
+  switch(class,
     custom = Environment$new(...), # default
     MDP = MdpEnvironment$new(...),
     Gym = GymEnvironment$new(...),
@@ -110,12 +102,14 @@ makeEnvironment = function(type = "custom", ...) {
 #' @section Usage:
 #' \code{makeEnvironment("custom", step, reset, visualize)}
 #'
-#' @param step [\code{function(self, action)}] \cr
+#' @param step \[`function(self, action)`] \cr
 #'   Custom step function.
-#' @param reset [\code{function()}] \cr
+#' @param reset \[`function()`] \cr
 #'   Custom reset function.
-#' @param visualize [\code{function(self)}] \cr
+#' @param visualize \[`function(self)`] \cr
 #'   Optional custom visualization function.
+#'
+#' @md
 #'
 #' @inheritSection makeEnvironment Methods
 #'
@@ -194,6 +188,7 @@ Environment = R6::R6Class("Environment",
       } else {
         private$visualize_ = function() {}
       }
+      self$reset()
     }
   ),
 

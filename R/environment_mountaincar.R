@@ -43,11 +43,13 @@ MountainCarBase = R6::R6Class("MountainCarBase",
 #' The classical mountain car problem for reinforcement learning.
 #'
 #' The classical Mountain Car task the action is one of \{0, 1, 2\},
-#' in the continuous version the action is in [-1, 1].
+#' in the continuous version the action is in \[-1, 1].
 #'
 #' @section Usage:
-#' \code{makeEnvironment("MountainCar")} \cr
-#' \code{makeEnvironment("MountainCarContinuous")}
+#' `makeEnvironment("MountainCar")` \cr
+#' `makeEnvironment("MountainCarContinuous")`
+#'
+#' @md
 #'
 #' @inheritSection Environment Methods
 #' @name MountainCar
