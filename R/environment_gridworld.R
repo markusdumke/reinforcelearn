@@ -317,10 +317,10 @@ NULL
 CliffWalking = R6::R6Class("CliffWalking",
   inherit = Gridworld,
   public = list(
-    initialize = function() {
+    initialize = function(...) {
       super$initialize(shape = c(4, 12), goal.states = 47,
         cliff.states = 37:46, reward.step = -1, reward.cliff = -100,
-        cliff.transition.states = 36, initial.state = 36)
+        cliff.transition.states = 36, initial.state = 36, ...)
     }
   )
 )
@@ -363,10 +363,10 @@ NULL
 WindyGridworld = R6::R6Class("WindyGridworld",
   inherit = Gridworld,
   public = list(
-    initialize = function() {
+    initialize = function(...) {
       super$initialize(shape = c(7, 10), goal.states = 37,
         reward.step = -1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0),
-        initial.state = 30)
+        initial.state = 30, ...)
     }
   )
 )
