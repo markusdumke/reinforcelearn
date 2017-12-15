@@ -2,7 +2,7 @@
 % Please edit documentation in R/environment.R
 \name{makeEnvironment}
 \alias{makeEnvironment}
-\title{Make Reinforcement Learning Environment}
+\title{Create reinforcement learning environment.}
 \usage{
 makeEnvironment(class = "custom", ...)
 }

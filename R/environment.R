@@ -1,4 +1,4 @@
-#' Make Reinforcement Learning Environment
+#' Create reinforcement learning environment.
 #'
 #' This function creates an environment for reinforcement learning.
 #'
@@ -144,7 +144,7 @@ Environment = R6::R6Class("Environment",
     state = NULL,
     reward = NULL,
     done = FALSE,
-    # discount = NULL,
+    discount = NULL,
 
     reset = function() {
       self$episode.step = 0L
@@ -175,13 +175,14 @@ Environment = R6::R6Class("Environment",
       private$visualize_(self)
     },
 
-    initialize = function(step, reset, visualize) { # , discount = 1
+    initialize = function(step, reset, visualize, discount = 1) {
       checkmate::assertFunction(step) # nargs ?
       checkmate::assertFunction(reset)
+      checkmate::assertNumber(discount, lower = 0, upper = 1)
 
       private$step_ = step
       private$reset_ = reset
-      # self$discount = discount
+      self$discount = discount
       if (!missing(visualize)) {
         checkmate::assertFunction(visualize)
         private$visualize_ = visualize

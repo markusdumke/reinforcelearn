@@ -4,7 +4,7 @@
 \alias{GymEnvironment}
 \title{Gym Environment}
 \arguments{
-\item{gym.name}{\code{\link{character(1)}} \cr
+\item{gym.name}{[\code{character(1)}] \cr
 Name of gym environment, e.g. \code{"CartPole-v0"}.}
 }
 \description{

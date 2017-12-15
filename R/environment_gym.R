@@ -12,7 +12,7 @@
 #' https://github.com/openai/gym#installation.
 #' Then install the R package `reticulate`.
 #'
-#' @param gym.name [`character(1)`] \cr
+#' @param gym.name \[`character(1)`] \cr
 #'   Name of gym environment, e.g. \code{"CartPole-v0"}.
 #'
 #' @md
