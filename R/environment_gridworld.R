@@ -131,8 +131,11 @@ Gridworld = R6::R6Class("Gridworld",
       n.col = shape[2]
       if (diagonal.moves) {
         n.actions = 8
+        action.names = c("left" = 0L, "right" = 1L, "up" = 2L, "down" = 3L,
+          "leftup" = 5L, "leftdown" = 6L, "rightup" = 7L, "rightdown" = 8L)
       } else {
         n.actions = 4
+        action.names = c("left" = 0L, "right" = 1L, "up" = 2L, "down" = 3L)
       }
 
       rewards = makeRewardMatrix(reward.step, reward.cliff, n.states, n.actions,
@@ -147,7 +150,8 @@ Gridworld = R6::R6Class("Gridworld",
         down = seq(n.states - n.col + 1, n.states))
 
       non.terminal.states = setdiff(states, c(goal.states, cliff.states))
-      actions = list("left", "right", "up", "down", "leftup", "leftdown", "rightup", "rightdown")
+      actions = list("left", "right", "up", "down", "leftup",
+        "leftdown", "rightup", "rightdown")
       actions = lapply(actions, function(x) {class(x) = x; x})
 
       m.cliff = NULL
@@ -208,15 +212,10 @@ Gridworld = R6::R6Class("Gridworld",
         # replace nth - with o (current state in grid)
         grid.vis = sub(paste0("^(.{", str.pos - 1, "})(.)(.*$)", collapse = ""),
           "\\1o\\3", grid.vis)
-        cat(grid.vis, "\n", "\n")
-        ## some unsuccessful tries for the same thing
-        # str_replace(grid.vis, "(.-[^-]*){7}", "\\o")
-        # sub("^((?:[^-]*-){2}).*", "\\o", grid.vis)
-        # pat <- paste0("^((?:.*?-){", n - 1, "}.*?)-")
-        # pat <- paste0("(.?-.?){", n - 1, "}")
-        # sub("(.?-.?)", " o ", grid.vis)#, perl = TRUE)
+        message(grid.vis, "\n")
       }
-      super$initialize(transitions = transitions, rewards = rewards, visualize = visualize, ...)
+      super$initialize(transitions = transitions, rewards = rewards,
+        visualize = visualize, action.names = action.names, ...)
     }
   )
 )

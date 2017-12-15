@@ -43,7 +43,7 @@ step = function(self, action) {
   list(state, reward, done)
 }
 
-reset = function() {
+reset = function(self) {
   state = list(mean = 0, sd = 1)
   state
 }

@@ -71,7 +71,7 @@
       <a href="../articles/algorithms.html">How to solve an environment?</a>
     </li>
     <li>
-      <a href="../articles/environments.html">How to create an environment?</a>
+      <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
 </li>
@@ -244,11 +244,10 @@ Visualizes the environment (if there is a visualization function).</p></li>
     <pre class="examples"><div class='input'><span class='co'># Gridworld Environment (Sutton &amp; Barto Example 4.1)</span>
 <span class='no'>env1</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"Gridworld"</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4L</span>, <span class='fl'>4L</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>0L</span>,
   <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>15L</span>)
-<span class='no'>env1</span>$<span class='fu'>reset</span>()</div><div class='output co'>#&gt; [1] 15</div><div class='input'><span class='no'>env1</span>$<span class='fu'>visualize</span>()</div><div class='output co'>#&gt;  - - - - 
-#&gt;  - - - - 
-#&gt;  - - - - 
-#&gt;  - - - o 
-#&gt;  </div><div class='input'><span class='no'>env1</span>$<span class='fu'>step</span>(<span class='fl'>0L</span>)</div><div class='output co'>#&gt; $state
+<span class='no'>env1</span>$<span class='fu'>reset</span>()</div><div class='output co'>#&gt; [1] 15</div><div class='input'><span class='no'>env1</span>$<span class='fu'>visualize</span>()</div><div class='output co'>#&gt; <span class='message'> - - - - </span>
+#&gt; <span class='message'> - - - - </span>
+#&gt; <span class='message'> - - - - </span>
+#&gt; <span class='message'> - - - o</span></div><div class='input'><span class='no'>env1</span>$<span class='fu'>step</span>(<span class='fl'>0L</span>)</div><div class='output co'>#&gt; $state
 #&gt; [1] 14
 #&gt; 
 #&gt; $reward
@@ -256,11 +255,10 @@ Visualizes the environment (if there is a visualization function).</p></li>
 #&gt; 
 #&gt; $done
 #&gt; [1] FALSE
-#&gt; </div><div class='input'><span class='no'>env1</span>$<span class='fu'>visualize</span>()</div><div class='output co'>#&gt;  - - - - 
-#&gt;  - - - - 
-#&gt;  - - - - 
-#&gt;  - - o - 
-#&gt;  </div><div class='input'>
+#&gt; </div><div class='input'><span class='no'>env1</span>$<span class='fu'>visualize</span>()</div><div class='output co'>#&gt; <span class='message'> - - - - </span>
+#&gt; <span class='message'> - - - - </span>
+#&gt; <span class='message'> - - - - </span>
+#&gt; <span class='message'> - - o -</span></div><div class='input'>
 <span class='co'># Windy Gridworld (Sutton &amp; Barto Example 6.5)</span>
 <span class='no'>env2</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"Gridworld"</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>7</span>, <span class='fl'>10</span>), <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>37L</span>,
   <span class='kw'>reward.step</span> <span class='kw'>=</span> -<span class='fl'>1</span>, <span class='kw'>wind</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='fl'>1</span>, <span class='fl'>0</span>),

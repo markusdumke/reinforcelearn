@@ -93,12 +93,12 @@ GymEnvironment = R6::R6Class("GymEnvironment",
       #   }
       # }
 
-      step_ = function(env, action) {
+      step_ = function(self, action) {
         res = self$gym.env$step(action)
         res[1:3]
       }
 
-      reset_ = function() {
+      reset_ = function(self) {
         state = self$gym.env$reset()
         state
       }

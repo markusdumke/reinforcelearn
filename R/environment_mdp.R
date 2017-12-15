@@ -40,6 +40,7 @@ MdpEnvironment = R6::R6Class("MdpEnvironment",
   public = list(
     action.space = NULL,
     actions = NULL,
+    action.names = NULL,
     initial.state = NULL,
     n.actions = NULL,
     n.states = NULL,
@@ -49,34 +50,39 @@ MdpEnvironment = R6::R6Class("MdpEnvironment",
     terminal.states = NULL,
     transitions = NULL,
 
-    initialize = function(transitions, rewards, initial.state, visualize) {
-      checkmate::assertArray(transitions, any.missing = FALSE, d = 3)
-      checkmate::assertArray(rewards, any.missing = FALSE, min.d = 2, max.d = 2, null.ok = FALSE)
+    initialize = function(transitions, rewards, initial.state, action.names = NULL, ...) {
+      checkmate::assertArray(transitions, any.missing = FALSE, d = 3L)
+      checkmate::assertArray(rewards, any.missing = FALSE, d = 2L)
+      #checkmate::assertCharacter(), assertNamed ...
       self$state.space = "Discrete"
       self$action.space = "Discrete"
       self$n.actions = dim(transitions)[3]
       self$n.states = dim(transitions)[1]
       self$actions = seq_len(self$n.actions) - 1L
+      self$action.names = action.names
       self$states = seq_len(self$n.states) - 1L
       self$transitions = transitions
       self$rewards = rewards
-      terminal.states = apply(transitions, 3, function(x) diag(x))
-      self$terminal.states = which(apply(terminal.states, 1, function(x) all(x == 1))) - 1L
+      terminal.states = apply(transitions, 3L, function(x) diag(x))
+      self$terminal.states = which(apply(terminal.states, 1L, function(x) all(x == 1L))) - 1L
       if (length(self$terminal.states) == 0) {
         warning("There are no terminal states in the MDP!")
-        self$terminal.states = -1
+        self$terminal.states = -1L
       }
       if (missing(initial.state)) {
         self$initial.state = setdiff(self$states, self$terminal.states)
       } else {
-        checkmate::assertIntegerish(initial.state, upper = self$n.states - 1)
+        checkmate::assertIntegerish(initial.state, upper = self$n.states - 1L)
         self$initial.state = initial.state
       }
 
       step_ = function(env, action) {
-        reward = self$rewards[self$state + 1, action + 1] # use old state here!
-        state = sample(self$states, size = 1,
-          prob = self$transitions[self$state + 1, , action + 1])
+        if (is.character(action)) {
+          action = self$action.names[action]
+        }
+        reward = self$rewards[self$state + 1L, action + 1L] # use old state here!
+        state = sample(self$states, size = 1L,
+          prob = self$transitions[self$state + 1L, , action + 1L])
         if (state %in% self$terminal.states) {
           done = TRUE
         } else {
@@ -85,13 +91,13 @@ MdpEnvironment = R6::R6Class("MdpEnvironment",
         list(state, reward, done)
       }
 
-      reset_ = function() {
-        state = ifelse(length(self$initial.state) > 1,
-          sample(self$initial.state, size = 1), self$initial.state)
+      reset_ = function(env) {
+        state = ifelse(length(self$initial.state) > 1L,
+          sample(self$initial.state, size = 1L), self$initial.state)
         state
       }
       # call initialize of superclass with mdp step and reset function
-      super$initialize(step_, reset_, visualize)
+      super$initialize(step_, reset_, ...)
     }
   )
 )

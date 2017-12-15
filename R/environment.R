@@ -45,7 +45,7 @@
 #'   list(state, reward, done)
 #' }
 #'
-#' reset = function() {
+#' reset = function(self) {
 #'   state = list(mean = 0, sd = 1)
 #'   state
 #' }
@@ -94,7 +94,7 @@ makeEnvironment = function(class = "custom", ...) {
     CliffWalking = CliffWalking$new(...),
     MountainCar = MountainCar$new(...),
     MountainCarContinuous = MountainCarContinuous$new(...)
-    )
+  )
 }
 
 #' Custom Reinforcement Learning Environment
@@ -124,7 +124,7 @@ makeEnvironment = function(class = "custom", ...) {
 #'   list(state, reward, done)
 #' }
 #'
-#' reset = function() {
+#' reset = function(self) {
 #'   state = list(mean = 0, sd = 1)
 #'   state
 #' }
@@ -150,17 +150,17 @@ Environment = R6::R6Class("Environment",
       self$episode.step = 0L
       self$episode.return = 0
       self$done = FALSE
-      self$state = private$reset_()
+      self$state = private$reset_(self)
       self$state
     },
 
     step = function(action) {
       self$previous.state = self$state
-      self$n.step = self$n.step + 1L
-      self$episode.step = self$episode.step + 1L
       res = private$step_(self, action)
       self$episode.return = self$episode.return +
         self$discount ^ self$episode.step * res[[2]]
+      self$n.step = self$n.step + 1L
+      self$episode.step = self$episode.step + 1L
       self$state = res[[1]]
       self$reward = res[[2]]
       self$done = res[[3]]
@@ -187,7 +187,7 @@ Environment = R6::R6Class("Environment",
         checkmate::assertFunction(visualize)
         private$visualize_ = visualize
       } else {
-        private$visualize_ = function() {}
+        private$visualize_ = function(self) {}
       }
       self$reset()
     }

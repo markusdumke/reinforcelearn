@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make Reinforcement Learning Environment — makeEnvironment â€¢ reinforcelearn</title>
+<title>Create reinforcement learning environment. — makeEnvironment â€¢ reinforcelearn</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -71,7 +71,7 @@
       <a href="../articles/algorithms.html">How to solve an environment?</a>
     </li>
     <li>
-      <a href="../articles/environments.html">How to create an environment?</a>
+      <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
 </li>
@@ -93,7 +93,7 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Make Reinforcement Learning Environment</h1>
+    <h1>Create reinforcement learning environment.</h1>
     </div>
 
     
@@ -163,7 +163,7 @@ Visualizes the environment (if there is a visualization function).</p></li>
   <span class='fu'>list</span>(<span class='no'>state</span>, <span class='no'>reward</span>, <span class='no'>done</span>)
 }
 
-<span class='no'>reset</span> <span class='kw'>=</span> <span class='kw'>function</span>() {
+<span class='no'>reset</span> <span class='kw'>=</span> <span class='kw'>function</span>(<span class='no'>self</span>) {
   <span class='no'>state</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>mean</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>sd</span> <span class='kw'>=</span> <span class='fl'>1</span>)
   <span class='no'>state</span>
 }

@@ -7,7 +7,7 @@ MountainCarBase = R6::R6Class("MountainCarBase",
     position = NULL,
 
     initialize = function() {
-      reset_ = function() {
+      reset_ = function(self) {
         self$position = runif(1, -0.6, -0.4)
         self$velocity = 0
         matrix(c(self$position, self$velocity), ncol = 2)
