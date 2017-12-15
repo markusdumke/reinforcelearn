@@ -13,6 +13,12 @@
 interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
   max.steps.per.episode = Inf, visualize = FALSE) {
 
+  checkmate::assertClass(env, "Environment")
+  checkmate::assertClass(agent, "Agent")
+  # checkmate::assertInt(n.steps, lower = 1) # not working because Inf is double
+  # checkmate::assertInt(n.episodes, lower = 1)
+  # checkmate::assertInt(max.steps.per.episode, lower = 1)
+
   # one of steps / episodes must be finite!
   if (is.infinite(n.steps) && is.infinite(n.episodes)) {
     stop("Specify finite number of steps or finite number of episodes!")
@@ -37,16 +43,16 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
   stop.step = env$n.step + n.steps
   stop.episode = env$episode + n.episodes
 
-  # check if environment has been resetted, if not reset else get current state
-  if (is.null(env$state)) {
-    message("Reset environment.")
-    state = env$reset()
-    if (visualize) {
-      env$visualize()
-    }
-  } else {
-    state = env$state
-  }
+  # # check if environment has been resetted, if not reset else get current state
+  # if (is.null(env$state)) {
+  #   message("Reset environment.")
+  #   state = env$reset()
+  #   if (visualize) {
+  #     env$visualize()
+  #   }
+  # } else {
+  state = env$state
+  #}
 
   while (TRUE) {
     # # for debugging
@@ -70,7 +76,7 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
 
     # optional learning (check whether to learn maybe as agent method)
     if (agent$learn.logical) {
-      agent$learn(discount = env$discount)
+      agent$learn(env)
     }
 
     state = res$state # set state to next state for new iteration
@@ -81,7 +87,7 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
         env$episode = env$episode + 1L
       }
       message(paste("Episode", env$episode, "finished after",
-        env$episode.step, "steps with a return of", env$episode.return))
+        env$episode.step, "steps with a return of", env$episode.return)) # let this be customizable by having his in a function argument
       episode = episode + 1L
       episode.returns[episode] = env$episode.return
       episode.steps[episode] = env$episode.step
