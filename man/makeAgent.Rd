@@ -4,7 +4,8 @@
 \alias{makeAgent}
 \title{Create Agent.}
 \usage{
-makeAgent(policy, val.fun = NULL, algorithm = NULL)
+makeAgent(policy, val.fun = NULL, algorithm = NULL, preprocess = identity,
+  experience.replay = NULL, eligibility.traces = NULL)
 }
 \arguments{
 \item{policy}{[\code{Policy}] \cr A policy created by \link{makePolicy}.}

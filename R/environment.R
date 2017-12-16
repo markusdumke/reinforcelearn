@@ -85,6 +85,8 @@ makeEnvironment = function(class = "custom", ...) {
   checkmate::assertChoice(class,
     c("custom", "MDP", "Gym", "Gridworld", "WindyGridworld", "CliffWalking",
       "MountainCar", "MountainCarContinuous"))
+  #     c("custom", "mdp", "gym", "gridworld", "windy.gridworld", "cliff.walking",
+   #   "mountain.car", "mountain.car.continuous")) # small letters dot style
   switch(class,
     custom = Environment$new(...), # default
     MDP = MdpEnvironment$new(...),

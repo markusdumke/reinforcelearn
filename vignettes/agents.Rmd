@@ -1,0 +1,22 @@
+---
+title: "Agents"
+author: Markus Dumke
+date: "`r Sys.Date()`"
+output:rmarkdown::html_vignette:
+fig_caption: yes
+bibliography: references.bib
+vignette: >
+ %\VignetteIndexEntry{Vignette Title}
+ %\VignetteEngine{knitr::rmarkdown}
+ %\VignetteEncoding{UTF-8}
+---
+  
+<style type="text/css">
+  h1.title {
+  font-size: 34px;
+  }
+</style>
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
+```

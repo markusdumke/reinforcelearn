@@ -5,13 +5,13 @@
 #' @param n.steps \[`integer(1)`] \cr Number of steps to run.
 #' @param n.episodes \[`integer(1)`] \cr Number of episodes to run.
 #' @param max.steps.per.episode \[`integer(1)`] \cr Maximal number of allowed steps per episode.
-#' @param visualize \[`logical(1)`] \cr Visualize environment while interaction?
+#' @param learn \[`logical(1)`] \cr Should the agent learn?
 #'
 #' @md
 #'
 #' @export
 interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
-  max.steps.per.episode = Inf, visualize = FALSE) {
+  max.steps.per.episode = Inf, learn = TRUE) {
 
   checkmate::assertClass(env, "Environment")
   checkmate::assertClass(agent, "Agent")
@@ -66,18 +66,11 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
     # agent$history = append(agent$history, list(list(state = state, action = action,
     #   reward = res$reward, episode = env$episode + 1L)))
 
-    # visualization, maybe wrap this into env$step?
-    if (visualize) {
-      env$visualize()
-    }
-
     # observe: e.g. add observation to replay memory
     agent$observe(state, action, res$reward, res$state)
 
     # optional learning (check whether to learn maybe as agent method)
-    if (agent$learn.logical) {
-      agent$learn(env)
-    }
+    agent$learn(env, learn)
 
     state = res$state # set state to next state for new iteration
 

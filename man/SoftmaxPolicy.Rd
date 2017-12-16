@@ -13,6 +13,4 @@ Softmax Policy
 
 \examples{
 pol = makePolicy("softmax")
-(probs = pol$getActionProbs(matrix(c(1:3), ncol = 3)))
-pol$sampleAction(probs)
 }

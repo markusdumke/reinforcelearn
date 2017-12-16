@@ -55,8 +55,6 @@ Policy = R6::R6Class("Policy",
 #' @name EpsilonGreedyPolicy
 #' @examples
 #' policy = makePolicy("epsilon.greedy", epsilon = 0.1)
-#' (probs = policy$getActionProbs(matrix(c(1:3), ncol = 3), n.actions = 3))
-#' policy$sampleAction(probs)
 NULL
 
 EpsilonGreedyPolicy = R6::R6Class("EpsilonGreedyPolicy",
@@ -97,9 +95,6 @@ GreedyPolicy = R6::R6Class("GreedyPolicy",
 #' @name RandomPolicy
 #' @examples
 #' pol = makePolicy("random")
-#' (probs = pol$getActionProbs(n.actions = 4))
-#' (probs = pol$getActionProbs(n.actions = 5))
-#' pol$sampleAction(probs)
 NULL
 
 RandomPolicy = R6::R6Class("RandomPolicy",
@@ -130,8 +125,6 @@ GaussianPolicy = R6::R6Class("GaussianPolicy",
 #' @name SoftmaxPolicy
 #' @examples
 #' pol = makePolicy("softmax")
-#' (probs = pol$getActionProbs(matrix(c(1:3), ncol = 3)))
-#' pol$sampleAction(probs)
 NULL
 
 SoftmaxPolicy = R6::R6Class("SoftmaxPolicy",

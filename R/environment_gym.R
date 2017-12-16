@@ -42,6 +42,18 @@ GymEnvironment = R6::R6Class("GymEnvironment",
     gym.env = NULL,
     gym.name = NULL,
 
+    action.space = NULL,
+    actions = NULL,
+    action.shape = NULL,
+    n.actions = NULL,
+    action.space.bounds = NULL,
+
+    state.space = NULL,
+    state.shape = NULL,
+    states = NULL,
+    n.states = NULL,
+    state.space.bounds = NULL,
+
     close = function() {
       self$gym.env$close()
     },
@@ -58,40 +70,35 @@ GymEnvironment = R6::R6Class("GymEnvironment",
       gym = reticulate::import("gym")
       self$gym.env = gym$make(gym.name)
 
-      # # fixme: extract info about state, action space
-      # action.space.info = self$gym.env$action_space
-      # # self$action.space = action.space.info$name
-      #
-      # if (action.space.info$name == "Discrete") {
-      #   self$n.actions = action.space.info$n
-      #   self$actions = seq(0, self$n.actions - 1)
-      # }
-      #
-      # if (action.space.info$name == "Box") {
-      #   self$action.shape = action.space.info$shape[[1]]
-      #   self$action.space.bounds = list()
-      #   for (i in seq_len(self$action.shape)) {
-      #     self$action.space.bounds = append(self$action.space.bounds,
-      #       list(c(action.space.info$low[[i]], action.space.info$high[[i]])))
-      #   }
-      # }
-      #
-      # state.space.info = self$gym.env$observation_space
-      # self$state.space = state.space.info$name
-      #
-      # if (state.space.info$name == "Discrete") {
-      #   self$n.states = state.space.info$n
-      #   self$states = seq(0, self$n.states - 1)
-      # }
-      #
-      # if (state.space.info$name == "Box") {
-      #   self$state.shape = state.space.info$shape[[1]]
-      #   self$state.space.bounds = list()
-      #   for (i in seq_len(self$state.shape)) {
-      #     self$state.space.bounds = append(self$state.space.bounds,
-      #       list(c(state.space.info$low[[i]], state.space.info$high[[i]])))
-      #   }
-      # }
+      action.space.info = self$gym.env$action_space
+      self$action.space = extractSpaceClass(action.space.info)
+
+      state.space.info = self$gym.env$observation_space
+      self$state.space = extractSpaceClass(state.space.info)
+
+      if (self$action.space == "Discrete") {
+        res = extractDiscreteInfo(action.space.info)
+        self$n.actions = res$n
+        self$actions = res$x
+      }
+
+      if (self$action.space == "Box") {
+        res = extractBoxInfo(action.space.info)
+        self$action.space.bounds = res$bounds
+        self$action.shape = res$shape
+      }
+
+      if (self$state.space == "Discrete") {
+        res = extractDiscreteInfo(state.space.info)
+        self$n.actions = res$n
+        self$actions = res$x
+      }
+
+      if (self$state.space == "Box") {
+        res = extractBoxInfo(state.space.info)
+        self$state.space.bounds = res$bounds
+        self$state.shape = res$shape
+      }
 
       step_ = function(self, action) {
         res = self$gym.env$step(action)
@@ -111,3 +118,18 @@ GymEnvironment = R6::R6Class("GymEnvironment",
     }
   )
 )
+
+
+extractDiscreteInfo = function(info) {
+  n = info$n
+  x = seq(0, n - 1)
+  list(n = n, x = x)
+}
+
+extractBoxInfo = function(info) {
+  list(bounds = list(info$low, info$high), shape = info$shape[[1]]) # does [[1]] work in all cases?
+}
+
+extractSpaceClass = function(info) {
+  sub(".*\\.", "", class(info)[1])
+}

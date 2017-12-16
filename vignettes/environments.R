@@ -1,8 +1,8 @@
 ## ----setup, include=FALSE------------------------------------------------
-  knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
 
 ## ------------------------------------------------------------------------
-  library(reinforcelearn)
+library(reinforcelearn)
 
 ## ------------------------------------------------------------------------
 reset = function(self) {

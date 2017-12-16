@@ -7,10 +7,12 @@
 #' @md
 #'
 #' @export
-makeAgent = function(policy, val.fun = NULL, algorithm = NULL) { # better defaults?
+makeAgent = function(policy, val.fun = NULL, algorithm = NULL,
+  preprocess = identity, experience.replay = NULL, eligibility.traces = NULL) { # better defaults?
   checkmate::assertClass(policy, "Policy")
   checkmate::assertClass(val.fun, "ValueFunction", null.ok = TRUE)
-  Agent$new(policy, val.fun, algorithm)
+  checkmate::assertClass(algorithm, "Algorithm", null.ok = TRUE)
+  Agent$new(policy, val.fun, algorithm, preprocess, experience.replay, eligibility.traces)
 }
 
 Agent = R6::R6Class("Agent",
@@ -38,18 +40,21 @@ Agent = R6::R6Class("Agent",
     history = list(),
     # logging function
 
-    initialize = function(policy, val.fun, algorithm) {
+    initialize = function(policy, val.fun, algorithm, preprocess,
+      exp.replay, eligibility) {
+
+      self$preprocess = preprocess
 
       self$policy = switch(policy$name,
         random = RandomPolicy$new(),
         epsilon.greedy = do.call(EpsilonGreedyPolicy$new, policy$args),
-        greedy = GreedyPolicy$new(...),
-        softmax = SoftmaxPolicy$new(...)
+        greedy = GreedyPolicy$new(),
+        softmax = SoftmaxPolicy$new()
       )
 
       if (policy$name == "random") {
         self$act2 = function(state) {
-          policy.probs = self$policy$getActionProbs(NULL, n.actions = 4L)
+          policy.probs = self$policy$getActionProbs(NULL, n.actions = 4L) # fixme: dont hardcode n.actions
           action = self$policy$sampleAction(policy.probs)
         }
       } else {
@@ -68,7 +73,9 @@ Agent = R6::R6Class("Agent",
 
       if (!is.null(algorithm)) {
         self$algorithm = switch(algorithm$name,
-          qlearning = QLearning$new()
+          qlearning = QLearning$new(),
+          sarsa = Sarsa$new(),
+          actor.critic = ActorCritic$new()
         )
       }
 
@@ -76,26 +83,56 @@ Agent = R6::R6Class("Agent",
         self$learn.logical = FALSE
       }
 
-      if (algorithm$name == "qlearning") {
-        self$observe = function(state, action, reward, next.state) {
-          state = self$preprocess(state)
-          next.state = self$preprocess(next.state)
-          self$train.data = list(state = state, action = action, reward = reward, next.state = next.state)
+      if (!is.null(algorithm)) {
+        if (algorithm$name == "qlearning") {
+          self$train.data = vector("list", 1)
+          self$observe = function(state, action, reward, next.state) {
+            state = self$preprocess(state)
+            next.state = self$preprocess(next.state)
+            self$train.data = list(state = state, action = action, reward = reward, next.state = next.state)
+          }
+          self$learn = function(env) {
+            #browser()
+            q.old = self$val.fun$predictQ(self$train.data$state)
+            q.new = self$val.fun$predictQ(self$train.data$next.state)
+            target = self$algorithm$getTarget(self$train.data$reward, q.new,
+              discount = env$discount)
+            target = fillTarget(q.old, self$train.data$state, self$train.data$action, target)
+            self$val.fun$train(self$train.data$state, target)
+          }
         }
-        self$learn = function(env) {
-          q.old = self$val.fun$predictQ(self$train.data$state)
-          q.new = self$val.fun$predictQ(self$train.data$next.state)
-          target = self$algorithm$getTarget(self$train.data$reward, q.new, discount = env$discount)
-          self$val.fun$train(self$train.data$state, target)
+        if (algorithm$name == "sarsa") {
+          self$train.data = vector("list", 2)
+          self$observe = function(state, action, reward, next.state) {
+            self$train.data[[1]] = self$train.data[[2]]
+            state = self$preprocess(state)
+            next.state = self$preprocess(next.state)
+            self$train.data[[2]] = list(state = state, action = action, reward = reward, next.state = next.state)
+          }
+          self$learn = function(env) {
+            if (is.null(self$train.data[[1]])) {return()}
+            q.old = self$val.fun$predictQ(self$train.data[[1]]$state)
+            q.new = self$val.fun$predictQ(self$train.data[[1]]$next.state)
+            target = self$algorithm$getTarget(self$train.data[[1]]$reward, q.new,
+              discount = env$discount, next.action = self$train.data[[2]]$action)
+            target = fillTarget(q.old, self$train.data[[1]]$state, self$train.data[[1]]$action, target)
+            self$val.fun$train(self$train.data[[1]]$state, target)
+          }
+
+        }
+
+        if (algorithm$name == "actor.critic") {
+          self$observe = function(state, action, reward, next.state) {
+            state = self$preprocess(state)
+            next.state = self$preprocess(next.state)
+            self$train.data = list(state = state, action = action, reward = reward, next.state = next.state)
+          }
         }
 
       } else {
         self$observe = function(state, action, reward, next.state) {} # agent observe n.actions from environment here?
         self$learn = function(env) {}
       }
-
-      self$preprocess = identity
-
     },
 
     act = function(state) {
@@ -104,6 +141,15 @@ Agent = R6::R6Class("Agent",
       self$previous.action = action
       self$action = action
       action
-    }
+    }#,
+
+ #    learn = function(env, learn) {
+ # # checkLearning()
+ #    }
   )
 )
+
+fillTarget = function(old.action.vals, state, action, target) {
+  old.action.vals[matrix(c(seq_along(action), action + 1L), ncol = 2)] = target
+  old.action.vals
+}

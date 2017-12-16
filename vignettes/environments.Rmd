@@ -18,13 +18,13 @@ vignette: >
 </style>
   
 ```{r setup, include=FALSE}
-  knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
 ```
   
 This vignette explains the different possibilities to create and use a reinforcement learning environment in `reinforcelearn`. Section [Creation](#creation) explains how to create an environment and Section [Interaction](#interaction) describe how to use the created environment object for interaction.
   
 ```{r}
-  library(reinforcelearn)
+library(reinforcelearn)
 ```
 
 ## Creation
@@ -236,7 +236,7 @@ Here is a full list describing the attributes of the `R6` class created by `make
 
 Have a look at the other vignettes: 
 
-- [How to solve an environment?](algorithms.html)
+- [Agents](agents.html)
 
 ---
 
