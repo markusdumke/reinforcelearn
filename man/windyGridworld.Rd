@@ -29,7 +29,7 @@ The last row specifies the upward wind in each column.
 }
 \section{Usage}{
 
-`makeEnvironment("WindyGridworld")`
+`makeEnvironment("windy.gridworld")`
 }
 
 \section{Methods}{
@@ -47,7 +47,7 @@ Visualizes the environment (if there is a visualization function).
 }
 
 \examples{
-env = makeEnvironment("WindyGridworld")
+env = makeEnvironment("windy.gridworld")
 }
 \references{
 Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.5

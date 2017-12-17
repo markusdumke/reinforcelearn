@@ -3,9 +3,14 @@ Eligibility = R6::R6Class("Eligibility",
     lambda = 0,
     eligibility.type = NULL,
     E = NULL,
-    initialize = function(lambda = 0, eligibility.type = 0) {
+    initialize = function(lambda, traces) {
       self$lambda = lambda
-      self$eligibility.type = eligibility.type
+      if (traces == "replace") {
+        self$eligibility.type = 1
+      } else if (traces == "accumulate") {
+        self$eligibility.type = 0
+      }
+
 
     },
     reset = function(val.fun) {

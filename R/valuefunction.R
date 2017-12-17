@@ -1,5 +1,8 @@
 #' Value Function Representation
 #'
+#' @param class \[`character(1)`] \cr Class of value function approximation.
+#' @param ... \[`any`] \cr Arguments passed to subclass.
+#'
 #' @md
 #'
 #' @section Representations:
@@ -35,9 +38,15 @@ ValueTable = R6::R6Class("ValueTable",
 
     # fixme: get number of states and actions automatically from environment
     # fixme: custom initializer, e.g. not to 0
-    initialize = function(n.states, n.actions = 1L, step.size = 0.1) { # initializer argument
+    initialize = function(n.states = NULL, n.actions = 1L, step.size = 0.1,
+      initial.value = NULL) { # initializer argument
+
       # state or action value function
-      self$Q = matrix(0, nrow = n.states, ncol = n.actions)
+      if (!is.null(initial.value)) {
+        self$Q = initial.value
+      } else {
+        self$Q = matrix(0, nrow = n.states, ncol = n.actions)
+      }
       self$step.size = step.size
     },
 
@@ -52,7 +61,7 @@ ValueTable = R6::R6Class("ValueTable",
     },
 
     # train with td error and eligibility traces
-    trainWithTdError = function(eligibility, error, step.size = self$step.size) {
+    trainWithError = function(eligibility, error, step.size = self$step.size) {
       self$Q = self$Q + step.size * error * eligibility
     },
 
@@ -68,7 +77,16 @@ ValueTable = R6::R6Class("ValueTable",
   )
 )
 
+#' Get state values.
+#'
+#' Get state value function from  action value function.
+#'
+#' @param action.vals \[`matrix`] \cr Action value matrix.
+#'
+#' @md
+#'
 #' @export
 getStateValues = function(action.vals) {
+  checkmate::assertMatrix(action.vals)
   apply(action.vals, 1L, max)
 }

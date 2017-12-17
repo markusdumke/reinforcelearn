@@ -1,6 +1,22 @@
+#' Experience Replay
+#'
+#' Create replay memory for experience replay.
+#'
+#' @param size \[`integer(1)`] \cr Size of replay memory.
+#' @param batch.size \[`integer(1)`] \cr Batch size.
+#'
+#' @md
+#' @aliases experiencereplay
+#'
+makeReplayMemory = function(size = 100L, batch.size = 16L) { # add arguments for priorization
+  checkmate::assertInt(size, lower = 1)
+  checkmate::assertInt(batch.size, lower = 1, upper = size)
+  x = list(size = size, batch.size = batch.size)
+  class(x) = "ReplayMemory"
+  x
+}
 
-
-ExperienceReplay = R6::R6Class("ExperienceReplay", # alternative name: ReplayMemory
+ReplayMemory = R6::R6Class("ReplayMemory",
   public = list(
     memory = NULL,
     size = NULL,

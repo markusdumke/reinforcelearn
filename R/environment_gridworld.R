@@ -37,7 +37,7 @@
 #' }
 #'
 #' @section Usage:
-#' `makeEnvironment("Gridworld", shape = NULL, goal.states = NULL, cliff.states = NULL,
+#' `makeEnvironment("gridworld", shape = NULL, goal.states = NULL, cliff.states = NULL,
 #'   reward.step = -1, reward.cliff = -100, diagonal.moves = FALSE, wind = rep(0, shape[2]),
 #'   cliff.transition.states = NULL, cliff.transition.done = FALSE, stochasticity = 0, ...)`
 #'
@@ -74,7 +74,7 @@
 #'
 #' @examples
 #' # Gridworld Environment (Sutton & Barto Example 4.1)
-#' env1 = makeEnvironment("Gridworld", shape = c(4L, 4L), goal.states = 0L,
+#' env1 = makeEnvironment("gridworld", shape = c(4L, 4L), goal.states = 0L,
 #'   initial.state = 15L)
 #' env1$reset()
 #' env1$visualize()
@@ -82,12 +82,12 @@
 #' env1$visualize()
 #'
 #' # Windy Gridworld (Sutton & Barto Example 6.5)
-#' env2 = makeEnvironment("Gridworld", shape = c(7, 10), goal.states = 37L,
+#' env2 = makeEnvironment("gridworld", shape = c(7, 10), goal.states = 37L,
 #'   reward.step = -1, wind = c(0, 0, 0, 1, 1, 1, 2, 2, 1, 0),
 #'   initial.state = 30L)
 #'
 #' # Cliff Walking (Sutton & Barto Example 6.6)
-#' env3 = makeEnvironment("Gridworld", shape = c(4, 12), goal.states = 47L,
+#' env3 = makeEnvironment("gridworld", shape = c(4, 12), goal.states = 47L,
 #'   cliff.states = 37:46, reward.step = -1, reward.cliff = -100,
 #'   cliff.transition.states = 36L, initial.state = 36L)
 NULL
@@ -304,14 +304,14 @@ getIntoBounds = function(new.states, n.col) {
 #' }
 #'
 #' @section Usage:
-#' `makeEnvironment("CliffWalking")`
+#' `makeEnvironment("cliff.walking")`
 #'
 #' @name CliffWalking
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.6
 #' @export
 #' @inheritSection Environment Methods
 #' @examples
-#' env = makeEnvironment("CliffWalking")
+#' env = makeEnvironment("cliff.walking")
 NULL
 
 CliffWalking = R6::R6Class("CliffWalking",
@@ -350,14 +350,14 @@ CliffWalking = R6::R6Class("CliffWalking",
 #' }
 #'
 #' @section Usage:
-#' `makeEnvironment("WindyGridworld")`
+#' `makeEnvironment("windy.gridworld")`
 #'
 #' @name WindyGridworld
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.5
 #' @export
 #' @inheritSection Environment Methods
 #' @examples
-#' env = makeEnvironment("WindyGridworld")
+#' env = makeEnvironment("windy.gridworld")
 NULL
 
 WindyGridworld = R6::R6Class("WindyGridworld",

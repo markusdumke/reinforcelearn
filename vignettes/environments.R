@@ -39,7 +39,7 @@ env = makeEnvironment(step = step, reset = reset)
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # Create a gym environment.
-#  env = makeEnvironment("Gym", "MountainCar-v0")
+#  env = makeEnvironment("gym", "MountainCar-v0")
 
 ## ------------------------------------------------------------------------
 # State transition array
@@ -50,17 +50,17 @@ P[, , 2] = matrix(c(0.1, 0.9, 0, 1), 2, 2, byrow = TRUE)
 # Reward matrix
 R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)
 
-env = makeEnvironment("MDP", transitions = P, rewards = R)
+env = makeEnvironment("mdp", transitions = P, rewards = R)
 
 ## ---- out.width = "200px", fig.align="center", echo = FALSE--------------
 knitr::include_graphics("gridworld.JPG")
 
 ## ------------------------------------------------------------------------
 # Gridworld Environment (Sutton & Barto (2017) Example 4.1)
-env = makeEnvironment("Gridworld", shape = c(4, 4), goal.states = c(0, 15))
+env = makeEnvironment("gridworld", shape = c(4, 4), goal.states = c(0, 15))
 
 ## ------------------------------------------------------------------------
-env = makeEnvironment("Gridworld", shape = c(4, 4), 
+env = makeEnvironment("gridworld", shape = c(4, 4), 
   goal.states = 0L, initial.state = 15L)
 
 ## ------------------------------------------------------------------------
@@ -80,12 +80,12 @@ env$step("left")
 env$visualize()
 
 ## ------------------------------------------------------------------------
-env = makeEnvironment("MountainCar")
+env = makeEnvironment("mountain.car")
 env$n.actions
 env$state.space.bounds
 
 ## ------------------------------------------------------------------------
-env = makeEnvironment("Gridworld", shape = c(4, 4), 
+env = makeEnvironment("gridworld", shape = c(4, 4), 
   goal.states = 0L, initial.state = 15L, discount = 0.99)
 
 env$step("up")

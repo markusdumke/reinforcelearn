@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-12-16" />
+<meta name="date" content="2017-12-17" />
 
 <title>Agents</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Agents</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-12-16</em></h4>
+<h4 class="date"><em>2017-12-17</em></h4>
 
 </div>
 
@@ -131,6 +131,40 @@ $(document).ready(function () {
   font-size: 34px;
   }
 </style>
+<pre class="r"><code>library(reinforcelearn)</code></pre>
+<div id="policies" class="section level2">
+<h2>Policies</h2>
+<p>A policy is the agent’s behavior function. We can define the policy with <code>makePolicy</code>.</p>
+<pre class="r"><code># Uniform random policy
+policy = makePolicy(&quot;random&quot;)
+
+# Epsilon-greedy policy
+policy = makePolicy(&quot;epsilon.greedy&quot;, epsilon = 0.2)
+
+# Softmax policy
+policy = makePolicy(&quot;softmax&quot;)</code></pre>
+</div>
+<div id="value-functions" class="section level2">
+<h2>Value Functions</h2>
+</div>
+<div id="algorithms" class="section level2">
+<h2>Algorithms</h2>
+<div id="experience-replay" class="section level3">
+<h3>Experience replay</h3>
+</div>
+<div id="eligibility-traces" class="section level3">
+<h3>Eligibility traces</h3>
+</div>
+<div id="double-learning" class="section level3">
+<h3>Double learning</h3>
+</div>
+</div>
+<div id="agent" class="section level2">
+<h2>Agent</h2>
+</div>
+<div id="interaction" class="section level2">
+<h2>Interaction</h2>
+</div>
 
 
 

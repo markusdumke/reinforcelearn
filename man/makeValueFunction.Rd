@@ -6,13 +6,18 @@
 \usage{
 makeValueFunction(class, ...)
 }
+\arguments{
+\item{class}{[\code{character(1)}] \cr Class of value function approximation.}
+
+\item{...}{[\code{any}] \cr Arguments passed to subclass.}
+}
 \description{
 Value Function Representation
 }
 \section{Representations}{
 
 \itemize{
-\item \link{ActionValueTable}
+\item \link{ValueTable}
 }
 }
 

@@ -3,6 +3,7 @@
 \docType{package}
 \name{reinforcelearn}
 \alias{reinforcelearn}
+\alias{reinforcementlearning}
 \alias{reinforcelearn-package}
 \title{Reinforcement Learning.}
 \description{
@@ -20,33 +21,6 @@ Implementations of reinforcement learning algorithms and environments.
 \item \link{CliffWalking}
 \item \link{MountainCar}
 \item \link{MountainCarContinuous}
-}
-}
-
-\section{Bandits}{
-
-\itemize{
-\item \link{bandit}
-}
-}
-
-\section{Algorithms}{
-
-Dynamic Programming:
-\itemize{
-\item \link{evaluatePolicy}
-\item \link{iteratePolicy}
-\item \link{iterateValue}
-}
-
-Model-free Reinforcement Learning
-\itemize{
-\item \link{td}
-\item \link{qSigma}
-\item \link{sarsa}
-\item \link{expectedSarsa}
-\item \link{qlearning}
-\item \link{actorCritic}
 }
 }
 

@@ -1,3 +1,10 @@
+#' Make reinforcement learning algorithm.
+#'
+#' @param class \[`character(1)`] \cr Algorithm.
+#' @param ... \[`any`] \cr Arguments passed on to algorithm.
+#'
+#' @md
+#'
 #' @export
 makeAlgorithm = function(class, ...) {
   checkmate::assertChoice(class,

@@ -15,16 +15,16 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
 
   checkmate::assertClass(env, "Environment")
   checkmate::assertClass(agent, "Agent")
-  # checkmate::assertInt(n.steps, lower = 1) # not working because Inf is double
-  # checkmate::assertInt(n.episodes, lower = 1)
-  # checkmate::assertInt(max.steps.per.episode, lower = 1)
+  if (!is.infinite(n.steps)) checkmate::assertInt(n.steps, lower = 1)
+  if (!is.infinite(n.episodes)) checkmate::assertInt(n.episodes, lower = 1)
+  if (!is.infinite(max.steps.per.episode)) checkmate::assertInt(max.steps.per.episode, lower = 1)
 
   # one of steps / episodes must be finite!
   if (is.infinite(n.steps) && is.infinite(n.episodes)) {
     stop("Specify finite number of steps or finite number of episodes!")
   }
 
-  # preallocation if number of episodes is known in advance else append to list
+  # preallocation if number of episodes | steps is known in advance else append to list
   if (n.episodes < Inf) {
     episode.returns = rep(NA_real_, n.episodes)
   } else {
@@ -39,7 +39,7 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
   # index to fill in
   episode = 0L
 
-  # stop if specified episode or step is reached
+  # get episode | step number of when to stop
   stop.step = env$n.step + n.steps
   stop.episode = env$episode + n.episodes
 
@@ -54,6 +54,11 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
   state = env$state
   #}
 
+  if (agent$initialized == FALSE) {
+    agent$init(env) # if e.g. value fun has not been initialized do this here
+    agent$initialized == TRUE
+  }
+
   while (TRUE) {
     # # for debugging
     # print(paste0("episode: ", env$episode, "; step: ", env$n.step))
@@ -67,7 +72,7 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
     #   reward = res$reward, episode = env$episode + 1L)))
 
     # observe: e.g. add observation to replay memory
-    agent$observe(state, action, res$reward, res$state)
+    agent$observe(state, action, res$reward, res$state, env)
 
     # optional learning (check whether to learn maybe as agent method)
     agent$learn(env, learn)
@@ -85,10 +90,10 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
       episode.returns[episode] = env$episode.return
       episode.steps[episode] = env$episode.step
       state = env$reset()
-      if (visualize) {
-        env$visualize()
-      }
-      # agent$reset()
+      # if (visualize) {
+      #   env$visualize()
+      # }
+      agent$reset()
     }
 
     # stop criteria
@@ -103,3 +108,4 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
 # fixme: control when to learn
 # fixme: print out average return of last n episodes ...
 # fixme: maybe return training time, history ...
+# make message after done configurable as function argument

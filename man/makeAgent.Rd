@@ -5,14 +5,23 @@
 \title{Create Agent.}
 \usage{
 makeAgent(policy, val.fun = NULL, algorithm = NULL, preprocess = identity,
-  experience.replay = NULL, eligibility.traces = NULL)
+  experience.replay = NULL, ...)
 }
 \arguments{
-\item{policy}{[\code{Policy}] \cr A policy created by \link{makePolicy}.}
+\item{policy}{[\code{character(1)} | Policy] \cr A policy.
+If you pass a string the policy will be created via \link{makePolicy}.}
 
-\item{val.fun}{[\code{ActionValueTable}] \cr Value function representation.}
+\item{val.fun}{[\code{character(1)} | ValueFunction] \cr A value function representation.
+If you pass a string the value function will be created via \link{makeValueFunction}.}
 
-\item{algorithm}{[\code{Algorithm}] \cr An algorithm.}
+\item{algorithm}{[\code{character(1)} | Algorithm] \cr An algorithm.
+If you pass a string the algorithm will be created via \link{makeAlgorithm}.}
+
+\item{preprocess}{[\code{function}] \cr A function which preprocesses the state so that the agent can learn on this.}
+
+\item{experience.replay}{[\code{logical(1)} | ReplayMemory] \cr Replay memory for experience replay.}
+
+\item{...}{[\code{any}] \cr Arguments passed on to \link{makePolicy}, \link{makeAlgorithm} or \link{makeValueFunction}.}
 }
 \description{
 Create Agent.

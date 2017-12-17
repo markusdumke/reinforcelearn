@@ -23,7 +23,7 @@ This is the gridworld (goal state denoted G, cliff states denoted C, start state
 }
 \section{Usage}{
 
-`makeEnvironment("CliffWalking")`
+`makeEnvironment("cliff.walking")`
 }
 
 \section{Methods}{
@@ -41,7 +41,7 @@ Visualizes the environment (if there is a visualization function).
 }
 
 \examples{
-env = makeEnvironment("CliffWalking")
+env = makeEnvironment("cliff.walking")
 }
 \references{
 Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.6

@@ -26,10 +26,10 @@ knitr::opts_chunk$set(
 ### Installation
 
 ```{r, eval = FALSE}
-# install from CRAN
+# Install from CRAN.
 install.packages("reinforcelearn")
 
-# install development version from github
+# Install development version from github.
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
@@ -42,14 +42,8 @@ Reinforcement Learning with the package `reinforcelearn` is as easy as
 ```{r}
 library(reinforcelearn)
 
-# Create environment.
 env = makeEnvironment("WindyGridworld")
-
-# Create agent.
-policy = makePolicy("epsilon.greedy", epsilon = 0.1)
-values = makeValueFunction("table", n.states = env$n.states, env$n.actions)
-algorithm = makeAlgorithm("qlearning")
-agent = makeAgent(policy, values, algorithm)
+agent = makeAgent("softmax", "table", "qlearning")
 
 # Run interaction for 10 episodes.
 interact(env, agent, n.episodes = 10L)

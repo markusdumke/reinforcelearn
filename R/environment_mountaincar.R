@@ -53,12 +53,13 @@ MountainCarBase = R6::R6Class("MountainCarBase",
 #'
 #' @inheritSection Environment Methods
 #' @name MountainCar
+#' @aliases MountainCarContinuous
 #' @examples
-#' env = makeEnvironment("MountainCar")
+#' env = makeEnvironment("mountain.car")
 #' env$reset()
 #' env$step(1L)
 #'
-#' env = makeEnvironment("MountainCarContinuous")
+#' env = makeEnvironment("mountain.car.continuous")
 #' env$reset()
 #' env$step(0.62)
 NULL
