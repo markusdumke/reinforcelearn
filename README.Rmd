@@ -42,7 +42,7 @@ Reinforcement Learning with the package `reinforcelearn` is as easy as
 ```{r}
 library(reinforcelearn)
 
-env = makeEnvironment("WindyGridworld")
+env = makeEnvironment("windy.gridworld")
 agent = makeAgent("softmax", "table", "qlearning")
 
 # Run interaction for 10 episodes.
@@ -87,7 +87,7 @@ There are some predefined environment classes, e.g. `MDPEnvironment`, which allo
 ```{r, eval = FALSE}
 # Create a gym environment.
 # Make sure you have Python, gym and reticulate installed.
-env = makeEnvironment("Gym", "MountainCar-v0")
+env = makeEnvironment("gym", "MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
@@ -113,7 +113,7 @@ The first step is to set up the policy, which defines which action to choose. Fo
 
 ```{r}
 # Create the environment.
-env = makeEnvironment("WindyGridworld")
+env = makeEnvironment("windy.gridworld")
 
 # Create agent with uniform random policy.
 policy = makePolicy("random")
@@ -127,7 +127,7 @@ In this scenario the agent chooses all actions with equal probability and will n
 
 ```{r}
 # Create the environment.
-env = makeEnvironment("WindyGridworld")
+env = makeEnvironment("windy.gridworld")
 
 # Create qlearning agent with softmax policy and tabular value function.
 policy = makePolicy("softmax")

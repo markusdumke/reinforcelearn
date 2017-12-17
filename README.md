@@ -13,10 +13,10 @@ Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="
 ### Installation
 
 ``` r
-# install from CRAN
+# Install from CRAN.
 install.packages("reinforcelearn")
 
-# install development version from github
+# Install development version from github.
 devtools::install_github("markdumke/reinforcelearn")
 ```
 
@@ -29,22 +29,16 @@ Reinforcement Learning with the package `reinforcelearn` is as easy as
 ``` r
 library(reinforcelearn)
 
-# Create environment.
-env = makeEnvironment("WindyGridworld")
-
-# Create agent.
-policy = makePolicy("epsilon.greedy", epsilon = 0.1)
-values = makeValueFunction("table", n.states = env$n.states, env$n.actions)
-algorithm = makeAlgorithm("qlearning")
-agent = makeAgent(policy, values, algorithm)
+env = makeEnvironment("windy.gridworld")
+agent = makeAgent("softmax", "table", "qlearning")
 
 # Run interaction for 10 episodes.
 interact(env, agent, n.episodes = 10L)
 #> $returns
-#>  [1] -1658  -419  -629  -598  -695  -300   -89  -482  -265  -140
+#>  [1] -3716 -2876  -483 -1556  -243  -228  -492  -150  -154  -249
 #> 
 #> $steps
-#>  [1] 1658  419  629  598  695  300   89  482  265  140
+#>  [1] 3716 2876  483 1556  243  228  492  150  154  249
 ```
 
 ------------------------------------------------------------------------
@@ -84,14 +78,14 @@ env$reset()
 env$step(100)
 #> $state
 #> $state$mean
-#> [1] 99.06483
+#> [1] 99.92368
 #> 
 #> $state$sd
-#> [1] 0.3100046
+#> [1] 0.875757
 #> 
 #> 
 #> $reward
-#> [1] 99.28826
+#> [1] 99.45986
 #> 
 #> $done
 #> [1] FALSE
@@ -102,7 +96,7 @@ There are some predefined environment classes, e.g. `MDPEnvironment`, which allo
 ``` r
 # Create a gym environment.
 # Make sure you have Python, gym and reticulate installed.
-env = makeEnvironment("Gym", "MountainCar-v0")
+env = makeEnvironment("gym", "MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
@@ -128,7 +122,7 @@ The first step is to set up the policy, which defines which action to choose. Fo
 
 ``` r
 # Create the environment.
-env = makeEnvironment("WindyGridworld")
+env = makeEnvironment("windy.gridworld")
 
 # Create agent with uniform random policy.
 policy = makePolicy("random")
@@ -147,7 +141,7 @@ In this scenario the agent chooses all actions with equal probability and will n
 
 ``` r
 # Create the environment.
-env = makeEnvironment("WindyGridworld")
+env = makeEnvironment("windy.gridworld")
 
 # Create qlearning agent with softmax policy and tabular value function.
 policy = makePolicy("softmax")
