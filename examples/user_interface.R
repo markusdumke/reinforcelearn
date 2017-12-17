@@ -1,15 +1,24 @@
-# user interface
+#' ---
+#' title: "User interface"
+#' author: Markus Dumke
+#' output: github_document
+#' ---
+
+#+ setup, include=FALSE
+library(knitr)
+opts_chunk$set(comment = "#>", collapse = FALSE, message = FALSE)
+
 library(reinforcelearn)
 
-# without learning
+# run random policy without learning
 env = makeEnvironment("gridworld", shape = c(4, 4),
   goal.states = 0L, initial.state = 15L, discount = 0.99)
 policy = makePolicy("random")
 agent = makeAgent(policy)
 interact(env, agent, n.steps = 200L)
 
-# qlearning simple
-val = makeValueFunction("table", n.states = 16L, n.actions = 4L)
+# qlearning table
+val = makeValueFunction("table", n.states = env$n.states, n.actions = env$n.actions)
 alg = makeAlgorithm("qlearning")
 agent = makeAgent(policy, val, alg)
 env = makeEnvironment("gridworld", shape = c(4, 4),
@@ -61,11 +70,9 @@ interact(env, agent, n.episodes = 10L)
 
 # qlearning experience replay
 env = makeEnvironment("windy.gridworld")
-val = makeValueFunction("table", n.states = env$n.states, n.actions = env$n.actions)
 policy = makePolicy("epsilon.greedy", epsilon = 0.1)
-alg = makeAlgorithm("qlearning")
-replay = makeReplayMemory(size = 200L, batch.size = 5L)
-agent = makeAgent(policy, val, alg, experience.replay = replay)
+replay = makeReplayMemory(size = 200L, batch.size = 150L)
+agent = makeAgent(policy, "table", "qlearning", experience.replay = replay) # a bit slow
 interact(env, agent, n.episodes = 100L)
 
 

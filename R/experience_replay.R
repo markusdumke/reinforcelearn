@@ -7,7 +7,7 @@
 #'
 #' @md
 #' @aliases experiencereplay
-#'
+#' @export
 makeReplayMemory = function(size = 100L, batch.size = 16L) { # add arguments for priorization
   checkmate::assertInt(size, lower = 1)
   checkmate::assertInt(batch.size, lower = 1, upper = size)

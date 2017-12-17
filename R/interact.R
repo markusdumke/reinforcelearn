@@ -66,7 +66,7 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
     # # agent$observeBeforeAct() # observe before act
     action = agent$act(state) # fixme: store action also in agent attribute
     res = env$step(action)
-
+#browser()
     # # keep track of visited states, actions, rewards
     # agent$history = append(agent$history, list(list(state = state, action = action,
     #   reward = res$reward, episode = env$episode + 1L)))

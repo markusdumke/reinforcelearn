@@ -65,11 +65,11 @@ ValueTable = R6::R6Class("ValueTable",
       self$Q = self$Q + step.size * error * eligibility
     },
 
-    # processBatch = function(batch) {
-    #   data = data.frame(state = unlist(batch[["state"]]), action = unlist(batch[["action"]]),
-    #     reward = unlist(batch[["reward"]]), next.state = unlist(batch[["next.state"]]))
-    #   data
-    # },
+    processBatch = function(batch) {
+      data = data.frame(state = unlist(batch[["state"]]), action = unlist(batch[["action"]]),
+        reward = unlist(batch[["reward"]]), next.state = unlist(batch[["next.state"]]))
+      data
+    },
 
     getWeights = function() {
       self$Q

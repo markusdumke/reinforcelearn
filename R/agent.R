@@ -93,8 +93,7 @@ Agent = R6::R6Class("Agent",
     initialize = function(policy, val.fun, algorithm, preprocess,
       exp.replay) {
 
-
-      if (is.null(exp.replay)) experience.replay = FALSE
+      experience.replay = ifelse(is.null(exp.replay), FALSE, TRUE)
       if (is.null(algorithm)) eligibility.traces = FALSE
 
       self$preprocess = preprocess
@@ -120,6 +119,8 @@ Agent = R6::R6Class("Agent",
         }
       }
 
+
+
       if (!is.null(val.fun)) { # name this model?
         if (!any(c("initial.value", "n.states") %in% names(val.fun$args))) { # "ValueTable" %in% class(val.fun) &&
           #browser()
@@ -131,6 +132,10 @@ Agent = R6::R6Class("Agent",
             table = do.call(ValueTable$new, val.fun$args)
           )
         }
+      }
+
+      if (!is.null(exp.replay)) {
+        self$exp.replay = do.call(ReplayMemory$new, exp.replay)
       }
 
       if (!is.null(algorithm)) {
@@ -195,11 +200,57 @@ Agent = R6::R6Class("Agent",
             }
           }
           if (experience.replay) {
+
             self$observe = function(state, action, reward, next.state, env) {
-              state = self$action.value$preprocess(state)
-              next.state = self$action.value$preprocess(next.state)
+              state = self$preprocess(state)
+              next.state = self$preprocess(next.state)
               self$exp.replay$observe(state, action, reward, next.state)
             }
+            self$getTarget = function(data, env) {
+              q.old = self$val.fun$predictQ(data$state)
+              q.new = self$val.fun$predictQ(data$next.state)
+              target = self$algorithm$getTarget(data$reward, q.new,
+                discount = env$discount)
+              list(q.old = q.old, target = target)
+            }
+            #if ("ValueTable" %in% class(val.fun)) {
+            self$learn = function(env, learn) {
+              #browser()
+              data = self$exp.replay$sampleBatch()
+              if (!is.null(data)) {
+                #browser()
+                data = self$val.fun$processBatch(data)
+                data$target = self$getTarget(data, env)$target
+                # sum together updates to the same state-action pair
+                data = aggregate(target ~ state + action, data = data, FUN = sum)
+                val.old = self$val.fun$predictQ(data$state)
+                target = fillTarget(val.old, data$state, data$action, data$target)
+                target = as.data.frame(target)
+                target$state = data$state
+                # sum together updates to same state
+                target = aggregate(. ~ state, data = target, FUN = sum)
+
+                self$val.fun$train(target$state, as.matrix(target[-1]))
+              }
+            }
+            #}
+
+            if ("NeuralNetwork" %in% class(val.fun)) {
+              self$learn = function(discount = 1) {
+                data = self$getLearnData()
+                if (!is.null(data)) {
+                  #browser()
+                  data = self$val.fun$processBatch(data) # this is copy paste
+                  data$target = self$getTarget(data, discount)
+
+                  val.old = self$val.fun$predictQ(data$state)
+                  target = fillTarget(val.old, data$state, data$action, data$target)
+
+                  self$val.fun$train(data$state, target)
+                }
+              }
+            }
+
           }
 
 
