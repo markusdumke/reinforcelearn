@@ -59,19 +59,19 @@
 #' P[, , 1] = matrix(c(0.5, 0.5, 0, 1), 2, 2, byrow = TRUE)
 #' P[, , 2] = matrix(c(0, 1, 0, 1), 2, 2, byrow = TRUE)
 #' R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)
-#' env = makeEnvironment("MDP", transitions = P, rewards = R)
+#' env = makeEnvironment("mdp", transitions = P, rewards = R)
 #'
 #' env$reset()
 #' env$step(1L)
 #'
 #' # Create a Gridworld.
-#' grid = makeEnvironment("Gridworld", shape = c(4, 4),
+#' grid = makeEnvironment("gridworld", shape = c(4, 4),
 #'   goal.states = 15, initial.state = 0)
 #'
 #' \dontrun{
 #' # Create an OpenAI Gym environment.
 #' # Make sure you have Python, gym and reticulate installed.
-#' env = makeEnvironment("Gym", "MountainCar-v0")
+#' env = makeEnvironment("gym", "MountainCar-v0")
 #'
 #' # Take random actions for 200 steps.
 #' env$reset()
@@ -83,17 +83,17 @@
 #' }
 makeEnvironment = function(class = "custom", ...) {
   checkmate::assertChoice(class,
-    c("custom", "MDP", "Gym", "Gridworld", "WindyGridworld", "CliffWalking",
-      "MountainCar", "MountainCarContinuous"))
+    c("custom", "mdp", "gym", "gridworld", "windy.gridworld", "cliff.walking",
+      "mountain.car", "mountain.car.continuous"))
   switch(class,
     custom = Environment$new(...), # default
-    MDP = MdpEnvironment$new(...),
-    Gym = GymEnvironment$new(...),
-    Gridworld = Gridworld$new(...),
-    WindyGridworld = WindyGridworld$new(...),
-    CliffWalking = CliffWalking$new(...),
-    MountainCar = MountainCar$new(...),
-    MountainCarContinuous = MountainCarContinuous$new(...)
+    mdp = MdpEnvironment$new(...),
+    gym = GymEnvironment$new(...),
+    gridworld = Gridworld$new(...),
+    windy.gridworld = WindyGridworld$new(...),
+    cliff.walking = CliffWalking$new(...),
+    mountain.car = MountainCar$new(...),
+    mountain.car.continuous = MountainCarContinuous$new(...)
   )
 }
 

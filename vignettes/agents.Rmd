@@ -1,0 +1,62 @@
+---
+title: "Agents"
+author: Markus Dumke
+date: "`r Sys.Date()`"
+output:rmarkdown::html_vignette:
+fig_caption: yes
+bibliography: references.bib
+vignette: >
+ %\VignetteIndexEntry{Vignette Title}
+ %\VignetteEngine{knitr::rmarkdown}
+ %\VignetteEncoding{UTF-8}
+---
+  
+<style type="text/css">
+  h1.title {
+  font-size: 34px;
+  }
+</style>
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
+```
+
+```{r}
+library(reinforcelearn)
+```
+
+
+## Policies
+
+A policy is the agent's behavior function. We can define the policy with `makePolicy`.
+
+```{r}
+# Uniform random policy
+policy = makePolicy("random")
+
+# Epsilon-greedy policy
+policy = makePolicy("epsilon.greedy", epsilon = 0.2)
+
+# Softmax policy
+policy = makePolicy("softmax")
+```
+
+## Value Functions
+
+
+
+## Algorithms
+
+
+### Experience replay
+
+### Eligibility traces
+
+### Double learning
+
+
+## Agent
+
+
+## Interaction
+

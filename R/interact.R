@@ -5,20 +5,26 @@
 #' @param n.steps \[`integer(1)`] \cr Number of steps to run.
 #' @param n.episodes \[`integer(1)`] \cr Number of episodes to run.
 #' @param max.steps.per.episode \[`integer(1)`] \cr Maximal number of allowed steps per episode.
-#' @param visualize \[`logical(1)`] \cr Visualize environment while interaction?
+#' @param learn \[`logical(1)`] \cr Should the agent learn?
 #'
 #' @md
 #'
 #' @export
 interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
-  max.steps.per.episode = Inf, visualize = FALSE) {
+  max.steps.per.episode = Inf, learn = TRUE) {
+
+  checkmate::assertClass(env, "Environment")
+  checkmate::assertClass(agent, "Agent")
+  if (!is.infinite(n.steps)) checkmate::assertInt(n.steps, lower = 1)
+  if (!is.infinite(n.episodes)) checkmate::assertInt(n.episodes, lower = 1)
+  if (!is.infinite(max.steps.per.episode)) checkmate::assertInt(max.steps.per.episode, lower = 1)
 
   # one of steps / episodes must be finite!
   if (is.infinite(n.steps) && is.infinite(n.episodes)) {
     stop("Specify finite number of steps or finite number of episodes!")
   }
 
-  # preallocation if number of episodes is known in advance else append to list
+  # preallocation if number of episodes | steps is known in advance else append to list
   if (n.episodes < Inf) {
     episode.returns = rep(NA_real_, n.episodes)
   } else {
@@ -33,19 +39,24 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
   # index to fill in
   episode = 0L
 
-  # stop if specified episode or step is reached
+  # get episode | step number of when to stop
   stop.step = env$n.step + n.steps
   stop.episode = env$episode + n.episodes
 
-  # check if environment has been resetted, if not reset else get current state
-  if (is.null(env$state)) {
-    message("Reset environment.")
-    state = env$reset()
-    if (visualize) {
-      env$visualize()
-    }
-  } else {
-    state = env$state
+  # # check if environment has been resetted, if not reset else get current state
+  # if (is.null(env$state)) {
+  #   message("Reset environment.")
+  #   state = env$reset()
+  #   if (visualize) {
+  #     env$visualize()
+  #   }
+  # } else {
+  state = env$state
+  #}
+
+  if (agent$initialized == FALSE) {
+    agent$init(env) # if e.g. value fun has not been initialized do this here
+    agent$initialized == TRUE
   }
 
   while (TRUE) {
@@ -60,18 +71,11 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
     # agent$history = append(agent$history, list(list(state = state, action = action,
     #   reward = res$reward, episode = env$episode + 1L)))
 
-    # visualization, maybe wrap this into env$step?
-    if (visualize) {
-      env$visualize()
-    }
-
     # observe: e.g. add observation to replay memory
-    agent$observe(state, action, res$reward, res$state)
+    agent$observe(state, action, res$reward, res$state, env)
 
     # optional learning (check whether to learn maybe as agent method)
-    if (agent$learn.logical) {
-      agent$learn(discount = env$discount)
-    }
+    agent$learn(env, learn)
 
     state = res$state # set state to next state for new iteration
 
@@ -81,15 +85,15 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
         env$episode = env$episode + 1L
       }
       message(paste("Episode", env$episode, "finished after",
-        env$episode.step, "steps with a return of", env$episode.return))
+        env$episode.step, "steps with a return of", env$episode.return)) # let this be customizable by having his in a function argument
       episode = episode + 1L
       episode.returns[episode] = env$episode.return
       episode.steps[episode] = env$episode.step
       state = env$reset()
-      if (visualize) {
-        env$visualize()
-      }
-      # agent$reset()
+      # if (visualize) {
+      #   env$visualize()
+      # }
+      agent$reset()
     }
 
     # stop criteria
@@ -104,3 +108,4 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
 # fixme: control when to learn
 # fixme: print out average return of last n episodes ...
 # fixme: maybe return training time, history ...
+# make message after done configurable as function argument

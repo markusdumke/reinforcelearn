@@ -3,6 +3,7 @@
 \docType{data}
 \name{MountainCar}
 \alias{MountainCar}
+\alias{MountainCarContinuous}
 \alias{MountainCar}
 \alias{MountainCarContinuous}
 \title{Mountain Car}
@@ -40,11 +41,11 @@ Visualizes the environment (if there is a visualization function).
 }
 
 \examples{
-env = makeEnvironment("MountainCar")
+env = makeEnvironment("mountain.car")
 env$reset()
 env$step(1L)
 
-env = makeEnvironment("MountainCarContinuous")
+env = makeEnvironment("mountain.car.continuous")
 env$reset()
 env$step(0.62)
 }

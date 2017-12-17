@@ -18,13 +18,13 @@ vignette: >
 </style>
   
 ```{r setup, include=FALSE}
-  knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
 ```
   
 This vignette explains the different possibilities to create and use a reinforcement learning environment in `reinforcelearn`. Section [Creation](#creation) explains how to create an environment and Section [Interaction](#interaction) describe how to use the created environment object for interaction.
   
 ```{r}
-  library(reinforcelearn)
+library(reinforcelearn)
 ```
 
 ## Creation
@@ -96,7 +96,7 @@ Then you can create a gym environment by passing on the name of the environment.
 
 ```{r, eval = FALSE}
 # Create a gym environment.
-env = makeEnvironment("Gym", "MountainCar-v0")
+env = makeEnvironment("gym", "MountainCar-v0")
 ```
 
 Have a look at [https://gym.openai.com/envs](https://gym.openai.com/envs) for possible environments.
@@ -119,7 +119,7 @@ P[, , 2] = matrix(c(0.1, 0.9, 0, 1), 2, 2, byrow = TRUE)
 # Reward matrix
 R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)
 
-env = makeEnvironment("MDP", transitions = P, rewards = R)
+env = makeEnvironment("mdp", transitions = P, rewards = R)
 ```
 
 ---
@@ -138,7 +138,7 @@ The following code creates this gridworld.
 
 ```{r}
 # Gridworld Environment (Sutton & Barto (2017) Example 4.1)
-env = makeEnvironment("Gridworld", shape = c(4, 4), goal.states = c(0, 15))
+env = makeEnvironment("gridworld", shape = c(4, 4), goal.states = c(0, 15))
 ```
 
 ---
@@ -148,7 +148,7 @@ env = makeEnvironment("Gridworld", shape = c(4, 4), goal.states = c(0, 15))
 `makeEnvironment` returns an R6 class object which can be used for the interaction between agent and environment.
 
 ```{r}
-env = makeEnvironment("Gridworld", shape = c(4, 4), 
+env = makeEnvironment("gridworld", shape = c(4, 4), 
   goal.states = 0L, initial.state = 15L)
 ```
 
@@ -178,7 +178,7 @@ Note also that all discrete states and actions are numerated starting with 0 to 
 The environment object often also contains information about the number of states and actions or the bounds in case of a continuous space.
 
 ```{r}
-env = makeEnvironment("MountainCar")
+env = makeEnvironment("mountain.car")
 env$n.actions
 env$state.space.bounds
 ```
@@ -186,7 +186,7 @@ env$state.space.bounds
 It also contains a counter of the number of interactions, i.e. the number of times `step` has been called, the number of steps in the current episode, the number of episodes and return in the current episode.
 
 ```{r}
-env = makeEnvironment("Gridworld", shape = c(4, 4), 
+env = makeEnvironment("gridworld", shape = c(4, 4), 
   goal.states = 0L, initial.state = 15L, discount = 0.99)
 
 env$step("up")
@@ -236,7 +236,7 @@ Here is a full list describing the attributes of the `R6` class created by `make
 
 Have a look at the other vignettes: 
 
-- [How to solve an environment?](algorithms.html)
+- [Agents](agents.html)
 
 ---
 

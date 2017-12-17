@@ -9,4 +9,6 @@
 ^docs$
 ^_pkgdown\.yml$
 ^reinforcelearn\.png$
-§ examples$
+^examples$
+^benchmark$
+^session_info.txt$

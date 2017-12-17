@@ -5,7 +5,7 @@
 \title{Interaction between agent and environment.}
 \usage{
 interact(env, agent, n.steps = Inf, n.episodes = Inf,
-  max.steps.per.episode = Inf, visualize = FALSE)
+  max.steps.per.episode = Inf, learn = TRUE)
 }
 \arguments{
 \item{env}{[\code{Environment}] \cr Reinforcement learning environment created by \link{makeEnvironment}.}
@@ -18,7 +18,7 @@ interact(env, agent, n.steps = Inf, n.episodes = Inf,
 
 \item{max.steps.per.episode}{[\code{integer(1)}] \cr Maximal number of allowed steps per episode.}
 
-\item{visualize}{[\code{logical(1)}] \cr Visualize environment while interaction?}
+\item{learn}{[\code{logical(1)}] \cr Should the agent learn?}
 }
 \description{
 Interaction between agent and environment.

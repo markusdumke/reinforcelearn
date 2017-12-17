@@ -15,7 +15,7 @@ For available gym environments take a look at https://gym.openai.com/envs.
 }
 \section{Usage}{
 
-\code{makeEnvironment("Gym", gym.name)}
+\code{makeEnvironment("gym", gym.name)}
 }
 
 \section{Installation}{
@@ -49,7 +49,7 @@ Visualizes the environment (if there is a visualization function).
 \dontrun{
 # Create an OpenAI Gym environment.
 # Make sure you have Python, gym and reticulate installed.
-env = makeEnvironment("Gym", "MountainCar-v0")
+env = makeEnvironment("gym", "MountainCar-v0")
 env$reset()
 env$close()
 }

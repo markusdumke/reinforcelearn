@@ -13,7 +13,4 @@ Random Policy
 
 \examples{
 pol = makePolicy("random")
-(probs = pol$getActionProbs(n.actions = 4))
-(probs = pol$getActionProbs(n.actions = 5))
-pol$sampleAction(probs)
 }

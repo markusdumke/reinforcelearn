@@ -19,6 +19,4 @@ Epsilon Greedy Policy
 
 \examples{
 policy = makePolicy("epsilon.greedy", epsilon = 0.1)
-(probs = policy$getActionProbs(matrix(c(1:3), ncol = 3), n.actions = 3))
-policy$sampleAction(probs)
 }

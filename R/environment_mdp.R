@@ -29,7 +29,7 @@
 #' P[, , 1] = matrix(c(0.5, 0.5, 0, 1), 2, 2, byrow = TRUE)
 #' P[, , 2] = matrix(c(0, 1, 0, 1), 2, 2, byrow = TRUE)
 #' R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)
-#' env = makeEnvironment("MDP", transitions = P, rewards = R)
+#' env = makeEnvironment("mdp", transitions = P, rewards = R)
 #' env$reset()
 #' env$step(1L)
 NULL
