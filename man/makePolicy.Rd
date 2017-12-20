@@ -9,10 +9,15 @@ makePolicy(class = "random", ...)
 }
 \arguments{
 \item{class}{[\code{character(1)}] \cr
-Class of policy. See Section Policies for available policies.}
+Class of policy. One of \code{c("random", "epsilon.greedy", "greedy", "softmax")}.}
 
 \item{...}{[\code{any}] \cr
 Arguments passed on to the policy class.}
+}
+\value{
+[\code{list(name, args)}] List with the name and optinal args.
+This list can then be passed onto \link{makeAgent}, which will construct the
+policy accordingly.
 }
 \description{
 Reinforcement learning policies.

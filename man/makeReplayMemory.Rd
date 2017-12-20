@@ -2,7 +2,8 @@
 % Please edit documentation in R/experience_replay.R
 \name{makeReplayMemory}
 \alias{makeReplayMemory}
-\alias{experiencereplay}
+\alias{experience.replay,}
+\alias{replay.memory}
 \title{Experience Replay}
 \usage{
 makeReplayMemory(size = 100L, batch.size = 16L)
@@ -12,6 +13,17 @@ makeReplayMemory(size = 100L, batch.size = 16L)
 
 \item{batch.size}{[\code{integer(1)}] \cr Batch size.}
 }
+\value{
+[\code{list(size, batch.size)}]
+This list can then be passed onto \link{makeAgent}, which will construct the
+replay memory accordingly.
+}
 \description{
 Create replay memory for experience replay.
+}
+\details{
+Sampling from replay memory will be uniform.
+}
+\examples{
+memory = makeReplayMemory(size = 100L, batch.size = 16L)
 }

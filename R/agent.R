@@ -1,5 +1,8 @@
 #' Create Agent.
 #'
+#' An agent consists of a policy and (optional) a value function representation
+#' and (optional) a learning algorithm.
+#'
 #' @param policy \[`character(1)` | Policy] \cr A policy.
 #'   If you pass a string the policy will be created via [makePolicy].
 #' @param val.fun \[`character(1)` | ValueFunction] \cr A value function representation.
@@ -13,6 +16,8 @@
 #' @md
 #'
 #' @export
+#' @examples
+#' agent = makeAgent("softmax", "table", "qlearning")
 makeAgent = function(policy, val.fun = NULL, algorithm = NULL,
   preprocess = identity, experience.replay = NULL, ...) { # better defaults?
 
@@ -121,15 +126,17 @@ Agent = R6::R6Class("Agent",
 
 
 
-      if (!is.null(val.fun)) { # name this model?
-        if (!any(c("initial.value", "n.states") %in% names(val.fun$args))) { # "ValueTable" %in% class(val.fun) &&
-          #browser()
-          self$initialized = FALSE
-          self$initialized.val.fun = FALSE
-
+      if (!is.null(val.fun)) {
+        if (val.fun$name == "table") {
+          if (!any(c("initial.value", "n.states") %in% names(val.fun$args))) { # "ValueTable" %in% class(val.fun) &&
+            #browser()
+            self$initialized = FALSE
+            self$initialized.val.fun = FALSE
+          }
         } else {
           self$val.fun = switch(val.fun$name,
-            table = do.call(ValueTable$new, val.fun$args)
+            table = do.call(ValueTable$new, val.fun$args),
+            neural.network = do.call(ValueNetwork$new, val.fun$args)
           )
         }
       }
@@ -214,6 +221,7 @@ Agent = R6::R6Class("Agent",
               list(q.old = q.old, target = target)
             }
             #if ("ValueTable" %in% class(val.fun)) {
+
             self$learn = function(env, learn) {
               #browser()
               data = self$exp.replay$sampleBatch()
@@ -235,13 +243,13 @@ Agent = R6::R6Class("Agent",
             }
             #}
 
-            if ("NeuralNetwork" %in% class(val.fun)) {
-              self$learn = function(discount = 1) {
-                data = self$getLearnData()
+            if ("neural.network" == val.fun$name) {
+              self$learn = function(env, learn) {
+                data = self$exp.replay$sampleBatch()
                 if (!is.null(data)) {
-                  #browser()
+                  #browser()# fixme
                   data = self$val.fun$processBatch(data) # this is copy paste
-                  data$target = self$getTarget(data, discount)
+                  data$target = self$getTarget(data, env)$target
 
                   val.old = self$val.fun$predictQ(data$state)
                   target = fillTarget(val.old, data$state, data$action, data$target)
@@ -250,7 +258,6 @@ Agent = R6::R6Class("Agent",
                 }
               }
             }
-
           }
 
 

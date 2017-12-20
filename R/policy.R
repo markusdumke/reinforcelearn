@@ -3,9 +3,13 @@
 #' Reinforcement learning policies.
 #'
 #' @param class \[`character(1)`] \cr
-#'   Class of policy. See Section Policies for available policies.
+#'   Class of policy. One of `c("random", "epsilon.greedy", "greedy", "softmax")`.
 #' @param ... \[`any`] \cr
 #'   Arguments passed on to the policy class.
+#'
+#' @return \[`list(name, args)`] List with the name and optinal args.
+#'   This list can then be passed onto [makeAgent], which will construct the
+#'   policy accordingly.
 #'
 #' @md
 #' @aliases Policy
@@ -69,6 +73,7 @@ EpsilonGreedyPolicy = R6::R6Class("EpsilonGreedyPolicy",
       policy
     },
     initialize = function(epsilon) {
+      checkmate::assertNumber(epsilon, lower = 0, upper = 1)
       self$epsilon = epsilon
     }
   )
@@ -107,14 +112,14 @@ RandomPolicy = R6::R6Class("RandomPolicy",
   )
 )
 
-GaussianPolicy = R6::R6Class("GaussianPolicy",
-  inherit = Policy,
-  public = list(
-    sampleAction = function(mean, sd) {
-      rnorm(1L, mean, sd)
-    }
-  )
-)
+# GaussianPolicy = R6::R6Class("GaussianPolicy",
+#   inherit = Policy,
+#   public = list(
+#     sampleAction = function(mean, sd) {
+#       rnorm(1L, mean, sd)
+#     }
+#   )
+# )
 
 #' Softmax Policy
 #'

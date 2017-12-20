@@ -1,23 +1,35 @@
 #' Interaction between agent and environment.
 #'
+#' Run interaction between agent and environment for specified number of steps
+#' or episodes.
+#'
 #' @param env \[`Environment`] \cr Reinforcement learning environment created by [makeEnvironment].
-#' @param agent \[`Agent`] \cr Agent created by [makeAgent]
+#' @param agent \[`Agent`] \cr Agent created by [makeAgent].
 #' @param n.steps \[`integer(1)`] \cr Number of steps to run.
 #' @param n.episodes \[`integer(1)`] \cr Number of episodes to run.
-#' @param max.steps.per.episode \[`integer(1)`] \cr Maximal number of allowed steps per episode.
+#' @param max.steps.per.episode \[`integer(1)`] \cr Maximal number of steps allowed per episode.
 #' @param learn \[`logical(1)`] \cr Should the agent learn?
+#' @param visualize \[`logical(1)`] \cr Visualize the interaction between agent and environment?
+#'
+#' @return \[`list`] Return and number of steps per episode.
 #'
 #' @md
 #'
 #' @export
+#' @examples
+#' env = makeEnvironment("windy.gridworld")
+#' agent = makeAgent("softmax", "table", "qlearning")
+#' interact(env, agent, n.episodes = 10L)
 interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
-  max.steps.per.episode = Inf, learn = TRUE) {
+  max.steps.per.episode = Inf, learn = TRUE, visualize = TRUE) {
 
   checkmate::assertClass(env, "Environment")
   checkmate::assertClass(agent, "Agent")
   if (!is.infinite(n.steps)) checkmate::assertInt(n.steps, lower = 1)
   if (!is.infinite(n.episodes)) checkmate::assertInt(n.episodes, lower = 1)
   if (!is.infinite(max.steps.per.episode)) checkmate::assertInt(max.steps.per.episode, lower = 1)
+  checkmate::assertFlag(learn)
+  checkmate::assertFlag(visualize)
 
   # one of steps / episodes must be finite!
   if (is.infinite(n.steps) && is.infinite(n.episodes)) {
@@ -56,17 +68,19 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
 
   if (agent$initialized == FALSE) {
     agent$init(env) # if e.g. value fun has not been initialized do this here
-    agent$initialized == TRUE
+    agent$initialized = TRUE
   }
 
   while (TRUE) {
-    # # for debugging
     # print(paste0("episode: ", env$episode, "; step: ", env$n.step))
-    # if (env$n.step == 2) browser()
     # # agent$observeBeforeAct() # observe before act
     action = agent$act(state) # fixme: store action also in agent attribute
     res = env$step(action)
-#browser()
+
+    if (visualize) {
+      env$visualize()
+    }
+
     # # keep track of visited states, actions, rewards
     # agent$history = append(agent$history, list(list(state = state, action = action,
     #   reward = res$reward, episode = env$episode + 1L)))
@@ -75,7 +89,10 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
     agent$observe(state, action, res$reward, res$state, env)
 
     # optional learning (check whether to learn maybe as agent method)
-    agent$learn(env, learn)
+    if (learn) {
+      #browser()
+      agent$learn(env, learn)
+    }
 
     state = res$state # set state to next state for new iteration
 

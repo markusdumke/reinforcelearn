@@ -2,34 +2,29 @@
 % Please edit documentation in R/tiles.R
 \name{tiles}
 \alias{tiles}
-\alias{IHT}
+\alias{iht}
 \title{Tile Coding}
 \usage{
 tiles(iht, n.tilings, state, action = integer(0))
 
-IHT(max.size)
+iht(max.size)
 }
 \arguments{
-\item{iht}{[\code{IHT class}] \cr
-A hash table created with \code{IHT}.}
+\item{iht}{[\code{IHT}] \cr A hash table created with \code{iht}.}
 
-\item{n.tilings}{[\code{integer(1)}] \cr
-Number of tilings.}
+\item{n.tilings}{[\code{integer(1)}] \cr Number of tilings.}
 
-\item{state}{[\code{vector(2)}] \cr
-A two-dimensional state observation.
+\item{state}{[\code{vector(2)}] \cr A two-dimensional state observation.
 Make sure to scale the observation to unit variance before.}
 
-\item{action}{[\code{integer(1)}] \cr
-Optional: If supplied the action space will also be tiled.
-All distinct actions will result in different tiles.}
+\item{action}{[\code{integer(1)}] \cr Optional: If supplied the action space
+will also be tiled. All distinct actions will result in different tile numbers.}
 
-\item{max.size}{[\code{integer(1)}] \cr
-Maximal size of hash table.}
+\item{max.size}{\[`integer(1)`] \cr Maximal size of hash table.}
 }
 \value{
-\code{IHT} creates a hash table, which can then be passed on to \code{tiles}.
-\code{tiles} returns a vector of size \code{n.tilings} with the active tile numbers.
+\code{iht} creates a hash table, which can then be passed on to \code{tiles}.
+\code{tiles} returns an integer vector of size \code{n.tilings} with the active tile numbers.
 }
 \description{
 Implementation of Sutton's tile coding software version 3.
@@ -44,7 +39,7 @@ and the list of the tile (element) numbers is returned as the representation of 
 Tile coding is recommended as a way of applying online learning methods to domains with continuous
 state or action variables. [copied from manual]
 
-See detailed manual at \url{http://incompleteideas.net/sutton/tiles/tiles3.html}.
+See detailed manual at http://incompleteideas.net/sutton/tiles/tiles3.html.
 In comparison to the Python implementation indices start with 1 instead of 0. The hash table is
 implemented as an environment, which is an attribute of an R6 class.
 
@@ -53,13 +48,13 @@ when trying to assign a value to a full hash table.
 }
 \examples{
 # Create hash table
-iht = IHT(1024)
+hash = iht(1024)
 
 # Partition state space using 8 tilings
-tiles(iht, n.tilings = 8, state = c(3.6, 7.21))
-tiles(iht, n.tilings = 8, state = c(3.7, 7.21))
-tiles(iht, n.tilings = 8, state = c(4, 7))
-tiles(iht, n.tilings = 8, state = c(- 37.2, 7))
+tiles(hash, n.tilings = 8, state = c(3.6, 7.21))
+tiles(hash, n.tilings = 8, state = c(3.7, 7.21))
+tiles(hash, n.tilings = 8, state = c(4, 7))
+tiles(hash, n.tilings = 8, state = c(- 37.2, 7))
 
 }
 \references{

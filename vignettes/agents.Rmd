@@ -50,13 +50,26 @@ policy = makePolicy("softmax")
 
 ### Experience replay
 
+
+
 ### Eligibility traces
 
-### Double learning
+Eligibility traces allow to pass the current error back to all the previously visited states based on their eligibility, a measure of how long ago these states have been visited. This often leads to faster convergence.
+
+Currently eligibility traces can be used with Q-Learning. Therefore you need to specify the trace decay parameter $\lambda$ and the type of eligibility traces, `"replace"` or `"accumulate"` traces.
+
+```{r}
+alg = makeAlgorithm("qlearning", lambda = 0.8, traces = "accumulate")
+```
+
+## Process a state
 
 
 ## Agent
 
+```{r}
+
+```
 
 ## Interaction
 

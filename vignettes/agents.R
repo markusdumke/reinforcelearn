@@ -14,3 +14,9 @@ policy = makePolicy("epsilon.greedy", epsilon = 0.2)
 # Softmax policy
 policy = makePolicy("softmax")
 
+## ------------------------------------------------------------------------
+alg = makeAlgorithm("qlearning", lambda = 0.8, traces = "accumulate")
+
+## ------------------------------------------------------------------------
+
+

@@ -75,12 +75,54 @@ replay = makeReplayMemory(size = 200L, batch.size = 150L)
 agent = makeAgent(policy, "table", "qlearning", experience.replay = replay) # a bit slow
 interact(env, agent, n.episodes = 100L)
 
+# exp replay train every 10 steps
+env = makeEnvironment("windy.gridworld")
+policy = makePolicy("epsilon.greedy", epsilon = 0.1)
+replay = makeReplayMemory(size = 100L, batch.size = 100L)
+agent = makeAgent(policy, "table", "qlearning", experience.replay = replay) # a bit slow
+for (i in 1:10000) {
+  interact(env, agent, n.steps = 100L, learn = FALSE)
+  interact(env, agent, n.steps = 1L, learn = TRUE)
+}
 
-# # keras neural network
-# library(keras)
-# model = keras_model_sequential()
-# # "input_shape" parameter for layer_dense should be  c(batchsize(None), input_dim), dim in keras is row major
-# model %>%
-#   layer_dense(units = 64L, activation = 'relu', input_shape = c(input_shape)) %>%
-#   layer_dense(units = output_shape, activation = 'linear')
-# model$compile(loss = 'mse', optimizer = optimizer_rmsprop(lr = 0.0025))
+
+# keras neural network
+env = makeEnvironment("windy.gridworld")
+library(keras)
+model = keras_model_sequential()
+# "input_shape" parameter for layer_dense should be  c(batchsize(None), input_dim), dim in keras is row major
+model %>%
+  layer_dense(units = env$n.actions, activation = "linear", input_shape = c(env$n.states),
+    kernel_initializer = initializer_zeros(), use_bias = FALSE)
+  #layer_dense(units = env$n.actions, activation = "linear")
+model$compile(loss = "mae", optimizer = optimizer_sgd(lr = 1))
+val = makeValueFunction("neural.network", model = model)
+replay = makeReplayMemory(size = 100L, batch.size = 10L)
+preprocess = function(x) to_categorical(x, num_classes = env$n.states)
+agent = makeAgent("softmax", val, "qlearning",
+  preprocess = preprocess, experience.replay = replay)
+for (i in 1:100) {
+  interact(env, agent, n.steps = 10L, learn = FALSE, max.steps.per.episode = 100L)
+  interact(env, agent, n.steps = 1L, learn = TRUE, max.steps.per.episode = 100L)
+}
+agent$val.fun$model %>% get_weights()
+
+# solve mountain car with exp replay
+m = makeEnvironment("gym", "MountainCar-v0")
+library(keras)
+model = keras_model_sequential()
+# "input_shape" parameter for layer_dense should be  c(batchsize(None), input_dim), dim in keras is row major
+model %>%
+  layer_dense(units = 64L, activation = 'relu', input_shape = c(2L)) %>%
+  layer_dense(units = 3L, activation = 'linear')
+model$compile(loss = 'mse', optimizer = optimizer_rmsprop(lr = 0.0025))
+val = makeValueFunction("neural.network", model = model)
+replay = makeReplayMemory(size = 100L, batch.size = 10L)
+preprocess = function(x) matrix(x, ncol = 2)
+agent = makeAgent("softmax", val, "qlearning",
+  preprocess = preprocess, experience.replay = replay)
+for (i in 1:1000) {
+  interact(env, agent, n.steps = 10L, learn = FALSE)
+  interact(env, agent, n.steps = 1L, learn = TRUE)
+}
+#agent$val.fun$model %>% get_weights()

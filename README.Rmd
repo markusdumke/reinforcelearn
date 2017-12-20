@@ -136,7 +136,7 @@ algorithm = makeAlgorithm("qlearning")
 agent = makeAgent(policy, values, algorithm)
 
 # Run interaction for 10 steps.
-interact(env, agent, n.steps = 10L)
+interact(env, agent, n.episodes = 10L)
 ```
 
 For more details on agents have a look at the vignette: [Agents](https://markdumke.github.io/reinforcelearn/articles/agents.html)

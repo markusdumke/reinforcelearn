@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-12-17" />
+<meta name="date" content="2017-12-20" />
 
 <title>Agents</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Agents</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-12-17</em></h4>
+<h4 class="date"><em>2017-12-20</em></h4>
 
 </div>
 
@@ -154,10 +154,13 @@ policy = makePolicy(&quot;softmax&quot;)</code></pre>
 </div>
 <div id="eligibility-traces" class="section level3">
 <h3>Eligibility traces</h3>
+<p>Eligibility traces allow to pass the current error back to all the previously visited states based on their eligibility, a measure of how long ago these states have been visited. This often leads to faster convergence.</p>
+<p>Currently eligibility traces can be used with Q-Learning. Therefore you need to specify the trace decay parameter <span class="math inline">\(\lambda\)</span> and the type of eligibility traces, <code>&quot;replace&quot;</code> or <code>&quot;accumulate&quot;</code> traces.</p>
+<pre class="r"><code>alg = makeAlgorithm(&quot;qlearning&quot;, lambda = 0.8, traces = &quot;accumulate&quot;)</code></pre>
 </div>
-<div id="double-learning" class="section level3">
-<h3>Double learning</h3>
 </div>
+<div id="process-a-state" class="section level2">
+<h2>Process a state</h2>
 </div>
 <div id="agent" class="section level2">
 <h2>Agent</h2>

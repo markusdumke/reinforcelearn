@@ -5,21 +5,32 @@
 \title{Interaction between agent and environment.}
 \usage{
 interact(env, agent, n.steps = Inf, n.episodes = Inf,
-  max.steps.per.episode = Inf, learn = TRUE)
+  max.steps.per.episode = Inf, learn = TRUE, visualize = TRUE)
 }
 \arguments{
 \item{env}{[\code{Environment}] \cr Reinforcement learning environment created by \link{makeEnvironment}.}
 
-\item{agent}{[\code{Agent}] \cr Agent created by \link{makeAgent}}
+\item{agent}{[\code{Agent}] \cr Agent created by \link{makeAgent}.}
 
 \item{n.steps}{[\code{integer(1)}] \cr Number of steps to run.}
 
 \item{n.episodes}{[\code{integer(1)}] \cr Number of episodes to run.}
 
-\item{max.steps.per.episode}{[\code{integer(1)}] \cr Maximal number of allowed steps per episode.}
+\item{max.steps.per.episode}{[\code{integer(1)}] \cr Maximal number of steps allowed per episode.}
 
 \item{learn}{[\code{logical(1)}] \cr Should the agent learn?}
+
+\item{visualize}{[\code{logical(1)}] \cr Visualize the interaction between agent and environment?}
+}
+\value{
+[\code{list}] Return and number of steps per episode.
 }
 \description{
-Interaction between agent and environment.
+Run interaction between agent and environment for specified number of steps
+or episodes.
+}
+\examples{
+env = makeEnvironment("windy.gridworld")
+agent = makeAgent("softmax", "table", "qlearning")
+interact(env, agent, n.episodes = 10L)
 }

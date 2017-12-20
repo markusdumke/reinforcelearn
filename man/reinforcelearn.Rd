@@ -24,3 +24,45 @@ Implementations of reinforcement learning algorithms and environments.
 }
 }
 
+\section{Policies}{
+
+\itemize{
+\item \link{makePolicy}
+\item \link{EpsilonGreedyPolicy}
+\item \link{GreedyPolicy}
+\item \link{SoftmaxPolicy}
+\item \link{RandomPolicy}
+}
+}
+
+\section{Value Function Representations}{
+
+\itemize{
+\item \link{makeValueFunction}
+\item \link{ValueTable}
+\item \link{ValueNetwork}
+}
+}
+
+\section{Algorithms}{
+
+\itemize{
+\item \link{makeAlgorithm}
+\item \link{QLearning}
+}
+}
+
+\section{Agent}{
+
+\itemize{
+\item \link{makeAgent}
+}
+}
+
+\section{Interaction}{
+
+\itemize{
+\item \link{interact}
+}
+}
+

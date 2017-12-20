@@ -14,8 +14,8 @@ nHot(x, len, out = "matrix")
 \item{out}{[\code{character(1)}] \cr Format of the output. Can be a vector or a matrix.}
 }
 \value{
-[\code{matrix(1, len)}] A one-row matrix with \code{len} columns with every entry 0
-  except the columns specified by \code{x}.
+[\code{matrix(1, len)}] A one-row matrix with \code{len} columns with every
+entry 0 except the columns specified by \code{x} which are 1.
 }
 \description{
 Make n hot vector.

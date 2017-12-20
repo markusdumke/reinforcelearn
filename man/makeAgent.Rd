@@ -24,5 +24,9 @@ If you pass a string the algorithm will be created via \link{makeAlgorithm}.}
 \item{...}{[\code{any}] \cr Arguments passed on to \link{makePolicy}, \link{makeAlgorithm} or \link{makeValueFunction}.}
 }
 \description{
-Create Agent.
+An agent consists of a policy and (optional) a value function representation
+and (optional) a learning algorithm.
+}
+\examples{
+agent = makeAgent("softmax", "table", "qlearning")
 }

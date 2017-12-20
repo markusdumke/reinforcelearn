@@ -2,12 +2,21 @@
 #'
 #' Create replay memory for experience replay.
 #'
+#' Sampling from replay memory will be uniform.
+#'
 #' @param size \[`integer(1)`] \cr Size of replay memory.
 #' @param batch.size \[`integer(1)`] \cr Batch size.
 #'
+#' @return \[`list(size, batch.size)`]
+#'   This list can then be passed onto [makeAgent], which will construct the
+#'   replay memory accordingly.
+#'
 #' @md
-#' @aliases experiencereplay
+#' @aliases experience.replay, replay.memory
 #' @export
+#'
+#' @examples
+#' memory = makeReplayMemory(size = 100L, batch.size = 16L)
 makeReplayMemory = function(size = 100L, batch.size = 16L) { # add arguments for priorization
   checkmate::assertInt(size, lower = 1)
   checkmate::assertInt(batch.size, lower = 1, upper = size)

@@ -7,17 +7,30 @@
 makeValueFunction(class, ...)
 }
 \arguments{
-\item{class}{[\code{character(1)}] \cr Class of value function approximation.}
+\item{class}{[\code{character(1)}] \cr Class of value function approximation.
+One of \code{c("table", "neural.network")}.}
 
-\item{...}{[\code{any}] \cr Arguments passed to subclass.}
+\item{...}{[\code{any}] \cr Arguments passed to the value function class.}
+}
+\value{
+[\code{list(name, args)}] List with the name and optinal args.
+This list can then be passed onto \link{makeAgent}, which will construct the
+value function accordingly.
 }
 \description{
-Value Function Representation
+A representation of the value function.
 }
 \section{Representations}{
 
 \itemize{
 \item \link{ValueTable}
+\item \link{ValueNetwork}
 }
 }
 
+\examples{
+val = makeValueFunction("table", n.states = 16L, n.actions = 4L)
+# If the number of states and actions is not supplied, the agent will try
+# to figure these out from the environment object during interaction.
+val = makeValueFunction("table")
+}

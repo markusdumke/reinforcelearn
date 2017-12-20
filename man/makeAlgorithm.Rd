@@ -7,10 +7,20 @@
 makeAlgorithm(class, ...)
 }
 \arguments{
-\item{class}{[\code{character(1)}] \cr Algorithm.}
+\item{class}{[\code{character(1)}] \cr Algorithm. One of \code{c("qlearning")}.}
 
-\item{...}{[\code{any}] \cr Arguments passed on to algorithm.}
+\item{...}{[\code{any}] \cr Arguments passed on to the specific algorithm.}
 }
 \description{
 Make reinforcement learning algorithm.
+}
+\section{Representations}{
+
+\itemize{
+\item \link{QLearning}
+}
+}
+
+\examples{
+alg = makeAlgorithm("qlearning")
 }
