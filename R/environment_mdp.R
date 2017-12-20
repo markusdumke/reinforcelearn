@@ -3,7 +3,7 @@
 #' Markov Decision Process environment.
 #'
 #' @section Usage:
-#' `makeEnvironment("MDP", transitions, rewards, initial.state, visualize)`
+#' `makeEnvironment("MDP", transitions, rewards, initial.state, ...)`
 #'
 #' @param transitions \[`array (n.states x n.states x n.actions)`] \cr
 #'   State transition array.
@@ -16,6 +16,7 @@
 #'   Note that states are numerated starting with
 #'   0. If `initial.state = NULL` all non-terminal states are
 #'   possible starting states.
+#' @param ... \[`any`] \cr Arguments passed on to [makeEnvironment].
 #'
 #' @md
 #'
@@ -40,7 +41,6 @@ MdpEnvironment = R6::R6Class("MdpEnvironment",
   public = list(
     action.space = NULL,
     actions = NULL,
-    action.names = NULL,
     initial.state = NULL,
     n.actions = NULL,
     n.states = NULL,
@@ -50,16 +50,15 @@ MdpEnvironment = R6::R6Class("MdpEnvironment",
     terminal.states = NULL,
     transitions = NULL,
 
-    initialize = function(transitions, rewards, initial.state, action.names = NULL, ...) {
+    initialize = function(transitions, rewards, initial.state, ...) {
       checkmate::assertArray(transitions, any.missing = FALSE, d = 3L)
       checkmate::assertArray(rewards, any.missing = FALSE, d = 2L)
-      #checkmate::assertCharacter(), assertNamed ...
+
       self$state.space = "Discrete"
       self$action.space = "Discrete"
       self$n.actions = dim(transitions)[3]
       self$n.states = dim(transitions)[1]
       self$actions = seq_len(self$n.actions) - 1L
-      self$action.names = action.names
       self$states = seq_len(self$n.states) - 1L
       self$transitions = transitions
       self$rewards = rewards
@@ -77,9 +76,9 @@ MdpEnvironment = R6::R6Class("MdpEnvironment",
       }
 
       step_ = function(env, action) {
-        if (is.character(action)) {
-          action = self$action.names[action]
-        }
+        # if (is.character(action)) {
+        #   action = self$action.names[action]
+        # }
         reward = self$rewards[self$state + 1L, action + 1L] # use old state here!
         state = sample(self$states, size = 1L,
           prob = self$transitions[self$state + 1L, , action + 1L])

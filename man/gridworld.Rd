@@ -37,8 +37,7 @@ Should the episode end after stepping into the cliff?}
 \item{stochasticity}{[\code{numeric(1)}] \cr
 Probability of random transition to any of the neighboring states when taking any action.}
 
-\item{...}{[\code{any}] \cr
-Arguments passed on to \link{MdpEnvironment}.}
+\item{...}{[\code{any}] \cr Arguments passed on to \link{makeEnvironment}.}
 }
 \description{
 Creates gridworld environments.

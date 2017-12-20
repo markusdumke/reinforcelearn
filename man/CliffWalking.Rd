@@ -2,7 +2,11 @@
 % Please edit documentation in R/environment_gridworld.R
 \name{CliffWalking}
 \alias{CliffWalking}
+\alias{cliff.walking}
 \title{Cliff Walking}
+\arguments{
+\item{...}{\[`any`] \cr Arguments passed on to [makeEnvironment].}
+}
 \description{
 Gridworld environment for reinforcement learning from Sutton & Barto (2017).
 Grid of shape 4x12 with a goal state in the bottom right of the grid.
@@ -23,7 +27,7 @@ This is the gridworld (goal state denoted G, cliff states denoted C, start state
 }
 \section{Usage}{
 
-`makeEnvironment("cliff.walking")`
+`makeEnvironment("cliff.walking", ...)`
 }
 
 \section{Methods}{

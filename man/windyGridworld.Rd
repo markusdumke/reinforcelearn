@@ -2,7 +2,11 @@
 % Please edit documentation in R/environment_gridworld.R
 \name{WindyGridworld}
 \alias{WindyGridworld}
+\alias{windy.gridworld}
 \title{Windy Gridworld}
+\arguments{
+\item{...}{\[`any`] \cr Arguments passed on to [makeEnvironment].}
+}
 \description{
 Windy Gridworld problem for reinforcement learning. Actions include
 going left, right, up and down. In each column the wind pushes you up a
@@ -29,7 +33,7 @@ The last row specifies the upward wind in each column.
 }
 \section{Usage}{
 
-`makeEnvironment("windy.gridworld")`
+`makeEnvironment("windy.gridworld", ...)`
 }
 
 \section{Methods}{

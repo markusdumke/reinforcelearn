@@ -38,6 +38,10 @@ To create a custom environment you have to set up a `step` and `reset` function,
 
 Here is an example setting up a the famous Mountain Car problem. 
 
+```{r, out.width = "200px", fig.align="center", echo = FALSE}
+knitr::include_graphics("mountaincar.JPG")
+```
+
 The task of the `reset` function is to initialize the starting state of the environment and usually this function is called when starting a new episode. It returns the `state` of the environment. It takes an argument `self`, which is the newly created R6 class and can be used e.g. to access the current state of the environment.
 
 ```{r}

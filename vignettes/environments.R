@@ -4,6 +4,9 @@ knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#
 ## ------------------------------------------------------------------------
 library(reinforcelearn)
 
+## ---- out.width = "200px", fig.align="center", echo = FALSE--------------
+knitr::include_graphics("mountaincar.JPG")
+
 ## ------------------------------------------------------------------------
 reset = function(self) {
   position = runif(1, -0.6, -0.4)

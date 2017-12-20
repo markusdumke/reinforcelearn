@@ -10,12 +10,12 @@
 #' have a look at the vignette "How to create an environment?".
 #'
 #' @param class \[`character(1)`] \cr
-#'   Class of environment. There are several prebuild environments.
-#'   See also here Section Environments.
+#'   Class of environment. One of `c("custom", "mdp", "gym", "gridworld")`.
+#' @param discount \[`numeric(1)` in (0, 1)] \cr Discount factor.
 #' @param ... \[`any`] \cr Arguments passed on to the specific environment.
 #'
-#' @return \[`R6 class`] \cr
-#'   Reinforcement Learning Environment.
+#' @return \[`Environment`] \cr
+#'   Reinforcement learning environment (R6 class).
 #'
 #' @md
 #'
@@ -50,7 +50,7 @@
 #'   state
 #' }
 #'
-#' env = makeEnvironment(step = step, reset = reset)
+#' env = makeEnvironment(step = step, reset = reset, discount = 0.9)
 #' env$reset()
 #' env$step(100)
 #'
@@ -67,6 +67,7 @@
 #' # Create a Gridworld.
 #' grid = makeEnvironment("gridworld", shape = c(4, 4),
 #'   goal.states = 15, initial.state = 0)
+#' grid$visualize()
 #'
 #' \dontrun{
 #' # Create an OpenAI Gym environment.
@@ -78,36 +79,40 @@
 #' for (i in 1:200) {
 #'   action = sample(env$actions, 1)
 #'   env$step(action)
+#'   env$visualize()
 #' }
 #' env$close()
 #' }
-makeEnvironment = function(class = "custom", ...) {
+makeEnvironment = function(class = "custom", discount = 1, ...) {
   checkmate::assertChoice(class,
     c("custom", "mdp", "gym", "gridworld", "windy.gridworld", "cliff.walking",
       "mountain.car", "mountain.car.continuous"))
   switch(class,
-    custom = Environment$new(...), # default
-    mdp = MdpEnvironment$new(...),
-    gym = GymEnvironment$new(...),
-    gridworld = Gridworld$new(...),
-    windy.gridworld = WindyGridworld$new(...),
-    cliff.walking = CliffWalking$new(...),
-    mountain.car = MountainCar$new(...),
-    mountain.car.continuous = MountainCarContinuous$new(...)
+    custom = Environment$new(discount = discount, ...), # default
+    mdp = MdpEnvironment$new(discount = discount, ...),
+    gym = GymEnvironment$new(discount = discount, ...),
+    gridworld = Gridworld$new(discount = discount, ...),
+    windy.gridworld = WindyGridworld$new(discount = discount, ...),
+    cliff.walking = CliffWalking$new(discount = discount, ...),
+    mountain.car = MountainCar$new(discount = discount, ...),
+    mountain.car.continuous = MountainCarContinuous$new(discount = discount, ...)
   )
 }
 
 #' Custom Reinforcement Learning Environment
 #'
 #' @section Usage:
-#' \code{makeEnvironment("custom", step, reset, visualize)}
+#' `makeEnvironment("custom", step, reset, visualize = NULL, discount = 1, action.names = NULL)`
 #'
 #' @param step \[`function(self, action)`] \cr
 #'   Custom step function.
-#' @param reset \[`function()`] \cr
+#' @param reset \[`function(self)`] \cr
 #'   Custom reset function.
 #' @param visualize \[`function(self)`] \cr
 #'   Optional custom visualization function.
+#' @param discount \[`numeric(1)` in (0, 1)] \cr Discount factor.
+#' @param action.names \[`named integer`] \cr
+#'   Optional action names for a discrete action space.
 #'
 #' @md
 #'
@@ -136,6 +141,7 @@ NULL
 
 Environment = R6::R6Class("Environment",
   public = list(
+    action.names = NULL,
     n.step = 0L,
     episode = 0L,
     episode.step = 0L,
@@ -155,6 +161,9 @@ Environment = R6::R6Class("Environment",
     },
 
     step = function(action) {
+      if (is.character(action)) {
+        action = self$action.names[action]
+      }
       self$previous.state = self$state
       res = private$step_(self, action)
       self$episode.return = self$episode.return +
@@ -170,19 +179,21 @@ Environment = R6::R6Class("Environment",
       list(state = res[[1]], reward = res[[2]], done = res[[3]])
     },
 
-    # an optional visualization function
     visualize = function() {
       private$visualize_(self)
     },
 
-    initialize = function(step, reset, visualize, discount = 1) {
-      checkmate::assertFunction(step) # nargs ?
+    initialize = function(step, reset, visualize = NULL, discount, action.names = NULL) {
+      checkmate::assertFunction(step)
       checkmate::assertFunction(reset)
+      checkmate::assertFunction(visualize, null.ok = TRUE)
       checkmate::assertNumber(discount, lower = 0, upper = 1)
+      checkmate::assertIntegerish(action.names, null.ok = TRUE)
 
       private$step_ = step
       private$reset_ = reset
       self$discount = discount
+      self$action.names = action.names
       if (!missing(visualize)) {
         checkmate::assertFunction(visualize)
         private$visualize_ = visualize

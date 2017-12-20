@@ -5,7 +5,7 @@
 #' For available gym environments take a look at https://gym.openai.com/envs.
 #'
 #' @section Usage:
-#' `makeEnvironment("gym", gym.name)`
+#' `makeEnvironment("gym", gym.name, ...)`
 #'
 #' @section Installation:
 #' For installation of the python package `gym` see
@@ -14,6 +14,7 @@
 #'
 #' @param gym.name \[`character(1)`] \cr
 #'   Name of gym environment, e.g. \code{"CartPole-v0"}.
+#' @param ... \[`any`] \cr Arguments passed on to [makeEnvironment].
 #'
 #' @md
 #'
@@ -58,7 +59,7 @@ GymEnvironment = R6::R6Class("GymEnvironment",
       self$gym.env$close()
     },
 
-    initialize = function(gym.name) {
+    initialize = function(gym.name, ...) {
       if (!requireNamespace("reticulate", quietly = TRUE)) {
         stop("Please install the reticulate package to use environments from OpenAI Gym.
         Also make sure you have the python package gym installed.",
@@ -114,7 +115,7 @@ GymEnvironment = R6::R6Class("GymEnvironment",
         self$gym.env$render()
       }
 
-      super$initialize(step_, reset_, visualize_)
+      super$initialize(step_, reset_, visualize_, ...)
     }
   )
 )

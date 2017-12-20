@@ -17,13 +17,15 @@ randomly sampled from this vector whenever \code{reset} is called.
 Note that states are numerated starting with
 0. If \code{initial.state = NULL} all non-terminal states are
 possible starting states.}
+
+\item{...}{[\code{any}] \cr Arguments passed on to \link{makeEnvironment}.}
 }
 \description{
 Markov Decision Process environment.
 }
 \section{Usage}{
 
-\code{makeEnvironment("MDP", transitions, rewards, initial.state, visualize)}
+\code{makeEnvironment("MDP", transitions, rewards, initial.state, ...)}
 }
 
 \section{Methods}{

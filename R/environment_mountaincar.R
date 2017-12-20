@@ -6,7 +6,7 @@ MountainCarBase = R6::R6Class("MountainCarBase",
     velocity = NULL,
     position = NULL,
 
-    initialize = function() {
+    initialize = function(...) {
       reset_ = function(self) {
         self$position = runif(1, -0.6, -0.4)
         self$velocity = 0
@@ -33,7 +33,7 @@ MountainCarBase = R6::R6Class("MountainCarBase",
         list(state, reward, done)
       }
 
-      super$initialize(step_, reset_)
+      super$initialize(step_, reset_, ...)
     }
   )
 )
@@ -45,15 +45,17 @@ MountainCarBase = R6::R6Class("MountainCarBase",
 #' The classical Mountain Car task the action is one of \{0, 1, 2\},
 #' in the continuous version the action is in \[-1, 1].
 #'
+#' @param ... \[`any`] \cr Arguments passed on to [makeEnvironment].
+#'
 #' @section Usage:
-#' `makeEnvironment("MountainCar")` \cr
-#' `makeEnvironment("MountainCarContinuous")`
+#' `makeEnvironment("MountainCar", ...)` \cr
+#' `makeEnvironment("MountainCarContinuous", ...)`
 #'
 #' @md
 #'
 #' @inheritSection Environment Methods
 #' @name MountainCar
-#' @aliases MountainCarContinuous
+#' @aliases MountainCarContinuous, mountain.car
 #' @examples
 #' env = makeEnvironment("mountain.car")
 #' env$reset()
@@ -65,6 +67,7 @@ MountainCarBase = R6::R6Class("MountainCarBase",
 NULL
 
 #' @rdname MountainCar
+#' @usage NULL
 MountainCar = R6::R6Class("MountainCar",
   inherit = MountainCarBase,
   public = list(
@@ -80,6 +83,7 @@ MountainCar = R6::R6Class("MountainCar",
 )
 
 #' @rdname MountainCar
+#' @usage NULL
 MountainCarContinuous = R6::R6Class("MountainCarContinuous",
   inherit = MountainCarBase,
   public = list(

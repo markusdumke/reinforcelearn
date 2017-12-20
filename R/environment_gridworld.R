@@ -64,8 +64,7 @@
 #'   Should the episode end after stepping into the cliff?
 #' @param stochasticity \[`numeric(1)`] \cr
 #'   Probability of random transition to any of the neighboring states when taking any action.
-#' @param ... \[`any`] \cr
-#'   Arguments passed on to [MdpEnvironment].
+#' @param ... \[`any`] \cr Arguments passed on to [makeEnvironment].
 #'
 #' @name Gridworld
 #' @md
@@ -214,6 +213,7 @@ Gridworld = R6::R6Class("Gridworld",
           "\\1o\\3", grid.vis)
         message(grid.vis, "\n")
       }
+      # fixme: make action.names and visualize overwriteable
       super$initialize(transitions = transitions, rewards = rewards,
         visualize = visualize, action.names = action.names, ...)
     }
@@ -304,9 +304,12 @@ getIntoBounds = function(new.states, n.col) {
 #' }
 #'
 #' @section Usage:
-#' `makeEnvironment("cliff.walking")`
+#' `makeEnvironment("cliff.walking", ...)`
+#'
+#' @param ... \[`any`] \cr Arguments passed on to [makeEnvironment].
 #'
 #' @name CliffWalking
+#' @aliases cliff.walking
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.6
 #' @export
 #' @inheritSection Environment Methods
@@ -350,9 +353,12 @@ CliffWalking = R6::R6Class("CliffWalking",
 #' }
 #'
 #' @section Usage:
-#' `makeEnvironment("windy.gridworld")`
+#' `makeEnvironment("windy.gridworld", ...)`
+#'
+#' @param ... \[`any`] \cr Arguments passed on to [makeEnvironment].
 #'
 #' @name WindyGridworld
+#' @aliases windy.gridworld
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.5
 #' @export
 #' @inheritSection Environment Methods

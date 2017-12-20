@@ -4,18 +4,19 @@
 \alias{makeEnvironment}
 \title{Create reinforcement learning environment.}
 \usage{
-makeEnvironment(class = "custom", ...)
+makeEnvironment(class = "custom", discount = 1, ...)
 }
 \arguments{
 \item{class}{[\code{character(1)}] \cr
-Class of environment. There are several prebuild environments.
-See also here Section Environments.}
+Class of environment. One of \code{c("custom", "mdp", "gym", "gridworld")}.}
+
+\item{discount}{[\code{numeric(1)} in (0, 1)] \cr Discount factor.}
 
 \item{...}{[\code{any}] \cr Arguments passed on to the specific environment.}
 }
 \value{
-[\code{R6 class}] \cr
-Reinforcement Learning Environment.
+[\code{Environment}] \cr
+Reinforcement learning environment (R6 class).
 }
 \description{
 This function creates an environment for reinforcement learning.
@@ -66,7 +67,7 @@ reset = function(self) {
   state
 }
 
-env = makeEnvironment(step = step, reset = reset)
+env = makeEnvironment(step = step, reset = reset, discount = 0.9)
 env$reset()
 env$step(100)
 
@@ -83,6 +84,7 @@ env$step(1L)
 # Create a Gridworld.
 grid = makeEnvironment("gridworld", shape = c(4, 4),
   goal.states = 15, initial.state = 0)
+grid$visualize()
 
 \dontrun{
 # Create an OpenAI Gym environment.
@@ -94,6 +96,7 @@ env$reset()
 for (i in 1:200) {
   action = sample(env$actions, 1)
   env$step(action)
+  env$visualize()
 }
 env$close()
 }

@@ -3,15 +3,14 @@
 \docType{data}
 \name{MountainCar}
 \alias{MountainCar}
-\alias{MountainCarContinuous}
+\alias{MountainCarContinuous,}
+\alias{mountain.car}
 \alias{MountainCar}
 \alias{MountainCarContinuous}
 \title{Mountain Car}
 \format{An object of class \code{R6ClassGenerator} of length 24.}
-\usage{
-MountainCar
-
-MountainCarContinuous
+\arguments{
+\item{...}{[\code{any}] \cr Arguments passed on to \link{makeEnvironment}.}
 }
 \description{
 The classical mountain car problem for reinforcement learning.
@@ -22,8 +21,8 @@ in the continuous version the action is in [-1, 1].
 }
 \section{Usage}{
 
-\code{makeEnvironment("MountainCar")} \cr
-\code{makeEnvironment("MountainCarContinuous")}
+\code{makeEnvironment("MountainCar", ...)} \cr
+\code{makeEnvironment("MountainCarContinuous", ...)}
 }
 
 \section{Methods}{

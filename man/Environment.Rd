@@ -7,18 +7,23 @@
 \item{step}{[\code{function(self, action)}] \cr
 Custom step function.}
 
-\item{reset}{[\code{function()}] \cr
+\item{reset}{[\code{function(self)}] \cr
 Custom reset function.}
 
 \item{visualize}{[\code{function(self)}] \cr
 Optional custom visualization function.}
+
+\item{discount}{[\code{numeric(1)} in (0, 1)] \cr Discount factor.}
+
+\item{action.names}{[\code{named integer}] \cr
+Optional action names for a discrete action space.}
 }
 \description{
 Custom Reinforcement Learning Environment
 }
 \section{Usage}{
 
-\code{makeEnvironment("custom", step, reset, visualize)}
+\code{makeEnvironment("custom", step, reset, visualize = NULL, discount = 1, action.names = NULL)}
 }
 
 \section{Methods}{

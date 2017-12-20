@@ -6,6 +6,8 @@
 \arguments{
 \item{gym.name}{[\code{character(1)}] \cr
 Name of gym environment, e.g. \code{"CartPole-v0"}.}
+
+\item{...}{[\code{any}] \cr Arguments passed on to \link{makeEnvironment}.}
 }
 \description{
 Reinforcement learning environment from OpenAI Gym.
@@ -15,7 +17,7 @@ For available gym environments take a look at https://gym.openai.com/envs.
 }
 \section{Usage}{
 
-\code{makeEnvironment("gym", gym.name)}
+\code{makeEnvironment("gym", gym.name, ...)}
 }
 
 \section{Installation}{
