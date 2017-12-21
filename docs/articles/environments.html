@@ -45,6 +45,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/agents.html">Agents</a>
+    </li>
+    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -137,7 +140,7 @@
 </ul>
 <p>Then you can create a gym environment by passing on the name of the environment.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a gym environment.</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gym"</span>, <span class="st">"MountainCar-v0"</span>)</code></pre></div>
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gym"</span>, <span class="dt">gym.name =</span> <span class="st">"MountainCar-v0"</span>)</code></pre></div>
 <p>Have a look at <a href="https://gym.openai.com/envs" class="uri">https://gym.openai.com/envs</a> for possible environments.</p>
 <hr>
 </div>
@@ -185,6 +188,7 @@ env<span class="op">$</span><span class="kw">visualize</span>()
 <span class="co">#&gt;  - - - - </span>
 <span class="co">#&gt;  - - - - </span>
 <span class="co">#&gt;  - - - o</span>
+<span class="co">#&gt; </span>
 
 <span class="co"># Actions are encoded as integers.</span>
 env<span class="op">$</span><span class="kw">step</span>(0L)
@@ -202,6 +206,7 @@ env<span class="op">$</span><span class="kw">visualize</span>()
 <span class="co">#&gt;  - - - - </span>
 <span class="co">#&gt;  - - - - </span>
 <span class="co">#&gt;  - - o -</span>
+<span class="co">#&gt; </span>
 
 <span class="co"># But can also have character names.</span>
 env<span class="op">$</span><span class="kw">step</span>(<span class="st">"left"</span>)
@@ -218,7 +223,8 @@ env<span class="op">$</span><span class="kw">visualize</span>()
 <span class="co">#&gt;  - - - - </span>
 <span class="co">#&gt;  - - - - </span>
 <span class="co">#&gt;  - - - - </span>
-<span class="co">#&gt;  - o - -</span></code></pre></div>
+<span class="co">#&gt;  - o - -</span>
+<span class="co">#&gt; </span></code></pre></div>
 <p>Note that the R6 class object changes whenever calling <code>step</code> or <code>reset</code>! Therefore calling step with the same action twice will most likely return different states and rewards!</p>
 <p>Note also that all discrete states and actions are numerated starting with 0 to be consistent with OpenAI Gym!</p>
 <p>The environment object often also contains information about the number of states and actions or the bounds in case of a continuous space.</p>

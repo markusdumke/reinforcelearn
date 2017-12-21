@@ -17,15 +17,16 @@
 #' #'
 #' #' @return
 #' #' @export
-#' setPolicy = function(agent, new.policy) {
-#'   checkmate::assertClass(agent, "Agent")
-#'   agent$policy  = switch(new.policy$name,
-#'     random = RandomPolicy$new(),
-#'     epsilon.greedy = do.call(EpsilonGreedyPolicy$new, new.policy$args),
-#'     greedy = GreedyPolicy$new(),
-#'     softmax = SoftmaxPolicy$new()
-#'   )
-#' }
+# setPolicy = function(agent, new.policy, ...) {
+#   checkmate::assertClass(agent, "Agent")
+#   agent$policy  = switch(new.policy,
+#     random = RandomPolicy$new(),
+#     epsilon.greedy = do.call(EpsilonGreedyPolicy$new, new.policy$args),
+#     greedy = GreedyPolicy$new(),
+#     softmax = SoftmaxPolicy$new()
+#   )
+#   # fixme: overwrite act2 -> write method initializePolicy
+# }
 #'
 #'
 #' # fixme:

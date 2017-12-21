@@ -2,5 +2,6 @@ urls:
   reference: http://markusdumke.github.io/reinforcelearn/reference
   article: http://markusdumke.github.io/reinforcelearn/articles
 articles:
+  agents: agents.html
   environments: environments.html
 

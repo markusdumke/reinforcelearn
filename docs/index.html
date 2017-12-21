@@ -45,6 +45,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/agents.html">Agents</a>
+    </li>
+    <li>
       <a href="articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -102,10 +105,10 @@ agent =<span class="st"> </span><span class="kw"><a href="reference/makeAgent.ht
 <span class="co"># Run interaction for 10 episodes.</span>
 <span class="kw"><a href="reference/interact.html">interact</a></span>(env, agent, <span class="dt">n.episodes =</span> 10L)
 <span class="co">#&gt; $returns</span>
-<span class="co">#&gt;  [1] -3975  -337  -748  -407  -144  -188  -262  -386 -1558  -958</span>
+<span class="co">#&gt;  [1] -4458  -208 -1956  -275  -200  -135  -743 -1168  -143  -345</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $steps</span>
-<span class="co">#&gt;  [1] 3975  337  748  407  144  188  262  386 1558  958</span></code></pre></div>
+<span class="co">#&gt;  [1] 4458  208 1956  275  200  135  743 1168  143  345</span></code></pre></div>
 <hr>
 </div>
 <div id="environments" class="section level3">
@@ -139,21 +142,21 @@ env<span class="op">$</span><span class="kw">reset</span>()
 env<span class="op">$</span><span class="kw">step</span>(<span class="dv">100</span>)
 <span class="co">#&gt; $state</span>
 <span class="co">#&gt; $state$mean</span>
-<span class="co">#&gt; [1] 101.4431</span>
+<span class="co">#&gt; [1] 101.1158</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $state$sd</span>
-<span class="co">#&gt; [1] 0.4397719</span>
+<span class="co">#&gt; [1] 0.9152386</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $reward</span>
-<span class="co">#&gt; [1] 101.6973</span>
+<span class="co">#&gt; [1] 103.0525</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $done</span>
 <span class="co">#&gt; [1] FALSE</span></code></pre></div>
 <p>There are some predefined environment classes, e.g. <code>MDPEnvironment</code>, which allows you to create a Markov Decision Process by passing on state transition array and reward matrix, or <code>GymEnvironment</code>, where you can use toy problems from <a href="https://gym.openai.com/">OpenAI Gym</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a gym environment.</span>
 <span class="co"># Make sure you have Python, gym and reticulate installed.</span>
-env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gym"</span>, <span class="st">"MountainCar-v0"</span>)
+env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gym"</span>, <span class="dt">gym.name =</span> <span class="st">"MountainCar-v0"</span>)
 
 <span class="co"># Take random actions for 200 steps.</span>
 env<span class="op">$</span><span class="kw">reset</span>()
@@ -199,10 +202,10 @@ agent =<span class="st"> </span><span class="kw"><a href="reference/makeAgent.ht
 <span class="co"># Run interaction for 10 steps.</span>
 <span class="kw"><a href="reference/interact.html">interact</a></span>(env, agent, <span class="dt">n.episodes =</span> 10L)
 <span class="co">#&gt; $returns</span>
-<span class="co">#&gt;  [1] -3871  -840  -401  -186 -1780  -705  -231 -1432  -352  -499</span>
+<span class="co">#&gt;  [1]  -439 -1192 -2399  -622  -456 -1332  -204  -337  -129  -547</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $steps</span>
-<span class="co">#&gt;  [1] 3871  840  401  186 1780  705  231 1432  352  499</span></code></pre></div>
+<span class="co">#&gt;  [1]  439 1192 2399  622  456 1332  204  337  129  547</span></code></pre></div>
 <hr>
 </div>
 <div id="vignettes" class="section level3">
@@ -211,6 +214,7 @@ agent =<span class="st"> </span><span class="kw"><a href="reference/makeAgent.ht
 <p>Also have a look at the vignettes for further examples.</p>
 <ul>
 <li><a href="https://markusdumke.github.io/reinforcelearn/articles/environments.html">Environments</a></li>
+<li><a href="https://markusdumke.github.io/reinforcelearn/articles/agents.html">Agents</a></li>
 </ul>
 <hr>
 <p>Logo is a modification of <a href="https://www.r-project.org/logo/" class="uri">https://www.r-project.org/logo/</a>.</p>

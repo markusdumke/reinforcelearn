@@ -52,10 +52,10 @@ QLearning = R6::R6Class("QLearning",
   )
 )
 
-Sarsa = R6::R6Class("Sarsa",
-  public = list(
-    getTarget = function(reward, action.values, discount, next.action) {
-      reward + discount * action.values[, next.action + 1L]
-    }
-  )
-)
+# Sarsa = R6::R6Class("Sarsa",
+#   public = list(
+#     getTarget = function(reward, action.values, discount, next.action) {
+#       reward + discount * action.values[, next.action + 1L]
+#     }
+#   )
+# )

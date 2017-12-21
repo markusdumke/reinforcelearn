@@ -35,10 +35,10 @@ agent = makeAgent("softmax", "table", "qlearning")
 # Run interaction for 10 episodes.
 interact(env, agent, n.episodes = 10L)
 #> $returns
-#>  [1]  -284 -3439 -1986  -310  -420  -486  -120  -172  -446  -978
+#>  [1] -3552  -598  -590  -434  -978  -162  -386  -179  -298 -1021
 #> 
 #> $steps
-#>  [1]  284 3439 1986  310  420  486  120  172  446  978
+#>  [1] 3552  598  590  434  978  162  386  179  298 1021
 ```
 
 ------------------------------------------------------------------------
@@ -79,14 +79,14 @@ env$reset()
 env$step(100)
 #> $state
 #> $state$mean
-#> [1] 98.13673
+#> [1] 99.72761
 #> 
 #> $state$sd
-#> [1] 0.1112962
+#> [1] 0.5974696
 #> 
 #> 
 #> $reward
-#> [1] 98.24879
+#> [1] 99.37578
 #> 
 #> $done
 #> [1] FALSE
@@ -97,7 +97,7 @@ There are some predefined environment classes, e.g. `MDPEnvironment`, which allo
 ``` r
 # Create a gym environment.
 # Make sure you have Python, gym and reticulate installed.
-env = makeEnvironment("gym", "MountainCar-v0")
+env = makeEnvironment("gym", gym.name = "MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
@@ -153,10 +153,10 @@ agent = makeAgent(policy, values, algorithm)
 # Run interaction for 10 steps.
 interact(env, agent, n.episodes = 10L)
 #> $returns
-#>  [1] -3948 -1768 -1173  -614  -921  -903  -305  -330   -61  -291
+#>  [1] -5636  -300 -1346  -389  -812  -335  -187  -179  -261   -94
 #> 
 #> $steps
-#>  [1] 3948 1768 1173  614  921  903  305  330   61  291
+#>  [1] 5636  300 1346  389  812  335  187  179  261   94
 ```
 
 ------------------------------------------------------------------------
@@ -166,6 +166,7 @@ interact(env, agent, n.episodes = 10L)
 Also have a look at the vignettes for further examples.
 
 -   [Environments](https://markusdumke.github.io/reinforcelearn/articles/environments.html)
+-   [Agents](https://markusdumke.github.io/reinforcelearn/articles/agents.html)
 
 ------------------------------------------------------------------------
 

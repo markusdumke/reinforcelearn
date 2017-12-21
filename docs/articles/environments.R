@@ -42,7 +42,7 @@ env = makeEnvironment(step = step, reset = reset)
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  # Create a gym environment.
-#  env = makeEnvironment("gym", "MountainCar-v0")
+#  env = makeEnvironment("gym", gym.name = "MountainCar-v0")
 
 ## ------------------------------------------------------------------------
 # State transition array

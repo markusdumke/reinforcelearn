@@ -250,7 +250,7 @@ Agent = R6::R6Class("Agent",
         }
       }
 
-      if (experience.replay) {
+      if (!is.null(algorithm) && !is.null(val.fun) && experience.replay) {
         self$getTarget = function(data, env) {
           q.old = self$val.fun$predictQ(data$state)
           q.new = self$val.fun$predictQ(data$next.state)
@@ -260,7 +260,7 @@ Agent = R6::R6Class("Agent",
         }
       }
 
-      if (experience.replay && val.fun$name == "table") {
+      if (!is.null(val.fun) && experience.replay && val.fun$name == "table") {
         self$learn = function(env, learn) {
           data = self$exp.replay$sampleBatch()
           if (!is.null(data)) {
@@ -280,7 +280,7 @@ Agent = R6::R6Class("Agent",
         }
       }
 
-      if (experience.replay && val.fun$name == "neural.network") {
+      if (!is.null(val.fun) && experience.replay && val.fun$name == "neural.network") {
         self$learn = function(env, learn) {
           data = self$exp.replay$sampleBatch()
           if (!is.null(data)) {

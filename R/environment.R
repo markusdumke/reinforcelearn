@@ -72,7 +72,7 @@
 #' \dontrun{
 #' # Create an OpenAI Gym environment.
 #' # Make sure you have Python, gym and reticulate installed.
-#' env = makeEnvironment("gym", "MountainCar-v0")
+#' env = makeEnvironment("gym", gym.name = "MountainCar-v0")
 #'
 #' # Take random actions for 200 steps.
 #' env$reset()

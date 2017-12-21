@@ -88,7 +88,7 @@ There are some predefined environment classes, e.g. `MDPEnvironment`, which allo
 ```{r, eval = FALSE}
 # Create a gym environment.
 # Make sure you have Python, gym and reticulate installed.
-env = makeEnvironment("gym", "MountainCar-v0")
+env = makeEnvironment("gym", gym.name = "MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
@@ -147,6 +147,7 @@ interact(env, agent, n.episodes = 10L)
 Also have a look at the vignettes for further examples.
 
 - [Environments](https://markusdumke.github.io/reinforcelearn/articles/environments.html)
+- [Agents](https://markusdumke.github.io/reinforcelearn/articles/agents.html)
 
 ----
 

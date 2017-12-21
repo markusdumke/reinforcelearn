@@ -100,7 +100,7 @@ Then you can create a gym environment by passing on the name of the environment.
 
 ```{r, eval = FALSE}
 # Create a gym environment.
-env = makeEnvironment("gym", "MountainCar-v0")
+env = makeEnvironment("gym", gym.name = "MountainCar-v0")
 ```
 
 Have a look at [https://gym.openai.com/envs](https://gym.openai.com/envs) for possible environments.

@@ -68,6 +68,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/agents.html">Agents</a>
+    </li>
+    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -150,7 +153,7 @@ Visualizes the environment (if there is a visualization function).</p></li>
     <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='co'># Create an OpenAI Gym environment.</span>
 <span class='co'># Make sure you have Python, gym and reticulate installed.</span>
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"gym"</span>, <span class='st'>"MountainCar-v0"</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"gym"</span>, <span class='kw'>gym.name</span> <span class='kw'>=</span> <span class='st'>"MountainCar-v0"</span>)
 <span class='no'>env</span>$<span class='fu'>reset</span>()
 <span class='no'>env</span>$<span class='fu'>close</span>()
 <span class='co'># }</span></pre>

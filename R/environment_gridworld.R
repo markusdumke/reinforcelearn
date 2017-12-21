@@ -201,7 +201,7 @@ Gridworld = R6::R6Class("Gridworld",
       visualize = function(env) {
         one.row = paste(rep("-", shape[2]), collapse = " ")
         grid.vis = paste("", one.row, collapse = "")
-        for (i in seq_len(shape[1] - 1)) {
+        for (i in seq_len(shape[1] - 1L)) {
           grid.vis = paste(grid.vis, "\n", one.row)
         }
 
@@ -211,7 +211,7 @@ Gridworld = R6::R6Class("Gridworld",
         # replace nth - with o (current state in grid)
         grid.vis = sub(paste0("^(.{", str.pos - 1, "})(.)(.*$)", collapse = ""),
           "\\1o\\3", grid.vis)
-        message(grid.vis, "\n")
+        message(cat(grid.vis, "\n"))
       }
       # fixme: make action.names and visualize overwriteable
       super$initialize(transitions = transitions, rewards = rewards,
