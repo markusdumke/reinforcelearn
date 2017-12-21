@@ -21,7 +21,7 @@
 #' agent = makeAgent("softmax", "table", "qlearning")
 #' interact(env, agent, n.episodes = 10L)
 interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
-  max.steps.per.episode = Inf, learn = TRUE, visualize = TRUE) {
+  max.steps.per.episode = Inf, learn = TRUE, visualize = FALSE) {
 
   checkmate::assertClass(env, "Environment")
   checkmate::assertClass(agent, "Agent")
@@ -65,6 +65,8 @@ interact = function(env, agent, n.steps = Inf, n.episodes = Inf,
   # } else {
   state = env$state
   #}
+
+  agent$n.actions = env$n.actions
 
   if (agent$initialized == FALSE) {
     agent$init(env) # if e.g. value fun has not been initialized do this here

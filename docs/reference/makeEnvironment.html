@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -100,7 +97,7 @@
     <p>This function creates an environment for reinforcement learning.</p>
     
 
-    <pre class="usage"><span class='fu'>makeEnvironment</span>(<span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"custom"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>makeEnvironment</span>(<span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"custom"</span>, <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -108,8 +105,11 @@
     <tr>
       <th>class</th>
       <td><p>[<code>character(1)</code>] 
-Class of environment. There are several prebuild environments.
-See also here Section Environments.</p></td>
+Class of environment. One of <code>c("custom", "mdp", "gym", "gridworld")</code>.</p></td>
+    </tr>
+    <tr>
+      <th>discount</th>
+      <td><p>[<code>numeric(1)</code> in (0, 1)]  Discount factor.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -119,8 +119,8 @@ See also here Section Environments.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>[<code>R6 class</code>] 
-Reinforcement Learning Environment.</p>
+    <p>[<code>Environment</code>] 
+Reinforcement learning environment (R6 class).</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -168,7 +168,7 @@ Visualizes the environment (if there is a visualization function).</p></li>
   <span class='no'>state</span>
 }
 
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='kw'>step</span> <span class='kw'>=</span> <span class='no'>step</span>, <span class='kw'>reset</span> <span class='kw'>=</span> <span class='no'>reset</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='kw'>step</span> <span class='kw'>=</span> <span class='no'>step</span>, <span class='kw'>reset</span> <span class='kw'>=</span> <span class='no'>reset</span>, <span class='kw'>discount</span> <span class='kw'>=</span> <span class='fl'>0.9</span>)
 <span class='no'>env</span>$<span class='fu'>reset</span>()</div><div class='output co'>#&gt; $mean
 #&gt; [1] 0
 #&gt; 
@@ -176,14 +176,14 @@ Visualizes the environment (if there is a visualization function).</p></li>
 #&gt; [1] 1
 #&gt; </div><div class='input'><span class='no'>env</span>$<span class='fu'>step</span>(<span class='fl'>100</span>)</div><div class='output co'>#&gt; $state
 #&gt; $state$mean
-#&gt; [1] 100.643
+#&gt; [1] 98.42394
 #&gt; 
 #&gt; $state$sd
-#&gt; [1] 0.9350144
+#&gt; [1] 0.9320559
 #&gt; 
 #&gt; 
 #&gt; $reward
-#&gt; [1] 102.6003
+#&gt; [1] 97.7765
 #&gt; 
 #&gt; $done
 #&gt; [1] FALSE
@@ -193,7 +193,7 @@ Visualizes the environment (if there is a visualization function).</p></li>
 <span class='no'>P</span>[, , <span class='fl'>1</span>] <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='fl'>0</span>, <span class='fl'>1</span>), <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>P</span>[, , <span class='fl'>2</span>] <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>1</span>), <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='no'>R</span> <span class='kw'>=</span> <span class='fu'>matrix</span>(<span class='fu'>c</span>(<span class='fl'>5</span>, <span class='fl'>10</span>, -<span class='fl'>1</span>, <span class='fl'>2</span>), <span class='fl'>2</span>, <span class='fl'>2</span>, <span class='kw'>byrow</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='st'>"MDP"</span>, <span class='kw'>transitions</span> <span class='kw'>=</span> <span class='no'>P</span>, <span class='kw'>rewards</span> <span class='kw'>=</span> <span class='no'>R</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='st'>"mdp"</span>, <span class='kw'>transitions</span> <span class='kw'>=</span> <span class='no'>P</span>, <span class='kw'>rewards</span> <span class='kw'>=</span> <span class='no'>R</span>)
 
 <span class='no'>env</span>$<span class='fu'>reset</span>()</div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='no'>env</span>$<span class='fu'>step</span>(<span class='fl'>1L</span>)</div><div class='output co'>#&gt; $state
 #&gt; [1] 1
@@ -205,17 +205,23 @@ Visualizes the environment (if there is a visualization function).</p></li>
 #&gt; [1] TRUE
 #&gt; </div><div class='input'>
 <span class='co'># Create a Gridworld.</span>
-<span class='no'>grid</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='st'>"Gridworld"</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>4</span>),
-  <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)</div><span class='co'># NOT RUN {</span>
+<span class='no'>grid</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='st'>"gridworld"</span>, <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>4</span>),
+  <span class='kw'>goal.states</span> <span class='kw'>=</span> <span class='fl'>15</span>, <span class='kw'>initial.state</span> <span class='kw'>=</span> <span class='fl'>0</span>)
+<span class='no'>grid</span>$<span class='fu'>visualize</span>()</div><div class='output co'>#&gt; <span class='message'> o - - - </span>
+#&gt; <span class='message'> - - - - </span>
+#&gt; <span class='message'> - - - - </span>
+#&gt; <span class='message'> - - - -</span></div><div class='input'>
+</div><span class='co'># NOT RUN {</span>
 <span class='co'># Create an OpenAI Gym environment.</span>
 <span class='co'># Make sure you have Python, gym and reticulate installed.</span>
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='st'>"Gym"</span>, <span class='st'>"MountainCar-v0"</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'>makeEnvironment</span>(<span class='st'>"gym"</span>, <span class='st'>"MountainCar-v0"</span>)
 
 <span class='co'># Take random actions for 200 steps.</span>
 <span class='no'>env</span>$<span class='fu'>reset</span>()
 <span class='kw'>for</span> (<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>:<span class='fl'>200</span>) {
   <span class='no'>action</span> <span class='kw'>=</span> <span class='fu'>sample</span>(<span class='no'>env</span>$<span class='no'>actions</span>, <span class='fl'>1</span>)
   <span class='no'>env</span>$<span class='fu'>step</span>(<span class='no'>action</span>)
+  <span class='no'>env</span>$<span class='fu'>visualize</span>()
 }
 <span class='no'>env</span>$<span class='fu'>close</span>()
 <span class='co'># }</span></pre>

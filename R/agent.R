@@ -95,14 +95,17 @@ Agent = R6::R6Class("Agent",
     history = list(),
     # logging function
 
-    initialize = function(policy, val.fun, algorithm, preprocess,
-      exp.replay) {
+    initialize = function(policy, val.fun, algorithm, preprocess, exp.replay) {
 
-      experience.replay = ifelse(is.null(exp.replay), FALSE, TRUE)
-      if (is.null(algorithm)) eligibility.traces = FALSE
-
+      # initialize algorithm
+      # policy, algorithm, exp.replay, eligibility, table, neural.network
       self$preprocess = preprocess
 
+      if (policy$name %in% c("softmax", "epsilon-greedy", "greedy") && is.null(val.fun)) {
+        stop("Cannot use this policy without specifying a value function!")
+      }
+
+      # initialize policy
       self$policy = switch(policy$name,
         random = RandomPolicy$new(),
         epsilon.greedy = do.call(EpsilonGreedyPolicy$new, policy$args),
@@ -111,10 +114,9 @@ Agent = R6::R6Class("Agent",
       )
 
       if (policy$name == "random") {
-        self$initialized = FALSE
+        # self$initialized = FALSE
         self$act2 = function(state) {
-          policy.probs = self$policy$getActionProbs(NULL, n.actions = self$n.actions) # fixme: just use sample here?
-          action = self$policy$sampleAction(policy.probs)
+          action = sample(seq_len(self$n.actions), size = 1L) - 1L
         }
       } else {
         self$act2 = function(state) {
@@ -124,14 +126,75 @@ Agent = R6::R6Class("Agent",
         }
       }
 
+      # experience replay yes / no
+      if (!is.null(exp.replay)) {
+        experience.replay = TRUE
+        self$exp.replay = do.call(ReplayMemory$new, exp.replay)
+      } else {
+        experience.replay = FALSE
+      }
 
+      # eligibility traces yes / no
+      if (!is.null(algorithm$args$lambda)) {
+        eligibility.traces = TRUE
+        self$eligibility = Eligibility$new(algorithm$args$lambda, algorithm$args$traces)
+      } else {
+        eligibility.traces = FALSE
+      }
 
+      if (experience.replay && eligibility.traces) {
+        stop("Experience replay with eligibility traces is not supported!")
+      }
+
+      if (!is.null(algorithm) && is.null(val.fun)) {
+        stop("Cannot use this algorithm without a value function.")
+      }
+
+      if (eligibility.traces && is.null(val.fun)) {
+        stop("Cannot use eligibility traces without a value function.")
+      }
+
+      if (eligibility.traces && val.fun$name == "neural.network") {
+        stop("Eligibility traces for neural network are not supported!")
+      }
+
+      self$observe = function(state, action, reward, next.state, env) {}
+
+      if (experience.replay) {
+        self$observe = function(state, action, reward, next.state, env) {
+          state = self$preprocess(state)
+          next.state = self$preprocess(next.state)
+          self$exp.replay$observe(state, action, reward, next.state)
+        }
+      }
+
+      if (eligibility.traces) {
+        self$observe = function(state, action, reward, next.state, env) {
+          self$eligibility$decrease(env$discount)
+          state = self$preprocess(state)
+          next.state = self$preprocess(next.state)
+          self$train.data = list(state = state, action = action, reward = reward, next.state = next.state)
+          self$eligibility$increase(state, action)
+        }
+      }
+
+      if (!is.null(algorithm) && !experience.replay && !eligibility.traces) {
+        self$observe = function(state, action, reward, next.state, env) {
+          state = self$preprocess(state)
+          next.state = self$preprocess(next.state)
+          self$train.data = list(state = state, action = action, reward = reward, next.state = next.state)
+        }
+      }
+
+      # check if dimensions of value table have been set else get these from the
+      # environment during interaction
       if (!is.null(val.fun)) {
         if (val.fun$name == "table") {
-          if (!any(c("initial.value", "n.states") %in% names(val.fun$args))) { # "ValueTable" %in% class(val.fun) &&
-            #browser()
+          if (!any(c("initial.value", "n.states") %in% names(val.fun$args))) {
             self$initialized = FALSE
             self$initialized.val.fun = FALSE
+          } else {
+            self$val.fun = do.call(ValueTable$new, val.fun$args)
           }
         } else {
           self$val.fun = switch(val.fun$name,
@@ -141,153 +204,126 @@ Agent = R6::R6Class("Agent",
         }
       }
 
-      if (!is.null(exp.replay)) {
-        self$exp.replay = do.call(ReplayMemory$new, exp.replay)
-      }
+      ##-----------------
+      # Learning
 
-      if (!is.null(algorithm)) {
+      if (is.null(algorithm)) {
+        self$learn = function(env, learn) {}
+      } else {
         self$algorithm = switch(algorithm$name,
-          qlearning = QLearning$new(),
-          sarsa = Sarsa$new()#,
-          # actor.critic = ActorCritic$new()
+          qlearning = QLearning$new()#,
+          #sarsa = Sarsa$new()
         )
       }
 
-      if (missing(val.fun) || missing(algorithm)) {
-        self$learn.possible = FALSE
-      }
-
+      # qlearning table/neural.network base
       if (!is.null(algorithm)) {
-        if ("lambda" %in% names(algorithm$args)) {
-          eligibility.traces = TRUE
-          self$eligibility = Eligibility$new(algorithm$args$lambda, algorithm$args$traces)
-          if (self$initialized.val.fun) self$eligibility$reset(self$val.fun$Q)
-          self$reset = function() {
-            self$eligibility$reset(self$val.fun$Q)
-          }
-        } else {
-          eligibility.traces = FALSE
 
-        }
-        if (algorithm$name == "qlearning") {
-          self$train.data = vector("list", 1)
-          self$observe = function(state, action, reward, next.state, env) {
-            state = self$preprocess(state)
-            next.state = self$preprocess(next.state)
-            self$train.data = list(state = state, action = action, reward = reward, next.state = next.state)
-          }
-          self$learn = function(env, learn) {
-            res = self$getTarget(env)
-            target = res[["target"]]
-            target = fillTarget(res[["q.old"]], self$train.data$state, self$train.data$action, target)
-            self$val.fun$train(self$train.data$state, target)
-          }
-          self$getTarget = function(env) {
-            q.old = self$val.fun$predictQ(self$train.data$state)
-            q.new = self$val.fun$predictQ(self$train.data$next.state)
-            target = self$algorithm$getTarget(self$train.data$reward, q.new,
-              discount = env$discount)
-            list(q.old = q.old, target = target)
-          }
-          if (eligibility.traces) {
-            self$observe = function(state, action, reward, next.state, env) {
-              state = self$preprocess(state)
-              next.state = self$preprocess(next.state)
-              self$train.data = list(state = state, action = action, reward = reward, next.state = next.state)
-              self$eligibility$increase(state, action)
-            }
-            self$getError = function(target, q.old, action) {
-              target - q.old[action + 1L] # fixme: allow mse and other errors here
-            }
-            self$learn = function(env, learn) {
-              res = self$getTarget(env)
-              error = self$getError(target = res$target, q.old = res$q.old, action = self$train.data$action)
-              self$val.fun$trainWithError(self$eligibility$E, error)
-              self$eligibility$decrease(env$discount)
-            }
-          }
-          if (experience.replay) {
+        self$train.data = vector("list", 1)
 
-            self$observe = function(state, action, reward, next.state, env) {
-              state = self$preprocess(state)
-              next.state = self$preprocess(next.state)
-              self$exp.replay$observe(state, action, reward, next.state)
-            }
-            self$getTarget = function(data, env) {
-              q.old = self$val.fun$predictQ(data$state)
-              q.new = self$val.fun$predictQ(data$next.state)
-              target = self$algorithm$getTarget(data$reward, q.new,
-                discount = env$discount)
-              list(q.old = q.old, target = target)
-            }
-            #if ("ValueTable" %in% class(val.fun)) {
-
-            self$learn = function(env, learn) {
-              #browser()
-              data = self$exp.replay$sampleBatch()
-              if (!is.null(data)) {
-                #browser()
-                data = self$val.fun$processBatch(data)
-                data$target = self$getTarget(data, env)$target
-                # sum together updates to the same state-action pair
-                data = aggregate(target ~ state + action, data = data, FUN = sum)
-                val.old = self$val.fun$predictQ(data$state)
-                target = fillTarget(val.old, data$state, data$action, data$target)
-                target = as.data.frame(target)
-                target$state = data$state
-                # sum together updates to same state
-                target = aggregate(. ~ state, data = target, FUN = sum)
-
-                self$val.fun$train(target$state, as.matrix(target[-1]))
-              }
-            }
-            #}
-
-            if ("neural.network" == val.fun$name) {
-              self$learn = function(env, learn) {
-                data = self$exp.replay$sampleBatch()
-                if (!is.null(data)) {
-                  #browser()# fixme
-                  data = self$val.fun$processBatch(data) # this is copy paste
-                  data$target = self$getTarget(data, env)$target
-
-                  val.old = self$val.fun$predictQ(data$state)
-                  target = fillTarget(val.old, data$state, data$action, data$target)
-
-                  self$val.fun$train(data$state, target)
-                }
-              }
-            }
-          }
-
-
-        }
-        if (algorithm$name == "sarsa") {
-          self$train.data = vector("list", 2)
-          self$observe = function(state, action, reward, next.state, env) {
-            self$train.data[[1]] = self$train.data[[2]]
-            state = self$preprocess(state)
-            next.state = self$preprocess(next.state)
-            self$train.data[[2]] = list(state = state, action = action, reward = reward, next.state = next.state)
-          }
-          self$learn = function(env, learn) {
-            if (is.null(self$train.data[[1]])) {return()}
-            q.old = self$val.fun$predictQ(self$train.data[[1]]$state)
-            q.new = self$val.fun$predictQ(self$train.data[[1]]$next.state)
-            target = self$algorithm$getTarget(self$train.data[[1]]$reward, q.new,
-              discount = env$discount, next.action = self$train.data[[2]]$action)
-            target = fillTarget(q.old, self$train.data[[1]]$state, self$train.data[[1]]$action, target)
-            self$val.fun$train(self$train.data[[1]]$state, target)
-          }
-
+        self$learn = function(env, learn) {
+          res = self$getTarget(env)
+          target = res[["target"]]
+          target = fillTarget(res[["q.old"]], self$train.data$state, self$train.data$action, target)
+          self$val.fun$train(self$train.data$state, target)
         }
 
-      } else {
-        self$observe = function(state, action, reward, next.state, env) {} # agent observe n.actions from environment here?
-        self$learn = function(env, learn) {}
+        self$getTarget = function(env) {
+          q.old = self$val.fun$predictQ(self$train.data$state)
+          q.new = self$val.fun$predictQ(self$train.data$next.state)
+          target = self$algorithm$getTarget(self$train.data$reward, q.new,
+            discount = env$discount)
+          list(q.old = q.old, target = target)
+        }
       }
-      if (eligibility.traces == FALSE) {
-        self$reset = function() {}
+
+      # qlearning eligibility traces
+      if (eligibility.traces && val.fun$name == "table" && !experience.replay) {
+        self$getError = function(target, q.old, action) {
+          target - q.old[action + 1L] # fixme: allow mse and other errors here
+        }
+
+        self$learn = function(env, learn) {
+          res = self$getTarget(env)
+          error = self$getError(target = res$target, q.old = res$q.old, action = self$train.data$action)
+          self$val.fun$trainWithError(self$eligibility$E, error)
+        }
+      }
+
+      if (experience.replay) {
+        self$getTarget = function(data, env) {
+          q.old = self$val.fun$predictQ(data$state)
+          q.new = self$val.fun$predictQ(data$next.state)
+          target = self$algorithm$getTarget(data$reward, q.new,
+            discount = env$discount)
+          list(q.old = q.old, target = target)
+        }
+      }
+
+      if (experience.replay && val.fun$name == "table") {
+        self$learn = function(env, learn) {
+          data = self$exp.replay$sampleBatch()
+          if (!is.null(data)) {
+            data = self$val.fun$processBatch(data)
+            data$target = self$getTarget(data, env)$target
+            # sum together updates to the same state-action pair
+            data = aggregate(target ~ state + action, data = data, FUN = sum)
+            val.old = self$val.fun$predictQ(data$state)
+            target = fillTarget(val.old, data$state, data$action, data$target)
+            target = as.data.frame(target)
+            target$state = data$state
+            # sum together updates to same state
+            target = aggregate(. ~ state, data = target, FUN = sum)
+
+            self$val.fun$train(target$state, as.matrix(target[-1]))
+          }
+        }
+      }
+
+      if (experience.replay && val.fun$name == "neural.network") {
+        self$learn = function(env, learn) {
+          data = self$exp.replay$sampleBatch()
+          if (!is.null(data)) {
+            #browser()
+            data = self$val.fun$processBatch(data) # this is copy paste
+            data$target = self$getTarget(data, env)$target
+
+            val.old = self$val.fun$predictQ(data$state)
+            target = fillTarget(val.old, data$state, data$action, data$target)
+
+            self$val.fun$train(data$state, target)
+          }
+        }
+      }
+
+      #   if (algorithm$name == "sarsa") {
+      #     self$train.data = vector("list", 2)
+      #     self$observe = function(state, action, reward, next.state, env) {
+      #       self$train.data[[1]] = self$train.data[[2]]
+      #       state = self$preprocess(state)
+      #       next.state = self$preprocess(next.state)
+      #       self$train.data[[2]] = list(state = state, action = action, reward = reward, next.state = next.state)
+      #     }
+      #     self$learn = function(env, learn) {
+      #       if (is.null(self$train.data[[1]])) {return()}
+      #       q.old = self$val.fun$predictQ(self$train.data[[1]]$state)
+      #       q.new = self$val.fun$predictQ(self$train.data[[1]]$next.state)
+      #       target = self$algorithm$getTarget(self$train.data[[1]]$reward, q.new,
+      #         discount = env$discount, next.action = self$train.data[[2]]$action)
+      #       target = fillTarget(q.old, self$train.data[[1]]$state, self$train.data[[1]]$action, target)
+      #       self$val.fun$train(self$train.data[[1]]$state, target)
+      #     }
+      #
+      #   }
+
+      # reset eligibility traces if necessary
+      self$reset = function() {}
+
+      if (eligibility.traces) {
+        if (self$initialized.val.fun) self$eligibility$reset(self$val.fun$Q)
+        self$reset = function() {
+          self$eligibility$reset(self$val.fun$Q)
+        }
       }
     },
 
@@ -297,11 +333,7 @@ Agent = R6::R6Class("Agent",
       self$previous.action = action
       self$action = action
       action
-    }#,
-
-    #    learn = function(env, learn) {
-    # # checkLearning()
-    #    }
+    }
   )
 )
 

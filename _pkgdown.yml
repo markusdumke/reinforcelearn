@@ -1,4 +1,4 @@
-url: http://markdumke.github.io/reinforcelearn
+url: http://markusdumke.github.io/reinforcelearn
 
 template:
   params:
@@ -20,18 +20,37 @@ reference:
     - WindyGridworld
     - MountainCar
     - MountainCarContinuous
+  - title: Policies
+    contents:
+    - makePolicy
+    - RandomPolicy
+    - GreedyPolicy
+    - EpsilonGreedyPolicy
+    - SoftmaxPolicy
+  - title: Value Function Representations
+    contents:
+    - makeValueFunction
+    - ValueTable
+    - ValueNetwork
   - title: Algorithms
-    desc: Reinforcement learning algorithms, dynamic programming, value- and policy-based methods, actor critic, monte carlo and temporal-difference learning.
     contents:
-    - qSigma
-    - td
-    - actorCritic
-    - evaluatePolicy
-    - bandit
-  - title: State preprocessing and helper functions
+    - makeAlgorithm
+    - QLearning
+  - title: Agent
     contents:
+    - makeAgent
+  - title: Interaction
+    contents:
+    - interact
+  - title: Helper functions
+    contents:
+    - makeReplayMemory
+    - getReplayMemory
+    - Eligibility
+    - getEligibilityTraces
+    - getValueFunction
+    - getStateValues
     - tiles
-    - IHT
+    - iht
     - nHot
-    - identity2
 

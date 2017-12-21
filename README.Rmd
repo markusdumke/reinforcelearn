@@ -13,13 +13,13 @@ knitr::opts_chunk$set(
 
 # Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="36"/>
 
-[![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn)
+[![Travis-CI Build Status](https://travis-ci.org/markusdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markusdumke/reinforcelearn)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn)
-[![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/markusdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markusdumke/reinforcelearn?branch=master)
 
 ### Documentation
 
-[Website](https://markdumke.github.io/reinforcelearn)
+[Website](https://markusdumke.github.io/reinforcelearn)
 
 ----
 
@@ -30,7 +30,7 @@ knitr::opts_chunk$set(
 install.packages("reinforcelearn")
 
 # Install development version from github.
-devtools::install_github("markdumke/reinforcelearn")
+devtools::install_github("markusdumke/reinforcelearn")
 ```
 
 ----
@@ -78,6 +78,7 @@ You can interact with the environment via the `reset` and `step` method.
 ```{r}
 # Reset environment.
 env$reset()
+
 # Take action.
 env$step(100)
 ```
@@ -101,7 +102,7 @@ env$close()
 
 This should open a window showing a graphical visualization of the environment during interaction.
 
-For more details on how to create an environment have a look at the vignette: [Environments](https://markdumke.github.io/reinforcelearn/articles/environments.html)
+For more details on how to create an environment have a look at the vignette: [Environments](https://markusdumke.github.io/reinforcelearn/articles/environments.html)
 
 ----
 
@@ -139,16 +140,13 @@ agent = makeAgent(policy, values, algorithm)
 interact(env, agent, n.episodes = 10L)
 ```
 
-For more details on agents have a look at the vignette: [Agents](https://markdumke.github.io/reinforcelearn/articles/agents.html)
-
 ----
 
 ### Vignettes
 
 Also have a look at the vignettes for further examples.
 
-- [Environments](https://markdumke.github.io/reinforcelearn/articles/environments.html)
-- [Agents](https://markdumke.github.io/reinforcelearn/articles/agents.html)
+- [Environments](https://markusdumke.github.io/reinforcelearn/articles/environments.html)
 
 ----
 

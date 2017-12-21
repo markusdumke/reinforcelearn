@@ -5,7 +5,7 @@
 \title{Interaction between agent and environment.}
 \usage{
 interact(env, agent, n.steps = Inf, n.episodes = Inf,
-  max.steps.per.episode = Inf, learn = TRUE, visualize = TRUE)
+  max.steps.per.episode = Inf, learn = TRUE, visualize = FALSE)
 }
 \arguments{
 \item{env}{[\code{Environment}] \cr Reinforcement learning environment created by \link{makeEnvironment}.}

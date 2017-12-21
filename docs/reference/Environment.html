@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -111,7 +108,7 @@ Custom step function.</p></td>
     </tr>
     <tr>
       <th>reset</th>
-      <td><p>[<code>function()</code>] 
+      <td><p>[<code>function(self)</code>] 
 Custom reset function.</p></td>
     </tr>
     <tr>
@@ -119,11 +116,20 @@ Custom reset function.</p></td>
       <td><p>[<code>function(self)</code>] 
 Optional custom visualization function.</p></td>
     </tr>
+    <tr>
+      <th>discount</th>
+      <td><p>[<code>numeric(1)</code> in (0, 1)]  Discount factor.</p></td>
+    </tr>
+    <tr>
+      <th>action.names</th>
+      <td><p>[<code>named integer</code>] 
+Optional action names for a discrete action space.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
-    <p><code><a href='makeEnvironment.html'>makeEnvironment("custom", step, reset, visualize)</a></code></p>
+    <p><code><a href='makeEnvironment.html'>makeEnvironment("custom", step, reset, visualize = NULL, discount = 1, action.names = NULL)</a></code></p>
     
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
@@ -161,14 +167,14 @@ Visualizes the environment (if there is a visualization function).</p></li>
 #&gt; [1] 1
 #&gt; </div><div class='input'><span class='no'>env</span>$<span class='fu'>step</span>(<span class='fl'>100</span>)</div><div class='output co'>#&gt; $state
 #&gt; $state$mean
-#&gt; [1] 100.4665
+#&gt; [1] 98.59996
 #&gt; 
 #&gt; $state$sd
-#&gt; [1] 0.722676
+#&gt; [1] 0.6007609
 #&gt; 
 #&gt; 
 #&gt; $reward
-#&gt; [1] 100.3827
+#&gt; [1] 97.99559
 #&gt; 
 #&gt; $done
 #&gt; [1] FALSE

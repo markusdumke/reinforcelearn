@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -97,35 +94,56 @@
     </div>
 
     
-    <p>Create Agent.</p>
+    <p>An agent consists of a policy and (optional) a value function representation
+and (optional) a learning algorithm.</p>
     
 
-    <pre class="usage"><span class='fu'>makeAgent</span>(<span class='no'>policy</span>, <span class='kw'>val.fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>algorithm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>makeAgent</span>(<span class='no'>policy</span>, <span class='kw'>val.fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>algorithm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='no'>identity</span>,
+  <span class='kw'>experience.replay</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>policy</th>
-      <td><p>[<code>Policy</code>]  A policy created by <a href='makePolicy.html'>makePolicy</a>.</p></td>
+      <td><p>[<code>character(1)</code> | Policy]  A policy.
+If you pass a string the policy will be created via <a href='makePolicy.html'>makePolicy</a>.</p></td>
     </tr>
     <tr>
       <th>val.fun</th>
-      <td><p>[<code>ActionValueTable</code>]  Value function representation.</p></td>
+      <td><p>[<code>character(1)</code> | ValueFunction]  A value function representation.
+If you pass a string the value function will be created via <a href='makeValueFunction.html'>makeValueFunction</a>.</p></td>
     </tr>
     <tr>
       <th>algorithm</th>
-      <td><p>[<code>Algorithm</code>]  An algorithm.</p></td>
+      <td><p>[<code>character(1)</code> | Algorithm]  An algorithm.
+If you pass a string the algorithm will be created via <a href='makeAlgorithm.html'>makeAlgorithm</a>.</p></td>
+    </tr>
+    <tr>
+      <th>preprocess</th>
+      <td><p>[<code>function</code>]  A function which preprocesses the state so that the agent can learn on this.</p></td>
+    </tr>
+    <tr>
+      <th>experience.replay</th>
+      <td><p>[<code>logical(1)</code> | ReplayMemory]  Replay memory for experience replay.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>[<code>any</code>]  Arguments passed on to <a href='makePolicy.html'>makePolicy</a>, <a href='makeAlgorithm.html'>makeAlgorithm</a> or <a href='makeValueFunction.html'>makeValueFunction</a>.</p></td>
     </tr>
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>agent</span> <span class='kw'>=</span> <span class='fu'>makeAgent</span>(<span class='st'>"softmax"</span>, <span class='st'>"table"</span>, <span class='st'>"qlearning"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

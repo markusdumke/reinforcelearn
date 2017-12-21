@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -97,11 +94,12 @@
     </div>
 
     
-    <p>Interaction between agent and environment.</p>
+    <p>Run interaction between agent and environment for specified number of steps
+or episodes.</p>
     
 
     <pre class="usage"><span class='fu'>interact</span>(<span class='no'>env</span>, <span class='no'>agent</span>, <span class='kw'>n.steps</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>Inf</span>,
-  <span class='kw'>max.steps.per.episode</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='kw'>visualize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>max.steps.per.episode</span> <span class='kw'>=</span> <span class='fl'>Inf</span>, <span class='kw'>learn</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>visualize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -112,7 +110,7 @@
     </tr>
     <tr>
       <th>agent</th>
-      <td><p>[<code>Agent</code>]  Agent created by <a href='makeAgent.html'>makeAgent</a></p></td>
+      <td><p>[<code>Agent</code>]  Agent created by <a href='makeAgent.html'>makeAgent</a>.</p></td>
     </tr>
     <tr>
       <th>n.steps</th>
@@ -124,21 +122,42 @@
     </tr>
     <tr>
       <th>max.steps.per.episode</th>
-      <td><p>[<code>integer(1)</code>]  Maximal number of allowed steps per episode.</p></td>
+      <td><p>[<code>integer(1)</code>]  Maximal number of steps allowed per episode.</p></td>
+    </tr>
+    <tr>
+      <th>learn</th>
+      <td><p>[<code>logical(1)</code>]  Should the agent learn?</p></td>
     </tr>
     <tr>
       <th>visualize</th>
-      <td><p>[<code>logical(1)</code>]  Visualize environment while interaction?</p></td>
+      <td><p>[<code>logical(1)</code>]  Visualize the interaction between agent and environment?</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>[<code>list</code>] Return and number of steps per episode.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"windy.gridworld"</span>)
+<span class='no'>agent</span> <span class='kw'>=</span> <span class='fu'><a href='makeAgent.html'>makeAgent</a></span>(<span class='st'>"softmax"</span>, <span class='st'>"table"</span>, <span class='st'>"qlearning"</span>)
+<span class='fu'>interact</span>(<span class='no'>env</span>, <span class='no'>agent</span>, <span class='kw'>n.episodes</span> <span class='kw'>=</span> <span class='fl'>10L</span>)</div><div class='output co'>#&gt; <span class='message'>Episode 1 finished after 872 steps with a return of -872</span></div><div class='output co'>#&gt; <span class='message'>Episode 2 finished after 489 steps with a return of -489</span></div><div class='output co'>#&gt; <span class='message'>Episode 3 finished after 571 steps with a return of -571</span></div><div class='output co'>#&gt; <span class='message'>Episode 4 finished after 4708 steps with a return of -4708</span></div><div class='output co'>#&gt; <span class='message'>Episode 5 finished after 806 steps with a return of -806</span></div><div class='output co'>#&gt; <span class='message'>Episode 6 finished after 603 steps with a return of -603</span></div><div class='output co'>#&gt; <span class='message'>Episode 7 finished after 108 steps with a return of -108</span></div><div class='output co'>#&gt; <span class='message'>Episode 8 finished after 237 steps with a return of -237</span></div><div class='output co'>#&gt; <span class='message'>Episode 9 finished after 164 steps with a return of -164</span></div><div class='output co'>#&gt; <span class='message'>Episode 10 finished after 338 steps with a return of -338</span></div><div class='output co'>#&gt; $returns
+#&gt;  [1]  -872  -489  -571 -4708  -806  -603  -108  -237  -164  -338
+#&gt; 
+#&gt; $steps
+#&gt;  [1]  872  489  571 4708  806  603  108  237  164  338
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

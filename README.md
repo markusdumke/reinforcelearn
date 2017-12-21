@@ -2,11 +2,11 @@
 Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="36"/>
 =====================================================================================
 
-[![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn) [![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
+[![Travis-CI Build Status](https://travis-ci.org/markusdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markusdumke/reinforcelearn) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn) [![Coverage Status](https://img.shields.io/codecov/c/github/markusdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markusdumke/reinforcelearn?branch=master)
 
 ### Documentation
 
-[Website](https://markdumke.github.io/reinforcelearn)
+[Website](https://markusdumke.github.io/reinforcelearn)
 
 ------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="
 install.packages("reinforcelearn")
 
 # Install development version from github.
-devtools::install_github("markdumke/reinforcelearn")
+devtools::install_github("markusdumke/reinforcelearn")
 ```
 
 ------------------------------------------------------------------------
@@ -35,10 +35,10 @@ agent = makeAgent("softmax", "table", "qlearning")
 # Run interaction for 10 episodes.
 interact(env, agent, n.episodes = 10L)
 #> $returns
-#>  [1] -3716 -2876  -483 -1556  -243  -228  -492  -150  -154  -249
+#>  [1]  -284 -3439 -1986  -310  -420  -486  -120  -172  -446  -978
 #> 
 #> $steps
-#>  [1] 3716 2876  483 1556  243  228  492  150  154  249
+#>  [1]  284 3439 1986  310  420  486  120  172  446  978
 ```
 
 ------------------------------------------------------------------------
@@ -74,18 +74,19 @@ env$reset()
 #> 
 #> $sd
 #> [1] 1
+
 # Take action.
 env$step(100)
 #> $state
 #> $state$mean
-#> [1] 99.92368
+#> [1] 98.13673
 #> 
 #> $state$sd
-#> [1] 0.875757
+#> [1] 0.1112962
 #> 
 #> 
 #> $reward
-#> [1] 99.45986
+#> [1] 98.24879
 #> 
 #> $done
 #> [1] FALSE
@@ -110,7 +111,7 @@ env$close()
 
 This should open a window showing a graphical visualization of the environment during interaction.
 
-For more details on how to create an environment have a look at the vignette: [Environments](https://markdumke.github.io/reinforcelearn/articles/environments.html)
+For more details on how to create an environment have a look at the vignette: [Environments](https://markusdumke.github.io/reinforcelearn/articles/environments.html)
 
 ------------------------------------------------------------------------
 
@@ -150,15 +151,13 @@ algorithm = makeAlgorithm("qlearning")
 agent = makeAgent(policy, values, algorithm)
 
 # Run interaction for 10 steps.
-interact(env, agent, n.steps = 10L)
+interact(env, agent, n.episodes = 10L)
 #> $returns
-#> numeric(0)
+#>  [1] -3948 -1768 -1173  -614  -921  -903  -305  -330   -61  -291
 #> 
 #> $steps
-#> integer(0)
+#>  [1] 3948 1768 1173  614  921  903  305  330   61  291
 ```
-
-For more details on agents have a look at the vignette: [Agents](https://markdumke.github.io/reinforcelearn/articles/agents.html)
 
 ------------------------------------------------------------------------
 
@@ -166,8 +165,7 @@ For more details on agents have a look at the vignette: [Agents](https://markdum
 
 Also have a look at the vignettes for further examples.
 
--   [Environments](https://markdumke.github.io/reinforcelearn/articles/environments.html)
--   [Agents](https://markdumke.github.io/reinforcelearn/articles/agents.html)
+-   [Environments](https://markusdumke.github.io/reinforcelearn/articles/environments.html)
 
 ------------------------------------------------------------------------
 

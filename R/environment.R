@@ -152,6 +152,12 @@ Environment = R6::R6Class("Environment",
     done = FALSE,
     discount = NULL,
 
+    resetEverything = function() {
+      self$n.step = 0L
+      self$episode = 0
+      self$reset()
+    },
+
     reset = function() {
       self$episode.step = 0L
       self$episode.return = 0

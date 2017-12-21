@@ -236,12 +236,4 @@ Here is a full list describing the attributes of the `R6` class created by `make
 
 ---
 
-### Other vignettes
-
-Have a look at the other vignettes: 
-
-- [Agents](agents.html)
-
----
-
 ### References

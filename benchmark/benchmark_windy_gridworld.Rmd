@@ -1,0 +1,147 @@
+---
+title: "Benchmark Algorithms on Windy Gridworld Task"
+author: "Markus Dumke"
+date: "`r Sys.Date()`"
+output: github_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(comment = "#>", collapse = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.path = 'Images/', eval = TRUE, cache = FALSE,
+  size = "footnotesize", fig.asp = 0.618, fig.width = 4.5, fig.align = "center",
+  message = FALSE, comment = "#>", collapse = TRUE, echo = TRUE)
+```
+
+
+```{r}
+library(reinforcelearn)
+env = makeEnvironment("windy.gridworld")
+```
+
+The optimal solution is 15 steps.
+
+## Simple Q-Learning
+
+```{r}
+policy = makePolicy("epsilon.greedy", epsilon = 0.1)
+agent = makeAgent(policy, "table", "qlearning", epsilon = 0.1)
+
+res = interact(env, agent, n.episodes = 500L)
+```
+
+```{r qlearning_windygrid, echo = FALSE, fig.align = "center"}
+library(ggplot2)
+df = data.frame(episode = seq_along(res$steps),
+  steps = res$steps)
+
+ggplot(df, aes(episode, steps), col = "brown1") +
+  geom_point(alpha = 0.2) +
+  theme_bw() +
+  labs(
+    title = "Q-Learning",
+    x = "Episode",
+    y = "Steps per episode"
+    ) +
+  coord_cartesian(ylim = c(0, 200)) +
+  geom_smooth(se = FALSE, size = 1) +
+  geom_hline(yintercept = 15, size = 1, col = "black", lty = 2)
+```
+
+## Q-Learning with Eligibility Traces
+
+```{r}
+env$resetEverything()
+policy = makePolicy("epsilon.greedy", epsilon = 0.1)
+alg = makeAlgorithm("qlearning", lambda = 0.8, traces = "accumulate")
+agent = makeAgent(policy, "table", alg)
+
+res = interact(env, agent, n.episodes = 500L)
+```
+
+```{r qlearning_windygrid_elig, echo = FALSE, fig.align = "center"}
+library(ggplot2)
+df = data.frame(episode = seq_along(res$steps),
+  steps = res$steps)
+
+ggplot(df, aes(episode, steps), col = "brown1") +
+  geom_point(alpha = 0.2) +
+  theme_bw() +
+  labs(
+    title = "Q-Learning",
+    subtitle = "Eligibility traces",
+    x = "Episode",
+    y = "Steps per episode"
+    ) +
+  coord_cartesian(ylim = c(0, 200)) +
+  geom_smooth(se = FALSE, size = 1) +
+  geom_hline(yintercept = 15, size = 1, col = "black", lty = 2)
+```
+
+## Q-Learning with Experience replay
+
+```{r}
+env$resetEverything()
+policy = makePolicy("epsilon.greedy", epsilon = 0.1)
+mem = makeReplayMemory(size = 10L, batch.size = 10L)
+agent = makeAgent(policy, "table", "qlearning", experience.replay = mem)
+
+res = interact(env, agent, n.episodes = 500L)
+```
+
+```{r qlearning_windygrid_expreplay, echo = FALSE, fig.align = "center"}
+library(ggplot2)
+df = data.frame(episode = seq_along(res$steps),
+  steps = res$steps)
+
+ggplot(df, aes(episode, steps), col = "brown1") +
+  geom_point(alpha = 0.2) +
+  theme_bw() +
+  labs(
+    title = "Q-Learning",
+    subtitle = "Experience replay",
+    x = "Episode",
+    y = "Steps per episode"
+    ) +
+  coord_cartesian(ylim = c(0, 200)) +
+  geom_smooth(se = FALSE, size = 1) +
+  geom_hline(yintercept = 15, size = 1, col = "black", lty = 2)
+```
+
+## Q-Learning with neural network and experience replay
+
+```{r}
+env$resetEverything()
+library(keras)
+model = keras_model_sequential() %>%
+  layer_dense(units = env$n.actions, activation = "linear",
+    input_shape = c(env$n.states), kernel_initializer = initializer_zeros(),
+    use_bias = FALSE) %>%
+  compile(loss = "mae", optimizer = optimizer_sgd(lr = 1))
+mem = makeReplayMemory(size = 2L, batch.size = 2L)
+val = makeValueFunction("neural.network", model = model)
+policy = makePolicy("epsilon.greedy", epsilon = 0.1)
+preprocess = function(x) to_categorical(x, num_classes = env$n.states)
+agent = makeAgent(policy, val, "qlearning",
+  preprocess = preprocess, experience.replay = mem)
+
+res = interact(env, agent, n.episodes = 500L)
+```
+
+```{r qlearning_windygrid_neuralnetwork, echo = FALSE, fig.align = "center"}
+library(ggplot2)
+df = data.frame(episode = seq_along(res$steps),
+  steps = res$steps)
+
+ggplot(df, aes(episode, steps), col = "brown1") +
+  geom_point(alpha = 0.2) +
+  theme_bw() +
+  labs(
+    title = "Q-Learning",
+    subtitle = "Experience replay and neural network",
+    x = "Episode",
+    y = "Steps per episode"
+    ) +
+  coord_cartesian(ylim = c(0, 200)) +
+  geom_smooth(se = FALSE, size = 1) +
+  geom_hline(yintercept = 15, size = 1, col = "black", lty = 2)
+```

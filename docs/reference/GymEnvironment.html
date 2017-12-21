@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -109,6 +106,10 @@
       <td><p>[<code>character(1)</code>] 
 Name of gym environment, e.g. <code>"CartPole-v0"</code>.</p></td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td><p>[<code>any</code>]  Arguments passed on to <a href='makeEnvironment.html'>makeEnvironment</a>.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -117,7 +118,7 @@ Name of gym environment, e.g. <code>"CartPole-v0"</code>.</p></td>
     
     <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
-    <p><code><a href='makeEnvironment.html'>makeEnvironment("Gym", gym.name)</a></code></p>
+    <p><code><a href='makeEnvironment.html'>makeEnvironment("gym", gym.name, ...)</a></code></p>
     
     <h2 class="hasAnchor" id="installation"><a class="anchor" href="#installation"></a>Installation</h2>
 
@@ -149,7 +150,7 @@ Visualizes the environment (if there is a visualization function).</p></li>
     <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='co'># Create an OpenAI Gym environment.</span>
 <span class='co'># Make sure you have Python, gym and reticulate installed.</span>
-<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"Gym"</span>, <span class='st'>"MountainCar-v0"</span>)
+<span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"gym"</span>, <span class='st'>"MountainCar-v0"</span>)
 <span class='no'>env</span>$<span class='fu'>reset</span>()
 <span class='no'>env</span>$<span class='fu'>close</span>()
 <span class='co'># }</span></pre>

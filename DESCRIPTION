@@ -3,18 +3,15 @@ Type: Package
 Title: Reinforcement Learning
 Version: 0.1.0
 Authors@R: person("Markus", "Dumke", email = {"markusdumke@gmail.com"}, role = c("aut", "cre"))
-Description: Reinforcement learning environments and algorithms from the field 
-    of dynamic programming and temporal-difference learning, including 
-    TD(lambda), Q-Learning, Sarsa and actor critic. The algorithms can be used 
-    with function approximation, eligibility traces, double learning and 
-    experience replay.
+Description: Reinforcement learning environments and algorithms. Algorithms can be used 
+    with function approximation, eligibility traces and experience replay.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.0.0)
 RoxygenNote: 6.0.1
-BugReports: https://github.com/markdumke/reinforcelearn/issues
-URL: http://markdumke.github.io/reinforcelearn
+BugReports: https://github.com/markusdumke/reinforcelearn/issues
+URL: http://markusdumke.github.io/reinforcelearn
 SystemRequirements: (Python and gym only required if Gym environments are used)
 Imports:
     checkmate (>= 1.8.4),

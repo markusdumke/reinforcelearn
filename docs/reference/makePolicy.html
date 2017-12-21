@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -108,7 +105,7 @@
     <tr>
       <th>class</th>
       <td><p>[<code>character(1)</code>] 
-Class of policy. See Section Policies for available policies.</p></td>
+Class of policy. One of <code>c("random", "epsilon.greedy", "greedy", "softmax")</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -116,6 +113,12 @@ Class of policy. See Section Policies for available policies.</p></td>
 Arguments passed on to the policy class.</p></td>
     </tr>
     </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>[<code>list(name, args)</code>] List with the name and optinal args.
+This list can then be passed onto <a href='makeAgent.html'>makeAgent</a>, which will construct the
+policy accordingly.</p>
     
     <h2 class="hasAnchor" id="policies"><a class="anchor" href="#policies"></a>Policies</h2>
 
@@ -137,6 +140,8 @@ Arguments passed on to the policy class.</p></td>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
+      <li><a href="#value">Value</a></li>
+
       <li><a href="#policies">Policies</a></li>
       
       <li><a href="#examples">Examples</a></li>

@@ -45,10 +45,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
-      <a href="articles/environments.html">How to create an environment?</a>
+      <a href="articles/environments.html">Environments</a>
     </li>
   </ul>
 </li>
@@ -80,17 +77,17 @@
 <div id="documentation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#documentation" class="anchor"></a>Documentation</h3>
-<p><a href="https://markdumke.github.io/reinforcelearn">Website</a></p>
+<p><a href="https://markusdumke.github.io/reinforcelearn">Website</a></p>
 <hr>
 </div>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install from CRAN</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Install from CRAN.</span>
 <span class="kw">install.packages</span>(<span class="st">"reinforcelearn"</span>)
 
-<span class="co"># install development version from github</span>
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"markdumke/reinforcelearn"</span>)</code></pre></div>
+<span class="co"># Install development version from github.</span>
+devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"markusdumke/reinforcelearn"</span>)</code></pre></div>
 <hr>
 </div>
 <div id="get-started" class="section level3">
@@ -99,15 +96,16 @@ devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocument
 <p>Reinforcement Learning with the package <code>reinforcelearn</code> is as easy as</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(reinforcelearn)
 
-<span class="co"># Create gridworld environment</span>
-env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"WindyGridworld"</span>)
+env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"windy.gridworld"</span>)
+agent =<span class="st"> </span><span class="kw"><a href="reference/makeAgent.html">makeAgent</a></span>(<span class="st">"softmax"</span>, <span class="st">"table"</span>, <span class="st">"qlearning"</span>)
 
-<span class="co"># Solve environment using Sarsa</span>
-res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">sarsa</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
-<span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  827 2563 3381 3664 4141 4530 4612 4892 5115 5338 5429 5641 5892 6054</span>
-<span class="co">#&gt; [15] 6101 6315 6484 6627 6706 6866 7033 7173 7296 7399 7453 7581 7806 7885</span>
-<span class="co">#&gt; [29] 8055 8116</span></code></pre></div>
+<span class="co"># Run interaction for 10 episodes.</span>
+<span class="kw"><a href="reference/interact.html">interact</a></span>(env, agent, <span class="dt">n.episodes =</span> 10L)
+<span class="co">#&gt; $returns</span>
+<span class="co">#&gt;  [1] -3975  -337  -748  -407  -144  -188  -262  -386 -1558  -958</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $steps</span>
+<span class="co">#&gt;  [1] 3975  337  748  407  144  188  262  386 1558  958</span></code></pre></div>
 <hr>
 </div>
 <div id="environments" class="section level3">
@@ -122,7 +120,7 @@ step =<span class="st"> </span><span class="cf">function</span>(self, action) {
   <span class="kw">list</span>(state, reward, done)
 }
 
-reset =<span class="st"> </span><span class="cf">function</span>() {
+reset =<span class="st"> </span><span class="cf">function</span>(self) {
   state =<span class="st"> </span><span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>)
   state
 }
@@ -136,25 +134,26 @@ env<span class="op">$</span><span class="kw">reset</span>()
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $sd</span>
 <span class="co">#&gt; [1] 1</span>
+
 <span class="co"># Take action.</span>
 env<span class="op">$</span><span class="kw">step</span>(<span class="dv">100</span>)
 <span class="co">#&gt; $state</span>
 <span class="co">#&gt; $state$mean</span>
-<span class="co">#&gt; [1] 100.1641</span>
+<span class="co">#&gt; [1] 101.4431</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $state$sd</span>
-<span class="co">#&gt; [1] 0.3432847</span>
+<span class="co">#&gt; [1] 0.4397719</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $reward</span>
-<span class="co">#&gt; [1] 99.93667</span>
+<span class="co">#&gt; [1] 101.6973</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $done</span>
 <span class="co">#&gt; [1] FALSE</span></code></pre></div>
 <p>There are some predefined environment classes, e.g. <code>MDPEnvironment</code>, which allows you to create a Markov Decision Process by passing on state transition array and reward matrix, or <code>GymEnvironment</code>, where you can use toy problems from <a href="https://gym.openai.com/">OpenAI Gym</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create an OpenAI Gym environment.</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a gym environment.</span>
 <span class="co"># Make sure you have Python, gym and reticulate installed.</span>
-env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"Gym"</span>, <span class="st">"MountainCar-v0"</span>)
+env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gym"</span>, <span class="st">"MountainCar-v0"</span>)
 
 <span class="co"># Take random actions for 200 steps.</span>
 env<span class="op">$</span><span class="kw">reset</span>()
@@ -164,81 +163,46 @@ env<span class="op">$</span><span class="kw">reset</span>()
   env<span class="op">$</span><span class="kw">visualize</span>()
 }
 env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
-<p>This should open a Python window showing the interaction with the environment.</p>
-<p>For more details on how to create an environment have a look at the vignette: <a href="https://markdumke.github.io/reinforcelearn/articles/environments.html">How to create an environment?</a></p>
+<p>This should open a window showing a graphical visualization of the environment during interaction.</p>
+<p>For more details on how to create an environment have a look at the vignette: <a href="https://markusdumke.github.io/reinforcelearn/articles/environments.html">Environments</a></p>
 <hr>
 </div>
-<div id="algorithms" class="section level3">
+<div id="agents" class="section level3">
 <h3 class="hasAnchor">
-<a href="#algorithms" class="anchor"></a>Algorithms</h3>
-<p>After you created an environment you can use various reinforcement learning algorithms to solve this environment. For example, for a tabular environment like gridworld you can use tabular Q-Learning to solve it and find the optimal action value function <span class="math inline">\(Q*\)</span>. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create the windy gridworld environment.</span>
-env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"WindyGridworld"</span>)
-res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">qlearning</a></span>(env, <span class="dt">n.episodes =</span> <span class="dv">30</span>)
+<a href="#agents" class="anchor"></a>Agents</h3>
+<p>With <code>makeAgent</code> you can set up a reinforcement learning agent to solve the environment, i.e. to find the best action in each time step.</p>
+<p>The first step is to set up the policy, which defines which action to choose. For example we could use a uniform random policy.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create the environment.</span>
+env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"windy.gridworld"</span>)
 
-<span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1]  784 2716 3282 3636 4196 4334 4654 4935 5121 5359 5705 5898 6015 6139</span>
-<span class="co">#&gt; [15] 6265 6316 6463 6697 6842 6958 7027 7176 7284 7336 7471 7556 7636 7874</span>
-<span class="co">#&gt; [29] 7915 8007</span>
+<span class="co"># Create agent with uniform random policy.</span>
+policy =<span class="st"> </span><span class="kw"><a href="reference/makePolicy.html">makePolicy</a></span>(<span class="st">"random"</span>)
+agent =<span class="st"> </span><span class="kw"><a href="reference/makeAgent.html">makeAgent</a></span>(policy)
 
-<span class="co"># Show value of each state.</span>
-<span class="kw">print</span>(<span class="kw">matrix</span>(<span class="kw">round</span>(<span class="kw">apply</span>(res<span class="op">$</span>Q1, <span class="dv">1</span>, max), <span class="dv">1</span>), <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
-<span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,] -4.6 -4.8 -5.4 -6.1 -6.8 -7.3 -7.2 -6.7 -6.0  -5.1</span>
-<span class="co">#&gt; [2,] -4.5 -4.5 -4.7 -5.0 -4.8 -4.1 -2.8 -3.8 -4.3  -4.3</span>
-<span class="co">#&gt; [3,] -4.1 -4.0 -4.0 -4.1 -3.2 -1.8 -1.2 -2.4 -3.1  -3.4</span>
-<span class="co">#&gt; [4,] -3.9 -3.6 -3.3 -3.1 -1.8 -0.8 -0.2  0.0 -2.2  -2.6</span>
-<span class="co">#&gt; [5,] -3.3 -3.1 -2.7 -2.2 -1.1 -0.3  0.0 -0.3 -0.9  -1.7</span>
-<span class="co">#&gt; [6,] -2.9 -2.6 -2.2 -1.6 -0.6  0.0  0.0  0.0 -0.7  -1.1</span>
-<span class="co">#&gt; [7,] -2.6 -2.3 -1.8 -1.1  0.0  0.0  0.0  0.0 -0.3  -0.7</span></code></pre></div>
-<p>We can then get the policy by taking the argmax over the action value function Q.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">policy =<span class="st"> </span><span class="kw">max.col</span>(res<span class="op">$</span>Q1) <span class="op">-</span><span class="st"> </span>1L
-<span class="kw">print</span>(<span class="kw">matrix</span>(policy, <span class="dt">ncol =</span> <span class="dv">10</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>))
-<span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span>
-<span class="co">#&gt; [1,]    1    3    3    0    0    0    3    1    1     3</span>
-<span class="co">#&gt; [2,]    2    3    0    3    0    2    0    0    1     3</span>
-<span class="co">#&gt; [3,]    3    1    2    2    3    0    2    0    0     3</span>
-<span class="co">#&gt; [4,]    3    3    3    1    3    3    0    3    3     3</span>
-<span class="co">#&gt; [5,]    2    0    1    1    3    0    0    0    0     3</span>
-<span class="co">#&gt; [6,]    2    1    0    3    3    2    2    3    1     3</span>
-<span class="co">#&gt; [7,]    2    1    1    3    2    2    2    0    3     0</span></code></pre></div>
-<p>For more details on algorithms have a look at the vignette: <a href="https://markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></p>
-<hr>
-</div>
-<div id="value-function-approximation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#value-function-approximation" class="anchor"></a>Value function approximation</h3>
-<p>When the state space is large or even continuous tabular solution methods cannot be applied. Then it is better to approximate the value function using a function approximator. We need to define a function, which preprocesses the state observation, so that the function approximator can work with it. Here is an example solving the mountain car problem using linear function approximation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Set up the Mountain Car problem.</span>
-m =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"MountainCar"</span>)
+<span class="co"># Run interaction for 10 steps.</span>
+<span class="kw"><a href="reference/interact.html">interact</a></span>(env, agent, <span class="dt">n.steps =</span> 10L)
+<span class="co">#&gt; $returns</span>
+<span class="co">#&gt; numeric(0)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $steps</span>
+<span class="co">#&gt; integer(0)</span></code></pre></div>
+<p>In this scenario the agent chooses all actions with equal probability and will not learn anything from the interaction. Usually we want the agent to be able to learn something. Value-based algorithms learn a value function from interaction with the environment and adjust the policy according to the value function. For example we could set up Q-Learning with a softmax policy.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create the environment.</span>
+env =<span class="st"> </span><span class="kw"><a href="reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"windy.gridworld"</span>)
 
-<span class="co"># Define preprocessing function (here grid tiling).</span>
-n.tilings =<span class="st"> </span><span class="dv">8</span>
-max.size =<span class="st"> </span><span class="dv">4096</span>
-iht =<span class="st"> </span><span class="kw"><a href="reference/tilecoding.html">IHT</a></span>(max.size)
+<span class="co"># Create qlearning agent with softmax policy and tabular value function.</span>
+policy =<span class="st"> </span><span class="kw"><a href="reference/makePolicy.html">makePolicy</a></span>(<span class="st">"softmax"</span>)
+values =<span class="st"> </span><span class="kw"><a href="reference/makeValueFunction.html">makeValueFunction</a></span>(<span class="st">"table"</span>, <span class="dt">n.states =</span> env<span class="op">$</span>n.states, env<span class="op">$</span>n.actions)
+algorithm =<span class="st"> </span><span class="kw"><a href="reference/makeAlgorithm.html">makeAlgorithm</a></span>(<span class="st">"qlearning"</span>)
+agent =<span class="st"> </span><span class="kw"><a href="reference/makeAgent.html">makeAgent</a></span>(policy, values, algorithm)
 
-position.max =<span class="st"> </span>m<span class="op">$</span>state.space.bounds[[<span class="dv">1</span>]][<span class="dv">2</span>]
-position.min =<span class="st"> </span>m<span class="op">$</span>state.space.bounds[[<span class="dv">1</span>]][<span class="dv">1</span>]
-velocity.max =<span class="st"> </span>m<span class="op">$</span>state.space.bounds[[<span class="dv">2</span>]][<span class="dv">2</span>]
-velocity.min =<span class="st"> </span>m<span class="op">$</span>state.space.bounds[[<span class="dv">2</span>]][<span class="dv">1</span>]
-position.scale =<span class="st"> </span>n.tilings <span class="op">/</span><span class="st"> </span>(position.max <span class="op">-</span><span class="st"> </span>position.min)
-velocity.scale =<span class="st"> </span>n.tilings <span class="op">/</span><span class="st"> </span>(velocity.max <span class="op">-</span><span class="st"> </span>velocity.min)
-
-preprocessState =<span class="st"> </span><span class="cf">function</span>(state) {
-  <span class="co"># scale state observation</span>
-  state =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(position.scale <span class="op">*</span><span class="st"> </span>state[<span class="dv">1</span>], velocity.scale <span class="op">*</span><span class="st"> </span>state[<span class="dv">2</span>]), <span class="dt">ncol =</span> <span class="dv">2</span>)
-  <span class="co"># get active tiles</span>
-  active.tiles =<span class="st"> </span><span class="kw"><a href="reference/tilecoding.html">tiles</a></span>(iht, <span class="dv">8</span>, state)
-  <span class="co"># return n hot vector with 1 at the position of each active tile</span>
-  <span class="kw"><a href="reference/nHot.html">nHot</a></span>(active.tiles, max.size)
-}
-
-<span class="kw">set.seed</span>(<span class="dv">123</span>)
-res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">qlearning</a></span>(m, <span class="dt">fun.approx =</span> <span class="st">"linear"</span>, 
-  <span class="dt">preprocessState =</span> preprocessState, <span class="dt">n.episodes =</span> <span class="dv">20</span>)
-<span class="kw">print</span>(res<span class="op">$</span>steps)
-<span class="co">#&gt;  [1] 1211 2114 2650 3070 3476 3717 3958 4197 4430 4662 4866 5107 5301 5536</span>
-<span class="co">#&gt; [15] 5769 5936 6134 6299 6533 6695</span></code></pre></div>
+<span class="co"># Run interaction for 10 steps.</span>
+<span class="kw"><a href="reference/interact.html">interact</a></span>(env, agent, <span class="dt">n.episodes =</span> 10L)
+<span class="co">#&gt; $returns</span>
+<span class="co">#&gt;  [1] -3871  -840  -401  -186 -1780  -705  -231 -1432  -352  -499</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $steps</span>
+<span class="co">#&gt;  [1] 3871  840  401  186 1780  705  231 1432  352  499</span></code></pre></div>
 <hr>
 </div>
 <div id="vignettes" class="section level3">
@@ -246,8 +210,7 @@ res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">q
 <a href="#vignettes" class="anchor"></a>Vignettes</h3>
 <p>Also have a look at the vignettes for further examples.</p>
 <ul>
-<li><a href="https://markdumke.github.io/reinforcelearn/articles/environments.html">How to create an environment?</a></li>
-<li><a href="https://markdumke.github.io/reinforcelearn/articles/algorithms.html">How to solve an environment?</a></li>
+<li><a href="https://markusdumke.github.io/reinforcelearn/articles/environments.html">Environments</a></li>
 </ul>
 <hr>
 <p>Logo is a modification of <a href="https://www.r-project.org/logo/" class="uri">https://www.r-project.org/logo/</a>.</p>
@@ -260,7 +223,7 @@ res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">q
     <h2 class="hasAnchor">
 <a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
-<li>Report a bug at <br><a href="https://github.com/markdumke/reinforcelearn/issues">https://​github.com/​markdumke/​reinforcelearn/​issues</a>
+<li>Report a bug at <br><a href="https://github.com/markusdumke/reinforcelearn/issues">https://​github.com/​markusdumke/​reinforcelearn/​issues</a>
 </li>
 </ul>
 <h2>License</h2>
@@ -271,9 +234,9 @@ res =<span class="st"> </span><span class="kw"><a href="reference/qSigma.html">q
 </ul>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/markdumke/reinforcelearn"><img src="https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master" alt="Travis-CI Build Status"></a></li>
+<li><a href="https://travis-ci.org/markusdumke/reinforcelearn"><img src="https://travis-ci.org/markusdumke/reinforcelearn.svg?branch=master" alt="Travis-CI Build Status"></a></li>
 <li><a href="https://cran.r-project.org/package=reinforcelearn"><img src="http://www.r-pkg.org/badges/version/reinforcelearn" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://codecov.io/github/markdumke/reinforcelearn?branch=master"><img src="https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600" alt="Coverage Status"></a></li>
+<li><a href="https://codecov.io/github/markusdumke/reinforcelearn?branch=master"><img src="https://img.shields.io/codecov/c/github/markusdumke/reinforcelearn/master.svg?maxAge=600" alt="Coverage Status"></a></li>
 </ul>
 </div>
 

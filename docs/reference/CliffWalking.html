@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -106,7 +103,16 @@ back to the starting state.
 Elsewise rewards are - 1, for the goal state 0.</p>
     
 
-        
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>...</th>
+      <td><p>\[`any`]  Arguments passed on to [makeEnvironment].</p></td>
+    </tr>
+    </table>
+    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This is the gridworld (goal state denoted G, cliff states denoted C, start state denoted S):</p><table><tr><td>
@@ -166,7 +172,7 @@ Elsewise rewards are - 1, for the goal state 0.</p>
     <h2 class="hasAnchor" id="usage"><a class="anchor" href="#usage"></a>Usage</h2>
 
     
-    <p>`makeEnvironment("CliffWalking")`</p>
+    <p>`makeEnvironment("cliff.walking", ...)`</p>
     
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
@@ -188,11 +194,12 @@ Visualizes the environment (if there is a visualization function).</p></li>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"CliffWalking"</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>env</span> <span class='kw'>=</span> <span class='fu'><a href='makeEnvironment.html'>makeEnvironment</a></span>(<span class='st'>"cliff.walking"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#details">Details</a></li>
 

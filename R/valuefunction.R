@@ -166,18 +166,3 @@ ValueNetwork = R6::R6Class("ValueNetwork",
     }
   )
 )
-
-
-#' Get state values.
-#'
-#' Get state value function from  action value function.
-#'
-#' @param action.vals \[`matrix`] \cr Action value matrix.
-#'
-#' @md
-#'
-#' @export
-getStateValues = function(action.vals) {
-  checkmate::assertMatrix(action.vals)
-  apply(action.vals, 1L, max)
-}

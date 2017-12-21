@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Identity Function — identity2 â€¢ reinforcelearn</title>
+<title>Experience Replay — makeReplayMemory â€¢ reinforcelearn</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -68,9 +68,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
-    </li>
-    <li>
       <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
@@ -93,40 +90,51 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Identity Function</h1>
+    <h1>Experience Replay</h1>
     </div>
 
     
-    <p>A trivial identity function returning its argument.
-In comparison to <code>identity</code> it accepts more than one argument,
-but always returns the first argument.</p>
+    <p>Create replay memory for experience replay.</p>
     
 
-    <pre class="usage"><span class='fu'>identity2</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>makeReplayMemory</span>(<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>16L</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>[<code>R object</code>] 
-This argument will be returned.</p></td>
+      <th>size</th>
+      <td><p>[<code>integer(1)</code>]  Size of replay memory.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Other arguments, which are not used.</p></td>
+      <th>batch.size</th>
+      <td><p>[<code>integer(1)</code>]  Batch size.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>[<code>list(size, batch.size)</code>]
+This list can then be passed onto <a href='makeAgent.html'>makeAgent</a>, which will construct the
+replay memory accordingly.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Sampling from replay memory will be uniform.</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>identity2</span>(<span class='fl'>10</span>, <span class='st'>"a"</span>)</div><div class='output co'>#&gt; [1] 10</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>memory</span> <span class='kw'>=</span> <span class='fu'>makeReplayMemory</span>(<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>batch.size</span> <span class='kw'>=</span> <span class='fl'>16L</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
