@@ -24,7 +24,7 @@ The optimal solution is 15 steps.
 
 ```{r}
 policy = makePolicy("epsilon.greedy", epsilon = 0.1)
-agent = makeAgent(policy, "table", "qlearning", epsilon = 0.1)
+agent = makeAgent(policy, "table", "qlearning")
 
 res = interact(env, agent, n.episodes = 500L)
 ```
@@ -83,7 +83,7 @@ ggplot(df, aes(episode, steps), col = "brown1") +
 env$resetEverything()
 policy = makePolicy("epsilon.greedy", epsilon = 0.1)
 mem = makeReplayMemory(size = 10L, batch.size = 10L)
-agent = makeAgent(policy, "table", "qlearning", experience.replay = mem)
+agent = makeAgent(policy, "table", "qlearning", replay.memory = mem)
 
 res = interact(env, agent, n.episodes = 500L)
 ```
@@ -122,7 +122,7 @@ val = makeValueFunction("neural.network", model = model)
 policy = makePolicy("epsilon.greedy", epsilon = 0.1)
 preprocess = function(x) to_categorical(x, num_classes = env$n.states)
 agent = makeAgent(policy, val, "qlearning",
-  preprocess = preprocess, experience.replay = mem)
+  preprocess = preprocess, replay.memory = mem)
 
 res = interact(env, agent, n.episodes = 500L)
 ```
