@@ -1,7 +1,7 @@
 #' Make reinforcement learning algorithm.
 #'
 #' @param class \[`character(1)`] \cr Algorithm. One of `c("qlearning")`.
-#' @param ... \[`any`] \cr Arguments passed on to the specific algorithm.
+#' @inheritParams makePolicy
 #'
 #' @md
 #'
@@ -11,11 +11,15 @@
 #' @export
 #' @examples
 #' alg = makeAlgorithm("qlearning")
-makeAlgorithm = function(class, ...) {
+makeAlgorithm = function(class, args = list(), ...) {
   checkmate::assertChoice(class,
     c("qlearning"))#, "sarsa"))
-  # fixme: check arguments here
-  x = list(name = class, args = list(...))
+  checkmate::assertList(args, names = "unique")
+  args = append(list(...), args)
+  # remove duplicate entries in args list
+  args = args[unique(names(args))]
+
+  x = list(name = class, args = args)
   class(x) = "Algorithm"
   x
 }

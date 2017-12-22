@@ -46,7 +46,8 @@ algorithm = makeAlgorithm("qlearning")
 agent = makeAgent(policy, val.fun, algorithm)
 
 ## ------------------------------------------------------------------------
-agent = makeAgent("epsilon.greedy", "table", "qlearning", epsilon = 0.2)
+agent = makeAgent("epsilon.greedy", "table", "qlearning", 
+  policy.args = list(epsilon = 0.2))
 
 ## ------------------------------------------------------------------------
 env = makeEnvironment("gridworld", shape = c(3, 2), goal.states = 0L)
@@ -68,7 +69,7 @@ for (i in 1:3L) {
 ## ------------------------------------------------------------------------
 (memory = makeReplayMemory(size = 2L, batch.size = 1L))
 
-agent = makeAgent("random", experience.replay = memory)
+agent = makeAgent("random", replay.memory = memory)
 
 interact(env, agent, n.steps = 2L, visualize = TRUE)
 
@@ -80,7 +81,7 @@ env = makeEnvironment("gridworld", shape = c(4, 4), goal.states = c(0, 15))
 policy = makePolicy("epsilon.greedy", epsilon = 0.1)
 memory = makeReplayMemory(size = 100L, batch.size = 20L)
 
-agent = makeAgent(policy, "table", "qlearning", experience.replay = memory)
+agent = makeAgent(policy, "table", "qlearning", replay.memory = memory)
 
 for (i in 1:100) {
   interact(env, agent, n.steps = 20L, learn = FALSE)

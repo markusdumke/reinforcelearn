@@ -10,8 +10,10 @@
 #' @param algorithm \[`character(1)` | Algorithm] \cr An algorithm.
 #'   If you pass a string the algorithm will be created via [makeAlgorithm].
 #' @param preprocess \[`function`] \cr A function which preprocesses the state so that the agent can learn on this.
-#' @param experience.replay \[`logical(1)` | ReplayMemory] \cr Replay memory for experience replay.
-#' @param ... \[`any`] \cr Arguments passed on to [makePolicy], [makeAlgorithm] or [makeValueFunction].
+#' @param replay.memory \[ReplayMemory] \cr Replay memory for experience replay created by [makeReplayMemory].
+#' @param policy.args \[`list`] \cr Arguments passed on to `args` in [makePolicy].
+#' @param val.fun.args \[`list`] \cr Arguments passed on to `args` in [makeValueFunction].
+#' @param algorithm.args \[`list`] \cr Arguments passed on to `args` in [makeAlgorithm].
 #'
 #' @md
 #'
@@ -19,31 +21,33 @@
 #' @examples
 #' agent = makeAgent("softmax", "table", "qlearning")
 makeAgent = function(policy, val.fun = NULL, algorithm = NULL,
-  preprocess = identity, experience.replay = NULL, ...) { # better defaults?
+  preprocess = identity, replay.memory = NULL,
+  policy.args = list(), val.fun.args = list(),
+  algorithm.args = list()) { # better defaults?
 
   checkmate::assertFunction(preprocess)
+  checkmate::assertList(policy.args, names = "unique")
+  checkmate::assertList(val.fun.args, names = "unique")
+  checkmate::assertList(algorithm.args, names = "unique")
   if (is.character(policy)) {
-    policy = makePolicy(policy, ...)
+    policy = makePolicy(policy, policy.args)
   } else {
     checkmate::assertClass(policy, "Policy")
   }
   if (is.character(val.fun)) {
-    val.fun = makeValueFunction(val.fun, ...)
+    val.fun = makeValueFunction(val.fun, val.fun.args)
   } else {
     checkmate::assertClass(val.fun, "ValueFunction", null.ok = TRUE)
   }
   if (is.character(algorithm)) {
-    algorithm = makeAlgorithm(algorithm, ...)
+    algorithm = makeAlgorithm(algorithm, algorithm.args)
   } else {
     checkmate::assertClass(algorithm, "Algorithm", null.ok = TRUE)
   }
-  if (is.logical(experience.replay)) {
-    experience.replay = makeReplayMemory(...)
-  } else {
-    checkmate::assertClass(experience.replay, "ReplayMemory", null.ok = TRUE)
-  }
+  checkmate::assertClass(replay.memory, "ReplayMemory", null.ok = TRUE)
 
-  Agent$new(policy, val.fun, algorithm, preprocess, experience.replay)
+
+  Agent$new(policy, val.fun, algorithm, preprocess, replay.memory)
 }
 
 Agent = R6::R6Class("Agent",
@@ -96,6 +100,7 @@ Agent = R6::R6Class("Agent",
     # logging function
 
     initialize = function(policy, val.fun, algorithm, preprocess, exp.replay) {
+
 
       # initialize algorithm
       # policy, algorithm, exp.replay, eligibility, table, neural.network

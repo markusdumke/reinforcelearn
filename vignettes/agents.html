@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-12-21" />
+<meta name="date" content="2017-12-22" />
 
 <title>Agents</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Agents</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-12-21</em></h4>
+<h4 class="date"><em>2017-12-22</em></h4>
 
 </div>
 
@@ -250,7 +250,8 @@ algorithm = makeAlgorithm(&quot;qlearning&quot;)
 
 agent = makeAgent(policy, val.fun, algorithm)</code></pre>
 <p>Note that you can also call <code>makeAgent</code> with character arguments which can save some typing.</p>
-<pre class="r"><code>agent = makeAgent(&quot;epsilon.greedy&quot;, &quot;table&quot;, &quot;qlearning&quot;, epsilon = 0.2)</code></pre>
+<pre class="r"><code>agent = makeAgent(&quot;epsilon.greedy&quot;, &quot;table&quot;, &quot;qlearning&quot;, 
+  policy.args = list(epsilon = 0.2))</code></pre>
 </div>
 <div id="interaction" class="section level2">
 <h2>Interaction</h2>
@@ -263,13 +264,14 @@ interact(env, agent, n.steps = 3L, visualize = TRUE)
 #&gt;  o - 
 #&gt;  - -
 #&gt; 
-#&gt; 
 #&gt;  - - 
 #&gt;  o - 
 #&gt;  - -
+#&gt; 
 #&gt;  - - 
 #&gt;  - o 
 #&gt;  - -
+#&gt; 
 #&gt; $returns
 #&gt; numeric(0)
 #&gt; 
@@ -289,14 +291,17 @@ for (i in 1:3L) {
 #&gt;  - - - - 
 #&gt;  - - - - 
 #&gt;  - - - o
+#&gt; 
 #&gt;  - - - - 
 #&gt;  - - - - 
 #&gt;  - - - - 
 #&gt;  - - o -
+#&gt; 
 #&gt;  - - - - 
 #&gt;  - - - - 
 #&gt;  - - o - 
-#&gt;  - - - -</code></pre>
+#&gt;  - - - -
+#&gt; </code></pre>
 <div id="experience-replay" class="section level3">
 <h3>Experience replay</h3>
 <p>Experience replay is a technique to learn at once from multiple past observations. Therefore all the states, actions, rewards and subsequent states will be stored in a list (the so called replay memory) and at each step a random batch from this memory will be replayed.</p>
@@ -310,17 +315,19 @@ for (i in 1:3L) {
 #&gt; attr(,&quot;class&quot;)
 #&gt; [1] &quot;ReplayMemory&quot;
 
-agent = makeAgent(&quot;random&quot;, experience.replay = memory)
+agent = makeAgent(&quot;random&quot;, replay.memory = memory)
 
 interact(env, agent, n.steps = 2L, visualize = TRUE)
 #&gt;  - - - - 
 #&gt;  - - o - 
 #&gt;  - - - - 
 #&gt;  - - - -
+#&gt; 
 #&gt;  - - - - 
 #&gt;  - - - - 
 #&gt;  - - o - 
 #&gt;  - - - -
+#&gt; 
 #&gt; $returns
 #&gt; numeric(0)
 #&gt; 
@@ -360,7 +367,7 @@ getReplayMemory(agent)
 policy = makePolicy(&quot;epsilon.greedy&quot;, epsilon = 0.1)
 memory = makeReplayMemory(size = 100L, batch.size = 20L)
 
-agent = makeAgent(policy, &quot;table&quot;, &quot;qlearning&quot;, experience.replay = memory)
+agent = makeAgent(policy, &quot;table&quot;, &quot;qlearning&quot;, replay.memory = memory)
 
 for (i in 1:100) {
   interact(env, agent, n.steps = 20L, learn = FALSE)

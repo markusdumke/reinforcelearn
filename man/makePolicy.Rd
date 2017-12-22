@@ -5,14 +5,19 @@
 \alias{Policy}
 \title{Create policy.}
 \usage{
-makePolicy(class = "random", ...)
+makePolicy(class = "random", args = list(), ...)
 }
 \arguments{
 \item{class}{[\code{character(1)}] \cr
 Class of policy. One of \code{c("random", "epsilon.greedy", "greedy", "softmax")}.}
 
-\item{...}{[\code{any}] \cr
-Arguments passed on to the policy class.}
+\item{args}{[\code{list}] \cr Optional list of named arguments passed on to the
+subclass. The arguments in ... take precedence over values in this list.
+We strongly encourage you to use one or the other to pass arguments
+to the function but not both.}
+
+\item{...}{[\code{any}] \cr Optional named arguments passed on to the subclass. Alternatively
+these can be given using the \code{args} argument.}
 }
 \value{
 [\code{list(name, args)}] List with the name and optinal args.

@@ -4,7 +4,7 @@
 #'
 #' @param class \[`character(1)`] \cr Class of value function approximation.
 #'   One of `c("table", "neural.network")`.
-#' @param ... \[`any`] \cr Arguments passed to the value function class.
+#' @inheritParams makePolicy
 #'
 #' @return \[`list(name, args)`] List with the name and optinal args.
 #'   This list can then be passed onto [makeAgent], which will construct the
@@ -22,10 +22,15 @@
 #' # If the number of states and actions is not supplied, the agent will try
 #' # to figure these out from the environment object during interaction.
 #' val = makeValueFunction("table")
-makeValueFunction = function(class, ...) {
+makeValueFunction = function(class, args = list(), ...) {
   checkmate::assertChoice(class, c("table", "neural.network")) #, "keras.neural.network", "mxnet.neural.network"))
   # fixme: check arguments here
-  x = list(name = class, args = list(...)) # get properties
+  checkmate::assertList(args, names = "unique")
+  args = append(list(...), args)
+  # remove duplicate entries in args list
+  args = args[unique(names(args))]
+
+  x = list(name = class, args = args)
   class(x) = "ValueFunction"
   x
 }

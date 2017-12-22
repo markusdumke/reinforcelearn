@@ -4,12 +4,18 @@
 \alias{makeAlgorithm}
 \title{Make reinforcement learning algorithm.}
 \usage{
-makeAlgorithm(class, ...)
+makeAlgorithm(class, args = list(), ...)
 }
 \arguments{
 \item{class}{[\code{character(1)}] \cr Algorithm. One of \code{c("qlearning")}.}
 
-\item{...}{[\code{any}] \cr Arguments passed on to the specific algorithm.}
+\item{args}{[\code{list}] \cr Optional list of named arguments passed on to the
+subclass. The arguments in ... take precedence over values in this list.
+We strongly encourage you to use one or the other to pass arguments
+to the function but not both.}
+
+\item{...}{[\code{any}] \cr Optional named arguments passed on to the subclass. Alternatively
+these can be given using the \code{args} argument.}
 }
 \description{
 Make reinforcement learning algorithm.

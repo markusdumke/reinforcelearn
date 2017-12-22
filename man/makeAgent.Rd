@@ -5,7 +5,8 @@
 \title{Create Agent.}
 \usage{
 makeAgent(policy, val.fun = NULL, algorithm = NULL, preprocess = identity,
-  experience.replay = NULL, ...)
+  replay.memory = NULL, policy.args = list(), val.fun.args = list(),
+  algorithm.args = list())
 }
 \arguments{
 \item{policy}{[\code{character(1)} | Policy] \cr A policy.
@@ -19,9 +20,13 @@ If you pass a string the algorithm will be created via \link{makeAlgorithm}.}
 
 \item{preprocess}{[\code{function}] \cr A function which preprocesses the state so that the agent can learn on this.}
 
-\item{experience.replay}{[\code{logical(1)} | ReplayMemory] \cr Replay memory for experience replay.}
+\item{replay.memory}{[ReplayMemory] \cr Replay memory for experience replay created by \link{makeReplayMemory}.}
 
-\item{...}{[\code{any}] \cr Arguments passed on to \link{makePolicy}, \link{makeAlgorithm} or \link{makeValueFunction}.}
+\item{policy.args}{[\code{list}] \cr Arguments passed on to \code{args} in \link{makePolicy}.}
+
+\item{val.fun.args}{[\code{list}] \cr Arguments passed on to \code{args} in \link{makeValueFunction}.}
+
+\item{algorithm.args}{[\code{list}] \cr Arguments passed on to \code{args} in \link{makeAlgorithm}.}
 }
 \description{
 An agent consists of a policy and (optional) a value function representation
