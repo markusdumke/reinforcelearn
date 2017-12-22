@@ -16,7 +16,8 @@ SystemRequirements: (Python and gym only required if Gym environments are used)
 Imports:
     checkmate (>= 1.8.4),
     R6 (>= 2.2.2),
-    nnet
+    nnet (>= 7.3-12),
+    purrr (>= 0.2.4)
 Suggests:
     reticulate,
     knitr,
