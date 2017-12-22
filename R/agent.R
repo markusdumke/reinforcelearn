@@ -101,7 +101,7 @@ Agent = R6::R6Class("Agent",
       # policy, algorithm, exp.replay, eligibility, table, neural.network
       self$preprocess = preprocess
 
-      if (policy$name %in% c("softmax", "epsilon-greedy", "greedy") && is.null(val.fun)) {
+      if (policy$name %in% c("softmax", "epsilon.greedy", "greedy") && is.null(val.fun)) {
         stop("Cannot use this policy without specifying a value function!")
       }
 
