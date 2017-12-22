@@ -100,7 +100,7 @@
     <p>Reinforcement learning policies.</p>
     
 
-    <pre class="usage"><span class='fu'>makePolicy</span>(<span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"random"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>makePolicy</span>(<span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"random"</span>, <span class='kw'>args</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -111,9 +111,16 @@
 Class of policy. One of <code>c("random", "epsilon.greedy", "greedy", "softmax")</code>.</p></td>
     </tr>
     <tr>
+      <th>args</th>
+      <td><p>[<code>list</code>]  Optional list of named arguments passed on to the
+subclass. The arguments in ... take precedence over values in this list.
+We strongly encourage you to use one or the other to pass arguments
+to the function but not both.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
-      <td><p>[<code>any</code>] 
-Arguments passed on to the policy class.</p></td>
+      <td><p>[<code>any</code>]  Optional named arguments passed on to the subclass. Alternatively
+these can be given using the <code>args</code> argument.</p></td>
     </tr>
     </table>
     

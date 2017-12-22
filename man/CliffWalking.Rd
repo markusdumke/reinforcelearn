@@ -5,7 +5,7 @@
 \alias{cliff.walking}
 \title{Cliff Walking}
 \arguments{
-\item{...}{\[`any`] \cr Arguments passed on to [makeEnvironment].}
+\item{...}{[\code{any}] \cr Arguments passed on to \link{makeEnvironment}.}
 }
 \description{
 Gridworld environment for reinforcement learning from Sutton & Barto (2017).
@@ -19,15 +19,15 @@ Elsewise rewards are - 1, for the goal state 0.
 \details{
 This is the gridworld (goal state denoted G, cliff states denoted C, start state denoted S):
 \tabular{rrrrrrrrrrrr}{
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- S \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab G \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+S \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab C \tab G \cr
 }
 }
 \section{Usage}{
 
-`makeEnvironment("cliff.walking", ...)`
+\code{makeEnvironment("cliff.walking", ...)}
 }
 
 \section{Methods}{

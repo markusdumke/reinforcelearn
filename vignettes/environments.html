@@ -11,7 +11,7 @@
 
 <meta name="author" content="Markus Dumke" />
 
-<meta name="date" content="2017-12-21" />
+<meta name="date" content="2017-12-22" />
 
 <title>Environments</title>
 
@@ -121,7 +121,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Environments</h1>
 <h4 class="author"><em>Markus Dumke</em></h4>
-<h4 class="date"><em>2017-12-21</em></h4>
+<h4 class="date"><em>2017-12-22</em></h4>
 
 </div>
 
@@ -229,6 +229,7 @@ env$visualize()
 #&gt;  - - - - 
 #&gt;  - - - - 
 #&gt;  - - - o
+#&gt; 
 
 # Actions are encoded as integers.
 env$step(0L)
@@ -246,6 +247,7 @@ env$visualize()
 #&gt;  - - - - 
 #&gt;  - - - - 
 #&gt;  - - o -
+#&gt; 
 
 # But can also have character names.
 env$step(&quot;left&quot;)
@@ -262,7 +264,8 @@ env$visualize()
 #&gt;  - - - - 
 #&gt;  - - - - 
 #&gt;  - - - - 
-#&gt;  - o - -</code></pre>
+#&gt;  - o - -
+#&gt; </code></pre>
 <p>Note that the R6 class object changes whenever calling <code>step</code> or <code>reset</code>! Therefore calling step with the same action twice will most likely return different states and rewards!</p>
 <p>Note also that all discrete states and actions are numerated starting with 0 to be consistent with OpenAI Gym!</p>
 <p>The environment object often also contains information about the number of states and actions or the bounds in case of a continuous space.</p>

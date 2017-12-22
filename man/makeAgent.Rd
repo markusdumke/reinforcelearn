@@ -20,7 +20,7 @@ If you pass a string the algorithm will be created via \link{makeAlgorithm}.}
 
 \item{preprocess}{[\code{function}] \cr A function which preprocesses the state so that the agent can learn on this.}
 
-\item{replay.memory}{[ReplayMemory] \cr Replay memory for experience replay created by \link{makeReplayMemory}.}
+\item{replay.memory}{[\code{ReplayMemory}] \cr Replay memory for experience replay created by \link{makeReplayMemory}.}
 
 \item{policy.args}{[\code{list}] \cr Arguments passed on to \code{args} in \link{makePolicy}.}
 

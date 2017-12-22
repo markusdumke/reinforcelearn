@@ -20,7 +20,7 @@ Make sure to scale the observation to unit variance before.}
 \item{action}{[\code{integer(1)}] \cr Optional: If supplied the action space
 will also be tiled. All distinct actions will result in different tile numbers.}
 
-\item{max.size}{\[`integer(1)`] \cr Maximal size of hash table.}
+\item{max.size}{[\code{integer(1)}] \cr Maximal size of hash table.}
 }
 \value{
 \code{iht} creates a hash table, which can then be passed on to \code{tiles}.

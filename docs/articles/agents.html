@@ -71,7 +71,7 @@
       <h1>Agents</h1>
                         <h4 class="author">Markus Dumke</h4>
             
-            <h4 class="date">2017-12-21</h4>
+            <h4 class="date">2017-12-22</h4>
           </div>
 
     
@@ -205,7 +205,8 @@ algorithm =<span class="st"> </span><span class="kw"><a href="../reference/makeA
 
 agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent.html">makeAgent</a></span>(policy, val.fun, algorithm)</code></pre></div>
 <p>Note that you can also call <code>makeAgent</code> with character arguments which can save some typing.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent.html">makeAgent</a></span>(<span class="st">"epsilon.greedy"</span>, <span class="st">"table"</span>, <span class="st">"qlearning"</span>, <span class="dt">epsilon =</span> <span class="fl">0.2</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent.html">makeAgent</a></span>(<span class="st">"epsilon.greedy"</span>, <span class="st">"table"</span>, <span class="st">"qlearning"</span>, 
+  <span class="dt">policy.args =</span> <span class="kw">list</span>(<span class="dt">epsilon =</span> <span class="fl">0.2</span>))</code></pre></div>
 </div>
 <div id="interaction" class="section level2">
 <h2 class="hasAnchor">
@@ -271,7 +272,7 @@ agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent
 <span class="co">#&gt; attr(,"class")</span>
 <span class="co">#&gt; [1] "ReplayMemory"</span>
 
-agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent.html">makeAgent</a></span>(<span class="st">"random"</span>, <span class="dt">experience.replay =</span> memory)
+agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent.html">makeAgent</a></span>(<span class="st">"random"</span>, <span class="dt">replay.memory =</span> memory)
 
 <span class="kw"><a href="../reference/interact.html">interact</a></span>(env, agent, <span class="dt">n.steps =</span> 2L, <span class="dt">visualize =</span> <span class="ot">TRUE</span>)
 <span class="co">#&gt;  - - - - </span>
@@ -323,7 +324,7 @@ agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent
 policy =<span class="st"> </span><span class="kw"><a href="../reference/makePolicy.html">makePolicy</a></span>(<span class="st">"epsilon.greedy"</span>, <span class="dt">epsilon =</span> <span class="fl">0.1</span>)
 memory =<span class="st"> </span><span class="kw"><a href="../reference/makeReplayMemory.html">makeReplayMemory</a></span>(<span class="dt">size =</span> 100L, <span class="dt">batch.size =</span> 20L)
 
-agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent.html">makeAgent</a></span>(policy, <span class="st">"table"</span>, <span class="st">"qlearning"</span>, <span class="dt">experience.replay =</span> memory)
+agent =<span class="st"> </span><span class="kw"><a href="../reference/makeAgent.html">makeAgent</a></span>(policy, <span class="st">"table"</span>, <span class="st">"qlearning"</span>, <span class="dt">replay.memory =</span> memory)
 
 <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>) {
   <span class="kw"><a href="../reference/interact.html">interact</a></span>(env, agent, <span class="dt">n.steps =</span> 20L, <span class="dt">learn =</span> <span class="ot">FALSE</span>)

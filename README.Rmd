@@ -137,7 +137,7 @@ env = makeEnvironment("windy.gridworld")
 
 # Create qlearning agent with softmax policy and tabular value function.
 policy = makePolicy("softmax")
-values = makeValueFunction("table", n.states = env$n.states, env$n.actions)
+values = makeValueFunction("table", n.states = env$n.states, n.actions = env$n.actions)
 algorithm = makeAlgorithm("qlearning")
 agent = makeAgent(policy, values, algorithm)
 

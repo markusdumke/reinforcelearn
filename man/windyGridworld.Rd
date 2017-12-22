@@ -5,7 +5,7 @@
 \alias{windy.gridworld}
 \title{Windy Gridworld}
 \arguments{
-\item{...}{\[`any`] \cr Arguments passed on to [makeEnvironment].}
+\item{...}{[\code{any}] \cr Arguments passed on to \link{makeEnvironment}.}
 }
 \description{
 Windy Gridworld problem for reinforcement learning. Actions include
@@ -18,22 +18,22 @@ get a reward of -1, until you reach into a terminal state.
 This is the gridworld (goal state denoted G, start state denoted S).
 The last row specifies the upward wind in each column.
 \tabular{rrrrrrrrrr}{
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- S \tab . \tab . \tab . \tab . \tab . \tab . \tab G \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
- 0 \tab 0 \tab 0 \tab 1 \tab 1 \tab 1 \tab 2 \tab 2 \tab 1 \tab 0 \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+S \tab . \tab . \tab . \tab . \tab . \tab . \tab G \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+. \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \tab . \cr
+0 \tab 0 \tab 0 \tab 1 \tab 1 \tab 1 \tab 2 \tab 2 \tab 1 \tab 0 \cr
 }
 }
 \section{Usage}{
 
-`makeEnvironment("windy.gridworld", ...)`
+\code{makeEnvironment("windy.gridworld", ...)}
 }
 
 \section{Methods}{

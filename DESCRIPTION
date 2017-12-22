@@ -20,6 +20,7 @@ Imports:
     purrr (>= 0.2.4)
 Suggests:
     reticulate,
+    keras,
     knitr,
     rmarkdown,
     testthat,

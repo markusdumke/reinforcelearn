@@ -102,7 +102,8 @@ and (optional) a learning algorithm.</p>
     
 
     <pre class="usage"><span class='fu'>makeAgent</span>(<span class='no'>policy</span>, <span class='kw'>val.fun</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>algorithm</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>preprocess</span> <span class='kw'>=</span> <span class='no'>identity</span>,
-  <span class='kw'>experience.replay</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>replay.memory</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>policy.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>val.fun.args</span> <span class='kw'>=</span> <span class='fu'>list</span>(),
+  <span class='kw'>algorithm.args</span> <span class='kw'>=</span> <span class='fu'>list</span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -127,12 +128,20 @@ If you pass a string the algorithm will be created via <a href='makeAlgorithm.ht
       <td><p>[<code>function</code>]  A function which preprocesses the state so that the agent can learn on this.</p></td>
     </tr>
     <tr>
-      <th>experience.replay</th>
-      <td><p>[<code>logical(1)</code> | ReplayMemory]  Replay memory for experience replay.</p></td>
+      <th>replay.memory</th>
+      <td><p>[<code>ReplayMemory</code>]  Replay memory for experience replay created by <a href='makeReplayMemory.html'>makeReplayMemory</a>.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>[<code>any</code>]  Arguments passed on to <a href='makePolicy.html'>makePolicy</a>, <a href='makeAlgorithm.html'>makeAlgorithm</a> or <a href='makeValueFunction.html'>makeValueFunction</a>.</p></td>
+      <th>policy.args</th>
+      <td><p>[<code>list</code>]  Arguments passed on to <code>args</code> in <a href='makePolicy.html'>makePolicy</a>.</p></td>
+    </tr>
+    <tr>
+      <th>val.fun.args</th>
+      <td><p>[<code>list</code>]  Arguments passed on to <code>args</code> in <a href='makeValueFunction.html'>makeValueFunction</a>.</p></td>
+    </tr>
+    <tr>
+      <th>algorithm.args</th>
+      <td><p>[<code>list</code>]  Arguments passed on to <code>args</code> in <a href='makeAlgorithm.html'>makeAlgorithm</a>.</p></td>
     </tr>
     </table>
     

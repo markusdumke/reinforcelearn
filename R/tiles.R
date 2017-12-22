@@ -79,6 +79,7 @@ hashcoords = function(coords, iht) {
 #' @rdname tilecoding
 #' @param max.size \[`integer(1)`] \cr Maximal size of hash table.
 #' @export
+#' @md
 iht = function(max.size) {
   checkmate::assertInt(max.size)
   IHTClass$new(max.size)

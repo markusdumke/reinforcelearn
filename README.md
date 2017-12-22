@@ -35,10 +35,10 @@ agent = makeAgent("softmax", "table", "qlearning")
 # Run interaction for 10 episodes.
 interact(env, agent, n.episodes = 10L)
 #> $returns
-#>  [1] -3552  -598  -590  -434  -978  -162  -386  -179  -298 -1021
+#>  [1] -1904 -2000  -647  -655  -539  -690  -660 -1364  -452  -464
 #> 
 #> $steps
-#>  [1] 3552  598  590  434  978  162  386  179  298 1021
+#>  [1] 1904 2000  647  655  539  690  660 1364  452  464
 ```
 
 ------------------------------------------------------------------------
@@ -79,14 +79,14 @@ env$reset()
 env$step(100)
 #> $state
 #> $state$mean
-#> [1] 99.72761
+#> [1] 100.4012
 #> 
 #> $state$sd
-#> [1] 0.5974696
+#> [1] 0.605644
 #> 
 #> 
 #> $reward
-#> [1] 99.37578
+#> [1] 100.4485
 #> 
 #> $done
 #> [1] FALSE
@@ -146,17 +146,17 @@ env = makeEnvironment("windy.gridworld")
 
 # Create qlearning agent with softmax policy and tabular value function.
 policy = makePolicy("softmax")
-values = makeValueFunction("table", n.states = env$n.states, env$n.actions)
+values = makeValueFunction("table", n.states = env$n.states, n.actions = env$n.actions)
 algorithm = makeAlgorithm("qlearning")
 agent = makeAgent(policy, values, algorithm)
 
 # Run interaction for 10 steps.
 interact(env, agent, n.episodes = 10L)
 #> $returns
-#>  [1] -5636  -300 -1346  -389  -812  -335  -187  -179  -261   -94
+#>  [1] -1010 -3737  -757  -991  -535  -139  -272  -288  -630 -1076
 #> 
 #> $steps
-#>  [1] 5636  300 1346  389  812  335  187  179  261   94
+#>  [1] 1010 3737  757  991  535  139  272  288  630 1076
 ```
 
 ------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 #' @param algorithm \[`character(1)` | Algorithm] \cr An algorithm.
 #'   If you pass a string the algorithm will be created via [makeAlgorithm].
 #' @param preprocess \[`function`] \cr A function which preprocesses the state so that the agent can learn on this.
-#' @param replay.memory \[ReplayMemory] \cr Replay memory for experience replay created by [makeReplayMemory].
+#' @param replay.memory \[`ReplayMemory`] \cr Replay memory for experience replay created by [makeReplayMemory].
 #' @param policy.args \[`list`] \cr Arguments passed on to `args` in [makePolicy].
 #' @param val.fun.args \[`list`] \cr Arguments passed on to `args` in [makeValueFunction].
 #' @param algorithm.args \[`list`] \cr Arguments passed on to `args` in [makeAlgorithm].

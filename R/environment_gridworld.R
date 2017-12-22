@@ -312,10 +312,14 @@ getIntoBounds = function(new.states, n.col) {
 #'
 #' @param ... \[`any`] \cr Arguments passed on to [makeEnvironment].
 #'
+#' @md
+#'
 #' @name CliffWalking
 #' @aliases cliff.walking
+#'
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.6
 #' @export
+#'
 #' @inheritSection Environment Methods
 #' @examples
 #' env = makeEnvironment("cliff.walking")
@@ -361,10 +365,14 @@ CliffWalking = R6::R6Class("CliffWalking",
 #'
 #' @param ... \[`any`] \cr Arguments passed on to [makeEnvironment].
 #'
+#' @md
+#'
 #' @name WindyGridworld
 #' @aliases windy.gridworld
+#'
 #' @references Sutton and Barto (Book draft 2017): Reinforcement Learning: An Introduction Example 6.5
 #' @export
+#'
 #' @inheritSection Environment Methods
 #' @examples
 #' env = makeEnvironment("windy.gridworld")
