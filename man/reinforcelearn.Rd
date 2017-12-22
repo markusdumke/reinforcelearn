@@ -52,10 +52,21 @@ Implementations of reinforcement learning algorithms and environments.
 }
 }
 
+\section{Extensions}{
+
+\itemize{
+\item \link{makeReplayMemory}
+\item \link{Eligibility}
+}
+}
+
 \section{Agent}{
 
 \itemize{
 \item \link{makeAgent}
+\item \link{getValueFunction}
+\item \link{getReplayMemory}
+\item \link{getEligibilityTraces}
 }
 }
 

@@ -31,8 +31,15 @@
 #' * [makeAlgorithm]
 #' * [QLearning]
 #'
+#' @section Extensions:
+#' * [makeReplayMemory]
+#' * [Eligibility]
+#'
 #' @section Agent:
 #' * [makeAgent]
+#' * [getValueFunction]
+#' * [getReplayMemory]
+#' * [getEligibilityTraces]
 #'
 #' @section Interaction:
 #' * [interact]
