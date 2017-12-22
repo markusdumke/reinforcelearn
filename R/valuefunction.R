@@ -6,7 +6,7 @@
 #'   One of `c("table", "neural.network")`.
 #' @inheritParams makePolicy
 #'
-#' @return \[`list(name, args)`] List with the name and optinal args.
+#' @return \[`list(name, args)`] List with the name and optional args.
 #'   This list can then be passed onto [makeAgent], which will construct the
 #'   value function accordingly.
 #'

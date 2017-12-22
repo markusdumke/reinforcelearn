@@ -20,7 +20,7 @@ to the function but not both.}
 these can be given using the \code{args} argument.}
 }
 \value{
-[\code{list(name, args)}] List with the name and optinal args.
+[\code{list(name, args)}] List with the name and optional args.
 This list can then be passed onto \link{makeAgent}, which will construct the
 policy accordingly.
 }
