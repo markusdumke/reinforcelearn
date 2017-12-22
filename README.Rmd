@@ -17,6 +17,11 @@ knitr::opts_chunk$set(
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn)
 [![Coverage Status](https://img.shields.io/codecov/c/github/markusdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markusdumke/reinforcelearn?branch=master)
 
+```{r, include = FALSE}
+writeLines(capture.output(devtools::session_info()), "session_info.txt")
+```
+
+
 ### Documentation
 
 [Website](https://markusdumke.github.io/reinforcelearn)
