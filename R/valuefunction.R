@@ -119,7 +119,7 @@ ValueTable = R6::R6Class("ValueTable",
 #' @section Usage:
 #' `makeValueFunction("neural.network", model)`
 #'
-#' @param model \[`keras model`] \cr A keras sequential [model](keras::keras.models.sequential).
+#' @param model \[`keras model`] \cr A keras model.
 #'   Make sure that the model has been compiled.
 #'
 #' @name ValueNetwork

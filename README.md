@@ -1,6 +1,6 @@
 
-Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="36"/>
-=====================================================================================
+Reinforcement Learning in R <img src="man/figures/logo.png" align="right" height="36"/>
+=======================================================================================
 
 [![Travis-CI Build Status](https://travis-ci.org/markusdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markusdumke/reinforcelearn) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn) [![Coverage Status](https://img.shields.io/codecov/c/github/markusdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markusdumke/reinforcelearn?branch=master)
 
@@ -35,10 +35,10 @@ agent = makeAgent("softmax", "table", "qlearning")
 # Run interaction for 10 episodes.
 interact(env, agent, n.episodes = 10L)
 #> $returns
-#>  [1] -1904 -2000  -647  -655  -539  -690  -660 -1364  -452  -464
+#>  [1] -1358 -1604  -465 -1041 -1784  -290  -620  -520   -64  -632
 #> 
 #> $steps
-#>  [1] 1904 2000  647  655  539  690  660 1364  452  464
+#>  [1] 1358 1604  465 1041 1784  290  620  520   64  632
 ```
 
 ------------------------------------------------------------------------
@@ -79,14 +79,14 @@ env$reset()
 env$step(100)
 #> $state
 #> $state$mean
-#> [1] 100.4012
+#> [1] 100.0457
 #> 
 #> $state$sd
-#> [1] 0.605644
+#> [1] 0.225038
 #> 
 #> 
 #> $reward
-#> [1] 100.4485
+#> [1] 100.1838
 #> 
 #> $done
 #> [1] FALSE
@@ -153,10 +153,10 @@ agent = makeAgent(policy, values, algorithm)
 # Run interaction for 10 steps.
 interact(env, agent, n.episodes = 10L)
 #> $returns
-#>  [1] -1010 -3737  -757  -991  -535  -139  -272  -288  -630 -1076
+#>  [1] -2206  -355 -2396  -985  -912 -1027  -217  -326  -483  -818
 #> 
 #> $steps
-#>  [1] 1010 3737  757  991  535  139  272  288  630 1076
+#>  [1] 2206  355 2396  985  912 1027  217  326  483  818
 ```
 
 ------------------------------------------------------------------------

@@ -39,7 +39,7 @@ and the list of the tile (element) numbers is returned as the representation of 
 Tile coding is recommended as a way of applying online learning methods to domains with continuous
 state or action variables. [copied from manual]
 
-See detailed manual at http://incompleteideas.net/sutton/tiles/tiles3.html.
+See detailed manual on the web.
 In comparison to the Python implementation indices start with 1 instead of 0. The hash table is
 implemented as an environment, which is an attribute of an R6 class.
 

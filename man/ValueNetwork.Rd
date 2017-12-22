@@ -5,7 +5,7 @@
 \alias{neural.network}
 \title{Value Network}
 \arguments{
-\item{model}{[\code{keras model}] \cr A keras sequential \href{keras::keras.models.sequential}{model}.
+\item{model}{[\code{keras model}] \cr A keras model.
 Make sure that the model has been compiled.}
 }
 \description{
