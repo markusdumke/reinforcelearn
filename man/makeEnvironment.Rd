@@ -15,8 +15,7 @@ Class of environment. One of \code{c("custom", "mdp", "gym", "gridworld")}.}
 \item{...}{[\code{any}] \cr Arguments passed on to the specific environment.}
 }
 \value{
-[\code{Environment}] \cr
-Reinforcement learning environment (R6 class).
+R6 class of class Environment.
 }
 \description{
 This function creates an environment for reinforcement learning.

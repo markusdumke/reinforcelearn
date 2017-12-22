@@ -14,10 +14,9 @@
 #' @param discount \[`numeric(1)` in (0, 1)] \cr Discount factor.
 #' @param ... \[`any`] \cr Arguments passed on to the specific environment.
 #'
-#' @return \[`Environment`] \cr
-#'   Reinforcement learning environment (R6 class).
-#'
 #' @md
+#'
+#' @return R6 class of class Environment.
 #'
 #' @section Methods:
 #' * `$step(action)` \cr
