@@ -1,0 +1,10 @@
+context("policy")
+policy1 = makePolicy("random")
+policy2 = makePolicy("greedy")
+policy3 = makePolicy("epsilon.greedy", epsilon = 0.2)
+policy4 = makePolicy("softmax")
+test_that("policy creation returns list", {
+  expect_equivalent(policy1, list(name = "random", args = list()))
+  expect_equal(class(policy2), "Policy")
+  expect_equal(policy3$args$epsilon, 0.2)
+})
