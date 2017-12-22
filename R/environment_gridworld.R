@@ -131,7 +131,7 @@ Gridworld = R6::R6Class("Gridworld",
       if (diagonal.moves) {
         n.actions = 8
         action.names = c("left" = 0L, "right" = 1L, "up" = 2L, "down" = 3L,
-          "leftup" = 5L, "leftdown" = 6L, "rightup" = 7L, "rightdown" = 8L)
+          "leftup" = 4L, "leftdown" = 5L, "rightup" = 6L, "rightdown" = 7L)
       } else {
         n.actions = 4
         action.names = c("left" = 0L, "right" = 1L, "up" = 2L, "down" = 3L)
@@ -199,19 +199,7 @@ Gridworld = R6::R6Class("Gridworld",
       transitions = transitions[, , seq_len(n.actions)]
 
       visualize = function(env) {
-        one.row = paste(rep("-", shape[2]), collapse = " ")
-        grid.vis = paste("", one.row, collapse = "")
-        for (i in seq_len(shape[1] - 1L)) {
-          grid.vis = paste(grid.vis, "\n", one.row)
-        }
-
-        n = env$state + 1
-        # find position of nth -
-        str.pos = gregexpr("-", grid.vis)[[1]][n]
-        # replace nth - with o (current state in grid)
-        grid.vis = sub(paste0("^(.{", str.pos - 1, "})(.)(.*$)", collapse = ""),
-          "\\1o\\3", grid.vis)
-        message(cat(grid.vis, "\n"))
+        message(cat(visualizeGridworld(shape, env$state), "\n"))
       }
       # fixme: make action.names and visualize overwriteable
       super$initialize(transitions = transitions, rewards = rewards,
@@ -219,6 +207,22 @@ Gridworld = R6::R6Class("Gridworld",
     }
   )
 )
+
+visualizeGridworld = function(shape, current.state) {
+  one.row = paste(rep("-", shape[2]), collapse = " ")
+  grid.vis = paste("", one.row, collapse = "")
+  for (i in seq_len(shape[1] - 1L)) {
+    grid.vis = paste(grid.vis, "\n", one.row)
+  }
+
+  n = current.state + 1
+  # find position of nth -
+  str.pos = gregexpr("-", grid.vis)[[1]][n]
+  # replace nth - with o (current state in grid)
+  grid.vis = sub(paste0("^(.{", str.pos - 1, "})(.)(.*$)", collapse = ""),
+    "\\1o\\3", grid.vis)
+  grid.vis
+}
 
 makeRewardMatrix = function(reward.step, reward.cliff, n.states, n.actions,
   cliff.states, goal.states) {
