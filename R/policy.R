@@ -4,8 +4,12 @@
 #'
 #' @param class \[`character(1)`] \cr
 #'   Class of policy. One of `c("random", "epsilon.greedy", "greedy", "softmax")`.
-#' @param ... \[`any`] \cr
-#'   Arguments passed on to the policy class.
+#' @param ... \[`any`] \cr Optional named arguments passed on to the subclass. Alternatively
+#' these can be given using the `args` argument.
+#' @param args \[`list`] \cr Optional list of named arguments passed on to the
+#' subclass. The arguments in ... take precedence over values in this list.
+#' We strongly encourage you to use one or the other to pass arguments
+#' to the function but not both.
 #'
 #' @return \[`list(name, args)`] List with the name and optinal args.
 #'   This list can then be passed onto [makeAgent], which will construct the
@@ -24,11 +28,16 @@
 #' @examples
 #' policy = makePolicy("random")
 #' policy = makePolicy("epsilon.greedy", epsilon = 0.1)
-makePolicy = function(class = "random", ...) {
+makePolicy = function(class = "random", args = list(), ...) {
   checkmate::assertChoice(class,
     c("random", "epsilon.greedy", "greedy", "softmax")) #, "gaussian"))
+  checkmate::assertList(args, names = "unique")
+  args = append(list(...), args)
+  # remove duplicate entries in args list
+  args = args[unique(names(args))]
+
   # fixme: check arguments of policy here
-  x = list(name = class, args = list(...)) # get properties
+  x = list(name = class, args = args)
   class(x) = "Policy"
   x
 }
@@ -49,7 +58,7 @@ Policy = R6::R6Class("Policy",
 #' @aliases GreedyPolicy
 #' @export
 #' @section Usage:
-#' \code{makePolicy("epsilon.greedy", epsilon)} \cr
+#' \code{makePolicy("epsilon.greedy", epsilon = 0.1)} \cr
 #' \code{makePolicy("greedy")}
 #'
 #' @param epsilon [\code{numeric(1) in [0, 1]}] \cr
@@ -72,7 +81,7 @@ EpsilonGreedyPolicy = R6::R6Class("EpsilonGreedyPolicy",
       policy = policy + self$epsilon / n.actions
       policy
     },
-    initialize = function(epsilon) {
+    initialize = function(epsilon = 0.1) {
       checkmate::assertNumber(epsilon, lower = 0, upper = 1)
       self$epsilon = epsilon
     }

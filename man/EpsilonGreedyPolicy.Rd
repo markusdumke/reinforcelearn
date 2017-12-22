@@ -13,7 +13,7 @@ Epsilon Greedy Policy
 }
 \section{Usage}{
 
-\code{makePolicy("epsilon.greedy", epsilon)} \cr
+\code{makePolicy("epsilon.greedy", epsilon = 0.1)} \cr
 \code{makePolicy("greedy")}
 }
 
