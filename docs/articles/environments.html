@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to create an environment? • reinforcelearn</title>
+<title>Environments • reinforcelearn</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -29,7 +29,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -45,13 +45,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
+      <a href="../articles/agents.html">Agents</a>
     </li>
     <li>
-      <a href="../articles/environments.html">How to create an environment?</a>
-    </li>
-    <li>
-      <a href="../articles/introduction.html">Introduction to reinforcelearn</a>
+      <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
 </li>
@@ -71,368 +68,227 @@
       </header><div class="row">
   <div class="col-md-9">
     <div class="page-header toc-ignore">
-      <h1>How to create an environment?</h1>
+      <h1>Environments</h1>
+                        <h4 class="author">Markus Dumke</h4>
             
+            <h4 class="date">2017-12-23</h4>
           </div>
 
     
     
 <div class="contents">
 <style type="text/css">
-h1.title {
+  h1.title {
   font-size: 34px;
-}
+  }
 </style>
-<p>This vignette explains the different possibilities to create a reinforcement learning environment in <code>reinforcelearn</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(reinforcelearn)
-<span class="kw">set.seed</span>(<span class="dv">1</span>)</code></pre></div>
-<hr>
-<div id="what-is-an-environment-in-reinforcelearn" class="section level2">
+<p>This vignette explains the different possibilities to create and use a reinforcement learning environment in <code>reinforcelearn</code>. Section <a href="#creation">Creation</a> explains how to create an environment and Section <a href="#interaction">Interaction</a> describe how to use the created environment object for interaction.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(reinforcelearn)</code></pre></div>
+<div id="creation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#what-is-an-environment-in-reinforcelearn" class="anchor"></a>What is an environment in reinforcelearn?</h2>
-<p>Environments in <code>reinforcelearn</code> are implemented as <code>R6</code> classes with certain methods and attributes. The environment can then be passed on to the algorithms using the <code>envir</code> argument.</p>
-<p>There are some attributes of the <code>R6</code> class, which are essential for the interaction between environment and agent:</p>
-<ul>
-<li><p><code>state</code>: The current state observation of the environment. Depending on the problem this can be anything, e.g. a scalar integer, a matrix or a list.</p></li>
-<li><p><code>reward</code>: The current reward of the environment. It is always a scalar numeric value.</p></li>
-<li><p><code>done</code>: A logical flag specifying whether an episode is finished.</p></li>
-<li><p><code>n.steps</code>: Number of steps in the current episode. Will be reset to 0 when <code>reset</code> is called. Each time <code>step</code> is called it is increased by 1.</p></li>
-</ul>
-<p>The interaction between agent and environment is done via the <code>reset</code> and <code>step</code> methods:</p>
-<ul>
-<li><p><code>reset()</code>: Resets the environment, i.e. it sets the <code>state</code> attribute to a starting state and sets the <code>done</code> flag to <code>FALSE</code>. It is usually called at the beginning of an episode.</p></li>
-<li><p><code>step(action)</code>: The basic interaction function between agent and environment. <code>step</code> is called with an action as an argument. It then takes the action and alters the <code>state</code> and <code>reward</code> attributes of the <code>R6</code> class. If the episode is done, e.g. a terminal state reached, the <code>done</code> flag is set to <code>TRUE</code>.</p></li>
-</ul>
-<p>Note: All states and actions are numerated starting with 0!</p>
-<p>The <code>makeEnvironment</code> function provides different ways to create an environment. It takes care of the creation of an <code>R6</code> class with the above mentioned attributes and methods.</p>
+<a href="#creation" class="anchor"></a>Creation</h2>
+<p>The <code>makeEnvironment</code> function provides different ways to create an environment. It is called with the class name as a first argument. You can pass arguments of the specific environment class (e.g. the state transition array for an MDP) to the <code>...</code> argument.</p>
+<div id="create-a-custom-environment" class="section level3">
+<h3 class="hasAnchor">
+<a href="#create-a-custom-environment" class="anchor"></a>Create a custom environment</h3>
+<p>To create a custom environment you have to set up a <code>step</code> and <code>reset</code> function, which define the rewards the agent receives and ultimately the goal of what to learn.</p>
+<p>Here is an example setting up a the famous Mountain Car problem.</p>
+<p><img src="mountaincar.JPG" width="200px" style="display: block; margin: auto;"></p>
+<p>The task of the <code>reset</code> function is to initialize the starting state of the environment and usually this function is called when starting a new episode. It returns the <code>state</code> of the environment. It takes an argument <code>self</code>, which is the newly created R6 class and can be used e.g. to access the current state of the environment.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">reset =<span class="st"> </span><span class="cf">function</span>(self) {
+  position =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>, <span class="op">-</span><span class="fl">0.6</span>, <span class="op">-</span><span class="fl">0.4</span>)
+  velocity =<span class="st"> </span><span class="dv">0</span>
+  state =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(position, velocity), <span class="dt">ncol =</span> <span class="dv">2</span>)
+  state
+}</code></pre></div>
+<p>The <code>step</code> function is used for interaction, it controls the transition to the next state and reward given an action. It takes <code>self</code> and <code>action</code> as an argument and returns a list with the next <code>state</code>, <code>reward</code> and whether an episode is finished (<code>done</code>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">step =<span class="st"> </span><span class="cf">function</span>(self, action) {
+  position =<span class="st"> </span>self<span class="op">$</span>state[<span class="dv">1</span>]
+  velocity =<span class="st"> </span>self<span class="op">$</span>state[<span class="dv">2</span>]
+  velocity =<span class="st"> </span>(action <span class="op">-</span><span class="st"> </span>1L) <span class="op">*</span><span class="st"> </span><span class="fl">0.001</span> <span class="op">+</span><span class="st"> </span><span class="kw">cos</span>(<span class="dv">3</span> <span class="op">*</span><span class="st"> </span>position) <span class="op">*</span><span class="st"> </span>(<span class="op">-</span><span class="fl">0.0025</span>)
+  velocity =<span class="st"> </span><span class="kw">min</span>(<span class="kw">max</span>(velocity, <span class="op">-</span><span class="fl">0.07</span>), <span class="fl">0.07</span>)
+  position =<span class="st"> </span>position <span class="op">+</span><span class="st"> </span>velocity
+  <span class="cf">if</span> (position <span class="op">&lt;</span><span class="st"> </span><span class="op">-</span><span class="fl">1.2</span>) {
+    position =<span class="st"> </span><span class="op">-</span><span class="fl">1.2</span>
+    velocity =<span class="st"> </span><span class="dv">0</span>
+  }
+  state =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(position, velocity), <span class="dt">ncol =</span> <span class="dv">2</span>)
+  reward =<span class="st"> </span><span class="op">-</span><span class="dv">1</span>
+  <span class="cf">if</span> (position <span class="op">&gt;=</span><span class="st"> </span><span class="fl">0.5</span>) {
+    done =<span class="st"> </span><span class="ot">TRUE</span>
+    reward =<span class="st"> </span><span class="dv">0</span>
+  } <span class="cf">else</span> {
+    done =<span class="st"> </span><span class="ot">FALSE</span>
+  }
+  <span class="kw">list</span>(state, reward, done)
+}</code></pre></div>
+<p>Then we can create the environment with</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">step =</span> step, <span class="dt">reset =</span> reset)</code></pre></div>
 <hr>
+</div>
+<div id="openai-gym" class="section level3">
+<h3 class="hasAnchor">
+<a href="#openai-gym" class="anchor"></a>OpenAI Gym</h3>
+<p>OpenAI Gym <span class="citation">(Brockman et al. 2016)</span> provides a set of environments, which can be used for benchmarking.</p>
+<p>To use a gym environment you have to install</p>
+<ul>
+<li>Python</li>
+<li>
+<code>gym</code> (Python package, installation instructions here: <a href="https://github.com/openai/gym#installation" class="uri">https://github.com/openai/gym#installation</a>)</li>
+<li>
+<code>reticulate</code> (R package)</li>
+</ul>
+<p>Then you can create a gym environment by passing on the name of the environment.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create a gym environment.</span>
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gym"</span>, <span class="dt">gym.name =</span> <span class="st">"MountainCar-v0"</span>)</code></pre></div>
+<p>Have a look at <a href="https://gym.openai.com/envs" class="uri">https://gym.openai.com/envs</a> for possible environments.</p>
+<hr>
+</div>
 <div id="markov-decision-process" class="section level3">
 <h3 class="hasAnchor">
 <a href="#markov-decision-process" class="anchor"></a>Markov Decision Process</h3>
-<p>A Markov Decision Process (MDP) is a stochastic process, which is commonly used for reinforcement learning environments. When the problem can be formulated as a MDP, all you need to pass to <code>makeEnvironment</code> is the state transition array <span class="math inline">\(P^a_{ss'}\)</span> and reward matrix <span class="math inline">\(R_s^a\)</span> of the MDP. The state transition array describes the probability of a transition from state <span class="math inline">\(s\)</span> to state <span class="math inline">\(s'\)</span> when taking action <span class="math inline">\(a\)</span>. It is a 3-dimensional array with dimensions [number of states x number of states x number of actions], so for each action there is one state transition matrix. The reward matrix has the dimensions [number of states x number of actions], each entry is the expected reward obtained from taking action <span class="math inline">\(a\)</span> in a state <span class="math inline">\(s\)</span>.</p>
+<p>A Markov Decision Process (MDP) is a stochastic process, which is commonly used for reinforcement learning environments. When the problem can be formulated as a MDP, all you need to pass to <code>makeEnvironment</code> is the state transition array <span class="math inline">\(P^a_{ss'}\)</span> and reward matrix <span class="math inline">\(R_s^a\)</span> of the MDP.</p>
 <p>We can create a simple MDP with 2 states and 2 actions with the following code.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># State transition array</span>
 P =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))
-P[, , <span class="dv">1</span>] =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.8</span>, <span class="fl">0.2</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
-P[, , <span class="dv">2</span>] =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.1</span>, <span class="fl">0.9</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
-<span class="kw">print</span>(P)
-<span class="co">#&gt; , , 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]  0.5  0.5</span>
-<span class="co">#&gt; [2,]  0.8  0.2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; , , 2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]  0.0  1.0</span>
-<span class="co">#&gt; [2,]  0.1  0.9</span>
-<span class="co"># Reward matrix</span>
-R =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
-<span class="kw">print</span>(R)
-<span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]    5   10</span>
-<span class="co">#&gt; [2,]   -1    2</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R)
-<span class="co">#&gt; Warning in self$initializeMDP(transitions, rewards, initial.state, reset, :</span>
-<span class="co">#&gt; There are no terminal states in the MDP!</span></code></pre></div>
-<p>We will get a warning that there are no terminal states in the MDP, i.e. an episode never ends in this MDP. Some algorithms assume that there is a terminal state, so we have to be careful, when we want to solve this. A terminal state has a probability of 1 remaining in this state. Here is an example.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">P =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))
 P[, , <span class="dv">1</span>] =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
 P[, , <span class="dv">2</span>] =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
-<span class="kw">print</span>(P)
-<span class="co">#&gt; , , 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]  0.5  0.5</span>
-<span class="co">#&gt; [2,]  0.0  1.0</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; , , 2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]  0.1  0.9</span>
-<span class="co">#&gt; [2,]  0.0  1.0</span>
 
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R)
-<span class="kw">print</span>(env<span class="op">$</span>terminal.states)
-<span class="co">#&gt; [1] 1</span></code></pre></div>
-<p>Every episode starts in some starting state. There are different ways to pass on the starting state in <code>makeEnvironment</code>. The simplest is to specify the <code>initial.state</code> argument with a scalar integer or an integer vector. When <code>initial.state</code> is a scalar every episode will start in this state. If <code>initial.state</code> is a vector then the starting state will be uniformly sampled from all elements of the vector. As a default the initial state will be sampled randomly from all non-terminal states.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R, <span class="dt">initial.state =</span> <span class="dv">0</span>)
-env<span class="op">$</span><span class="kw">reset</span>()
-<span class="kw">print</span>(env)
-<span class="co">#&gt; Number of steps: 0 </span>
-<span class="co">#&gt; State: 0 </span>
-<span class="co">#&gt; Reward:  </span>
-<span class="co">#&gt; Done: FALSE</span></code></pre></div>
-<p>A different possibility is to specify a custom <code>reset</code> function, which takes no arguments and returns the starting state. This is a way to specify a custom probability distribution over starting states. If the starting state is a terminal state you will get a warning!</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Specify a custom probability distribution for the starting state.</span>
-reset =<span class="st"> </span><span class="cf">function</span>() {
-  p =<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.2</span>, <span class="fl">0.8</span>)
-  <span class="kw">sample</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">1</span>, <span class="dt">prob =</span> p, <span class="dt">size =</span> <span class="dv">1</span>)
-}
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R, <span class="dt">reset =</span> reset)
-env<span class="op">$</span><span class="kw">reset</span>()
-<span class="co">#&gt; Warning in env$reset(): The starting state is a terminal state!</span>
-<span class="kw">print</span>(env)
-<span class="co">#&gt; Number of steps: 0 </span>
-<span class="co">#&gt; State: 1 </span>
-<span class="co">#&gt; Reward:  </span>
-<span class="co">#&gt; Done: TRUE</span></code></pre></div>
-<p>The reward argument can also be a three-dimensional array, i.e. the reward can also depend on the next state.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">R =<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))
-R[, <span class="dv">1</span>, ] =<span class="st"> </span><span class="dv">1</span>
-R[<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>] =<span class="st"> </span><span class="dv">10</span>
-<span class="kw">print</span>(R)
-<span class="co">#&gt; , , 1</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]    1    0</span>
-<span class="co">#&gt; [2,]    1    0</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; , , 2</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;      [,1] [,2]</span>
-<span class="co">#&gt; [1,]    1    0</span>
-<span class="co">#&gt; [2,]    1   10</span>
+<span class="co"># Reward matrix</span>
+R =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
 
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R)
-
-env<span class="op">$</span><span class="kw">reset</span>()
-env<span class="op">$</span><span class="kw">step</span>(<span class="dv">1</span>)
-<span class="kw">print</span>(env)
-<span class="co">#&gt; Number of steps: 1 </span>
-<span class="co">#&gt; State: 1 </span>
-<span class="co">#&gt; Reward: 0 </span>
-<span class="co">#&gt; Done: TRUE</span></code></pre></div>
-<p>Instead of specifying a reward array you can also pass on a function <code>sampleReward</code>, which takes three arguments, the current state, action and next state and returns a scalar numeric reward. This way the reward of taking an action can be stochastic. Here is a simple example, where the reward is either 0 or sampled from a normal distribution depending on the next state and action.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sampleReward =<span class="st"> </span><span class="cf">function</span>(state, action, n.state) {
-  <span class="cf">if</span> (n.state <span class="op">==</span><span class="st"> </span><span class="dv">0</span> <span class="op">&amp;&amp;</span><span class="st"> </span>action <span class="op">==</span><span class="st"> </span>1L) {
-    <span class="dv">0</span>
-  } <span class="cf">else</span> {
-    <span class="kw">rnorm</span>(<span class="dv">1</span>)
-  }
-}
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="dt">transitions =</span> P, <span class="dt">sampleReward =</span> sampleReward)
-env<span class="op">$</span><span class="kw">reset</span>()
-env<span class="op">$</span><span class="kw">step</span>(<span class="dv">0</span>)
-<span class="kw">print</span>(env)
-<span class="co">#&gt; Number of steps: 1 </span>
-<span class="co">#&gt; State: 0 </span>
-<span class="co">#&gt; Reward: 1.3297992629225 </span>
-<span class="co">#&gt; Done: FALSE</span></code></pre></div>
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"mdp"</span>, <span class="dt">transitions =</span> P, <span class="dt">rewards =</span> R)</code></pre></div>
 <hr>
 </div>
-<div id="gridworlds" class="section level3">
+<div id="gridworld" class="section level3">
 <h3 class="hasAnchor">
-<a href="#gridworlds" class="anchor"></a>Gridworlds</h3>
-<p>A gridworld is a simple navigation task with a discrete state and action space. The agent has to move through a grid from a start state to a goal state. Each episode starts in the start state and terminates if the agent reaches a goal state. States are always numerated row-wise starting with 0. Possible actions are the standard moves (left, right, up, down) or could also include the diagonal moves (leftup, leftdown, rightup, rightdown).</p>
-<p>If an action would take the agent off the grid, the next state will be the nearest cell inside the grid. For each step the agent gets a reward, e.g. - 1, until it reaches a goal state, then the episode is done.</p>
-<p>Gridworlds with different shapes, rewards and transition dynamics can be created with the function <code>gridworld</code>. It computes the state transition array and reward matrix of the specified gridworld (because a gridworld is a MDP) and then internally calls <code>makeEnvironment</code>. Arguments from <code>makeEnvironment</code> can be passed on via the <code>...</code> argument, e.g. <code>initial.state</code>.</p>
-<p>Here is an example of a 4x4 gridworld <span class="citation">(Sutton and Barto 2017, Example 4.1)</span> with the 4 standard actions and two terminal states in the lower right and upper left of the grid. Rewards are - 1 for every transition until reaching a terminal state.</p>
-<p><img src="gridworld.JPG" width="300px" style="display: block; margin: auto;"></p>
-<p>The following code creates this gridworld. This example gridworld is already included in the package and can be created with <code><a href="../reference/gridworld.html">gridworld()</a></code>.</p>
+<a href="#gridworld" class="anchor"></a>Gridworld</h3>
+<p>A gridworld is a simple MDP navigation task with a discrete state and action space. The agent has to move through a grid from a start state to a goal state. Possible actions are the standard moves (left, right, up, down) or could also include the diagonal moves (leftup, leftdown, rightup, rightdown).</p>
+<p>Here is an example of a 4x4 gridworld <span class="citation">(Sutton and Barto 2017, Example 4.1)</span> with two terminal states in the lower right and upper left of the grid. Rewards are - 1 for every transition until reaching a terminal state.</p>
+<p><img src="gridworld.JPG" width="200px" style="display: block; margin: auto;"></p>
+<p>The following code creates this gridworld.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gridworld Environment (Sutton &amp; Barto (2017) Example 4.1)</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>))
-<span class="kw">print</span>(env<span class="op">$</span>states)
-<span class="co">#&gt;  [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15</span>
-<span class="kw">print</span>(env<span class="op">$</span>actions)
-<span class="co">#&gt; [1] 0 1 2 3</span>
-
-<span class="co"># Identical to the above call</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/smallGridworld.html">smallGridworld</a></span>()
-
-<span class="co"># Same gridworld, but with diagonal moves</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>), 
-  <span class="dt">diagonal.moves =</span> <span class="ot">TRUE</span>)
-<span class="kw">print</span>(env<span class="op">$</span>actions)
-<span class="co">#&gt; [1] 0 1 2 3 4 5 6 7</span></code></pre></div>
-<p>In this gridworld actions will deterministically change the state, e.g. when going left from state 5 the new state will always be 4. A stochastic gridworld can be specified via the <code>stochasticity</code> argument. Then the next state will be randomly sampled from all eight successor state with a probability <code>stochasticity</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Gridworld with 10% random transitions</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>), <span class="dt">stochasticity =</span> <span class="fl">0.1</span>)</code></pre></div>
-<p><img src="cliff.JPG" width="500px" style="display: block; margin: auto;"></p>
-<p>The cliff walking gridworld <span class="citation">(Sutton and Barto 2017, Example 6.6)</span> has a cliff in the lower part of the grid. Stepping into this cliff will result in a high negative reward of -100 and a transition back to the starting state in the lower left part of the grid. So the agent has to learn to avoid stepping into this cliff. Other transitions have the usual reward of -1. The optimal path is directly above the cliff, while the safe path runs at the top of the gridworld far away from the dangerous cliff.</p>
-<p>In <code>gridworld</code> we can specify a cliff via the <code>cliff.states</code> argument and the reward when stepping into the cliff via <code>reward.cliff</code>. The states to which the agent transitions, when stepping into the cliff can be specified via <code>cliff.transition.states</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Cliff Walking (Sutton &amp; Barto (2017) Example 6.6)   </span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">12</span>), <span class="dt">goal.states =</span> <span class="dv">47</span>, 
-  <span class="dt">cliff.states =</span> <span class="dv">37</span><span class="op">:</span><span class="dv">46</span>, <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">reward.cliff =</span> <span class="op">-</span><span class="st"> </span><span class="dv">100</span>, 
-  <span class="dt">cliff.transition.states =</span> <span class="dv">36</span>, <span class="dt">initial.state =</span> <span class="dv">36</span>)
-
-<span class="co"># Identical to the above call</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/cliff.html">cliff</a></span>()</code></pre></div>
-<p><img src="windygrid.PNG" width="350px" style="display: block; margin: auto;"></p>
-<p>The windy gridworld <span class="citation">(Sutton and Barto 2017, Example 6.5)</span> is a gridworld with shape 7x10. The agent will be pushed up a number of cells when transitioning into a column with an upward wind. The <code>wind</code> argument specifies the strength of this wind. It is an integer vector with the same size as the number of columns in the grid. E.g. going right from the state directly left to the goal, will push the agent to a state two cells above the goal. The reward for each step is -1.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Windy Gridworld (Sutton &amp; Barto (2017) Example 6.5) </span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/gridworld.html">gridworld</a></span>(<span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">7</span>, <span class="dv">10</span>), <span class="dt">goal.states =</span> <span class="dv">37</span>, 
-  <span class="dt">reward.step =</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">wind =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="dt">initial.state =</span> <span class="dv">30</span>)
-
-<span class="co"># Identical to the above call</span>
-env =<span class="st"> </span><span class="kw"><a href="../reference/windyGridworld.html">windyGridworld</a></span>()</code></pre></div>
+env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gridworld"</span>, <span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), <span class="dt">goal.states =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">15</span>))</code></pre></div>
 <hr>
 </div>
-<div id="openai-gym-environments" class="section level3">
-<h3 class="hasAnchor">
-<a href="#openai-gym-environments" class="anchor"></a>OpenAI Gym Environments</h3>
-<p>OpenAI Gym <span class="citation">(Brockman et al. 2016)</span> is a toolkit for developing and comparing reinforcement learning algorithms. It provides a set of environments, which can be used as benchmark problems. The environments are implemented in python and can be acessed via the OpenAI Gym API. Have a look at <a href="https://gym.openai.com/envs" class="uri">https://gym.openai.com/envs</a> for possible environments. To use this in R you need to install the dependencies listed <a href="https://github.com/openai/gym-http-api">here</a>. You also need to install the R package <code>gym</code> <span class="citation">(Hendricks 2016)</span>.</p>
-<p>Then it is simple to use one of the existing OpenAI Gym environments. First you need to start the python server. Open a terminal and manually start the file <code>gym_http_server.py</code> inside the gym_http_api folder. You can also start the python server from R, here using a copy of the file included in the <code>reinforcelearn</code> package.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create an OpenAI Gym environment.</span>
-<span class="co"># Make sure you have Python and Gym installed.</span>
-<span class="co"># Start server from within R.</span>
-package.path =<span class="st"> </span><span class="kw">system.file</span>(<span class="dt">package =</span> <span class="st">"reinforcelearn"</span>)
-path2pythonfile =<span class="st"> </span><span class="kw">paste0</span>(package.path, <span class="st">"/gym_http_server.py"</span>)
-<span class="kw">system2</span>(<span class="st">"python"</span>, <span class="dt">args =</span> path2pythonfile, <span class="dt">stdout =</span> <span class="ot">NULL</span>, 
-  <span class="dt">wait =</span> <span class="ot">FALSE</span>, <span class="dt">invisible =</span> <span class="ot">FALSE</span>)
-
-env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"MountainCar-v0"</span>)</code></pre></div>
-<p>The <code>render</code> argument specifies whether to render the environment. If <code>render = TRUE</code> a python window will open showing a graphical interface of the environment when calling the <code>step</code> method.</p>
-<p>The <code>reset</code>, <code>step</code> and <code>close</code> method can then be used to sample experience. Here is an example running a random agent for 200 steps on the mountain car task.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env<span class="op">$</span><span class="kw">reset</span>()
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">200</span>) {
-  action =<span class="st"> </span><span class="kw">sample</span>(env<span class="op">$</span>actions, <span class="dv">1</span>)
-  env<span class="op">$</span><span class="kw">step</span>(action)
-}
-env<span class="op">$</span><span class="kw">close</span>()</code></pre></div>
-<p>You should see a window opening showing the graphical interface.</p>
-<p><img src="mountaincar.JPG" width="300px" style="display: block; margin: auto;"></p>
-<hr>
 </div>
-<div id="create-your-own-environment" class="section level3">
+<div id="interaction" class="section level2">
+<h2 class="hasAnchor">
+<a href="#interaction" class="anchor"></a>Interaction</h2>
+<p><code>makeEnvironment</code> returns an R6 class object which can be used for the interaction between agent and environment.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gridworld"</span>, <span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), 
+  <span class="dt">goal.states =</span> 0L, <span class="dt">initial.state =</span> 15L)</code></pre></div>
+<p>To take an action you can call the <code>step(action)</code> method. It is called with an action as an argument and internally computes the following <code>state</code>, <code>reward</code> and whether an episode is finished (<code>done</code>).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The initial state of the environment.</span>
+env<span class="op">$</span><span class="kw">reset</span>()
+<span class="co">#&gt; [1] 15</span>
+
+env<span class="op">$</span><span class="kw">visualize</span>()
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - - - o</span>
+<span class="co">#&gt; </span>
+
+<span class="co"># Actions are encoded as integers.</span>
+env<span class="op">$</span><span class="kw">step</span>(0L)
+<span class="co">#&gt; $state</span>
+<span class="co">#&gt; [1] 14</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $reward</span>
+<span class="co">#&gt; [1] -1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $done</span>
+<span class="co">#&gt; [1] FALSE</span>
+
+env<span class="op">$</span><span class="kw">visualize</span>()
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - - o -</span>
+<span class="co">#&gt; </span>
+
+<span class="co"># But can also have character names.</span>
+env<span class="op">$</span><span class="kw">step</span>(<span class="st">"left"</span>)
+<span class="co">#&gt; $state</span>
+<span class="co">#&gt; [1] 13</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $reward</span>
+<span class="co">#&gt; [1] -1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $done</span>
+<span class="co">#&gt; [1] FALSE</span>
+
+env<span class="op">$</span><span class="kw">visualize</span>()
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - - - - </span>
+<span class="co">#&gt;  - o - -</span>
+<span class="co">#&gt; </span></code></pre></div>
+<p>Note that the R6 class object changes whenever calling <code>step</code> or <code>reset</code>! Therefore calling step with the same action twice will most likely return different states and rewards!</p>
+<p>Note also that all discrete states and actions are numerated starting with 0 to be consistent with OpenAI Gym!</p>
+<p>The environment object often also contains information about the number of states and actions or the bounds in case of a continuous space.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"mountain.car"</span>)
+env<span class="op">$</span>n.actions
+<span class="co">#&gt; [1] 3</span>
+env<span class="op">$</span>state.space.bounds
+<span class="co">#&gt; [[1]]</span>
+<span class="co">#&gt; [1] -1.2  0.5</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; [[2]]</span>
+<span class="co">#&gt; [1] -0.07  0.07</span></code></pre></div>
+<p>It also contains a counter of the number of interactions, i.e. the number of times <code>step</code> has been called, the number of steps in the current episode, the number of episodes and return in the current episode.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">env =<span class="st"> </span><span class="kw"><a href="../reference/makeEnvironment.html">makeEnvironment</a></span>(<span class="st">"gridworld"</span>, <span class="dt">shape =</span> <span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">4</span>), 
+  <span class="dt">goal.states =</span> 0L, <span class="dt">initial.state =</span> 15L, <span class="dt">discount =</span> <span class="fl">0.99</span>)
+
+env<span class="op">$</span><span class="kw">step</span>(<span class="st">"up"</span>)
+<span class="co">#&gt; $state</span>
+<span class="co">#&gt; [1] 11</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $reward</span>
+<span class="co">#&gt; [1] -1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $done</span>
+<span class="co">#&gt; [1] FALSE</span>
+env<span class="op">$</span>n.step
+<span class="co">#&gt; [1] 1</span>
+env<span class="op">$</span>episode.return
+<span class="co">#&gt; [1] -1</span>
+
+env<span class="op">$</span><span class="kw">step</span>(<span class="st">"left"</span>)
+<span class="co">#&gt; $state</span>
+<span class="co">#&gt; [1] 10</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $reward</span>
+<span class="co">#&gt; [1] -1</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $done</span>
+<span class="co">#&gt; [1] FALSE</span>
+env<span class="op">$</span>n.step
+<span class="co">#&gt; [1] 2</span>
+env<span class="op">$</span>episode.return
+<span class="co">#&gt; [1] -1.99</span></code></pre></div>
+<hr>
+<div id="full-list-of-attributes-and-methods" class="section level3">
 <h3 class="hasAnchor">
-<a href="#create-your-own-environment" class="anchor"></a>Create your own environment</h3>
-<p>Some reinforcement learning problems cannot be formulated in the above way. Then it is necessary to create the environment yourself and pass it on to the algorithms. Make sure, that the environment is an <code>R6 class</code> with the necessary attributes and methods.</p>
-<p>Here is a full list describing all attributes of the <code>R6</code> class created by <code>makeEnvironment</code>. Depending on the algorithm different of these attributes and methods may be necessary, e.g. <code>terminal.states</code>, <code>rewards</code> and <code>transitions</code> for model-based dynamic programming or <code>step</code>, <code>reset</code>, <code>state</code>, <code>previous.state</code>, <code>n.steps</code>, <code>reward</code> and <code>done</code>, if using a model-free algorithm.</p>
+<a href="#full-list-of-attributes-and-methods" class="anchor"></a>Full list of attributes and methods:</h3>
+<p>Here is a full list describing the attributes of the <code>R6</code> class created by <code>makeEnvironment</code>.</p>
 <p><strong>Attributes</strong>:</p>
 <ul>
-<li><p><code>state</code>: The current state observation of the environment. Depending on the problem this can be anything, e.g. a scalar integer, a matrix or a list.</p></li>
-<li><p><code>reward</code>: The current reward of the environment. It is always a scalar numeric value.</p></li>
-<li><p><code>done</code>: A logical flag specifying whether an episode is finished.</p></li>
-<li><p><code>n.steps</code>: Number of steps in the current episode. Will be reset to 0 when <code>reset</code> is called. Each time <code>step</code> is called it is increased by 1.</p></li>
-<li><p><code>previous.state</code>: The previous state of the environment. This is often the state which is updated in a reinforcement learning algorithm.</p></li>
-<li><p><code>state.space</code>: One of <code>Discrete</code> or <code>Box</code>.</p></li>
-<li><p><code>state.shape</code>: Number of state variables in a continuous state space.</p></li>
-<li><p><code>state.space.bounds</code>: The bounds of a boxed state space, a list with lower and upper bound for each state variable as one list element.</p></li>
-<li><p><code>states</code>: States (in a discrete state space). Numerated starting with 0.</p></li>
-<li><p><code>terminal.states</code>: Terminal states in a Markov Decision Process. Will be derived from the <code>transition</code> argument in <code>makeEnvironment</code>.</p></li>
-<li><p><code>n.states</code>: Number of states (for a discrete state space).</p></li>
-<li><p><code>action.space</code>: One of <code>Discrete</code> or <code>Box</code>.</p></li>
-<li><p><code>action.shape</code>: Number of action variables in a continuous action space.</p></li>
-<li><p><code>action.space.bounds</code>: The bounds of a boxed action space, a list with lower and upper bound for each action variable as one list element.</p></li>
-<li><p><code>actions</code>: Actions (in a discrete action space). Numerated starting with 0.</p></li>
-<li><p><code>n.actions</code>: Number of actions (for a discrete action space).</p></li>
-<li><p><code>transitions</code>: A state transition array (n.states x n.states x n.actions).</p></li>
-<li><p><code>rewards</code>: A state reward matrix (n.states x n.actions).</p></li>
+<li><p><code>state</code> [any]: The current state observation of the environment. Depending on the problem this can be anything, e.g. a scalar integer, a matrix or a list.</p></li>
+<li><p><code>reward</code> [integer(1)]: The current reward of the environment. It is always a scalar numeric value.</p></li>
+<li><p><code>done</code> [logical(1)]: A logical flag specifying whether an episode is finished.</p></li>
+<li><p><code>discount</code> [numeric(1) in [0, 1]]: The discount factor.</p></li>
+<li><p><code>n.step</code> [integer(1)]: Number of steps, i.e. number of times <code>$step()</code> has been called.</p></li>
+<li><p><code>episode.step</code> [integer(1)]: Number of steps in the current episode. In comparison to <code>n.step</code> it will be reset to 0 when <code>reset</code> is called. Each time <code>step</code> is called it is increased by 1.</p></li>
+<li><p><code>episode.return</code> [numeric(1)]: The return in the current episode. Each time <code>step</code> is called the discounted <code>reward</code> is added. Will be reset to 0 when <code>reset</code> is called.</p></li>
+<li><p><code>previous.state</code> [any]: The previous state of the environment. This is often the state which is updated in a reinforcement learning algorithm.</p></li>
 </ul>
 <p><strong>Methods</strong>:</p>
 <ul>
 <li><p><code>reset()</code>: Resets the environment, i.e. it sets the <code>state</code> attribute to a starting state and sets the <code>done</code> flag to <code>FALSE</code>. It is usually called at the beginning of an episode.</p></li>
-<li><p><code>step(action)</code>: The basic interaction function between agent and environment. <code>step</code> is called with an action as an argument. It then takes the action and alters the <code>state</code> and <code>reward</code> attributes of the <code>R6</code> class. If the episode is done, e.g. a terminal state reached, the <code>done</code> flag is set to <code>TRUE</code>.</p></li>
-<li><p><code>done()</code>: When using an OpenAI Gym environment this method closes the python window. Else it returns the <code>R6</code> class object unchanged, i.e. <code>self$close = function() {invisible(self)}</code>.</p></li>
-</ul>
-<hr>
-</div>
-<div id="mountain-car" class="section level3">
-<h3 class="hasAnchor">
-<a href="#mountain-car" class="anchor"></a>Mountain Car</h3>
-<p>The Mountain Car problem <span class="citation">(Sutton and Barto 2017)</span> is a simple episodic reinforcement learning task with a continuous state space and discrete action space. The goal is to drive an underpowered car up a steep slope. Because the car cannot accelerate fast enough, the optimal strategy consists of first going backwards to build enough momentum and then drive up the slope. The two-dimensional state space is characterized by the position and velocity of the car. These are updated due to the following equations:</p>
-<span class="math display">\[\begin{align}
-\text{position}_{t+1} &amp;\leftarrow \text{bound}[\text{position}_t + \text{velocity}_{t+1}] \\
-\text{velocity}_{t+1} &amp;\leftarrow \text{bound}[\text{velocity}_t + 0.001 (A_t - 1) - 0.0025 \cos(3 * \; \text{position}_t)].
-\end{align}\]</span>
-<p>The position is bounded in <span class="math inline">\([-1.2, 0.5]\)</span>, the velocity in <span class="math inline">\([-0.07, 0.07]\)</span>. When reaching the left position bound, the velocity will be set to 0. Each episode starts from a random position in the valley (position <span class="math inline">\(\in [-0.6, -0.4]\)</span>) and a velocity of 0.</p>
-<p>The original formulation of the problem has three actions: “push left”, “no push” and “push right”, which are encoded as 0, 1 and 2. The reward for each step is - 1 until the terminal state at the right mountain summit is reached.</p>
-<p>Here is an example implementation of the mountain car environment.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mountainCar =<span class="st"> </span>R6<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/R6/topics/R6Class">R6Class</a></span>(<span class="st">"MountainCar"</span>, 
-  <span class="dt">public =</span> <span class="kw">list</span>(
-    <span class="dt">action.space =</span> <span class="st">"Discrete"</span>,
-    <span class="dt">actions =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">2</span>,
-    <span class="dt">n.actions =</span> <span class="dv">3</span>,
-    <span class="dt">state.space =</span> <span class="st">"Box"</span>,
-    <span class="dt">state.space.bounds =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="op">-</span><span class="fl">1.2</span>, <span class="fl">0.5</span>), <span class="kw">c</span>(<span class="op">-</span><span class="fl">0.07</span>, <span class="fl">0.07</span>)),
-    <span class="dt">done =</span> <span class="ot">FALSE</span>,
-    <span class="dt">n.steps =</span> <span class="dv">0</span>,
-    <span class="dt">state =</span> <span class="ot">NULL</span>,
-    <span class="dt">previous.state =</span> <span class="ot">NULL</span>,
-    <span class="dt">reward =</span> <span class="ot">NULL</span>,
-    <span class="dt">velocity =</span> <span class="ot">NULL</span>,
-    <span class="dt">position =</span> <span class="ot">NULL</span>,
-    
-    <span class="dt">reset =</span> <span class="cf">function</span>() {
-      self<span class="op">$</span>n.steps =<span class="st"> </span><span class="dv">0</span>
-      self<span class="op">$</span>previous.state =<span class="st"> </span><span class="ot">NULL</span>
-      self<span class="op">$</span>done =<span class="st"> </span><span class="ot">FALSE</span>
-      self<span class="op">$</span>position =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>, <span class="op">-</span><span class="st"> </span><span class="fl">0.6</span>, <span class="op">-</span><span class="st"> </span><span class="fl">0.4</span>)
-      self<span class="op">$</span>velocity =<span class="st"> </span><span class="dv">0</span>
-      self<span class="op">$</span>state =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(self<span class="op">$</span>position, self<span class="op">$</span>velocity), <span class="dt">ncol =</span> <span class="dv">2</span>)
-      <span class="kw">invisible</span>(self)
-    },
-    
-    <span class="dt">step =</span> <span class="cf">function</span>(action) {
-      self<span class="op">$</span>previous.state =<span class="st"> </span>self<span class="op">$</span>state
-      self<span class="op">$</span>n.steps =<span class="st"> </span>self<span class="op">$</span>n.steps <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-      
-      self<span class="op">$</span>velocity =<span class="st"> </span>self<span class="op">$</span>velocity <span class="op">+</span><span class="st"> </span><span class="fl">0.001</span> <span class="op">*</span><span class="st"> </span>(action <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">-</span>
-<span class="st">        </span><span class="fl">0.0025</span> <span class="op">*</span><span class="st"> </span><span class="kw">cos</span>(<span class="dv">3</span> <span class="op">*</span><span class="st"> </span>self<span class="op">$</span>position)
-      self<span class="op">$</span>velocity =<span class="st"> </span><span class="kw">min</span>(<span class="kw">max</span>(self<span class="op">$</span>velocity, self<span class="op">$</span>state.space.bounds[[<span class="dv">2</span>]][<span class="dv">1</span>]), 
-        self<span class="op">$</span>state.space.bounds[[<span class="dv">2</span>]][<span class="dv">2</span>])
-      self<span class="op">$</span>position =<span class="st"> </span>self<span class="op">$</span>position <span class="op">+</span><span class="st"> </span>self<span class="op">$</span>velocity
-      <span class="cf">if</span> (self<span class="op">$</span>position <span class="op">&lt;</span><span class="st"> </span>self<span class="op">$</span>state.space.bounds[[<span class="dv">1</span>]][<span class="dv">1</span>]) {
-        self<span class="op">$</span>position =<span class="st"> </span>self<span class="op">$</span>state.space.bounds[[<span class="dv">1</span>]][<span class="dv">1</span>]
-        self<span class="op">$</span>velocity =<span class="st"> </span><span class="dv">0</span>
-      }
-      
-      self<span class="op">$</span>state =<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(self<span class="op">$</span>position, self<span class="op">$</span>velocity), <span class="dt">ncol =</span> <span class="dv">2</span>)
-      self<span class="op">$</span>reward =<span class="st"> </span><span class="op">-</span><span class="st"> </span><span class="dv">1</span>
-      <span class="cf">if</span> (self<span class="op">$</span>position <span class="op">&gt;=</span><span class="st"> </span><span class="fl">0.5</span>) {
-        self<span class="op">$</span>done =<span class="st"> </span><span class="ot">TRUE</span>
-        self<span class="op">$</span>reward =<span class="st"> </span><span class="dv">0</span>
-      }
-      <span class="kw">invisible</span>(self)
-    }
-  )
-)</code></pre></div>
-<p>We can then create a new instance of the mountain car class and pass this on the an algorithm. Here we will sample random actions and interact with the environment.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m =<span class="st"> </span>mountainCar<span class="op">$</span><span class="kw">new</span>()
-<span class="kw">set.seed</span>(<span class="dv">123456</span>)
-m<span class="op">$</span><span class="kw">reset</span>()
-<span class="cf">while</span> (<span class="op">!</span>m<span class="op">$</span>done) {
-  action =<span class="st"> </span><span class="kw">sample</span>(m<span class="op">$</span>actions, <span class="dv">1</span>)
-  m<span class="op">$</span><span class="kw">step</span>(action)
-}
-<span class="kw">print</span>(<span class="kw">paste</span>(<span class="st">"Episode finished after"</span>, m<span class="op">$</span>n.steps, <span class="st">"steps."</span>))
-<span class="co">#&gt; [1] "Episode finished after 787 steps."</span></code></pre></div>
-<p>Note: The mountain car implementation above is already included in the package and can be called with the <code>mountainCar</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The classical mountain car problem.</span>
-m =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>()
-m<span class="op">$</span><span class="kw">reset</span>()
-m<span class="op">$</span><span class="kw">step</span>(<span class="dv">1</span>)
-<span class="kw">print</span>(m)
-<span class="co">#&gt; Number of steps: 1 </span>
-<span class="co">#&gt; State: -0.454482559330265 -0.000518469774599052 </span>
-<span class="co">#&gt; Reward: -1 </span>
-<span class="co">#&gt; Done: FALSE</span></code></pre></div>
-<p>There is also a variant with a continuous action space (bounded in <span class="math inline">\([-1, 1]\)</span>)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Mountain car with a continuous action space</span>
-m =<span class="st"> </span><span class="kw"><a href="../reference/mountainCar.html">mountainCar</a></span>(<span class="dt">action.space =</span> <span class="st">"Continuous"</span>)
-m<span class="op">$</span><span class="kw">reset</span>()
-<span class="kw">print</span>(m)
-<span class="co">#&gt; Number of steps: 0 </span>
-<span class="co">#&gt; State: -0.454710142640397 0 </span>
-<span class="co">#&gt; Reward:  </span>
-<span class="co">#&gt; Done: FALSE</span>
-m<span class="op">$</span><span class="kw">step</span>(<span class="fl">0.27541</span>)
-<span class="kw">print</span>(m)
-<span class="co">#&gt; Number of steps: 1 </span>
-<span class="co">#&gt; State: -0.454810022373572 -9.98797331752701e-05 </span>
-<span class="co">#&gt; Reward: -1 </span>
-<span class="co">#&gt; Done: FALSE</span></code></pre></div>
-<hr>
-</div>
-<div id="other-vignettes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#other-vignettes" class="anchor"></a>Other vignettes</h3>
-<p>Have a look at the other vignettes:</p>
-<ul>
-<li><p><a href="introduction.html">Introduction to reinforcelearn</a></p></li>
-<li><p><a href="algorithms.html">How to solve an environment?</a></p></li>
+<li><p><code>step(action)</code>: The interaction function between agent and environment. <code>step</code> is called with an action as an argument. It then takes the action and internally computes the following state, reward and whether an episode is finished and returns a list with <code>state</code>, <code>reward</code> and <code>done</code>.</p></li>
+<li><p><code>visualize()</code>: Visualize the current state of the environment.</p></li>
 </ul>
 <hr>
 </div>
@@ -443,11 +299,8 @@ m<span class="op">$</span><span class="kw">step</span>(<span class="fl">0.27541<
 <div id="ref-gym_openai">
 <p>Brockman, Greg, Vicki Cheung, Ludwig Pettersson, Jonas Schneider, John Schulman, Jie Tang, and Wojciech Zaremba. 2016. “OpenAI Gym.” <em>CoRR</em> abs/1606.01540. <a href="http://arxiv.org/abs/1606.01540" class="uri">http://arxiv.org/abs/1606.01540</a>.</p>
 </div>
-<div id="ref-gym">
-<p>Hendricks, Paul. 2016. <em>Gym: Provides Access to the Openai Gym Api</em>. <a href="https://github.com/paulhendricks/gym-R" class="uri">https://github.com/paulhendricks/gym-R</a>.</p>
-</div>
 <div id="ref-sutton2017">
-<p>Sutton, Richard S., and Andrew G. Barto. 2017. “Reinforcement Learning : An Introduction.” Cambridge, MA, USA: <a href="http://incompleteideas.net/sutton/book/the-book-2nd.html" class="uri">http://incompleteideas.net/sutton/book/the-book-2nd.html</a>; MIT Press.</p>
+<p>Sutton, Richard S., and Andrew G. Barto. 2017. “Reinforcement Learning : An Introduction.” Cambridge, MA, USA: <a href="http://ufal.mff.cuni.cz/~straka/courses/npfl114/2016/sutton-bookdraft2016sep.pdf" class="uri">http://ufal.mff.cuni.cz/~straka/courses/npfl114/2016/sutton-bookdraft2016sep.pdf</a>; MIT Press.</p>
 </div>
 </div>
 </div>
@@ -460,7 +313,8 @@ m<span class="op">$</span><span class="kw">step</span>(<span class="fl">0.27541<
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#what-is-an-environment-in-reinforcelearn">What is an environment in reinforcelearn?</a></li>
+<li><a href="#creation">Creation</a></li>
+      <li><a href="#interaction">Interaction</a></li>
       </ul>
 </div>
       </div>

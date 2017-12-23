@@ -11,23 +11,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Reinforcement Learning in R <img src="reinforcelearn.png" align="right" height="36"/>
+# Reinforcement Learning in R <img src="man/figures/logo.png" align="right" height="36"/>
 
-[![Travis-CI Build Status](https://travis-ci.org/markdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markdumke/reinforcelearn)
+[![Travis-CI Build Status](https://travis-ci.org/markusdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markusdumke/reinforcelearn)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn)
-[![Coverage Status](https://img.shields.io/codecov/c/github/markdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markdumke/reinforcelearn?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/markusdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markusdumke/reinforcelearn?branch=master)
+
+```{r, include = FALSE}
+writeLines(capture.output(devtools::session_info()), "session_info.txt")
+```
+
 
 ### Documentation
 
-[Website](https://markdumke.github.io/reinforcelearn)
+[Website](https://markusdumke.github.io/reinforcelearn)
 
 ----
 
 ### Installation
 
 ```{r, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("markdumke/reinforcelearn")
+# Install from CRAN.
+install.packages("reinforcelearn")
+
+# Install development version from github.
+devtools::install_github("markusdumke/reinforcelearn")
 ```
 
 ----
@@ -39,27 +47,34 @@ Reinforcement Learning with the package `reinforcelearn` is as easy as
 ```{r}
 library(reinforcelearn)
 
-# Create gridworld environment
-env = windyGridworld()
+env = makeEnvironment("windy.gridworld")
+agent = makeAgent("softmax", "table", "qlearning")
 
-# Solve environment using Sarsa
-res = sarsa(env, n.episodes = 30)
-print(res$steps)
+# Run interaction for 10 episodes.
+interact(env, agent, n.episodes = 10L)
 ```
 
 ----
 
 ### Environments
 
-With `makeEnvironment` you can create a reinforcement learning environment from a Markov Decision Process.
+With `makeEnvironment` you can create reinforcement learning environments.
 
 ```{r}
-# Create environment from MDP.
-P = array(0, c(2,2,2))
-P[, , 1] = matrix(c(0.2, 0.8, 0, 1), 2, 2, byrow = TRUE)
-P[, , 2] = matrix(c(0.1, 0.9, 0, 1), 2, 2, byrow = TRUE)
-R = matrix(c(5, 10, -1, 2), 2, 2, byrow = TRUE)  
-env = makeEnvironment(transitions = P, rewards = R)
+# Create environment.
+step = function(self, action) {
+  state = list(mean = action + rnorm(1), sd = runif(1))
+  reward = rnorm(1, state[[1]], state[[2]])
+  done = FALSE
+  list(state, reward, done)
+}
+
+reset = function(self) {
+  state = list(mean = 0, sd = 1)
+  state
+}
+
+env = makeEnvironment("custom", step = step, reset = reset)
 ```
 
 The environment is an `R6` class with a set of attributes and methods.
@@ -68,100 +83,66 @@ You can interact with the environment via the `reset` and `step` method.
 ```{r}
 # Reset environment.
 env$reset()
-print(env)
 
-# Take action 0.
-env$step(0)
-print(env)
+# Take action.
+env$step(100)
 ```
 
-You can also create an environment from [OpenAI Gym](https://gym.openai.com/) via the `gym` package. You need to install all dependencies listed [here](https://github.com/openai/gym-http-api).
+There are some predefined environment classes, e.g. `MDPEnvironment`, which allows you to create a Markov Decision Process by passing on state transition array and reward matrix, or `GymEnvironment`, where you can use toy problems from [OpenAI Gym](https://gym.openai.com/).
 
 ```{r, eval = FALSE}
-# Create an OpenAI Gym environment.
-# Make sure you have Python and Gym installed.
-# Start server.
-package.path = system.file(package = "reinforcelearn")
-path2pythonfile = paste0(package.path, "/gym_http_server.py")
-system2("python", args = path2pythonfile, stdout = NULL,
-  wait = FALSE, invisible = FALSE)
-
-env = makeEnvironment("MountainCar-v0")
+# Create a gym environment.
+# Make sure you have Python, gym and reticulate installed.
+env = makeEnvironment("gym", gym.name = "MountainCar-v0")
 
 # Take random actions for 200 steps.
 env$reset()
 for (i in 1:200) {
-  action = sample(env$actions, 1)
+  action = sample(0:2, 1)
   env$step(action)
+  env$visualize()
 }
 env$close()
 ```
 
-This should open a Python window showing the interaction with the environment.
+This should open a window showing a graphical visualization of the environment during interaction.
 
-For more details on how to create an environment have a look at the vignette: [How to create an environment?](https://markdumke.github.io/reinforcelearn/articles/environments.html)
-
-----
-
-### Algorithms
-
-After you created an environment you can use various reinforcement learning algorithms to solve this environment. For example, for a tabular environment like gridworld you can use tabular Q-Learning to solve it and find the optimal action value function $Q*$. You can set various parameters like the learning rate, the number of episodes, the discount factor or epsilon.
-
-```{r}
-# Create the windy gridworld environment.
-env = windyGridworld()
-res = qlearning(env, n.episodes = 30)
-print(res$steps)
-
-# Show value of each state.
-print(matrix(round(apply(res$Q1, 1, max), 1), ncol = 10, byrow = TRUE))
-```
-
-We can then get the policy by taking the argmax over the action value function Q.
-
-```{r}
-policy = max.col(res$Q1) - 1L
-print(matrix(policy, ncol = 10, byrow = TRUE))
-```
-
-For more details on algorithms have a look at the vignette: [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
+For more details on how to create an environment have a look at the vignette: [Environments](https://markusdumke.github.io/reinforcelearn/articles/environments.html)
 
 ----
 
-### Value function approximation
+### Agents
 
-When the state space is large or even continuous tabular solution methods cannot be applied. Then it is better to approximate the value function using a function approximator. We need to define a function, which preprocesses the state observation, so that the function approximator can work with it.
-Here is an example solving the mountain car problem using linear function approximation. 
+With `makeAgent` you can set up a reinforcement learning agent to solve the environment, i.e. to find the best action in each time step.
+
+The first step is to set up the policy, which defines which action to choose. For example we could use a uniform random policy.
 
 ```{r}
-# Set up the Mountain Car problem
-m = mountainCar()
+# Create the environment.
+env = makeEnvironment("windy.gridworld")
 
-# Define preprocessing function (here grid tiling)
-n.tilings = 8
-max.size = 4096
-iht = IHT(max.size)
+# Create agent with uniform random policy.
+policy = makePolicy("random")
+agent = makeAgent(policy)
 
-position.max = m$state.space.bounds[[1]][2]
-position.min = m$state.space.bounds[[1]][1]
-velocity.max = m$state.space.bounds[[2]][2]
-velocity.min = m$state.space.bounds[[2]][1]
-position.scale = n.tilings / (position.max - position.min)
-velocity.scale = n.tilings / (velocity.max - velocity.min)
+# Run interaction for 10 steps.
+interact(env, agent, n.steps = 10L)
+```
 
-preprocessState = function(state) {
-  # scale state observation
-  state = matrix(c(position.scale * state[1], velocity.scale * state[2]), ncol = 2)
-  # get active tiles
-  active.tiles = tiles(iht, 8, state)
-  # return n hot vector with 1 at the position of each active tile
-  nHot(active.tiles, max.size)
-}
+In this scenario the agent chooses all actions with equal probability and will not learn anything from the interaction. Usually we want the agent to be able to learn something. Value-based algorithms learn a value function from interaction with the environment and adjust the policy according to the value function. For example we could set up Q-Learning with a softmax policy.
 
-set.seed(123)
-res = qlearning(m, fun.approx = "linear", 
-  preprocessState = preprocessState, n.episodes = 20)
-print(res$steps)
+```{r}
+# Create the environment.
+env = makeEnvironment("windy.gridworld")
+
+# Create qlearning agent with softmax policy and tabular value function.
+policy = makePolicy("softmax")
+values = makeValueFunction("table", n.states = env$n.states, n.actions = env$n.actions)
+algorithm = makeAlgorithm("qlearning")
+agent = makeAgent(policy, values, algorithm)
+
+# Run interaction for 10 steps.
+interact(env, agent, n.episodes = 10L)
 ```
 
 ----
@@ -170,9 +151,8 @@ print(res$steps)
 
 Also have a look at the vignettes for further examples.
 
-- [Introduction to reinforcelearn](https://markdumke.github.io/reinforcelearn/articles/introduction.html)
-- [How to create an environment?](https://markdumke.github.io/reinforcelearn/articles/environments.html)
-- [How to solve an environment?](https://markdumke.github.io/reinforcelearn/articles/algorithms.html)
+- [Environments](https://markusdumke.github.io/reinforcelearn/articles/environments.html)
+- [Agents](https://markusdumke.github.io/reinforcelearn/articles/agents.html)
 
 ----
 

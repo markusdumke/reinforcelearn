@@ -3,8 +3,9 @@
 \docType{package}
 \name{reinforcelearn}
 \alias{reinforcelearn}
+\alias{reinforcementlearning}
 \alias{reinforcelearn-package}
-\title{Reinforcement Learning in R.}
+\title{Reinforcement Learning.}
 \description{
 Implementations of reinforcement learning algorithms and environments.
 }
@@ -12,38 +13,67 @@ Implementations of reinforcement learning algorithms and environments.
 
 \itemize{
 \item \link{makeEnvironment}
-\item \link{gridworld}
-\item \link{smallGridworld}
-\item \link{windyGridworld}
-\item \link{cliff}
-\item \link{mountainCar}
+\item \link{Environment}
+\item \link{GymEnvironment}
+\item \link{MdpEnvironment}
+\item \link{Gridworld}
+\item \link{WindyGridworld}
+\item \link{CliffWalking}
+\item \link{MountainCar}
+\item \link{MountainCarContinuous}
 }
 }
 
-\section{Bandits}{
+\section{Policies}{
 
 \itemize{
-\item \link{bandit}
+\item \link{makePolicy}
+\item \link{EpsilonGreedyPolicy}
+\item \link{GreedyPolicy}
+\item \link{SoftmaxPolicy}
+\item \link{RandomPolicy}
+}
+}
+
+\section{Value Function Representations}{
+
+\itemize{
+\item \link{makeValueFunction}
+\item \link{ValueTable}
+\item \link{ValueNetwork}
 }
 }
 
 \section{Algorithms}{
 
-Dynamic Programming:
 \itemize{
-\item \link{evaluatePolicy}
-\item \link{iteratePolicy}
-\item \link{iterateValue}
+\item \link{makeAlgorithm}
+\item \link{QLearning}
+}
 }
 
-Model-free Reinforcement Learning
+\section{Extensions}{
+
 \itemize{
-\item \link{td}
-\item \link{qSigma}
-\item \link{sarsa}
-\item \link{expectedSarsa}
-\item \link{qlearning}
-\item \link{actorCritic}
+\item \link{makeReplayMemory}
+\item \link{Eligibility}
+}
+}
+
+\section{Agent}{
+
+\itemize{
+\item \link{makeAgent}
+\item \link{getValueFunction}
+\item \link{getReplayMemory}
+\item \link{getEligibilityTraces}
+}
+}
+
+\section{Interaction}{
+
+\itemize{
+\item \link{interact}
 }
 }
 

@@ -3,9 +3,11 @@
 ^\.travis\.yml$
 ^README\.Rmd$
 ^README-.*\.png$
-^NEWS\.md$
 ^cran-comments\.md$
 ^codecov\.yml$
 ^docs$
 ^_pkgdown\.yml$
 ^reinforcelearn\.png$
+^examples$
+^benchmark$
+^session_info.txt$

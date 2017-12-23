@@ -52,7 +52,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="..//index.html">
+  <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
      
   </a>
@@ -68,13 +68,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/algorithms.html">How to solve an environment?</a>
+      <a href="../articles/agents.html">Agents</a>
     </li>
     <li>
-      <a href="../articles/environments.html">How to create an environment?</a>
-    </li>
-    <li>
-      <a href="../articles/introduction.html">Introduction to reinforcelearn</a>
+      <a href="../articles/environments.html">Environments</a>
     </li>
   </ul>
 </li>
@@ -105,44 +102,39 @@
 
     <pre class="usage"><span class='fu'>tiles</span>(<span class='no'>iht</span>, <span class='no'>n.tilings</span>, <span class='no'>state</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='fu'>integer</span>(<span class='fl'>0</span>))
 
-<span class='fu'>IHT</span>(<span class='no'>max.size</span>)</pre>
+<span class='fu'>iht</span>(<span class='no'>max.size</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>iht</th>
-      <td><p>[<code>IHT class</code>] 
-A hash table created with <code>IHT</code>.</p></td>
+      <td><p>[<code>IHT</code>]  A hash table created with <code>iht</code>.</p></td>
     </tr>
     <tr>
       <th>n.tilings</th>
-      <td><p>[<code>integer(1)</code>] 
-Number of tilings.</p></td>
+      <td><p>[<code>integer(1)</code>]  Number of tilings.</p></td>
     </tr>
     <tr>
       <th>state</th>
-      <td><p>[<code>vector(2)</code>] 
-A two-dimensional state observation.
+      <td><p>[<code>vector(2)</code>]  A two-dimensional state observation.
 Make sure to scale the observation to unit variance before.</p></td>
     </tr>
     <tr>
       <th>action</th>
-      <td><p>[<code>integer(1)</code>] 
-Optional: If supplied the action space will also be tiled.
-All distinct actions will result in different tiles.</p></td>
+      <td><p>[<code>integer(1)</code>]  Optional: If supplied the action space
+will also be tiled. All distinct actions will result in different tile numbers.</p></td>
     </tr>
     <tr>
       <th>max.size</th>
-      <td><p>[<code>integer(1)</code>] 
-Maximal size of hash table.</p></td>
+      <td><p>[<code>integer(1)</code>]  Maximal size of hash table.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>IHT</code> creates a hash table, which can then be passed on to <code>tiles</code>.
-<code>tiles</code> returns a vector of size <code>n.tilings</code> with the active tile numbers.</p>
+    <p><code>iht</code> creates a hash table, which can then be passed on to <code>tiles</code>.
+<code>tiles</code> returns an integer vector of size <code>n.tilings</code> with the active tile numbers.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
@@ -154,7 +146,7 @@ the the vector's value. Each tile is converted to an element in the big binary v
 and the list of the tile (element) numbers is returned as the representation of the vector's value.
 Tile coding is recommended as a way of applying online learning methods to domains with continuous
 state or action variables. [copied from manual]</p>
-<p>See detailed manual at <a href='http://incompleteideas.net/sutton/tiles/tiles3.html'>http://incompleteideas.net/sutton/tiles/tiles3.html</a>.
+<p>See detailed manual on the web.
 In comparison to the Python implementation indices start with 1 instead of 0. The hash table is
 implemented as an environment, which is an attribute of an R6 class.</p>
 <p>Make sure that the size of the hash table is large enough, else an error will be triggered,
@@ -167,10 +159,10 @@ when trying to assign a value to a full hash table.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Create hash table</span>
-<span class='no'>iht</span> <span class='kw'>=</span> <span class='fu'>IHT</span>(<span class='fl'>1024</span>)
+<span class='no'>hash</span> <span class='kw'>=</span> <span class='fu'>iht</span>(<span class='fl'>1024</span>)
 
 <span class='co'># Partition state space using 8 tilings</span>
-<span class='fu'>tiles</span>(<span class='no'>iht</span>, <span class='kw'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3.6</span>, <span class='fl'>7.21</span>))</div><div class='output co'>#&gt; [1] 1 2 3 4 5 6 7 8</div><div class='input'><span class='fu'>tiles</span>(<span class='no'>iht</span>, <span class='kw'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3.7</span>, <span class='fl'>7.21</span>))</div><div class='output co'>#&gt; [1] 1 2 3 9 5 6 7 8</div><div class='input'><span class='fu'>tiles</span>(<span class='no'>iht</span>, <span class='kw'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>7</span>))</div><div class='output co'>#&gt; [1] 10 11 12  9  5 13  7  8</div><div class='input'><span class='fu'>tiles</span>(<span class='no'>iht</span>, <span class='kw'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(- <span class='fl'>37.2</span>, <span class='fl'>7</span>))</div><div class='output co'>#&gt; [1] 14 15 16 17 18 19 20 21</div><div class='input'>
+<span class='fu'>tiles</span>(<span class='no'>hash</span>, <span class='kw'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3.6</span>, <span class='fl'>7.21</span>))</div><div class='output co'>#&gt; [1] 1 2 3 4 5 6 7 8</div><div class='input'><span class='fu'>tiles</span>(<span class='no'>hash</span>, <span class='kw'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>3.7</span>, <span class='fl'>7.21</span>))</div><div class='output co'>#&gt; [1] 1 2 3 9 5 6 7 8</div><div class='input'><span class='fu'>tiles</span>(<span class='no'>hash</span>, <span class='kw'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>4</span>, <span class='fl'>7</span>))</div><div class='output co'>#&gt; [1] 10 11 12  9  5 13  7  8</div><div class='input'><span class='fu'>tiles</span>(<span class='no'>hash</span>, <span class='kw'>n.tilings</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>state</span> <span class='kw'>=</span> <span class='fu'>c</span>(- <span class='fl'>37.2</span>, <span class='fl'>7</span>))</div><div class='output co'>#&gt; [1] 14 15 16 17 18 19 20 21</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

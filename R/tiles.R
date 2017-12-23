@@ -2,19 +2,17 @@
 #'
 #' Implementation of Sutton's tile coding software version 3.
 #'
-#' @param iht [\code{IHT class}] \cr
-#'   A hash table created with \code{IHT}.
-#' @param n.tilings [\code{integer(1)}] \cr
-#'   Number of tilings.
-#' @param state [\code{vector(2)}] \cr
-#'   A two-dimensional state observation.
+#' @param iht \[`IHT`] \cr A hash table created with `iht`.
+#' @param n.tilings \[`integer(1)`] \cr Number of tilings.
+#' @param state \[`vector(2)`] \cr A two-dimensional state observation.
 #'   Make sure to scale the observation to unit variance before.
-#' @param action [\code{integer(1)}] \cr
-#'   Optional: If supplied the action space will also be tiled.
-#'   All distinct actions will result in different tiles.
+#' @param action \[`integer(1)`] \cr Optional: If supplied the action space
+#'   will also be tiled. All distinct actions will result in different tile numbers.
 #'
-#' @return  \code{IHT} creates a hash table, which can then be passed on to \code{tiles}.
-#' \code{tiles} returns a vector of size \code{n.tilings} with the active tile numbers.
+#' @return `iht` creates a hash table, which can then be passed on to `tiles`.
+#'   `tiles` returns an integer vector of size `n.tilings` with the active tile numbers.
+#'
+#' @md
 #'
 #' @details
 #' Tile coding is a way of representing the values of a vector of continuous variables as a large
@@ -24,9 +22,9 @@
 #' the the vector's value. Each tile is converted to an element in the big binary vector,
 #' and the list of the tile (element) numbers is returned as the representation of the vector's value.
 #' Tile coding is recommended as a way of applying online learning methods to domains with continuous
-#' state or action variables. [copied from manual]
+#' state or action variables. \[copied from manual]
 #'
-#' See detailed manual at \url{http://incompleteideas.net/sutton/tiles/tiles3.html}.
+#' See detailed manual on the web.
 #' In comparison to the Python implementation indices start with 1 instead of 0. The hash table is
 #' implemented as an environment, which is an attribute of an R6 class.
 #'
@@ -38,13 +36,13 @@
 #' @export
 #' @examples
 #' # Create hash table
-#' iht = IHT(1024)
+#' hash = iht(1024)
 #'
 #' # Partition state space using 8 tilings
-#' tiles(iht, n.tilings = 8, state = c(3.6, 7.21))
-#' tiles(iht, n.tilings = 8, state = c(3.7, 7.21))
-#' tiles(iht, n.tilings = 8, state = c(4, 7))
-#' tiles(iht, n.tilings = 8, state = c(- 37.2, 7))
+#' tiles(hash, n.tilings = 8, state = c(3.6, 7.21))
+#' tiles(hash, n.tilings = 8, state = c(3.7, 7.21))
+#' tiles(hash, n.tilings = 8, state = c(4, 7))
+#' tiles(hash, n.tilings = 8, state = c(- 37.2, 7))
 #'
 tiles = function(iht, n.tilings, state, action = integer(0)) {
   checkmate::assertClass(iht, "IHT")
@@ -79,50 +77,56 @@ hashcoords = function(coords, iht) {
 }
 
 #' @rdname tilecoding
-#' @param max.size [\code{integer(1)}] \cr
-#'   Maximal size of hash table.
+#' @param max.size \[`integer(1)`] \cr Maximal size of hash table.
 #' @export
-IHT = function(max.size) {
+#' @md
+iht = function(max.size) {
+  checkmate::assertInt(max.size)
   IHTClass$new(max.size)
 }
 
-IHTClass = R6::R6Class("IHT", public = list(
-  i = 0,
-  max.size = NULL,
-  e = NULL,
+IHTClass = R6::R6Class("IHT",
+  public = list(
+    i = 0,
+    max.size = NULL,
+    e = NULL,
 
-  initialize = function(max.size) {
-    checkmate::assertInt(max.size)
-    self$max.size = max.size
-    self$e = new.env(size = max.size)
-  },
+    initialize = function(max.size) {
+      self$max.size = max.size
+      self$e = new.env(size = max.size)
+    },
 
-  checkFull = function() {
-    if (length(self$e) > self$max.size) {
-      stop("Tile Coding failed because hash table IHT is full!")
+    checkFull = function() {
+      if (length(self$e) > self$max.size) {
+        stop("Tile Coding failed because hash table IHT is full!")
+      }
+    },
+
+    add2Env = function(coords) {
+      if (!exists(coords, envir = self$e, inherits = FALSE)) {
+        self$i = self$i + 1
+        self$checkFull()
+        self$e[[coords]] = self$i
+      }
+    },
+
+    getIndex = function(coords) {
+      return(self$e[[coords]])
     }
-  },
-
-  add2Env = function(coords) {
-    if (!exists(coords, envir = self$e, inherits = FALSE)) {
-      self$i = self$i + 1
-      self$checkFull()
-      self$e[[coords]] = self$i
-    }
-  },
-
-  getIndex = function(coords) {
-    return(self$e[[coords]])
-  }
-)
+  )
 )
 
 #' Make n hot vector.
-#' @param x [\code{integer}] \cr Which features are active?
-#' @param len [\code{integer(1)}] \cr Length of the feature vector.
-#' @param out [\code{character(1)}] \cr Format of the output. Can be a vector or a matrix.
-#' @return [\code{matrix(1, len)}] A one-row matrix with \code{len} columns with every entry 0
-#'   except the columns specified by \code{x}.
+#'
+#' @param x \[`integer`] \cr Which features are active?
+#' @param len \[`integer(1)`] \cr Length of the feature vector.
+#' @param out \[`character(1)`] \cr Format of the output. Can be a vector or a matrix.
+#'
+#' @return \[`matrix(1, len)`] A one-row matrix with `len` columns with every
+#'   entry 0 except the columns specified by `x` which are 1.
+#'
+#' @md
+#'
 #' @export
 #' @examples
 #' nHot(c(1, 3), 5)
@@ -139,4 +143,3 @@ nHot = function(x, len, out = "matrix") {
   }
   m
 }
-

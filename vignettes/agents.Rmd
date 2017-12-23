@@ -1,0 +1,177 @@
+---
+title: "Agents"
+author: Markus Dumke
+date: "`r Sys.Date()`"
+output:rmarkdown::html_vignette:
+fig_caption: yes
+bibliography: references.bib
+vignette: >
+ %\VignetteIndexEntry{Agents}
+ %\VignetteEngine{knitr::rmarkdown}
+ %\VignetteEncoding{UTF-8}
+---
+  
+<style type="text/css">
+  h1.title {
+  font-size: 34px;
+  }
+</style>
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = TRUE, eval = TRUE, collapse = TRUE, comment = "#>")
+```
+
+```{r}
+set.seed(12)
+library(reinforcelearn)
+```
+
+A reinforcement learning agent usually consists of three parts: a policy, a value function representation and an algorithm which updates the value function or policy parameters. In the following it will be explained how to create an agent in `reinforcelearn` to solve an environment.
+
+You can create an agent with the function `makeAgent`. This will create an R6 class object with the corresponding policy, value function and algorithm.
+
+```{r}
+env = makeEnvironment("gridworld", shape = c(3, 3), goal.states = 0L)
+agent = makeAgent(policy = "softmax", val.fun = "table", algorithm = "qlearning")
+```
+
+Then you can run the agent in the environment by calling `interact` for a specified number of steps or episodes.
+
+```{r}
+interact(env, agent, n.episodes = 5L)
+```
+
+Note that `interact` returns a list with the number of steps and returns per episode. Furthermore it will change the environment and agent object. So the environment's state or the agent's value function weights will have most likely changed after the interaction.
+
+Although you can directly access the agent object, this is not recommended as this will be very likely to change in the next package versions. Instead use one of the accessor functions to e.g. get the weights of the action value function.
+
+```{r}
+getValueFunction(agent)
+```
+
+## Policies
+
+A policy is the agent's behavior function. We can define the policy with `makePolicy`.
+
+```{r}
+# Uniform random policy
+makePolicy("random")
+
+# Epsilon-greedy policy
+makePolicy("epsilon.greedy", epsilon = 0.2)
+
+# Softmax policy
+makePolicy("softmax")
+```
+
+This will just capture what policy to use and the policy will then be created when we create the agent.
+
+## Value Functions
+
+Many reinforcement learning algorithms use a value function to learn values of state and action pairs. 
+The value function can be represented with different types of function approximation, e.g. as a table or neural network.
+
+```{r}
+makeValueFunction("table", n.states = 9L, n.actions = 4L)
+```
+
+For a neural network you can use the `keras` package. Therefore you need to specify a the model's architecture and pass these on to `makeValueFunction`.
+
+```{r, eval = FALSE}
+library(keras)
+model = keras_model_sequential() %>% 
+  layer_dense(shape = 10L, input_shape = 4L, activation = "linear") %>%
+  compile(optimizer = optimizer_sgd(lr = 0.1), loss = "mae")
+makeValueFunction("neural.network", model)
+```
+
+Note that online neural network training is currently very slow. One way to work with this is to make updates to the value function not after every interaction, but to store all interactions in a replay memory and make updates to the neural network only once in a while. Read more about this in Section Experience Replay.
+
+Often you need to preprocess the state observation in a way the agent can work with this. Therefore you can pass on a function to the `preprocess` argument of `makeAgent`, which will then be applied to the state observation before the agent learns on this.
+
+For neural network training the outcome of `preprocess` must be a one-row matrix in order to be able to learn.
+
+## Algorithms
+
+The algorithm defines how to learn from an interaction with the environment. We can set up an algorithm using the function `makeAlgorithm`.
+
+```{r}
+makeAlgorithm("qlearning")
+```
+
+## Agent
+
+If we have defined policy, value function and algorithm we can create the agent by calling `makeAgent`.
+
+```{r}
+policy = makePolicy("epsilon.greedy", epsilon = 0.2)
+val.fun = makeValueFunction("table", n.states = 9L, n.actions = 4L)
+algorithm = makeAlgorithm("qlearning")
+
+agent = makeAgent(policy, val.fun, algorithm)
+```
+
+Note that you can also call `makeAgent` with character arguments which can save some typing.
+
+```{r}
+agent = makeAgent("epsilon.greedy", "table", "qlearning", 
+  policy.args = list(epsilon = 0.2))
+```
+
+## Interaction
+
+You can run an interaction between an agent and environment with the `interact` function.
+
+```{r}
+env = makeEnvironment("gridworld", shape = c(3, 2), goal.states = 0L)
+agent = makeAgent("random")
+
+interact(env, agent, n.steps = 3L, visualize = TRUE)
+```
+
+It allows you to run an interaction for a specified number of steps or episodes and you can also specify a maximum number of steps per episode.
+This makes it very flexible to step through the environment one action after the other. Note you can also run an interaction without learning.
+
+```{r}
+env = makeEnvironment("gridworld", shape = c(4, 4), goal.states = 0L, 
+  initial.state = 15L)
+agent = makeAgent("random")
+
+for (i in 1:3L) {
+  ## comment in the next line to wait on enter press before taking the next action.
+  # invisible(readline(prompt = "Press [enter] to take the next action"))
+  interact(env, agent, n.steps = 1L, learn = FALSE, visualize = TRUE)
+}
+```
+
+### Experience replay
+
+Experience replay is a technique to learn at once from multiple past observations. Therefore all the states, actions, rewards and subsequent states will be stored in a list (the so called replay memory) and at each step a random batch from this memory will be replayed.
+
+```{r}
+(memory = makeReplayMemory(size = 2L, batch.size = 1L))
+
+agent = makeAgent("random", replay.memory = memory)
+
+interact(env, agent, n.steps = 2L, visualize = TRUE)
+
+getReplayMemory(agent)
+```
+
+Here is an example training with experience replay, where the value function is updated only every 21 steps.
+
+```{r, message = FALSE}
+env = makeEnvironment("gridworld", shape = c(4, 4), goal.states = c(0, 15))
+
+policy = makePolicy("epsilon.greedy", epsilon = 0.1)
+memory = makeReplayMemory(size = 100L, batch.size = 20L)
+
+agent = makeAgent(policy, "table", "qlearning", replay.memory = memory)
+
+for (i in 1:100) {
+  interact(env, agent, n.steps = 20L, learn = FALSE)
+  interact(env, agent, n.steps = 1L, learn = TRUE)
+}
+action.vals = getValueFunction(agent)
+matrix(getStateValues(action.vals), ncol = 4L)
+```

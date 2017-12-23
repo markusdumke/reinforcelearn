@@ -1,33 +1,50 @@
-#' Reinforcement Learning in R.
+#' Reinforcement Learning.
 #'
 #' Implementations of reinforcement learning algorithms and environments.
 #'
 #' @md
+#'
 #' @section Environments:
 #' * [makeEnvironment]
-#' * [gridworld]
-#' * [smallGridworld]
-#' * [windyGridworld]
-#' * [cliff]
-#' * [mountainCar]
+#' * [Environment]
+#' * [GymEnvironment]
+#' * [MdpEnvironment]
+#' * [Gridworld]
+#' * [WindyGridworld]
+#' * [CliffWalking]
+#' * [MountainCar]
+#' * [MountainCarContinuous]
 #'
-#' @section Bandits:
-#' * [bandit]
+#' @section Policies:
+#' * [makePolicy]
+#' * [EpsilonGreedyPolicy]
+#' * [GreedyPolicy]
+#' * [SoftmaxPolicy]
+#' * [RandomPolicy]
+#'
+#' @section Value Function Representations:
+#' * [makeValueFunction]
+#' * [ValueTable]
+#' * [ValueNetwork]
 #'
 #' @section Algorithms:
-#' Dynamic Programming:
-#' * [evaluatePolicy]
-#' * [iteratePolicy]
-#' * [iterateValue]
+#' * [makeAlgorithm]
+#' * [QLearning]
 #'
-#' Model-free Reinforcement Learning
-#' * [td]
-#' * [qSigma]
-#' * [sarsa]
-#' * [expectedSarsa]
-#' * [qlearning]
-#' * [actorCritic]
+#' @section Extensions:
+#' * [makeReplayMemory]
+#' * [Eligibility]
+#'
+#' @section Agent:
+#' * [makeAgent]
+#' * [getValueFunction]
+#' * [getReplayMemory]
+#' * [getEligibilityTraces]
+#'
+#' @section Interaction:
+#' * [interact]
 #'
 #' @name reinforcelearn
+#' @aliases reinforcementlearning
 #' @docType package
 NULL
