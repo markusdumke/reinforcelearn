@@ -1,6 +1,7 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
+* Removed file CRAN-RELEASE from top-level
 * Adjusted the LICENSE file to include only YEAR: 2018  COPYRIGHT HOLDER: Markus Dumke
 
 ## Test environments
@@ -11,7 +12,7 @@ This is a resubmission. In this version I have:
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
+* New submission
 
 ## Reverse dependencies
 

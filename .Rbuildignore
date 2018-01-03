@@ -11,3 +11,4 @@
 ^examples$
 ^benchmark$
 ^session_info.txt$
+^CRAN-RELEASE$
