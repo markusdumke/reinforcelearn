@@ -6,9 +6,6 @@ cache: packages
 
 warnings_are_errors: true
 
-r_github_packages:
-  - jimhester/lintr
-
 r:
 - devel
 
@@ -17,9 +14,7 @@ before_install:
 - Rscript -e 'devtools::install_deps()'
 
 after_success:
-- Rscript -e 'covr::codecov(type = "all")'
-- Rscript -e 'source("tests/testthat/helper_lint.R")'
-- Rscript -e 'lintr::lint_package(linters = linters)'
+- Rscript -e 'covr::codecov(type = "tests")'
 
 notifications:
   slack:

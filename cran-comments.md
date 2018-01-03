@@ -1,8 +1,8 @@
 ## Resubmission
 This is a resubmission. In this version I have:
 
-* Removed file CRAN-RELEASE from top-level
-* Adjusted the LICENSE file to include only YEAR: 2018  COPYRIGHT HOLDER: Markus Dumke
+* Updated the Description field in DESCRIPTION to include references to relevant papers.
+* Removed tests which used code from lintr.
 
 ## Test environments
 * local x86_64-w64-mingw32/x64 (64-bit), R 3.4.3
