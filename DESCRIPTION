@@ -1,17 +1,17 @@
 Package: reinforcelearn
 Type: Package
 Title: Reinforcement Learning
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Markus", "Dumke", email = {"markusdumke@gmail.com"}, role = c("aut", "cre"))
 Description: Implements reinforcement learning environments and algorithms as described in Sutton & Barto (1998, ISBN:0262193981).
-    The Q-Learning algorithm can be used with different types of function approximation 
-    (tabular and neural network), eligibility traces (Singh & Sutton (1996) <doi:10.1007/BF00114726>) 
+    The Q-Learning algorithm can be used with function approximation, 
+    eligibility traces (Singh & Sutton (1996) <doi:10.1007/BF00114726>) 
     and experience replay (Mnih et al. (2013) <arXiv:1312.5602>).
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.0.0)
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 BugReports: https://github.com/markusdumke/reinforcelearn/issues
 URL: http://markusdumke.github.io/reinforcelearn
 SystemRequirements: (Python and gym only required if gym environments are used)
