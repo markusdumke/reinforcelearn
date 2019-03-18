@@ -5,7 +5,6 @@
 \alias{MountainCar}
 \alias{MountainCarContinuous,}
 \alias{mountain.car}
-\alias{MountainCar}
 \alias{MountainCarContinuous}
 \title{Mountain Car}
 \format{An object of class \code{R6ClassGenerator} of length 24.}

@@ -4,9 +4,9 @@
 \alias{makeAgent}
 \title{Create Agent.}
 \usage{
-makeAgent(policy, val.fun = NULL, algorithm = NULL, preprocess = identity,
-  replay.memory = NULL, policy.args = list(), val.fun.args = list(),
-  algorithm.args = list())
+makeAgent(policy, val.fun = NULL, algorithm = NULL,
+  preprocess = identity, replay.memory = NULL, policy.args = list(),
+  val.fun.args = list(), algorithm.args = list())
 }
 \arguments{
 \item{policy}{[\code{character(1)} | Policy] \cr A policy.

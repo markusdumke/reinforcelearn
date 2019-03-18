@@ -19,9 +19,9 @@ interact(env, agent, n.steps = 2L)
 
 test_that("getReplayMemory returns list", {
   expect_equal(typeof(getReplayMemory(agent)), "list")
-  expect_equal(getReplayMemory(agent), list(list(state = 30, action = 1,
-    reward = -1, next.state = 31), list(state = 31, action = 2, reward = -1,
-      next.state = 21)))
+  expect_equal(getReplayMemory(agent), list(list(state = 30, action = 0,
+    reward = -1, next.state = 30), list(state = 30, action = 2, reward = -1,
+      next.state = 20)))
 })
 
 context("getEligibilityTraces")
