@@ -4,6 +4,8 @@ Reinforcement Learning in R <img src="man/figures/logo.png" align="right" height
 
 [![Travis-CI Build Status](https://travis-ci.org/markusdumke/reinforcelearn.svg?branch=master)](https://travis-ci.org/markusdumke/reinforcelearn) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/reinforcelearn)](https://cran.r-project.org/package=reinforcelearn) [![Coverage Status](https://img.shields.io/codecov/c/github/markusdumke/reinforcelearn/master.svg?maxAge=600)](https://codecov.io/github/markusdumke/reinforcelearn?branch=master)
 
+WARNING: This package is not maintained anymore!
+
 ### Documentation
 
 [Website](https://markusdumke.github.io/reinforcelearn)
